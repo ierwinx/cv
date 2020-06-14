@@ -43,6 +43,38 @@ class Efectos {
         })
     }
 
+    enviaForm() {
+        $('form').submit(e => {
+            e.preventDefault()
+            var datos = $('form').serialize()
+            console.log(datos)
+            $('form')[0].reset()
+
+            $('#tituloModal').text('Enviando información')
+            $('#colormodal').addClass('bg-info')
+            $('#contenidopeticion').html("<div class='loader'></div>")
+            $('#modal2').modal()
+
+            fetch('http://localhost/ls', { 
+                method: 'POST',
+                mode: 'cors',
+                body: datos
+            }).then((resp) => {
+                $('#colormodal').addClass('bg-success')
+                $('#colormodal').removeClass('bg-info')
+                $('#colormodal').removeClass('bg-danger')
+                $('#contenidopeticion').html("Se envio correctamente la informacion")
+            }).catch((error) => {
+                $('#colormodal').addClass('bg-danger')
+                $('#colormodal').removeClass('bg-info')
+                $('#colormodal').removeClass('bg-success')
+                $('#contenidopeticion').html("Error al enviar la peticion")
+                console.log(error)
+            })
+            
+        })
+    }
+
 }
 
 
@@ -50,3 +82,4 @@ var instancia = new Efectos()
 instancia.imgHover()
 instancia.mostrarOjos()
 instancia.mostrarCert()
+instancia.enviaForm()
