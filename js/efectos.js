@@ -54,7 +54,7 @@ class Efectos {
             console.log(datos)
             $('form')[0].reset()
 
-            $('#tituloModal').text('Enviando información')
+            $('#tituloModal').text('Sending information')
             $('#colormodal').addClass('bg-info')
             $('#contenidopeticion').html("<div class='loader'></div>")
             $('#modal2').modal()
@@ -67,12 +67,12 @@ class Efectos {
                 $('#colormodal').addClass('bg-success')
                 $('#colormodal').removeClass('bg-info')
                 $('#colormodal').removeClass('bg-danger')
-                $('#contenidopeticion').html("Se envio correctamente la informacion")
+                $('#contenidopeticion').html("The information has been sended correctly")
             }).catch((error) => {
                 $('#colormodal').addClass('bg-danger')
                 $('#colormodal').removeClass('bg-info')
                 $('#colormodal').removeClass('bg-success')
-                $('#contenidopeticion').html("Error al enviar la peticion")
+                $('#contenidopeticion').html("There are problems sending information")
                 console.log(error)
             })
 
