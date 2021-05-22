@@ -59,7 +59,7 @@ class Efectos {
             $('#contenidopeticion').html("<div class='loader'></div>")
             $('#modal2').modal()
 
-            fetch('http://localhost/ls', { 
+            fetch('http://localhost/ls', {
                 method: 'POST',
                 mode: 'cors',
                 body: datos
@@ -75,7 +75,7 @@ class Efectos {
                 $('#contenidopeticion').html("Error al enviar la peticion")
                 console.log(error)
             })
-            
+
         })
     }
 
