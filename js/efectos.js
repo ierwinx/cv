@@ -9,6 +9,10 @@ class Efectos {
         })
     }
 
+    imgSize() {
+        $('.imgredonda').height($('.imgredonda').width())
+    }
+
     mostrarOjos() {
         $('#ojo1').click(() => {
             $('#ojo1').css('display', 'none')
@@ -83,3 +87,4 @@ instancia.imgHover()
 instancia.mostrarOjos()
 instancia.mostrarCert()
 instancia.enviaForm()
+instancia.imgSize()
