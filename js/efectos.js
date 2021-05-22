@@ -81,10 +81,11 @@ class Efectos {
 
 }
 
-
-var instancia = new Efectos()
-instancia.imgHover()
-instancia.mostrarOjos()
-instancia.mostrarCert()
-instancia.enviaForm()
-instancia.imgSize()
+$(function() {
+    var instancia = new Efectos()
+    instancia.imgHover()
+    instancia.mostrarOjos()
+    instancia.mostrarCert()
+    instancia.enviaForm()
+    instancia.imgSize()
+})
