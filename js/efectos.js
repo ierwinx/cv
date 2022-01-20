@@ -51,7 +51,6 @@ class Efectos {
         $('form').submit(e => {
             e.preventDefault()
             var datos = $('form').serialize()
-            console.log(datos)
             $('form')[0].reset()
 
             $('#tituloModal').text('Sending information')
@@ -59,21 +58,19 @@ class Efectos {
             $('#contenidopeticion').html("<div class='loader'></div>")
             $('#modal2').modal()
 
-            fetch('http://localhost/ls', {
-                method: 'POST',
-                mode: 'cors',
-                body: datos
-            }).then((resp) => {
+            emailjs.init("user_km4RSsF30l5sCapcs0ucE")
+            emailjs.send("service_nqyh7vk", "template_cq9vtfz", datos).then((resp) => {
+                console.log(resp)
                 $('#colormodal').addClass('bg-success')
                 $('#colormodal').removeClass('bg-info')
                 $('#colormodal').removeClass('bg-danger')
                 $('#contenidopeticion').html("The information has been sended correctly")
-            }).catch((error) => {
+            }, (error) => {
+                console.log(error)
                 $('#colormodal').addClass('bg-danger')
                 $('#colormodal').removeClass('bg-info')
                 $('#colormodal').removeClass('bg-success')
                 $('#contenidopeticion').html("There are problems sending information")
-                console.log(error)
             })
 
         })
