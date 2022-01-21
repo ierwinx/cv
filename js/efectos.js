@@ -50,7 +50,15 @@ class Efectos {
     enviaForm() {
         $('form').submit(e => {
             e.preventDefault()
-            var datos = $('form').serialize()
+            let form = $('form').serializeArray()
+            var datos = {
+                nombre : form[0].value,
+                apellido1 : form[1].value,
+                empresa : form[2].value,
+                email : form[3].value,
+                mensaje : form[4].value
+            }
+
             $('form')[0].reset()
 
             $('#tituloModal').text('Sending information')
