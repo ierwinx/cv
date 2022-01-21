@@ -40,7 +40,6 @@ class Efectos {
     mostrarCert() {
         $('.certificados').on('click', function() {
             var nombre = $(this).attr('nombre')
-
             $('#imagenCert').html("<img src='img/certificados/" + nombre + ".jpg' class='img-fluid'alt='certificado'>")
             $('#modal').modal()
         })
@@ -84,7 +83,7 @@ class Efectos {
 
 }
 
-$(function() {
+$(() => {
     var instancia = new Efectos()
     instancia.imgHover()
     instancia.mostrarOjos()
