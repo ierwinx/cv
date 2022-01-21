@@ -40,7 +40,6 @@ class Efectos {
     mostrarCert() {
         $('.certificados').on('click', function() {
             var nombre = $(this).attr('nombre')
-            console.log(nombre)
 
             $('#imagenCert').html("<img src='img/certificados/" + nombre + ".jpg' class='img-fluid'alt='certificado'>")
             $('#modal').modal()
@@ -60,7 +59,6 @@ class Efectos {
             }
 
             $('form')[0].reset()
-
             $('#tituloModal').text('Sending information')
             $('#colormodal').addClass('bg-info')
             $('#contenidopeticion').html("<div class='loader'></div>")
