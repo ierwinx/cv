@@ -9,10 +9,6 @@ class Efectos {
         })
     }
 
-    imgSize() {
-        $('.imgredonda').height($('.imgredonda').width())
-    }
-
     mostrarOjos() {
         $('#ojo1').click(() => {
             $('#ojo1').css('display', 'none')
@@ -41,7 +37,13 @@ class Efectos {
         $('.certificados').on('click', function() {
             var nombre = $(this).attr('nombre')
             $('#imagenCert').html("<img src='img/certificados/" + nombre + ".jpg' class='img-fluid'alt='certificado'>")
-            $('#modal').modal()
+            $('#modal').modal('show')
+        })
+    }
+
+    contactAction() {
+        $("#btnContact").on('click', () => {
+            $("#modal3").modal('show')
         })
     }
 
