@@ -359,7 +359,14 @@
     }
   };
 
-  let currentLang = localStorage.getItem('lang') || 'en';
+  function detectLang() {
+    const saved = localStorage.getItem('lang');
+    if (saved) return saved;
+    const browserLang = navigator.language || navigator.userLanguage || '';
+    return browserLang.startsWith('es') ? 'es' : 'en';
+  }
+
+  let currentLang = detectLang();
   let t = TRANSLATIONS[currentLang];
 
   function setLang(lang) {
