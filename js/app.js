@@ -545,22 +545,13 @@
       }
       document.getElementById('errorRecaptcha').textContent = '';
 
-      const data = {
-        nombre: form.nombre.value,
-        apellido1: form.apellido1.value,
-        empresa: form.empresa.value,
-        email: form.email.value,
-        mensaje: form.mensaje.value,
-        'g-recaptcha-response': recaptchaResponse
-      };
-
       form.style.display = 'none';
       status.style.display = 'flex';
       status.className = 'form-status';
       status.innerHTML = '<div class="loader"></div>';
 
-      emailjs.init("user_km4RSsF30l5sCapcs0ucE");
-      emailjs.send("service_nqyh7vk", "template_cq9vtfz", data).then(
+      emailjs.init({ publicKey: "user_km4RSsF30l5sCapcs0ucE" });
+      emailjs.sendForm("service_nqyh7vk", "template_cq9vtfz", form).then(
         () => {
           status.className = 'form-status form-status--success';
           status.textContent = t.contact.success;
