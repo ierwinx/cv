@@ -545,14 +545,11 @@
       }
       document.getElementById('errorRecaptcha').textContent = '';
 
-      form.style.display = 'none';
-      status.style.display = 'flex';
-      status.className = 'form-status';
-      status.innerHTML = '<div class="loader"></div>';
-
       emailjs.init({ publicKey: "user_km4RSsF30l5sCapcs0ucE" });
       emailjs.sendForm("service_nqyh7vk", "template_cq9vtfz", form).then(
         () => {
+          form.style.display = 'none';
+          status.style.display = 'flex';
           status.className = 'form-status form-status--success';
           status.textContent = t.contact.success;
           form.reset();
@@ -563,6 +560,8 @@
           }, 4000);
         },
         () => {
+          form.style.display = 'none';
+          status.style.display = 'flex';
           status.className = 'form-status form-status--error';
           status.textContent = t.contact.error;
           setTimeout(() => {
