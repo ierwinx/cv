@@ -39,6 +39,14 @@
         heading: "Featured Projects",
         list: [
           {
+            name: "Super Pets",
+            role: "iOS Developer",
+            description: "iPhone app that helps pet owners keep track of their animals — storing health records, vaccination history, and more. Includes an Apple Watch companion and a home screen widget so your pets are always just a glance away.",
+            tags: ["Swift", "SwiftUI"],
+            emoji: "🐾",
+            url: null
+          },
+          {
             name: "PagApp",
             role: "Tech Lead & iOS Developer",
             description: "Interbank transfer platform processing millions of transactions daily. Led mobile architecture and delivery.",
@@ -74,7 +82,7 @@
             name: "Encuentro Católico",
             role: "iOS Developer",
             description: "Social and community platform for religious events and content.",
-            tags: ["Swift", "Firebase", "MongoDB"],
+            tags: ["Swift"],
             emoji: "⛪",
             url: null
           }
@@ -125,6 +133,7 @@
           specialty: "Web Systems Development"
         },
         certifications: "Courses",
+        certificateAlt: "Certificate",
         certs: [
           { year: "2020", name: "iOS 12 & Swift 4", institution: "Udemy", img: "ios12" },
           { year: "2020", name: "iOS App Development", institution: "Platzi", img: "ios-desarrollo" },
@@ -216,6 +225,14 @@
         heading: "Proyectos Destacados",
         list: [
           {
+            name: "Super Pets",
+            role: "iOS Developer",
+            description: "App para iPhone que ayuda a los dueños de mascotas a tener toda la información de sus animales en un solo lugar — historial de salud, vacunas y mucho más. Incluye un acceso rápido desde el Apple Watch y un widget en la pantalla de inicio para tenerlos siempre a la vista.",
+            tags: ["Swift", "SwiftUI"],
+            emoji: "🐾",
+            url: null
+          },
+          {
             name: "PagApp",
             role: "Tech Lead & iOS Developer",
             description: "Plataforma de transferencias interbancarias que procesa millones de transacciones diarias. Lideré la arquitectura móvil y entregas.",
@@ -251,7 +268,7 @@
             name: "Encuentro Católico",
             role: "iOS Developer",
             description: "Plataforma social y de comunidad para eventos religiosos y contenido.",
-            tags: ["Swift", "Firebase", "MongoDB"],
+            tags: ["Swift"],
             emoji: "⛪",
             url: null
           }
@@ -302,6 +319,7 @@
           specialty: "Desarrollo de Sistemas Web"
         },
         certifications: "Cursos",
+        certificateAlt: "Certificado",
         certs: [
           { year: "2020", name: "iOS 12 y Swift 4", institution: "Udemy", img: "ios12" },
           { year: "2020", name: "Desarrollo de Apps para iOS", institution: "Platzi", img: "ios-desarrollo" },
@@ -449,6 +467,14 @@
       <div class="degree-specialty">${d.specialtyLabel}: ${d.specialty}</div>
       <div class="degree-period">${d.period}</div>
     `;
+    container.style.cursor = 'pointer';
+    container.addEventListener('click', () => {
+      const modal = document.getElementById('certModal');
+      const body = document.getElementById('certModalBody');
+      document.getElementById('certModalTitle').textContent = t.education.certificateAlt;
+      body.innerHTML = `<img src="img/certificados/Titulo.jpg" alt="${t.education.certificateAlt}">`;
+      modal.classList.add('active');
+    });
   }
 
   function renderCerts() {
@@ -469,7 +495,8 @@
         const img = item.getAttribute('data-img');
         const modal = document.getElementById('certModal');
         const body = document.getElementById('certModalBody');
-        body.innerHTML = `<img src="img/certificados/${img}.jpg" alt="Certificate">`;
+        document.getElementById('certModalTitle').textContent = t.education.certificateAlt;
+        body.innerHTML = `<img src="img/certificados/${img}.jpg" alt="${t.education.certificateAlt}">`;
         modal.classList.add('active');
       });
     });
