@@ -44,7 +44,7 @@
             description: "iPhone app that helps pet owners keep track of their animals — storing health records, vaccination history, and more. Includes an Apple Watch companion and a home screen widget so your pets are always just a glance away.",
             tags: ["Swift", "SwiftUI"],
             emoji: "🐾",
-            url: null
+            url: "https://ierwinx.com/superpets/"
           },
           {
             name: "PagApp",
@@ -85,6 +85,14 @@
             tags: ["Swift"],
             emoji: "⛪",
             url: null
+          },
+          {
+            name: "Music Converter",
+            role: "macOS Developer",
+            description: "Transforms FLAC, WAV, and AIFF files to high-quality AAC using Apple's native encoder. No external dependencies, fast and parallel.",
+            tags: ["Swift", "macOS"],
+            emoji: "🎵",
+            url: "https://ierwinx.com/musica/"
           }
         ]
       },
@@ -230,7 +238,7 @@
             description: "App para iPhone que ayuda a los dueños de mascotas a tener toda la información de sus animales en un solo lugar — historial de salud, vacunas y mucho más. Incluye un acceso rápido desde el Apple Watch y un widget en la pantalla de inicio para tenerlos siempre a la vista.",
             tags: ["Swift", "SwiftUI"],
             emoji: "🐾",
-            url: null
+            url: "https://ierwinx.com/superpets/"
           },
           {
             name: "PagApp",
@@ -271,6 +279,14 @@
             tags: ["Swift"],
             emoji: "⛪",
             url: null
+          },
+          {
+            name: "Conversor de Música",
+            role: "macOS Developer",
+            description: "Transforma archivos FLAC, WAV y AIFF a AAC de alta calidad usando el encoder nativo de Apple. Sin dependencias externas, rápido y paralelo.",
+            tags: ["Swift", "macOS"],
+            emoji: "🎵",
+            url: "https://ierwinx.com/musica/"
           }
         ]
       },
