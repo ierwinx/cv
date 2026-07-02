@@ -40,8 +40,8 @@
         list: [
           {
             name: "Super Pets",
-            role: "iOS Developer",
-            description: "iPhone app that helps pet owners keep track of their animals — storing health records, vaccination history, and more. Includes an Apple Watch companion and a home screen widget so your pets are always just a glance away.",
+            role: "Apple Developer",
+            description: "App for iPhone, iPad and Mac that helps pet owners keep track of their animals — storing health records, vaccination history, and more. Includes an Apple Watch companion, home screen widgets, and CarPlay support so your pets are always just a glance away.",
             tags: ["Swift", "SwiftUI"],
             emoji: "🐾",
             url: "https://ierwinx.com/superpets/"
@@ -55,12 +55,12 @@
             url: "https://pagapp.mx"
           },
           {
-            name: "STPCodig",
-            role: "Tech Lead & iOS Developer",
-            description: "Payment and collection solution powered by CoDi® (BANXICO) enabling merchants and businesses to send and receive payments seamlessly.",
-            tags: ["Swift", "Kotlin"],
-            emoji: "💸",
-            url: "https://stp.mx/app-codig/"
+            name: "SDK CODI®",
+            role: "iOS & Android Developer",
+            description: "Full-featured SDK for integrating CODI® (BANXICO) payments into any mobile app. Enables businesses to send and receive interbank payments natively on iOS and Android — built with native APIs and designed for cross-platform compatibility.",
+            tags: ["Swift", "Obj-C", "Kotlin"],
+            emoji: "🏛️",
+            url: "https://stp.mx"
           },
           {
             name: "Super App BAZ",
@@ -79,6 +79,14 @@
             url: "https://www.bancoazteca.com.mx/app/app-banco-azteca.html"
           },
           {
+            name: "Music Converter",
+            role: "macOS Developer",
+            description: "Transforms FLAC, WAV, and AIFF files to high-quality AAC using Apple's native encoder. No external dependencies, fast and parallel.",
+            tags: ["Swift", "macOS"],
+            emoji: "🎵",
+            url: "https://ierwinx.com/musica/"
+          },
+          {
             name: "Encuentro Católico",
             role: "iOS Developer",
             description: "Social and community platform for religious events and content.",
@@ -87,12 +95,12 @@
             url: null
           },
           {
-            name: "Music Converter",
-            role: "macOS Developer",
-            description: "Transforms FLAC, WAV, and AIFF files to high-quality AAC using Apple's native encoder. No external dependencies, fast and parallel.",
-            tags: ["Swift", "macOS"],
-            emoji: "🎵",
-            url: "https://ierwinx.com/musica/"
+            name: "STPCodig",
+            role: "Tech Lead & iOS Developer",
+            description: "Payment and collection solution powered by CODI® (BANXICO) enabling merchants and businesses to send and receive payments seamlessly.",
+            tags: ["Swift", "Kotlin"],
+            emoji: "💸",
+            url: "https://stp.mx/app-codig/"
           }
         ]
       },
@@ -234,8 +242,8 @@
         list: [
           {
             name: "Super Pets",
-            role: "iOS Developer",
-            description: "App para iPhone que ayuda a los dueños de mascotas a tener toda la información de sus animales en un solo lugar — historial de salud, vacunas y mucho más. Incluye un acceso rápido desde el Apple Watch y un widget en la pantalla de inicio para tenerlos siempre a la vista.",
+            role: "Apple Developer",
+            description: "App para iPhone, iPad y Mac que ayuda a los dueños de mascotas a tener toda la información de sus animales en un solo lugar — historial de salud, vacunas y mucho más. Incluye companion para Apple Watch, widgets en pantalla de inicio y soporte para CarPlay.",
             tags: ["Swift", "SwiftUI"],
             emoji: "🐾",
             url: "https://ierwinx.com/superpets/"
@@ -249,12 +257,12 @@
             url: "https://pagapp.mx"
           },
           {
-            name: "STPCodig",
-            role: "Tech Lead & iOS Developer",
-            description: "Solución de pagos y cobros a través de CoDi® (BANXICO) que permite a comercios y negocios pagar y cobrar de forma ágil y segura.",
-            tags: ["Swift", "Kotlin"],
-            emoji: "💸",
-            url: "https://stp.mx/app-codig/"
+            name: "SDK CODI®",
+            role: "iOS & Android Developer",
+            description: "SDK completo para integrar pagos CODI® (BANXICO) en cualquier app móvil. Permite a empresas cobrar y pagar de forma interbancaria de manera nativa en iOS y Android — construido con APIs nativas y diseñado para ser consumido desde plataformas multiplataforma.",
+            tags: ["Swift", "Obj-C", "Kotlin"],
+            emoji: "🏛️",
+            url: "https://stp.mx"
           },
           {
             name: "Super App BAZ",
@@ -273,6 +281,14 @@
             url: "https://www.bancoazteca.com.mx/app/app-banco-azteca.html"
           },
           {
+            name: "Conversor de Música",
+            role: "macOS Developer",
+            description: "Transforma archivos FLAC, WAV y AIFF a AAC de alta calidad usando el encoder nativo de Apple. Sin dependencias externas, rápido y paralelo.",
+            tags: ["Swift", "macOS"],
+            emoji: "🎵",
+            url: "https://ierwinx.com/musica/"
+          },
+          {
             name: "Encuentro Católico",
             role: "iOS Developer",
             description: "Plataforma social y de comunidad para eventos religiosos y contenido.",
@@ -281,12 +297,12 @@
             url: null
           },
           {
-            name: "Conversor de Música",
-            role: "macOS Developer",
-            description: "Transforma archivos FLAC, WAV y AIFF a AAC de alta calidad usando el encoder nativo de Apple. Sin dependencias externas, rápido y paralelo.",
-            tags: ["Swift", "macOS"],
-            emoji: "🎵",
-            url: "https://ierwinx.com/musica/"
+            name: "STPCodig",
+            role: "Tech Lead & iOS Developer",
+            description: "Solución de pagos y cobros a través de CODI® (BANXICO) que permite a comercios y negocios pagar y cobrar de forma ágil y segura.",
+            tags: ["Swift", "Kotlin"],
+            emoji: "💸",
+            url: "https://stp.mx/app-codig/"
           }
         ]
       },
