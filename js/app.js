@@ -10,8 +10,8 @@
         title: "Mobile Software Engineer",
         bio: `Software Engineer with over ${yearsExp}+ years of experience leading and developing software solutions in production environments. Strong focus on native mobile development, scalable architectures, and DevSecOps practices, with experience in AWS, server administration, and both relational and non-relational databases.`,
         available: "Available for projects",
-        download: "Download CV",
-        cvFile: "CV/En.pdf"
+        download: "View CV as PDF",
+        cvFile: "cv/?lang=en"
       },
       info: {
         heading: "Information",
@@ -212,8 +212,8 @@
         title: "Mobile Software Engineer",
         bio: `Ingeniero de Software con más de ${yearsExp}+ años de experiencia liderando y desarrollando soluciones de software en entornos de producción. Especializado en desarrollo móvil nativo, arquitecturas escalables y prácticas DevSecOps, con experiencia en AWS, administración de servidores y bases de datos relacionales y no relacionales.`,
         available: "Disponible para proyectos",
-        download: "Descargar CV",
-        cvFile: "CV/Es.pdf"
+        download: "Ver CV en PDF",
+        cvFile: "cv/?lang=es"
       },
       info: {
         heading: "Información",
