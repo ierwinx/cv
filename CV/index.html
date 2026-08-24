@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Erwin-cv</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+      background: #525659;
+    }
+
+    /* ── Loading screen ──────────────────────── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: #525659;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      z-index: 100;
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #loader-text {
+      color: #ccc;
+      font-size: 13px;
+      font-weight: 300;
+    }
+
+    /* ── PDF iframe ──────────────────────────── */
+    #pdf-frame {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+    }
+
+
+    /* ── CV render area (behind loader) ─────── */
+    #cv-render {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 794px; /* 210mm at 96 DPI */
+      background: #fff;
+      padding: 53px 68px 60px; /* 14mm 18mm 16mm */
+      color: #1c1c1c;
+      font-size: 9pt;
+      line-height: 1.5;
+      z-index: 1; /* loader is z-index: 100, stays on top */
+    }
+
+    /* ── Header ─────────────────────────────── */
+    #cv-render .cv-header {
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 2.5px solid #1c1c1c;
+      text-align: center;
+    }
+
+    #cv-render .cv-name {
+      font-size: 28pt;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #111;
+      line-height: 1.1;
+    }
+
+    #cv-render .cv-title {
+      font-size: 11.5pt;
+      font-weight: 300;
+      color: #555;
+      margin-top: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    #cv-render .cv-contact {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px 0;
+      font-size: 8.5pt;
+      color: #444;
+    }
+
+    #cv-render .cv-contact-item {
+      display: flex;
+      align-items: center;
+    }
+
+    #cv-render .cv-contact-item:not(:last-child)::after {
+      content: '|';
+      margin: 0 10px;
+      color: #ccc;
+    }
+
+    #cv-render .cv-contact a {
+      color: #444;
+      text-decoration: none;
+    }
+
+    /* ── Section ─────────────────────────────── */
+    #cv-render .section {
+      margin-bottom: 18px;
+    }
+
+    #cv-render .section-title {
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #111;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #cv-render .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #ddd;
+    }
+
+    /* ── Summary ─────────────────────────────── */
+    #cv-render .summary-text {
+      font-size: 9.5pt;
+      color: #3a3a3a;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ── Skills ──────────────────────────────── */
+    #cv-render .skills-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    #cv-render .skill-row {
+      display: flex;
+      align-items: baseline;
+      font-size: 8.5pt;
+      line-height: 1.5;
+    }
+
+    #cv-render .skill-label {
+      font-weight: 600;
+      color: #111;
+      min-width: 160px;
+      flex-shrink: 0;
+    }
+
+    #cv-render .skill-value {
+      color: #444;
+      font-weight: 300;
+    }
+
+    /* ── Experience ──────────────────────────── */
+    #cv-render .job {
+      margin-bottom: 14px;
+    }
+
+    #cv-render .job:last-child {
+      margin-bottom: 0;
+    }
+
+    #cv-render .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 1px;
+    }
+
+    #cv-render .job-company {
+      font-size: 10.5pt;
+      font-weight: 600;
+      color: #111;
+    }
+
+    #cv-render .job-period {
+      font-size: 8.5pt;
+      font-weight: 400;
+      color: #777;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    #cv-render .job-roles {
+      font-size: 9pt;
+      font-weight: 500;
+      color: #444;
+      margin-bottom: 4px;
+    }
+
+    #cv-render .job-desc {
+      font-size: 8.5pt;
+      color: #555;
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ── Education ───────────────────────────── */
+    #cv-render .edu-block {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    #cv-render .edu-degree {
+      font-size: 10.5pt;
+      font-weight: 600;
+      color: #111;
+    }
+
+    #cv-render .edu-specialty {
+      font-size: 8.5pt;
+      color: #555;
+      font-weight: 300;
+      margin-top: 1px;
+    }
+
+    #cv-render .edu-institution {
+      font-size: 9pt;
+      font-weight: 500;
+      color: #444;
+      margin-top: 2px;
+    }
+
+    #cv-render .edu-period {
+      font-size: 8.5pt;
+      color: #777;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── Courses ─────────────────────────────── */
+    #cv-render .certs-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 20px;
+    }
+
+    #cv-render .cert-item {
+      font-size: 8.5pt;
+      color: #444;
+      font-weight: 300;
+      padding-left: 12px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    #cv-render .cert-item::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: #999;
+    }
+
+    /* ── Languages ───────────────────────────── */
+    #cv-render .languages-row {
+      display: flex;
+      gap: 32px;
+    }
+
+    #cv-render .language-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    #cv-render .lang-name {
+      font-size: 9.5pt;
+      font-weight: 600;
+      color: #111;
+    }
+
+    #cv-render .lang-level {
+      font-size: 8.5pt;
+      color: #777;
+      font-weight: 300;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loader">
+    <div class="spinner"></div>
+    <span id="loader-text">Loading CV...</span>
+  </div>
+
+  <div id="cv-render"></div>
+
+  <iframe id="pdf-frame"></iframe>
+
+
+  <script>
+    const yearsExp = new Date().getFullYear() - 2013;
+
+    const DATA = {
+      en: {
+        loaderText: 'Loading CV...',
+        name: "Erwin De La Luz De León",
+        title: "Mobile Software Engineer  ·  Tech Lead",
+        email: "ierwinx@duck.com",
+        phone: "+52 55 1966 9393",
+        location: "Mexico City, Mexico",
+        linkedin: "linkedin.com/in/ierwinx",
+        github: "github.com/ierwinx",
+        website: "ierwinx.com",
+        summary: {
+          heading: "Summary",
+          text: `Mobile Software Engineer and Tech Lead with ${yearsExp}+ years of experience shipping iOS and Android apps used by millions. Proven track record reducing 800+ bugs to near-zero, scaling user bases from 5M to 11M, and leading cross-functional teams of up to 16 engineers. Deep expertise in Swift, Kotlin, CI/CD pipelines, AWS cloud architecture, and AI-assisted development workflows.`
+        },
+        skills: {
+          heading: "Skills",
+          groups: [
+            { label: "Mobile",          value: "Swift, SwiftUI, UIKit, Objective-C, Kotlin, Jetpack Compose, Kotlin Multiplatform, Flutter, Dart" },
+            { label: "Architecture",    value: "MVVM, VIPER, MVC, MVP, Clean Architecture, Modularization" },
+            { label: "Backend & Cloud", value: "Node.js, Java, Spring, AWS (EC2, Lambda, S3), Docker, Kubernetes, OpenShift" },
+            { label: "DevOps & CI/CD",  value: "Jenkins, GitHub Actions, Fastlane, Containerized Deployments, DevSecOps" },
+            { label: "Databases",       value: "SwiftData, CoreData, Realm, MongoDB, Oracle, SQL Server, SQLite" },
+            { label: "Tools",           value: "Git, Agile / Scrum, AI-Assisted Development (Claude Code), Pair Programming" }
+          ]
+        },
+        experience: {
+          heading: "Work Experience",
+          jobs: [
+            {
+              company: "Sistema De Transferencias y Pagos STP",
+              period: "2022 – Present",
+              roles: "Tech Lead  ·  iOS Developer Sr",
+              description: "Technical lead for mobile applications on iOS, Android, and Backend. Responsible for architecture decisions, hands-on development, and aligning technically with business and product teams to deliver scalable and compliant solutions. Reduced app defects from 800+ open bugs to under 10 through systematic triage, root-cause analysis, and targeted refactoring. Leveraged AI tools like Claude Code to accelerate delivery and improve code quality."
+            },
+            {
+              company: "Grupo Salinas / Banco Azteca",
+              period: "2018 – 2022",
+              roles: "Tech Lead  ·  Manager  ·  iOS Developer Sr  ·  Cloud Architect  ·  DevOps",
+              description: "Grew Banco Azteca's user base from 5M to 11M by shipping weekly feature releases. Launched Super App BAZ from zero to production (payments, transfers, streaming, social, marketplace), leading a 16-person cross-functional team (Backend, Frontend, QA, UX). Implemented CI/CD pipelines, AWS cloud architecture, and containerized deployments using Docker, Kubernetes, and OpenShift. Developed backend microservices with Node.js and MongoDB."
+            },
+            {
+              company: "Grupo Proyectos Estrategias Empresariales",
+              period: "2015 – 2018",
+              roles: "Java Developer Sr",
+              description: "Delivered a payroll processing system handling data for multiple organizations with zero data-integrity incidents post-launch. Built a secure digital platform for psychology professionals, implementing encrypted data storage and role-based access control."
+            },
+            {
+              company: "Grupo ID Soft  /  ISC Control Inteligente",
+              period: "2014 – 2015",
+              roles: "Android Developer Jr",
+              description: "Implemented a geolocation-based attendance system for workforce management on Android, achieving 95%+ location validation accuracy by integrating GPS with network-based fallback mechanisms."
+            },
+            {
+              company: "Secretaría de Gobernación — Mexico Federal Government",
+              period: "2013 – 2014",
+              roles: "Android Developer",
+              description: "Developed a country-wide infrastructure monitoring Android app that detected link outages and triggered real-time alerts to administrators, reducing downtime response time across national networks."
+            }
+          ]
+        },
+        education: {
+          heading: "Education",
+          degree: "B.S. Computer Systems Engineering",
+          specialty: "Specialty: Web Systems Development",
+          institution: "Tecnológico de Estudios Superiores de Chalco",
+          period: "2009 – 2013"
+        },
+        certifications: {
+          heading: "Courses",
+          list: [
+            "Red Hat OpenShift Development I (2020)",
+            "Architecting on AWS — Netec (2019)",
+            "Red Hat System Administration I & II (2019)",
+            "iOS 12 & Swift 4, iOS App Development (2020)",
+            "Introduction to DevSecOps — Grupo Salinas (2019)"
+          ]
+        },
+        languages: {
+          heading: "Languages",
+          list: [
+            { name: "Spanish", level: "Native" },
+            { name: "English", level: "Intermediate (B1)" }
+          ]
+        }
+      },
+      es: {
+        loaderText: 'Cargando CV...',
+        name: "Erwin De La Luz De León",
+        title: "Ingeniero de Software Móvil  ·  Tech Lead",
+        email: "ierwinx@duck.com",
+        phone: "+52 55 1966 9393",
+        location: "Ciudad de México, México",
+        linkedin: "linkedin.com/in/ierwinx",
+        github: "github.com/ierwinx",
+        website: "ierwinx.com",
+        summary: {
+          heading: "Resumen",
+          text: `Ingeniero de Software Móvil y Tech Lead con ${yearsExp}+ años de experiencia entregando apps iOS y Android utilizadas por millones de usuarios. Historial comprobado reduciendo 800+ bugs a casi cero, escalando bases de usuarios de 5M a 11M, y liderando equipos cross-funcionales de hasta 16 ingenieros. Expertise profundo en Swift, Kotlin, pipelines CI/CD, arquitectura cloud AWS y flujos de desarrollo asistidos por IA.`
+        },
+        skills: {
+          heading: "Habilidades",
+          groups: [
+            { label: "Móvil",           value: "Swift, SwiftUI, UIKit, Objective-C, Kotlin, Jetpack Compose, Kotlin Multiplatform, Flutter, Dart" },
+            { label: "Arquitectura",    value: "MVVM, VIPER, MVC, MVP, Clean Architecture, Modularización" },
+            { label: "Backend & Cloud", value: "Node.js, Java, Spring, AWS (EC2, Lambda, S3), Docker, Kubernetes, OpenShift" },
+            { label: "DevOps & CI/CD",  value: "Jenkins, GitHub Actions, Fastlane, Despliegues Containerizados, DevSecOps" },
+            { label: "Bases de Datos",  value: "SwiftData, CoreData, Realm, MongoDB, Oracle, SQL Server, SQLite" },
+            { label: "Herramientas",    value: "Git, Agile / Scrum, Desarrollo Asistido por IA (Claude Code), Pair Programming" }
+          ]
+        },
+        experience: {
+          heading: "Experiencia Laboral",
+          jobs: [
+            {
+              company: "Sistema De Transferencias y Pagos STP",
+              period: "2022 – Presente",
+              roles: "Tech Lead  ·  iOS Developer Sr",
+              description: "Líder técnico de aplicaciones móviles en iOS, Android y Backend. Responsable de decisiones de arquitectura, desarrollo hands-on y alineación técnica con equipos de negocio y producto. Reduje defectos de la app de 800+ bugs abiertos a menos de 10 mediante triaje sistemático, análisis de causa raíz y refactorización dirigida. Integré herramientas de IA como Claude Code para acelerar la entrega y mejorar la calidad del código."
+            },
+            {
+              company: "Grupo Salinas / Banco Azteca",
+              period: "2018 – 2022",
+              roles: "Tech Lead  ·  Manager  ·  iOS Developer Sr  ·  Arquitecto Cloud  ·  DevOps",
+              description: "Crecí la base de usuarios de Banco Azteca de 5M a 11M entregando releases semanales. Lancé Super App BAZ desde cero hasta producción (pagos, transferencias, streaming, social, marketplace), liderando un equipo cross-funcional de 16 personas (Backend, Frontend, QA, UX). Implementé pipelines CI/CD, arquitecturas cloud en AWS y despliegues containerizados con Docker, Kubernetes y OpenShift. Desarrollé microservicios backend con Node.js y MongoDB."
+            },
+            {
+              company: "Grupo Proyectos Estrategias Empresariales",
+              period: "2015 – 2018",
+              roles: "Java Developer Sr",
+              description: "Entregué un sistema de procesamiento de nómina para múltiples organizaciones con cero incidentes de integridad de datos post-lanzamiento. Construí una plataforma digital segura para profesionales de psicología con almacenamiento encriptado y control de acceso basado en roles."
+            },
+            {
+              company: "Grupo ID Soft  /  ISC Control Inteligente",
+              period: "2014 – 2015",
+              roles: "Android Developer Jr",
+              description: "Implementé un sistema de asistencia basado en geolocalización para gestión de fuerza laboral en Android, logrando 95%+ de precisión en validación de ubicación integrando GPS con mecanismos de fallback basados en red."
+            },
+            {
+              company: "Secretaría de Gobernación",
+              period: "2013 – 2014",
+              roles: "Android Developer",
+              description: "Desarrollé una app Android de monitoreo de infraestructura a nivel nacional que detectaba caídas de enlace y disparaba alertas en tiempo real a administradores, reduciendo los tiempos de respuesta ante incidentes en redes nacionales."
+            }
+          ]
+        },
+        education: {
+          heading: "Educación",
+          degree: "Ing. en Sistemas Computacionales",
+          specialty: "Especialidad: Desarrollo de Sistemas Web",
+          institution: "Tecnológico de Estudios Superiores de Chalco",
+          period: "2009 – 2013"
+        },
+        certifications: {
+          heading: "Cursos",
+          list: [
+            "Red Hat OpenShift Development I (2020)",
+            "Architecting on AWS — Netec (2019)",
+            "Red Hat System Administration I & II (2019)",
+            "iOS 12 & Swift 4, Desarrollo de Apps iOS (2020)",
+            "Introducción a DevSecOps — Grupo Salinas (2019)"
+          ]
+        },
+        languages: {
+          heading: "Idiomas",
+          list: [
+            { name: "Español", level: "Nativo" },
+            { name: "Inglés", level: "Intermedio (B1)" }
+          ]
+        }
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const lang = params.get('lang') === 'es' ? 'es' : 'en';
+    const d = DATA[lang];
+
+    document.documentElement.lang = lang;
+    document.title = `Erwin-cv-${lang.toUpperCase()}`;
+    document.getElementById('loader-text').textContent = d.loaderText;
+
+    // Inject CV HTML into off-screen render area
+    document.getElementById('cv-render').innerHTML = `
+      <div class="cv-header">
+        <div class="cv-name">${d.name}</div>
+        <div class="cv-title">${d.title}</div>
+        <div class="cv-contact">
+          <span class="cv-contact-item">${d.email}</span>
+          <span class="cv-contact-item">${d.phone}</span>
+          <span class="cv-contact-item">${d.location}</span>
+          <span class="cv-contact-item"><a href="https://${d.linkedin}">${d.linkedin}</a></span>
+          <span class="cv-contact-item"><a href="https://${d.github}">${d.github}</a></span>
+          <span class="cv-contact-item"><a href="https://${d.website}">${d.website}</a></span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">${d.summary.heading}</div>
+        <p class="summary-text">${d.summary.text}</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">${d.skills.heading}</div>
+        <div class="skills-grid">
+          ${d.skills.groups.map(g => `
+            <div class="skill-row">
+              <span class="skill-label">${g.label}</span>
+              <span class="skill-value">${g.value}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">${d.experience.heading}</div>
+        ${d.experience.jobs.map(j => `
+          <div class="job">
+            <div class="job-header">
+              <span class="job-company">${j.company}</span>
+              <span class="job-period">${j.period}</span>
+            </div>
+            <div class="job-roles">${j.roles}</div>
+            <div class="job-desc">${j.description}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="section">
+        <div class="section-title">${d.education.heading}</div>
+        <div class="edu-block">
+          <div>
+            <div class="edu-degree">${d.education.degree}</div>
+            <div class="edu-specialty">${d.education.specialty}</div>
+            <div class="edu-institution">${d.education.institution}</div>
+          </div>
+          <div class="edu-period">${d.education.period}</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">${d.certifications.heading}</div>
+        <div class="certs-list">
+          ${d.certifications.list.map(c => `<div class="cert-item">${c}</div>`).join('')}
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">${d.languages.heading}</div>
+        <div class="languages-row">
+          ${d.languages.list.map(l => `
+            <div class="language-item">
+              <span class="lang-name">${l.name}</span>
+              <span class="lang-level">${l.level}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    // Wait for fonts then generate PDF
+    document.fonts.ready.then(async () => {
+      const el = document.getElementById('cv-render');
+
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        onclone: (cloneDoc, cloneEl) => {
+          cloneEl.style.position = 'static';
+          cloneEl.style.left = 'auto';
+          cloneEl.style.top = 'auto';
+          cloneEl.style.width = '794px';
+          cloneDoc.body.style.overflow = 'visible';
+          cloneDoc.documentElement.style.overflow = 'visible';
+        }
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.99);
+      const widthMM = 210;
+      const heightMM = (canvas.height / canvas.width) * widthMM;
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: [widthMM, heightMM], orientation: 'portrait' });
+      doc.setProperties({ title: `Erwin-cv-${lang.toUpperCase()}` });
+      doc.addImage(imgData, 'JPEG', 0, 0, widthMM, heightMM);
+
+      const blob = doc.output('blob');
+      const url = URL.createObjectURL(blob);
+
+      const frame = document.getElementById('pdf-frame');
+      frame.src = url;
+      frame.style.display = 'block';
+      document.getElementById('loader').style.display = 'none';
+      el.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
