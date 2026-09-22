@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyecto: organizador de ficheros · Curso de Python</title>
+<meta name="description" content="Una herramienta que ordena la carpeta de descargas por tipo de fichero, con modo de simulación, recursividad y resumen en tabla.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="terminal/proyecto-organizador-de-ficheros">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../terminal/index.html">Aplicaciones de terminal</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 2 &middot; Lección 26 de 28</p>
+    <h1>Proyecto: organizador de ficheros</h1>
+    <p class="resumen-leccion">Una herramienta que ordena la carpeta de descargas por tipo de fichero, con modo de simulación, recursividad y resumen en tabla.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 39 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>Abre tu carpeta de descargas. Si se parece a la media, ahí dentro conviven facturas en PDF, capturas de pantalla, instaladores que ya no sirven y algún vídeo que pesa dos gigas. Ordenarlo a mano lleva veinte minutos y se vuelve a desordenar en una semana.</p>
+<p>Este es el primero de los tres proyectos que cierran el módulo, y el más sencillo de los tres. Junta <code>argparse</code> y <code>pathlib</code> en una herramienta que se usa de verdad, y sirve para asentar un patrón que vas a repetir el resto de tu vida como programador: <strong>separar el decidir del hacer</strong>.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Construir una herramienta de terminal que reparte los ficheros de una carpeta en subcarpetas por categoría. Se practica <code>pathlib</code> para recorrer y mover ficheros, <code>argparse</code> con posicionales y banderas, el manejo de colisiones de nombre, los códigos de salida, los mensajes de error por <code>stderr</code> y, sobre todo, el modo de simulación que toda herramienta que borra o mueve cosas debería tener.</p></aside>
+<h2 id="como-se-va-a-usar">Cómo se va a usar<a class="ancla" href="#como-se-va-a-usar" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Antes de escribir una línea, conviene tener clarísimo qué se teclea y qué se ve. La herramienta terminada se usa así:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python3</span> <span class="t-palabra">-m</span> organizador ~/Descargas <span class="t-palabra">--simular</span>
+<span class="t-integrada">python3</span> <span class="t-palabra">-m</span> organizador ~/Descargas
+<span class="t-integrada">python3</span> <span class="t-palabra">-m</span> organizador ~/Descargas <span class="t-palabra">--recursivo</span></code></pre></div>
+<p>La primera orden no toca nada: enseña el plan. La segunda lo ejecuta. La tercera baja también por las subcarpetas.</p>
+<p>Y esto es lo que deja detrás:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">text</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-text">Descargas/
+    comprimidos/
+    documentos/
+    imagenes/
+    otros/
+    videos/</code></pre></div>
+<p>Solo eso. Cinco carpetas y ningún fichero suelto.</p>
+<h2 id="el-diseno">El diseño<a class="ancla" href="#el-diseno" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Tres ficheros con código y dos de fontanería:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">estructura del proyecto</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-text">organizador/
+    __init__.py       Marca la carpeta como paquete
+    categorias.py     Qué extensión va a qué categoría
+    logica.py         Decide qué se mueve y lo mueve
+    cli.py            Argumentos, mensajes y códigos de salida
+    __main__.py       Permite python3 -m organizador</code></pre></div>
+<div class="envoltura-tabla"><table><thead><tr><th>Fichero</th><th>De qué se encarga</th><th>¿Imprime?</th></tr></thead><tbody><tr><td><code>categorias.py</code></td><td>Los datos: el mapa de extensiones</td><td>No</td></tr><tr><td><code>logica.py</code></td><td>Listar, planificar, renombrar, mover</td><td>No</td></tr><tr><td><code>cli.py</code></td><td>Leer argumentos, pintar tablas, decidir el código de salida</td><td>Sí, solo él</td></tr></tbody></table></div>
+<p>La columna de la derecha es la regla entera. En <code>logica.py</code> no hay ni un <code>print</code>, igual que en el gestor de tareas del módulo anterior las clases no imprimían. Esa separación, la misma de la lección de estructura de un proyecto, aquí tiene un premio inmediato y concreto: el modo <code>--simular</code> sale gratis. Lo verás en cuanto lleguemos a él.</p>
+<h2 id="parte-1-el-mapa-de-categorias">Parte 1: el mapa de categorías<a class="ancla" href="#parte-1-el-mapa-de-categorias" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Empezamos por los datos, que es la parte que más se toca y la que menos código tiene.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">organizador/categorias.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;Las categorías del organizador y las extensiones que van a cada una.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+CATEGORIAS<span class="t-operador">:</span> <span class="t-integrada">dict</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">,</span> <span class="t-integrada">set</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">{</span>
+    <span class="t-texto">&quot;imagenes&quot;</span><span class="t-operador">:</span> <span class="t-operador">{</span><span class="t-texto">&quot;.jpg&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.jpeg&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.png&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.gif&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.webp&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.heic&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.bmp&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.svg&quot;</span><span class="t-operador">}</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;documentos&quot;</span><span class="t-operador">:</span> <span class="t-operador">{</span>
+        <span class="t-texto">&quot;.pdf&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.txt&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.md&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.doc&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.docx&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.odt&quot;</span><span class="t-operador">,</span>
+        <span class="t-texto">&quot;.xls&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.xlsx&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.ods&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.csv&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.ppt&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.pptx&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">}</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;videos&quot;</span><span class="t-operador">:</span> <span class="t-operador">{</span><span class="t-texto">&quot;.mp4&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.mkv&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.avi&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.mov&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.webm&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.mpg&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.mpeg&quot;</span><span class="t-operador">}</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;comprimidos&quot;</span><span class="t-operador">:</span> <span class="t-operador">{</span><span class="t-texto">&quot;.zip&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.tar&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.gz&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.tgz&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.bz2&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.xz&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.rar&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.7z&quot;</span><span class="t-operador">}</span><span class="t-operador">,</span>
+<span class="t-operador">}</span>
+
+CATEGORIA_POR_DEFECTO <span class="t-operador">=</span> <span class="t-texto">&quot;otros&quot;</span>
+
+<span class="t-comentario"># Índice al revés: de extensión a categoría. Se construye una vez, al importar.</span>
+CATEGORIA_DE_EXTENSION<span class="t-operador">:</span> <span class="t-integrada">dict</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">,</span> <span class="t-integrada">str</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">{</span>
+    extension<span class="t-operador">:</span> categoria
+    <span class="t-palabra">for</span> categoria<span class="t-operador">,</span> extensiones <span class="t-palabra">in</span> CATEGORIAS<span class="t-operador">.</span>items<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">for</span> extension <span class="t-palabra">in</span> extensiones
+<span class="t-operador">}</span>
+
+NOMBRES_DE_CARPETA<span class="t-operador">:</span> <span class="t-integrada">set</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-integrada">set</span><span class="t-operador">(</span>CATEGORIAS<span class="t-operador">)</span> <span class="t-operador">|</span> <span class="t-operador">{</span>CATEGORIA_POR_DEFECTO<span class="t-operador">}</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">categoria_de</span><span class="t-operador">(</span>fichero<span class="t-operador">:</span> Path<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Devuelve la categoría que le toca a un fichero por su extensión.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> CATEGORIA_DE_EXTENSION<span class="t-operador">.</span>get<span class="t-operador">(</span>fichero<span class="t-operador">.</span>suffix<span class="t-operador">.</span>lower<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> CATEGORIA_POR_DEFECTO<span class="t-operador">)</span></code></pre></div>
+<p>Probándolo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+<span class="t-palabra">from</span> organizador<span class="t-operador">.</span>categorias <span class="t-palabra">import</span> CATEGORIA_DE_EXTENSION<span class="t-operador">,</span> categoria_de
+
+<span class="t-integrada">print</span><span class="t-operador">(</span>categoria_de<span class="t-operador">(</span>Path<span class="t-operador">(</span><span class="t-texto">&quot;foto.JPG&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>categoria_de<span class="t-operador">(</span>Path<span class="t-operador">(</span><span class="t-texto">&quot;contrato.pdf&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>categoria_de<span class="t-operador">(</span>Path<span class="t-operador">(</span><span class="t-texto">&quot;instalador.dmg&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>categoria_de<span class="t-operador">(</span>Path<span class="t-operador">(</span><span class="t-texto">&quot;leeme&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-integrada">len</span><span class="t-operador">(</span>CATEGORIA_DE_EXTENSION<span class="t-operador">)</span><span class="t-operador">,</span> CATEGORIA_DE_EXTENSION<span class="t-operador">[</span><span class="t-texto">&quot;.mp4&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>imagenes
+documentos
+otros
+otros
+35 videos</code></pre></div>
+<p>Las decisiones de este fichero:</p>
+<ul><li><strong>El diccionario va de categoría a extensiones, no al revés.</strong> Escrito así se lee y se amplía de un vistazo: añadir el <code>.avif</code> a las imágenes es tocar una línea. El diccionario que de verdad necesita el programa es el contrario, de extensión a categoría, y por eso se construye con una comprensión anidada en el momento de importar. Se escribe cómodo y se consulta rápido.</li><li><strong>La comprensión tiene dos <code>for</code>.</strong> El primero recorre las parejas del diccionario y el segundo, las extensiones de cada categoría. Se leen en el mismo orden en que se escribirían dos bucles anidados.</li><li><strong><code>suffix.lower()</code>.</strong> Una captura de pantalla de Windows se llama <code>Captura.PNG</code>, con la extensión en mayúsculas, y <code>.PNG</code> no está en ningún conjunto. Bajar a minúsculas antes de buscar evita tener que duplicar cada extensión.</li><li><strong><code>.get()</code> con valor por defecto</strong> en vez de un <code>if extension in ...</code>. Lo que no conoce el programa cae en <code>otros</code>, y esa es exactamente la semántica de <code>get</code>.</li><li><strong><code>NOMBRES_DE_CARPETA</code></strong> existe por una razón que se entiende en la parte siguiente: el programa tiene que saber reconocer las carpetas que él mismo crea para no volver a meterse en ellas.</li><li><strong>Un fichero sin extensión</strong> devuelve cadena vacía en <code>suffix</code>, que tampoco está en el mapa, así que va a <code>otros</code> sin tratamiento especial.</li></ul>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">Las categorías sin acentos ni eñes</p><p><code>imagenes</code> y <code>videos</code> van sin tilde a propósito, porque son nombres de carpeta que acabarán en un disco duro que puede viajar a otro sistema operativo. Los acentos en nombres de fichero funcionan, pero dan disgustos al copiar entre Windows, macOS y Linux, y al sincronizar con servicios en la nube. En el contenido de los programas, tildes todas las que hagan falta; en los nombres de fichero, ninguna.</p></aside>
+<h2 id="parte-2-que-ficheros-hay-que-mover">Parte 2: qué ficheros hay que mover<a class="ancla" href="#parte-2-que-ficheros-hay-que-mover" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Ahora la lógica. Primero, listar lo que hay que tocar, que tiene más miga de la que parece.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">organizador/logica.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> collections <span class="t-palabra">import</span> Counter
+<span class="t-palabra">from</span> dataclasses <span class="t-palabra">import</span> dataclass
+<span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+<span class="t-palabra">from</span> <span class="t-operador">.</span>categorias <span class="t-palabra">import</span> NOMBRES_DE_CARPETA<span class="t-operador">,</span> categoria_de
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">ficheros_a_ordenar</span><span class="t-operador">(</span>carpeta<span class="t-operador">:</span> Path<span class="t-operador">,</span> recursivo<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Path<span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Devuelve los ficheros de la carpeta que hay que clasificar, ya ordenados.&quot;&quot;&quot;</span>
+    patron <span class="t-operador">=</span> <span class="t-texto">&quot;**/*&quot;</span> <span class="t-palabra">if</span> recursivo <span class="t-palabra">else</span> <span class="t-texto">&quot;*&quot;</span>
+    encontrados <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    <span class="t-palabra">for</span> elemento <span class="t-palabra">in</span> carpeta<span class="t-operador">.</span>glob<span class="t-operador">(</span>patron<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">if</span> <span class="t-palabra">not</span> elemento<span class="t-operador">.</span>is_file<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">or</span> elemento<span class="t-operador">.</span>name<span class="t-operador">.</span>startswith<span class="t-operador">(</span><span class="t-texto">&quot;.&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        <span class="t-palabra">continue</span>
+        <span class="t-palabra">if</span> elemento<span class="t-operador">.</span>relative_to<span class="t-operador">(</span>carpeta<span class="t-operador">)</span><span class="t-operador">.</span>parts<span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span> <span class="t-palabra">in</span> NOMBRES_DE_CARPETA<span class="t-operador">:</span>
+                        <span class="t-palabra">continue</span>
+        encontrados<span class="t-operador">.</span>append<span class="t-operador">(</span>elemento<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-integrada">sorted</span><span class="t-operador">(</span>encontrados<span class="t-operador">)</span></code></pre></div>
+<p>Son doce líneas con cuatro decisiones dentro:</p>
+<ul><li><strong>El patrón cambia según <code>recursivo</code>.</strong> <code>glob(&quot;*&quot;)</code> mira un solo nivel y <code>glob(&quot;**/*&quot;)</code> baja por todo el árbol, que es lo mismo que hace <code>rglob(&quot;*&quot;)</code>. Tener la diferencia en una sola variable evita duplicar el bucle.</li><li><strong><code>is_file()</code> descarta las carpetas</strong>, porque <code>glob</code> devuelve las dos cosas.</li><li><strong>Los ficheros ocultos se saltan.</strong> En macOS y Linux, todo lo que empieza por punto es configuración: <code>.DS_Store</code>, <code>.gitignore</code>, <code>.env</code>. Mover esos ficheros rompe cosas.</li><li><strong>Y la más importante: se ignora lo que ya está dentro de una carpeta de categoría.</strong> Sin ese <code>if</code>, la segunda ejecución con <code>--recursivo</code> volvería a encontrar <code>imagenes/foto.jpg</code>, calcularía que le toca ir a <code>imagenes/</code> y se pondría a mover ficheros encima de sí mismos. <code>relative_to(carpeta).parts[0]</code> es el primer tramo de la ruta relativa, es decir, la subcarpeta de primer nivel donde vive el fichero.</li></ul>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Un programa que se puede ejecutar dos veces</p><p>Que la segunda ejecución no haga nada y no rompa nada se llama <strong>idempotencia</strong>, y es una propiedad que merece la pena buscar en cualquier herramienta que toque ficheros. La gente ejecuta las cosas dos veces: porque no vio la salida, porque no se fio, o porque la flecha arriba de la terminal es muy cómoda. Si la segunda vez destroza el resultado de la primera, el programa está mal hecho.</p></aside>
+<p>Con la carpeta de ejemplo que usaremos en toda la lección:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+<span class="t-palabra">from</span> organizador<span class="t-operador">.</span>logica <span class="t-palabra">import</span> ficheros_a_ordenar
+
+<span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-operador">[</span>f<span class="t-operador">.</span>name <span class="t-palabra">for</span> f <span class="t-palabra">in</span> ficheros_a_ordenar<span class="t-operador">(</span>Path<span class="t-operador">(</span><span class="t-texto">&quot;descargas&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">]</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>[&#x27;apuntes.txt&#x27;, &#x27;boda.mp4&#x27;, &#x27;captura.PNG&#x27;, &#x27;clip.mov&#x27;, &#x27;contrato.pdf&#x27;, &#x27;copia-seguridad.zip&#x27;, &#x27;foto-playa.jpg&#x27;, &#x27;instalador.dmg&#x27;, &#x27;logo.svg&#x27;, &#x27;notas.xyz&#x27;, &#x27;presentacion.pptx&#x27;, &#x27;proyecto.tar.gz&#x27;, &#x27;ventas-2026.csv&#x27;]</code></pre></div>
+<p>El <code>sorted()</code> del final no es decorativo. <code>glob</code> entrega los ficheros en el orden que le dé el sistema de ficheros, que ni es alfabético ni es el mismo en dos ordenadores. Al ordenar, la salida del programa es predecible y comparable entre ejecuciones, que es justo lo que quieres cuando alguien te mande una captura preguntando por qué ha pasado algo.</p>
+<h2 id="parte-3-las-colisiones-de-nombre">Parte 3: las colisiones de nombre<a class="ancla" href="#parte-3-las-colisiones-de-nombre" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Dos ficheros distintos pueden llamarse igual. Pasa constantemente: el navegador ya numera las descargas repetidas, pero en cuanto juntas los ficheros de dos subcarpetas, aparecen dos <code>contrato.pdf</code> que no tienen nada que ver.</p>
+<p>Mover el segundo encima del primero es perder datos en silencio, y <code>Path.rename()</code> hace exactamente eso en macOS y Linux: sobrescribe sin preguntar.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">organizador/logica.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">nombre_libre</span><span class="t-operador">(</span>destino<span class="t-operador">:</span> Path<span class="t-operador">,</span> reservados<span class="t-operador">:</span> <span class="t-integrada">set</span><span class="t-operador">[</span>Path<span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> Path<span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Devuelve el destino, o una variante con sufijo numérico si ya está ocupado.&quot;&quot;&quot;</span>
+    candidato <span class="t-operador">=</span> destino
+    contador <span class="t-operador">=</span> <span class="t-numero">1</span>
+    <span class="t-palabra">while</span> candidato<span class="t-operador">.</span>exists<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">or</span> candidato <span class="t-palabra">in</span> reservados<span class="t-operador">:</span>
+                candidato <span class="t-operador">=</span> destino<span class="t-operador">.</span>with_name<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>destino<span class="t-operador">.</span>stem<span class="t-operador">}</span>-<span class="t-operador">{</span>contador<span class="t-operador">}</span><span class="t-operador">{</span>destino<span class="t-operador">.</span>suffix<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+        contador <span class="t-operador">+=</span> <span class="t-numero">1</span>
+    <span class="t-palabra">return</span> candidato</code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+<span class="t-palabra">from</span> organizador<span class="t-operador">.</span>logica <span class="t-palabra">import</span> nombre_libre
+
+carpeta <span class="t-operador">=</span> Path<span class="t-operador">(</span><span class="t-texto">&quot;descargas&quot;</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>nombre_libre<span class="t-operador">(</span>carpeta <span class="t-operador">/</span> <span class="t-texto">&quot;imagenes&quot;</span> <span class="t-operador">/</span> <span class="t-texto">&quot;foto-playa.jpg&quot;</span><span class="t-operador">,</span> <span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>nombre_libre<span class="t-operador">(</span>carpeta <span class="t-operador">/</span> <span class="t-texto">&quot;imagenes&quot;</span> <span class="t-operador">/</span> <span class="t-texto">&quot;nueva.png&quot;</span><span class="t-operador">,</span> <span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>nombre_libre<span class="t-operador">(</span>carpeta <span class="t-operador">/</span> <span class="t-texto">&quot;imagenes&quot;</span> <span class="t-operador">/</span> <span class="t-texto">&quot;nueva.png&quot;</span><span class="t-operador">,</span> <span class="t-operador">{</span>carpeta <span class="t-operador">/</span> <span class="t-texto">&quot;imagenes&quot;</span> <span class="t-operador">/</span> <span class="t-texto">&quot;nueva.png&quot;</span><span class="t-operador">}</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>descargas/imagenes/foto-playa-1.jpg
+descargas/imagenes/nueva.png
+descargas/imagenes/nueva-1.png</code></pre></div>
+<p>El <code>stem</code> y el <code>suffix</code> de <code>pathlib</code> hacen el trabajo sucio: <code>foto-playa.jpg</code> se convierte en <code>foto-playa-1.jpg</code> y no en <code>foto-playa.jpg-1</code>, que es lo que saldría concatenando cadenas a mano. Y <code>with_name()</code> construye la ruta hermana sin tocar la carpeta.</p>
+<p>Fíjate en el segundo parámetro, <code>reservados</code>, y en la tercera llamada del ejemplo. Ese conjunto es la parte que se olvida siempre. El bucle <code>while</code> pregunta por <code>exists()</code>, que consulta el disco, pero <strong>los ficheros del plan todavía no están en el disco</strong>. Si dos ficheros distintos de la lista van a acabar llamándose igual, <code>exists()</code> dirá que no a los dos y el segundo machacará al primero en cuanto se ejecute el plan. Apuntando cada destino elegido en <code>reservados</code> se cierra el agujero.</p>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">El hueco entre comprobar y actuar</p><p>Aun con el conjunto, entre el momento en que se comprueba <code>exists()</code> y el momento en que se llama a <code>rename()</code> pasa un instante. Si durante ese instante otro programa crea un fichero con ese nombre, se pierde. Es una condición de carrera, tiene nombre propio en inglés (<em>time of check to time of use</em>) y en una herramienta de uso personal es aceptable. En una que corra en un servidor con varios procesos a la vez, no: ahí se usan operaciones que comprueban y crean en un solo paso, como abrir el fichero en modo <code>&quot;x&quot;</code>.</p></aside>
+<h2 id="parte-4-el-plan-y-su-ejecucion">Parte 4: el plan y su ejecución<a class="ancla" href="#parte-4-el-plan-y-su-ejecucion" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Aquí está el corazón del diseño, y son veinte líneas:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">organizador/logica.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-operador">@</span>dataclass
+<span class="t-palabra">class</span> <span class="t-definicion">Movimiento</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Un fichero y el sitio al que le toca ir.&quot;&quot;&quot;</span>
+
+    origen<span class="t-operador">:</span> Path
+    destino<span class="t-operador">:</span> Path
+    categoria<span class="t-operador">:</span> <span class="t-integrada">str</span>
+
+    <span class="t-operador">@</span>property
+    <span class="t-palabra">def</span> <span class="t-definicion">renombrado</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">bool</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;True si hubo que cambiarle el nombre para evitar una colisión.&quot;&quot;&quot;</span>
+        <span class="t-palabra">return</span> <span class="t-constante">self</span><span class="t-operador">.</span>origen<span class="t-operador">.</span>name <span class="t-operador">!=</span> <span class="t-constante">self</span><span class="t-operador">.</span>destino<span class="t-operador">.</span>name
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">planificar</span><span class="t-operador">(</span>carpeta<span class="t-operador">:</span> Path<span class="t-operador">,</span> recursivo<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Construye la lista de movimientos sin tocar el disco.&quot;&quot;&quot;</span>
+    movimientos <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    reservados<span class="t-operador">:</span> <span class="t-integrada">set</span><span class="t-operador">[</span>Path<span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">for</span> fichero <span class="t-palabra">in</span> ficheros_a_ordenar<span class="t-operador">(</span>carpeta<span class="t-operador">,</span> recursivo<span class="t-operador">)</span><span class="t-operador">:</span>
+                categoria <span class="t-operador">=</span> categoria_de<span class="t-operador">(</span>fichero<span class="t-operador">)</span>
+        destino <span class="t-operador">=</span> nombre_libre<span class="t-operador">(</span>carpeta <span class="t-operador">/</span> categoria <span class="t-operador">/</span> fichero<span class="t-operador">.</span>name<span class="t-operador">,</span> reservados<span class="t-operador">)</span>
+        reservados<span class="t-operador">.</span>add<span class="t-operador">(</span>destino<span class="t-operador">)</span>
+        movimientos<span class="t-operador">.</span>append<span class="t-operador">(</span>Movimiento<span class="t-operador">(</span>fichero<span class="t-operador">,</span> destino<span class="t-operador">,</span> categoria<span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> movimientos
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">ejecutar</span><span class="t-operador">(</span>movimientos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">tuple</span><span class="t-operador">[</span><span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">,</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">tuple</span><span class="t-operador">[</span>Movimiento<span class="t-operador">,</span> OSError<span class="t-operador">]</span><span class="t-operador">]</span><span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Realiza los movimientos. Devuelve los hechos y los fallidos con su error.&quot;&quot;&quot;</span>
+    hechos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    fallidos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">tuple</span><span class="t-operador">[</span>Movimiento<span class="t-operador">,</span> OSError<span class="t-operador">]</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    <span class="t-palabra">for</span> movimiento <span class="t-palabra">in</span> movimientos<span class="t-operador">:</span>
+                <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        movimiento<span class="t-operador">.</span>destino<span class="t-operador">.</span>parent<span class="t-operador">.</span>mkdir<span class="t-operador">(</span>parents<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> exist_ok<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+            movimiento<span class="t-operador">.</span>origen<span class="t-operador">.</span>rename<span class="t-operador">(</span>movimiento<span class="t-operador">.</span>destino<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> OSError <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                        fallidos<span class="t-operador">.</span>append<span class="t-operador">(</span><span class="t-operador">(</span>movimiento<span class="t-operador">,</span> error<span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">else</span><span class="t-operador">:</span>
+                        hechos<span class="t-operador">.</span>append<span class="t-operador">(</span>movimiento<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> hechos<span class="t-operador">,</span> fallidos
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">contar_por_categoria</span><span class="t-operador">(</span>movimientos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> Counter<span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Cuántos ficheros hay en cada categoría.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> Counter<span class="t-operador">(</span>movimiento<span class="t-operador">.</span>categoria <span class="t-palabra">for</span> movimiento <span class="t-palabra">in</span> movimientos<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+<span class="t-palabra">from</span> organizador<span class="t-operador">.</span>logica <span class="t-palabra">import</span> contar_por_categoria<span class="t-operador">,</span> planificar
+
+plan <span class="t-operador">=</span> planificar<span class="t-operador">(</span>Path<span class="t-operador">(</span><span class="t-texto">&quot;descargas&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> recursivo<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-integrada">len</span><span class="t-operador">(</span>plan<span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>contar_por_categoria<span class="t-operador">(</span>plan<span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>plan<span class="t-operador">[</span><span class="t-numero">6</span><span class="t-operador">]</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>16
+Counter({&#x27;documentos&#x27;: 6, &#x27;imagenes&#x27;: 4, &#x27;videos&#x27;: 2, &#x27;comprimidos&#x27;: 2, &#x27;otros&#x27;: 2})
+Movimiento(origen=PosixPath(&#x27;descargas/facturas/contrato.pdf&#x27;), destino=PosixPath(&#x27;descargas/documentos/contrato-1.pdf&#x27;), categoria=&#x27;documentos&#x27;)</code></pre></div>
+<p>Las decisiones:</p>
+<ul><li><strong><code>planificar</code> no toca el disco y <code>ejecutar</code> no decide nada.</strong> El primero devuelve una lista de objetos; el segundo la recorre y obedece. Son dos funciones porque son dos momentos distintos, y entre uno y otro se puede enseñar el plan, filtrarlo, guardarlo en un registro o tirarlo a la basura.</li><li><strong><code>Movimiento</code> es una dataclass y no una tupla.</strong> <code>movimiento.destino</code> se lee; <code>movimiento[1]</code>, no. Y el <code>__repr__</code> que regala la dataclass hace que depurar el plan sea imprimirlo, como se ve arriba.</li><li><strong><code>renombrado</code> es una propiedad</strong>, no un campo, porque es un dato deducido de los otros dos. Guardarlo sería duplicar información que puede quedar desincronizada.</li><li><strong><code>mkdir</code> va dentro del bucle</strong>, no antes. Así solo se crean las carpetas de las categorías que de verdad tienen ficheros: una carpeta de descargas sin vídeos no acaba con una carpeta <code>videos</code> vacía. Y con <code>exist_ok=True</code> llamarlo trece veces no cuesta nada.</li><li><strong><code>ejecutar</code> atrapa <code>OSError</code> fichero a fichero y sigue.</strong> Un permiso denegado en el séptimo fichero no puede tirar el programa dejando el trabajo a medias y sin decir cuánto se hizo. Se apunta y se continúa.</li><li><strong>El <code>else</code> del <code>try</code>.</strong> El cuerpo del <code>else</code> se ejecuta solo si no hubo excepción, y deja clarísimo que <code>hechos.append</code> es lo que pasa en el caso bueno. Podría ir al final del <code>try</code>, pero entonces habría dos líneas dentro del <code>try</code> y solo una puede fallar.</li><li><strong><code>Counter</code> sobre una expresión generadora</strong> resuelve el recuento en una línea, tal como viste en la lección de la biblioteca estándar.</li></ul>
+<h2 id="el-apartado-importante-por-que-simular">El apartado importante: por qué <code>--simular</code><a class="ancla" href="#el-apartado-importante-por-que-simular" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Toda herramienta que mueva, sobrescriba o borre ficheros tiene que poder decirte qué va a hacer antes de hacerlo. Sin excepciones.</p>
+<p>El motivo no es la elegancia, es que <strong>tú no puedes probar el programa de otra manera</strong>. Una herramienta que solo tiene un modo se prueba ejecutándola, y ejecutarla es justo lo que da miedo. Con un modo de simulación, la prueba es gratis: la ejecutas sobre tu carpeta real, lees las veinte líneas del plan, ves que la tercera está mal, arreglas el programa y vuelves a ejecutar. Sin simulación ese ciclo cuesta una copia de seguridad cada vuelta, así que en la práctica no se hace, y lo que no se prueba no funciona.</p>
+<p>Hay más razones:</p>
+<ul><li><strong>Las extensiones sorprenden.</strong> Descubrirás que tu <code>.heic</code> del móvil no estaba en la lista, que los <code>.tar.gz</code> cuentan como <code>.gz</code>, o que tenías cuarenta ficheros sin extensión. Mejor descubrirlo leyendo que buscando dónde han ido a parar.</li><li><strong>La confianza se construye.</strong> La primera vez se usa con <code>--simular</code>, la décima ya no. Un programa en el que no confías es un programa que no usas.</li><li><strong>Deshacer es carísimo.</strong> Una vez movidos trece mil ficheros, volver atrás requiere un programa nuevo. Leer trece mil líneas de plan antes es incómodo, pero es posible.</li></ul>
+<p>Lo bonito es cuánto cuesta implementarlo aquí: <strong>nada</strong>. Como <code>planificar</code> ya está separada de <code>ejecutar</code>, el modo simulación es no llamar a la segunda.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">movimientos <span class="t-operador">=</span> planificar<span class="t-operador">(</span>carpeta<span class="t-operador">,</span> opciones<span class="t-operador">.</span>recursivo<span class="t-operador">)</span>
+
+<span class="t-palabra">if</span> opciones<span class="t-operador">.</span>simular<span class="t-operador">:</span>
+        mostrar_plan<span class="t-operador">(</span>movimientos<span class="t-operador">,</span> carpeta<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-numero">0</span>
+
+hechos<span class="t-operador">,</span> fallidos <span class="t-operador">=</span> ejecutar<span class="t-operador">(</span>movimientos<span class="t-operador">)</span></code></pre></div>
+<p>Ese es el premio del diseño de la parte anterior. Cuando una herramienta mezcla decidir y hacer, añadirle un modo de simulación después obliga a meter un <code>if not simular:</code> alrededor de cada operación peligrosa, y basta que se escape uno para que el modo seguro no sea seguro. Con las dos fases separadas, el modo seguro es imposible de romper: no hay ninguna llamada a <code>rename</code> que pueda ejecutarse por accidente, porque la fase que las hace ni siquiera se llama.</p>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">El nombre en inglés lo verás por todas partes</p><p>En las herramientas que te encontrarás por ahí esta opción se llama <code>--dry-run</code>, &quot;ensayo en seco&quot;. <code>rsync</code>, <code>git clean</code>, <code>apt</code>, <code>terraform</code> y media terminal la tienen. Si alguna vez escribes una herramienta para un equipo que trabaja en inglés, ese es el nombre que la gente va a buscar en el <code>--help</code>.</p></aside>
+<h2 id="parte-5-la-interfaz">Parte 5: la interfaz<a class="ancla" href="#parte-5-la-interfaz" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Tres argumentos y ninguna sorpresa:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">organizador/cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">construir_analizador</span><span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> argparse<span class="t-operador">.</span>ArgumentParser<span class="t-operador">:</span>
+        analizador <span class="t-operador">=</span> argparse<span class="t-operador">.</span>ArgumentParser<span class="t-operador">(</span>
+        prog<span class="t-operador">=</span><span class="t-texto">&quot;organizador&quot;</span><span class="t-operador">,</span>
+        description<span class="t-operador">=</span><span class="t-texto">&quot;Ordena una carpeta moviendo cada fichero a una subcarpeta según su extensión.&quot;</span><span class="t-operador">,</span>
+        epilog<span class="t-operador">=</span><span class="t-texto">&quot;Prueba siempre primero con --simular.&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span>
+        <span class="t-texto">&quot;carpeta&quot;</span><span class="t-operador">,</span>
+        <span class="t-palabra">type</span><span class="t-operador">=</span>Path<span class="t-operador">,</span>
+        <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;carpeta que hay que ordenar&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span>
+        <span class="t-texto">&quot;-s&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;--simular&quot;</span><span class="t-operador">,</span>
+        action<span class="t-operador">=</span><span class="t-texto">&quot;store_true&quot;</span><span class="t-operador">,</span>
+        <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;enseña lo que haría, pero no mueve nada&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span>
+        <span class="t-texto">&quot;-r&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;--recursivo&quot;</span><span class="t-operador">,</span>
+        action<span class="t-operador">=</span><span class="t-texto">&quot;store_true&quot;</span><span class="t-operador">,</span>
+        <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;ordena también los ficheros de las subcarpetas&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+    <span class="t-palabra">return</span> analizador</code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python3</span> <span class="t-palabra">-m</span> organizador <span class="t-palabra">--help</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>usage: organizador [-h] [-s] [-r] carpeta
+
+Ordena una carpeta moviendo cada fichero a una subcarpeta según su extensión.
+
+positional arguments:
+  carpeta          carpeta que hay que ordenar
+
+options:
+  -h, --help       show this help message and exit
+  -s, --simular    enseña lo que haría, pero no mueve nada
+  -r, --recursivo  ordena también los ficheros de las subcarpetas
+
+Prueba siempre primero con --simular.</code></pre></div>
+<ul><li><strong><code>type=Path</code></strong> hace que <code>opciones.carpeta</code> llegue ya como objeto <code>Path</code> y no como cadena. Es el mismo mecanismo que <code>type=int</code>: cualquier función de un argumento sirve.</li><li><strong>La carpeta es un posicional y no una opción</strong> porque es obligatoria y solo hay una. Lo que no se puede omitir va sin guiones.</li><li><strong><code>action=&quot;store_true&quot;</code></strong> convierte las dos opciones en banderas: están o no están, sin valor detrás.</li><li><strong><code>prog=&quot;organizador&quot;</code></strong> fija el nombre que sale en la ayuda. Sin él, al ejecutar con <code>python3 -m</code> saldría <code>__main__.py</code>, que no le dice nada a nadie.</li><li><strong><code>epilog</code></strong> es el sitio para el consejo que quieres que lea quien pida ayuda.</li></ul>
+<h2 id="parte-6-el-resumen-en-tabla">Parte 6: el resumen en tabla<a class="ancla" href="#parte-6-el-resumen-en-tabla" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Trece líneas de &quot;esto va allí&quot; no dicen gran cosa. El recuento por categoría, sí:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">organizador/cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">ANCHO_NOMBRE <span class="t-operador">=</span> <span class="t-numero">34</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">plural</span><span class="t-operador">(</span>cantidad<span class="t-operador">:</span> <span class="t-integrada">int</span><span class="t-operador">,</span> singular<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> varios<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Elige la forma que toca para que los mensajes no canten.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> singular <span class="t-palabra">if</span> cantidad <span class="t-operador">==</span> <span class="t-numero">1</span> <span class="t-palabra">else</span> varios
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">mostrar_plan</span><span class="t-operador">(</span>movimientos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">,</span> carpeta<span class="t-operador">:</span> Path<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Enseña, fichero a fichero, a dónde va cada uno.&quot;&quot;&quot;</span>
+    <span class="t-palabra">for</span> movimiento <span class="t-palabra">in</span> movimientos<span class="t-operador">:</span>
+                origen <span class="t-operador">=</span> movimiento<span class="t-operador">.</span>origen<span class="t-operador">.</span>relative_to<span class="t-operador">(</span>carpeta<span class="t-operador">)</span>
+        destino <span class="t-operador">=</span> movimiento<span class="t-operador">.</span>destino<span class="t-operador">.</span>relative_to<span class="t-operador">(</span>carpeta<span class="t-operador">)</span>
+        aviso <span class="t-operador">=</span> <span class="t-texto">&quot;  (renombrado)&quot;</span> <span class="t-palabra">if</span> movimiento<span class="t-operador">.</span>renombrado <span class="t-palabra">else</span> <span class="t-texto">&quot;&quot;</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  <span class="t-operador">{</span><span class="t-integrada">str</span><span class="t-operador">(</span>origen<span class="t-operador">)</span><span class="t-operador">:</span>&lt;<span class="t-operador">{</span>ANCHO_NOMBRE<span class="t-operador">}</span><span class="t-operador">}</span> -&gt; <span class="t-operador">{</span>destino<span class="t-operador">}</span><span class="t-operador">{</span>aviso<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">mostrar_resumen</span><span class="t-operador">(</span>movimientos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Pinta la tabla con el recuento por categoría.&quot;&quot;&quot;</span>
+    recuento <span class="t-operador">=</span> contar_por_categoria<span class="t-operador">(</span>movimientos<span class="t-operador">)</span>
+    orden <span class="t-operador">=</span> <span class="t-integrada">list</span><span class="t-operador">(</span>CATEGORIAS<span class="t-operador">)</span> <span class="t-operador">+</span> <span class="t-operador">[</span>CATEGORIA_POR_DEFECTO<span class="t-operador">]</span>
+
+    <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  <span class="t-operador">{</span><span class="t-texto">&#x27;CATEGORÍA&#x27;</span><span class="t-operador">:</span>&lt;14<span class="t-operador">}</span><span class="t-operador">{</span><span class="t-texto">&#x27;FICHEROS&#x27;</span><span class="t-operador">:</span>&gt;9<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+    <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;  &quot;</span> <span class="t-operador">+</span> <span class="t-texto">&quot;-&quot;</span> <span class="t-operador">*</span> <span class="t-numero">23</span><span class="t-operador">)</span>
+    <span class="t-palabra">for</span> categoria <span class="t-palabra">in</span> orden<span class="t-operador">:</span>
+                <span class="t-palabra">if</span> recuento<span class="t-operador">[</span>categoria<span class="t-operador">]</span><span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  <span class="t-operador">{</span>categoria<span class="t-operador">:</span>&lt;14<span class="t-operador">}</span><span class="t-operador">{</span>recuento<span class="t-operador">[</span>categoria<span class="t-operador">]</span><span class="t-operador">:</span>&gt;9<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+    <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;  &quot;</span> <span class="t-operador">+</span> <span class="t-texto">&quot;-&quot;</span> <span class="t-operador">*</span> <span class="t-numero">23</span><span class="t-operador">)</span>
+    <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  <span class="t-operador">{</span><span class="t-texto">&#x27;TOTAL&#x27;</span><span class="t-operador">:</span>&lt;14<span class="t-operador">}</span><span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>movimientos<span class="t-operador">)</span><span class="t-operador">:</span>&gt;9<span class="t-operador">}</span>&quot;<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>  CATEGORÍA      FICHEROS
+  -----------------------
+  imagenes              3
+  documentos            4
+  videos                2
+  comprimidos           2
+  otros                 2
+  -----------------------
+  TOTAL                13</code></pre></div>
+<p>Las decisiones:</p>
+<ul><li><strong>Las rutas se enseñan relativas a la carpeta.</strong> Con <code>relative_to(carpeta)</code>, en pantalla sale <code>facturas/contrato.pdf</code> en vez de <code>/Users/erwin/Descargas/facturas/contrato.pdf</code> repetido dieciséis veces. La información que importa es la que cambia de línea a línea.</li><li><strong>El orden de la tabla sale del diccionario <code>CATEGORIAS</code></strong>, no del recuento. Así las categorías salen siempre en el mismo orden, y <code>otros</code> queda al final porque es el cajón de sastre. Los diccionarios de Python conservan el orden de inserción desde la versión 3.7, y aquí eso se usa como característica.</li><li><strong>Las categorías con cero se omiten</strong> con el <code>if recuento[categoria]</code>. Una fila que pone <code>videos 0</code> es ruido.</li><li><strong><code>Counter</code> devuelve <code>0</code> para las claves que no tiene</strong> en vez de lanzar <code>KeyError</code>, que es lo que permite escribir ese <code>if</code> tan corto.</li><li><strong>La función <code>plural</code></strong> existe porque &quot;1 ficheros movidos&quot; canta muchísimo. Tres líneas para que los mensajes estén bien escritos son tres líneas bien gastadas.</li></ul>
+<h2 id="parte-7-codigos-de-salida-y-errores">Parte 7: códigos de salida y errores<a class="ancla" href="#parte-7-codigos-de-salida-y-errores" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Un programa de terminal habla con el sistema por dos canales que no se ven en pantalla: el código de salida y <code>stderr</code>.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">organizador/cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">main</span><span class="t-operador">(</span>argumentos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">int</span><span class="t-operador">:</span>
+        opciones <span class="t-operador">=</span> construir_analizador<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>parse_args<span class="t-operador">(</span>argumentos<span class="t-operador">)</span>
+    carpeta<span class="t-operador">:</span> Path <span class="t-operador">=</span> opciones<span class="t-operador">.</span>carpeta
+
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> carpeta<span class="t-operador">.</span>exists<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;organizador: la carpeta &#x27;<span class="t-operador">{</span>carpeta<span class="t-operador">}</span>&#x27; no existe.&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">1</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> carpeta<span class="t-operador">.</span>is_dir<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;organizador: &#x27;<span class="t-operador">{</span>carpeta<span class="t-operador">}</span>&#x27; no es una carpeta.&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">1</span>
+    <span class="t-operador">...</span></code></pre></div>
+<p>El reparto que usa este programa, que es el habitual:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Código</th><th>Cuándo</th></tr></thead><tbody><tr><td><code>0</code></td><td>Todo bien, aunque no hubiera nada que mover</td></tr><tr><td><code>1</code></td><td>El programa se ejecutó pero algo salió mal: la carpeta no existe, o falló algún movimiento</td></tr><tr><td><code>2</code></td><td>Los argumentos estaban mal. Lo pone <code>argparse</code> él solo</td></tr></tbody></table></div>
+<ul><li><strong><code>main</code> devuelve un número, no llama a <code>sys.exit</code>.</strong> Quien decide terminar el proceso es <code>__main__.py</code>, con <code>sys.exit(main())</code>. Así <code>main</code> se puede llamar desde una prueba automática, pasarle una lista de argumentos y mirar qué devuelve sin que el intérprete se cierre a mitad de la suite.</li><li><strong>El parámetro <code>argumentos</code> por defecto vale <code>None</code></strong>, y <code>parse_args(None)</code> lee <code>sys.argv</code>. Es decir: en producción no se le pasa nada y funciona solo; en una prueba se le pasa <code>[&quot;descargas&quot;, &quot;--simular&quot;]</code>.</li><li><strong>Los errores van a <code>stderr</code> y llevan el nombre del programa delante.</strong> Eso es lo que permite <code>python3 -m organizador descargas 2&gt; errores.txt</code>: la tabla sale por pantalla y los problemas se quedan en el fichero. El prefijo <code>organizador:</code> es la convención de toda la terminal, y se agradece cuando el mensaje aparece en medio de la salida de otras diez herramientas.</li><li><strong>&quot;No había nada que ordenar&quot; devuelve 0.</strong> No es un fallo. Confundir &quot;no hay trabajo&quot; con &quot;ha ido mal&quot; hace que los guiones que usen tu herramienta se paren sin motivo.</li></ul>
+<h2 id="el-programa-completo">El programa completo<a class="ancla" href="#el-programa-completo" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">organizador/categorias.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;Las categorías del organizador y las extensiones que van a cada una.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+CATEGORIAS<span class="t-operador">:</span> <span class="t-integrada">dict</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">,</span> <span class="t-integrada">set</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">{</span>
+    <span class="t-texto">&quot;imagenes&quot;</span><span class="t-operador">:</span> <span class="t-operador">{</span><span class="t-texto">&quot;.jpg&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.jpeg&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.png&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.gif&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.webp&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.heic&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.bmp&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.svg&quot;</span><span class="t-operador">}</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;documentos&quot;</span><span class="t-operador">:</span> <span class="t-operador">{</span>
+        <span class="t-texto">&quot;.pdf&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.txt&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.md&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.doc&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.docx&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.odt&quot;</span><span class="t-operador">,</span>
+        <span class="t-texto">&quot;.xls&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.xlsx&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.ods&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.csv&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.ppt&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.pptx&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">}</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;videos&quot;</span><span class="t-operador">:</span> <span class="t-operador">{</span><span class="t-texto">&quot;.mp4&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.mkv&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.avi&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.mov&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.webm&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.mpg&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.mpeg&quot;</span><span class="t-operador">}</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;comprimidos&quot;</span><span class="t-operador">:</span> <span class="t-operador">{</span><span class="t-texto">&quot;.zip&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.tar&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.gz&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.tgz&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.bz2&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.xz&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.rar&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.7z&quot;</span><span class="t-operador">}</span><span class="t-operador">,</span>
+<span class="t-operador">}</span>
+
+CATEGORIA_POR_DEFECTO <span class="t-operador">=</span> <span class="t-texto">&quot;otros&quot;</span>
+
+<span class="t-comentario"># Índice al revés: de extensión a categoría. Se construye una vez, al importar.</span>
+CATEGORIA_DE_EXTENSION<span class="t-operador">:</span> <span class="t-integrada">dict</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">,</span> <span class="t-integrada">str</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">{</span>
+    extension<span class="t-operador">:</span> categoria
+    <span class="t-palabra">for</span> categoria<span class="t-operador">,</span> extensiones <span class="t-palabra">in</span> CATEGORIAS<span class="t-operador">.</span>items<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">for</span> extension <span class="t-palabra">in</span> extensiones
+<span class="t-operador">}</span>
+
+NOMBRES_DE_CARPETA<span class="t-operador">:</span> <span class="t-integrada">set</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-integrada">set</span><span class="t-operador">(</span>CATEGORIAS<span class="t-operador">)</span> <span class="t-operador">|</span> <span class="t-operador">{</span>CATEGORIA_POR_DEFECTO<span class="t-operador">}</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">categoria_de</span><span class="t-operador">(</span>fichero<span class="t-operador">:</span> Path<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Devuelve la categoría que le toca a un fichero por su extensión.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> CATEGORIA_DE_EXTENSION<span class="t-operador">.</span>get<span class="t-operador">(</span>fichero<span class="t-operador">.</span>suffix<span class="t-operador">.</span>lower<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> CATEGORIA_POR_DEFECTO<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">organizador/logica.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;La lógica del organizador: decidir qué se mueve y moverlo. No imprime nada.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">from</span> collections <span class="t-palabra">import</span> Counter
+<span class="t-palabra">from</span> dataclasses <span class="t-palabra">import</span> dataclass
+<span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+<span class="t-palabra">from</span> <span class="t-operador">.</span>categorias <span class="t-palabra">import</span> NOMBRES_DE_CARPETA<span class="t-operador">,</span> categoria_de
+
+
+<span class="t-operador">@</span>dataclass
+<span class="t-palabra">class</span> <span class="t-definicion">Movimiento</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Un fichero y el sitio al que le toca ir.&quot;&quot;&quot;</span>
+
+    origen<span class="t-operador">:</span> Path
+    destino<span class="t-operador">:</span> Path
+    categoria<span class="t-operador">:</span> <span class="t-integrada">str</span>
+
+    <span class="t-operador">@</span>property
+    <span class="t-palabra">def</span> <span class="t-definicion">renombrado</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">bool</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;True si hubo que cambiarle el nombre para evitar una colisión.&quot;&quot;&quot;</span>
+        <span class="t-palabra">return</span> <span class="t-constante">self</span><span class="t-operador">.</span>origen<span class="t-operador">.</span>name <span class="t-operador">!=</span> <span class="t-constante">self</span><span class="t-operador">.</span>destino<span class="t-operador">.</span>name
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">ficheros_a_ordenar</span><span class="t-operador">(</span>carpeta<span class="t-operador">:</span> Path<span class="t-operador">,</span> recursivo<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Path<span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Devuelve los ficheros de la carpeta que hay que clasificar, ya ordenados.&quot;&quot;&quot;</span>
+    patron <span class="t-operador">=</span> <span class="t-texto">&quot;**/*&quot;</span> <span class="t-palabra">if</span> recursivo <span class="t-palabra">else</span> <span class="t-texto">&quot;*&quot;</span>
+    encontrados <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    <span class="t-palabra">for</span> elemento <span class="t-palabra">in</span> carpeta<span class="t-operador">.</span>glob<span class="t-operador">(</span>patron<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">if</span> <span class="t-palabra">not</span> elemento<span class="t-operador">.</span>is_file<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">or</span> elemento<span class="t-operador">.</span>name<span class="t-operador">.</span>startswith<span class="t-operador">(</span><span class="t-texto">&quot;.&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        <span class="t-palabra">continue</span>
+        <span class="t-palabra">if</span> elemento<span class="t-operador">.</span>relative_to<span class="t-operador">(</span>carpeta<span class="t-operador">)</span><span class="t-operador">.</span>parts<span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span> <span class="t-palabra">in</span> NOMBRES_DE_CARPETA<span class="t-operador">:</span>
+                        <span class="t-palabra">continue</span>
+        encontrados<span class="t-operador">.</span>append<span class="t-operador">(</span>elemento<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-integrada">sorted</span><span class="t-operador">(</span>encontrados<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">nombre_libre</span><span class="t-operador">(</span>destino<span class="t-operador">:</span> Path<span class="t-operador">,</span> reservados<span class="t-operador">:</span> <span class="t-integrada">set</span><span class="t-operador">[</span>Path<span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> Path<span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Devuelve el destino, o una variante con sufijo numérico si ya está ocupado.&quot;&quot;&quot;</span>
+    candidato <span class="t-operador">=</span> destino
+    contador <span class="t-operador">=</span> <span class="t-numero">1</span>
+    <span class="t-palabra">while</span> candidato<span class="t-operador">.</span>exists<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">or</span> candidato <span class="t-palabra">in</span> reservados<span class="t-operador">:</span>
+                candidato <span class="t-operador">=</span> destino<span class="t-operador">.</span>with_name<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>destino<span class="t-operador">.</span>stem<span class="t-operador">}</span>-<span class="t-operador">{</span>contador<span class="t-operador">}</span><span class="t-operador">{</span>destino<span class="t-operador">.</span>suffix<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+        contador <span class="t-operador">+=</span> <span class="t-numero">1</span>
+    <span class="t-palabra">return</span> candidato
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">planificar</span><span class="t-operador">(</span>carpeta<span class="t-operador">:</span> Path<span class="t-operador">,</span> recursivo<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Construye la lista de movimientos sin tocar el disco.&quot;&quot;&quot;</span>
+    movimientos <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    reservados<span class="t-operador">:</span> <span class="t-integrada">set</span><span class="t-operador">[</span>Path<span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">for</span> fichero <span class="t-palabra">in</span> ficheros_a_ordenar<span class="t-operador">(</span>carpeta<span class="t-operador">,</span> recursivo<span class="t-operador">)</span><span class="t-operador">:</span>
+                categoria <span class="t-operador">=</span> categoria_de<span class="t-operador">(</span>fichero<span class="t-operador">)</span>
+        destino <span class="t-operador">=</span> nombre_libre<span class="t-operador">(</span>carpeta <span class="t-operador">/</span> categoria <span class="t-operador">/</span> fichero<span class="t-operador">.</span>name<span class="t-operador">,</span> reservados<span class="t-operador">)</span>
+        reservados<span class="t-operador">.</span>add<span class="t-operador">(</span>destino<span class="t-operador">)</span>
+        movimientos<span class="t-operador">.</span>append<span class="t-operador">(</span>Movimiento<span class="t-operador">(</span>fichero<span class="t-operador">,</span> destino<span class="t-operador">,</span> categoria<span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> movimientos
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">ejecutar</span><span class="t-operador">(</span>movimientos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">tuple</span><span class="t-operador">[</span><span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">,</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">tuple</span><span class="t-operador">[</span>Movimiento<span class="t-operador">,</span> OSError<span class="t-operador">]</span><span class="t-operador">]</span><span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Realiza los movimientos. Devuelve los hechos y los fallidos con su error.&quot;&quot;&quot;</span>
+    hechos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    fallidos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">tuple</span><span class="t-operador">[</span>Movimiento<span class="t-operador">,</span> OSError<span class="t-operador">]</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    <span class="t-palabra">for</span> movimiento <span class="t-palabra">in</span> movimientos<span class="t-operador">:</span>
+                <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        movimiento<span class="t-operador">.</span>destino<span class="t-operador">.</span>parent<span class="t-operador">.</span>mkdir<span class="t-operador">(</span>parents<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> exist_ok<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+            movimiento<span class="t-operador">.</span>origen<span class="t-operador">.</span>rename<span class="t-operador">(</span>movimiento<span class="t-operador">.</span>destino<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> OSError <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                        fallidos<span class="t-operador">.</span>append<span class="t-operador">(</span><span class="t-operador">(</span>movimiento<span class="t-operador">,</span> error<span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">else</span><span class="t-operador">:</span>
+                        hechos<span class="t-operador">.</span>append<span class="t-operador">(</span>movimiento<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> hechos<span class="t-operador">,</span> fallidos
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">contar_por_categoria</span><span class="t-operador">(</span>movimientos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> Counter<span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Cuántos ficheros hay en cada categoría.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> Counter<span class="t-operador">(</span>movimiento<span class="t-operador">.</span>categoria <span class="t-palabra">for</span> movimiento <span class="t-palabra">in</span> movimientos<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">organizador/cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;La interfaz de terminal del organizador: argumentos, mensajes y códigos de salida.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">import</span> argparse
+<span class="t-palabra">import</span> sys
+<span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+<span class="t-palabra">from</span> <span class="t-operador">.</span>categorias <span class="t-palabra">import</span> CATEGORIAS<span class="t-operador">,</span> CATEGORIA_POR_DEFECTO
+<span class="t-palabra">from</span> <span class="t-operador">.</span>logica <span class="t-palabra">import</span> Movimiento<span class="t-operador">,</span> contar_por_categoria<span class="t-operador">,</span> ejecutar<span class="t-operador">,</span> planificar
+
+ANCHO_NOMBRE <span class="t-operador">=</span> <span class="t-numero">34</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">construir_analizador</span><span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> argparse<span class="t-operador">.</span>ArgumentParser<span class="t-operador">:</span>
+        analizador <span class="t-operador">=</span> argparse<span class="t-operador">.</span>ArgumentParser<span class="t-operador">(</span>
+        prog<span class="t-operador">=</span><span class="t-texto">&quot;organizador&quot;</span><span class="t-operador">,</span>
+        description<span class="t-operador">=</span><span class="t-texto">&quot;Ordena una carpeta moviendo cada fichero a una subcarpeta según su extensión.&quot;</span><span class="t-operador">,</span>
+        epilog<span class="t-operador">=</span><span class="t-texto">&quot;Prueba siempre primero con --simular.&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span>
+        <span class="t-texto">&quot;carpeta&quot;</span><span class="t-operador">,</span>
+        <span class="t-palabra">type</span><span class="t-operador">=</span>Path<span class="t-operador">,</span>
+        <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;carpeta que hay que ordenar&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span>
+        <span class="t-texto">&quot;-s&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;--simular&quot;</span><span class="t-operador">,</span>
+        action<span class="t-operador">=</span><span class="t-texto">&quot;store_true&quot;</span><span class="t-operador">,</span>
+        <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;enseña lo que haría, pero no mueve nada&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span>
+        <span class="t-texto">&quot;-r&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;--recursivo&quot;</span><span class="t-operador">,</span>
+        action<span class="t-operador">=</span><span class="t-texto">&quot;store_true&quot;</span><span class="t-operador">,</span>
+        <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;ordena también los ficheros de las subcarpetas&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+    <span class="t-palabra">return</span> analizador
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">plural</span><span class="t-operador">(</span>cantidad<span class="t-operador">:</span> <span class="t-integrada">int</span><span class="t-operador">,</span> singular<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> varios<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Elige la forma que toca para que los mensajes no canten.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> singular <span class="t-palabra">if</span> cantidad <span class="t-operador">==</span> <span class="t-numero">1</span> <span class="t-palabra">else</span> varios
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">mostrar_plan</span><span class="t-operador">(</span>movimientos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">,</span> carpeta<span class="t-operador">:</span> Path<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Enseña, fichero a fichero, a dónde va cada uno.&quot;&quot;&quot;</span>
+    <span class="t-palabra">for</span> movimiento <span class="t-palabra">in</span> movimientos<span class="t-operador">:</span>
+                origen <span class="t-operador">=</span> movimiento<span class="t-operador">.</span>origen<span class="t-operador">.</span>relative_to<span class="t-operador">(</span>carpeta<span class="t-operador">)</span>
+        destino <span class="t-operador">=</span> movimiento<span class="t-operador">.</span>destino<span class="t-operador">.</span>relative_to<span class="t-operador">(</span>carpeta<span class="t-operador">)</span>
+        aviso <span class="t-operador">=</span> <span class="t-texto">&quot;  (renombrado)&quot;</span> <span class="t-palabra">if</span> movimiento<span class="t-operador">.</span>renombrado <span class="t-palabra">else</span> <span class="t-texto">&quot;&quot;</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  <span class="t-operador">{</span><span class="t-integrada">str</span><span class="t-operador">(</span>origen<span class="t-operador">)</span><span class="t-operador">:</span>&lt;<span class="t-operador">{</span>ANCHO_NOMBRE<span class="t-operador">}</span><span class="t-operador">}</span> -&gt; <span class="t-operador">{</span>destino<span class="t-operador">}</span><span class="t-operador">{</span>aviso<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">mostrar_resumen</span><span class="t-operador">(</span>movimientos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Movimiento<span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Pinta la tabla con el recuento por categoría.&quot;&quot;&quot;</span>
+    recuento <span class="t-operador">=</span> contar_por_categoria<span class="t-operador">(</span>movimientos<span class="t-operador">)</span>
+    orden <span class="t-operador">=</span> <span class="t-integrada">list</span><span class="t-operador">(</span>CATEGORIAS<span class="t-operador">)</span> <span class="t-operador">+</span> <span class="t-operador">[</span>CATEGORIA_POR_DEFECTO<span class="t-operador">]</span>
+
+    <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  <span class="t-operador">{</span><span class="t-texto">&#x27;CATEGORÍA&#x27;</span><span class="t-operador">:</span>&lt;14<span class="t-operador">}</span><span class="t-operador">{</span><span class="t-texto">&#x27;FICHEROS&#x27;</span><span class="t-operador">:</span>&gt;9<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+    <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;  &quot;</span> <span class="t-operador">+</span> <span class="t-texto">&quot;-&quot;</span> <span class="t-operador">*</span> <span class="t-numero">23</span><span class="t-operador">)</span>
+    <span class="t-palabra">for</span> categoria <span class="t-palabra">in</span> orden<span class="t-operador">:</span>
+                <span class="t-palabra">if</span> recuento<span class="t-operador">[</span>categoria<span class="t-operador">]</span><span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  <span class="t-operador">{</span>categoria<span class="t-operador">:</span>&lt;14<span class="t-operador">}</span><span class="t-operador">{</span>recuento<span class="t-operador">[</span>categoria<span class="t-operador">]</span><span class="t-operador">:</span>&gt;9<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+    <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;  &quot;</span> <span class="t-operador">+</span> <span class="t-texto">&quot;-&quot;</span> <span class="t-operador">*</span> <span class="t-numero">23</span><span class="t-operador">)</span>
+    <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  <span class="t-operador">{</span><span class="t-texto">&#x27;TOTAL&#x27;</span><span class="t-operador">:</span>&lt;14<span class="t-operador">}</span><span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>movimientos<span class="t-operador">)</span><span class="t-operador">:</span>&gt;9<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">main</span><span class="t-operador">(</span>argumentos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">int</span><span class="t-operador">:</span>
+        opciones <span class="t-operador">=</span> construir_analizador<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>parse_args<span class="t-operador">(</span>argumentos<span class="t-operador">)</span>
+    carpeta<span class="t-operador">:</span> Path <span class="t-operador">=</span> opciones<span class="t-operador">.</span>carpeta
+
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> carpeta<span class="t-operador">.</span>exists<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;organizador: la carpeta &#x27;<span class="t-operador">{</span>carpeta<span class="t-operador">}</span>&#x27; no existe.&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">1</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> carpeta<span class="t-operador">.</span>is_dir<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;organizador: &#x27;<span class="t-operador">{</span>carpeta<span class="t-operador">}</span>&#x27; no es una carpeta.&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">1</span>
+
+    movimientos <span class="t-operador">=</span> planificar<span class="t-operador">(</span>carpeta<span class="t-operador">,</span> opciones<span class="t-operador">.</span>recursivo<span class="t-operador">)</span>
+
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> movimientos<span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;No hay nada que ordenar en <span class="t-operador">{</span>carpeta<span class="t-operador">}</span>.&quot;<span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">0</span>
+
+    <span class="t-palabra">if</span> opciones<span class="t-operador">.</span>simular<span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;Simulación sobre <span class="t-operador">{</span>carpeta<span class="t-operador">}</span>. No se va a mover nada.\n&quot;<span class="t-operador">)</span>
+        mostrar_plan<span class="t-operador">(</span>movimientos<span class="t-operador">,</span> carpeta<span class="t-operador">)</span>
+        mostrar_resumen<span class="t-operador">(</span>movimientos<span class="t-operador">)</span>
+        cuantos <span class="t-operador">=</span> <span class="t-integrada">len</span><span class="t-operador">(</span>movimientos<span class="t-operador">)</span>
+        verbo <span class="t-operador">=</span> plural<span class="t-operador">(</span>cuantos<span class="t-operador">,</span> <span class="t-texto">&quot;fichero se movería&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;ficheros se moverían&quot;</span><span class="t-operador">)</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;\n<span class="t-operador">{</span>cuantos<span class="t-operador">}</span> <span class="t-operador">{</span>verbo<span class="t-operador">}</span>. Repite sin --simular para hacerlo.&quot;<span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">0</span>
+
+    <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;Ordenando <span class="t-operador">{</span>carpeta<span class="t-operador">}</span>.\n&quot;<span class="t-operador">)</span>
+    hechos<span class="t-operador">,</span> fallidos <span class="t-operador">=</span> ejecutar<span class="t-operador">(</span>movimientos<span class="t-operador">)</span>
+    mostrar_plan<span class="t-operador">(</span>hechos<span class="t-operador">,</span> carpeta<span class="t-operador">)</span>
+    mostrar_resumen<span class="t-operador">(</span>hechos<span class="t-operador">)</span>
+
+    <span class="t-palabra">for</span> movimiento<span class="t-operador">,</span> error <span class="t-palabra">in</span> fallidos<span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;organizador: no he podido mover &#x27;<span class="t-operador">{</span>movimiento<span class="t-operador">.</span>origen<span class="t-operador">.</span>name<span class="t-operador">}</span>&#x27;: <span class="t-operador">{</span>error<span class="t-operador">}</span>&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+
+    verbo <span class="t-operador">=</span> plural<span class="t-operador">(</span><span class="t-integrada">len</span><span class="t-operador">(</span>hechos<span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;fichero movido&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;ficheros movidos&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">if</span> fallidos<span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;\n<span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>hechos<span class="t-operador">)</span><span class="t-operador">}</span> <span class="t-operador">{</span>verbo<span class="t-operador">}</span>, <span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>fallidos<span class="t-operador">)</span><span class="t-operador">}</span> con errores.&quot;<span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">1</span>
+
+    <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;\n<span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>hechos<span class="t-operador">)</span><span class="t-operador">}</span> <span class="t-operador">{</span>verbo<span class="t-operador">}</span>.&quot;<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-numero">0</span>
+
+
+<span class="t-palabra">if</span> __name__ <span class="t-operador">==</span> <span class="t-texto">&quot;__main__&quot;</span><span class="t-operador">:</span>
+        sys<span class="t-operador">.</span>exit<span class="t-operador">(</span>main<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">organizador/__main__.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;Permite ejecutar el paquete con python3 -m organizador.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">import</span> sys
+
+<span class="t-palabra">from</span> <span class="t-operador">.</span>cli <span class="t-palabra">import</span> main
+
+sys<span class="t-operador">.</span>exit<span class="t-operador">(</span>main<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<p>Unas 190 líneas repartidas en cuatro ficheros, y la mitad son las categorías y la tabla.</p>
+<h2 id="una-sesion-de-uso">Una sesión de uso<a class="ancla" href="#una-sesion-de-uso" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Partimos de esta carpeta de descargas, que tiene de todo a propósito: un fichero oculto, extensiones raras, una subcarpeta y dos nombres repetidos.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">text</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-text">descargas/
+    .oculto
+    apuntes.txt
+    boda.mp4
+    captura.PNG
+    clip.mov
+    contrato.pdf
+    copia-seguridad.zip
+    foto-playa.jpg
+    instalador.dmg
+    logo.svg
+    notas.xyz
+    presentacion.pptx
+    proyecto.tar.gz
+    ventas-2026.csv
+    facturas/
+        contrato.pdf
+        escaneo.jpg
+        recibo-luz.pdf
+    imagenes/
+        foto-playa.jpg</code></pre></div>
+<p>Primero, sin tocar nada:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python3</span> <span class="t-palabra">-m</span> organizador descargas <span class="t-palabra">--simular</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Simulación sobre descargas. No se va a mover nada.
+
+  apuntes.txt                        -&gt; documentos/apuntes.txt
+  boda.mp4                           -&gt; videos/boda.mp4
+  captura.PNG                        -&gt; imagenes/captura.PNG
+  clip.mov                           -&gt; videos/clip.mov
+  contrato.pdf                       -&gt; documentos/contrato.pdf
+  copia-seguridad.zip                -&gt; comprimidos/copia-seguridad.zip
+  foto-playa.jpg                     -&gt; imagenes/foto-playa-1.jpg  (renombrado)
+  instalador.dmg                     -&gt; otros/instalador.dmg
+  logo.svg                           -&gt; imagenes/logo.svg
+  notas.xyz                          -&gt; otros/notas.xyz
+  presentacion.pptx                  -&gt; documentos/presentacion.pptx
+  proyecto.tar.gz                    -&gt; comprimidos/proyecto.tar.gz
+  ventas-2026.csv                    -&gt; documentos/ventas-2026.csv
+
+  CATEGORÍA      FICHEROS
+  -----------------------
+  imagenes              3
+  documentos            4
+  videos                2
+  comprimidos           2
+  otros                 2
+  -----------------------
+  TOTAL                13
+
+13 ficheros se moverían. Repite sin --simular para hacerlo.</code></pre></div>
+<p>Cuatro cosas que confirma esta salida y que no se podían dar por supuestas: <code>captura.PNG</code> ha ido a imágenes pese a la extensión en mayúsculas, <code>foto-playa.jpg</code> se ha renombrado porque ya había una en <code>imagenes/</code>, <code>proyecto.tar.gz</code> ha entrado en comprimidos por su <code>.gz</code>, y ni <code>.oculto</code> ni el contenido de <code>facturas/</code> aparecen, que es lo que toca sin <code>--recursivo</code>.</p>
+<p>El plan convence, así que se ejecuta:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python3</span> <span class="t-palabra">-m</span> organizador descargas</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Ordenando descargas.
+
+  apuntes.txt                        -&gt; documentos/apuntes.txt
+  boda.mp4                           -&gt; videos/boda.mp4
+  captura.PNG                        -&gt; imagenes/captura.PNG
+  clip.mov                           -&gt; videos/clip.mov
+  contrato.pdf                       -&gt; documentos/contrato.pdf
+  copia-seguridad.zip                -&gt; comprimidos/copia-seguridad.zip
+  foto-playa.jpg                     -&gt; imagenes/foto-playa-1.jpg  (renombrado)
+  instalador.dmg                     -&gt; otros/instalador.dmg
+  logo.svg                           -&gt; imagenes/logo.svg
+  notas.xyz                          -&gt; otros/notas.xyz
+  presentacion.pptx                  -&gt; documentos/presentacion.pptx
+  proyecto.tar.gz                    -&gt; comprimidos/proyecto.tar.gz
+  ventas-2026.csv                    -&gt; documentos/ventas-2026.csv
+
+  CATEGORÍA      FICHEROS
+  -----------------------
+  imagenes              3
+  documentos            4
+  videos                2
+  comprimidos           2
+  otros                 2
+  -----------------------
+  TOTAL                13
+
+13 ficheros movidos.</code></pre></div>
+<p>La carpeta queda así:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">text</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-text">descargas/
+    .oculto
+    comprimidos/
+        copia-seguridad.zip
+        proyecto.tar.gz
+    documentos/
+        apuntes.txt
+        contrato.pdf
+        presentacion.pptx
+        ventas-2026.csv
+    facturas/
+        contrato.pdf
+        escaneo.jpg
+        recibo-luz.pdf
+    imagenes/
+        captura.PNG
+        foto-playa-1.jpg
+        foto-playa.jpg
+        logo.svg
+    otros/
+        instalador.dmg
+        notas.xyz
+    videos/
+        boda.mp4
+        clip.mov</code></pre></div>
+<p>Segunda ejecución, para comprobar la idempotencia:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python3</span> <span class="t-palabra">-m</span> organizador descargas
+<span class="t-integrada">echo</span> <span class="t-operador">$</span>?</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>No hay nada que ordenar en descargas.
+0</code></pre></div>
+<p>Ahora sí, bajando por las subcarpetas:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python3</span> <span class="t-palabra">-m</span> organizador descargas <span class="t-palabra">--recursivo</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Ordenando descargas.
+
+  facturas/contrato.pdf              -&gt; documentos/contrato-1.pdf  (renombrado)
+  facturas/escaneo.jpg               -&gt; imagenes/escaneo.jpg
+  facturas/recibo-luz.pdf            -&gt; documentos/recibo-luz.pdf
+
+  CATEGORÍA      FICHEROS
+  -----------------------
+  imagenes              1
+  documentos            2
+  -----------------------
+  TOTAL                 3
+
+3 ficheros movidos.</code></pre></div>
+<p>Los dos <code>contrato.pdf</code> han sobrevivido los dos, y la carpeta <code>facturas</code> se queda vacía, porque el programa mueve ficheros y no borra carpetas. Eso es deliberado: borrar carpetas es otra decisión y merece su propia opción, que tienes en las ampliaciones.</p>
+<p>Y el caso de error:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python3</span> <span class="t-palabra">-m</span> organizador descargas-de-ayer
+<span class="t-integrada">echo</span> <span class="t-operador">$</span>?</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>organizador: la carpeta &#x27;descargas-de-ayer&#x27; no existe.
+1</code></pre></div>
+<h2 id="lo-que-se-ha-usado">Lo que se ha usado<a class="ancla" href="#lo-que-se-ha-usado" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="envoltura-tabla"><table><thead><tr><th>Del curso</th><th>Dónde</th></tr></thead><tbody><tr><td><code>pathlib</code>: <code>glob</code>, <code>stem</code>, <code>suffix</code>, <code>with_name</code>, <code>relative_to</code>, <code>rename</code>, <code>mkdir</code></td><td>Todo <code>logica.py</code></td></tr><tr><td>Comprensiones de diccionario anidadas</td><td>El índice invertido de <code>categorias.py</code></td></tr><tr><td>Conjuntos y su unión</td><td>Las extensiones y <code>NOMBRES_DE_CARPETA</code></td></tr><tr><td>Dataclasses y propiedades</td><td><code>Movimiento</code></td></tr><tr><td><code>Counter</code></td><td>El recuento por categoría</td></tr><tr><td><code>try</code>/<code>except</code>/<code>else</code> con <code>OSError</code></td><td><code>ejecutar</code></td></tr><tr><td>f-strings con ancho variable</td><td>Las dos tablas</td></tr><tr><td><code>argparse</code> con posicional y banderas</td><td><code>cli.py</code></td></tr><tr><td><code>sys.stderr</code> y códigos de salida</td><td><code>main</code></td></tr><tr><td>Paquetes propios e importaciones relativas</td><td>Los cuatro ficheros</td></tr></tbody></table></div>
+<aside class="aviso aviso-error"><p class="titulo-aviso">FileExistsError: [Errno 17] File exists: &#x27;descargas/imagenes&#x27;</p><p>Este sale cuando en la carpeta hay un <strong>fichero</strong> llamado igual que una categoría. <code>mkdir</code> no puede crear la carpeta <code>imagenes</code> porque ese nombre ya lo ocupa un fichero sin extensión. Lo bueno es que el programa no se muere: lo apunta como fallido, sigue con el resto y lo cuenta al final.</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Ordenando caso.
+
+  nota.txt                           -&gt; documentos/nota.txt
+
+  CATEGORÍA      FICHEROS
+  -----------------------
+  documentos            1
+  -----------------------
+  TOTAL                 1
+organizador: no he podido mover &#x27;foto.jpg&#x27;: [Errno 17] File exists: &#x27;caso/imagenes&#x27;
+
+1 fichero movido, 1 con errores.</code></pre></div>
+<p>La solución es renombrar ese fichero a mano. Y la lección de fondo es la de siempre: el <code>except OSError</code> que rodea cada movimiento convierte un desastre en un aviso.</p></aside>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">rename no cruza discos</p><p><code>Path.rename()</code> mueve dentro del mismo sistema de ficheros. Si intentas mover un fichero de tu disco interno a un disco externo o a una unidad de red, falla con <code>OSError: [Errno 18] Invalid cross-device link</code>, porque por debajo no hay una copia, solo un cambio de nombre. Para eso está <code>shutil.move()</code>, que copia y borra cuando hace falta y funciona en los dos casos.</p>
+<p>En este programa se ha usado <code>rename</code> a propósito, porque el origen y el destino están siempre dentro de la misma carpeta. En cuanto le añadas una opción de carpeta de destino, cámbialo.</p></aside>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>El programa reparte los ficheros de una carpeta en subcarpetas por extensión, y su diseño gira en torno a una sola idea: <code>planificar</code> decide y <code>ejecutar</code> obedece. De esa separación sale gratis el modo <code>--simular</code>, que es la característica más importante de cualquier herramienta que mueva o borre ficheros, porque es la única forma de probarla sin miedo. Las categorías viven en un diccionario legible que se invierte con una comprensión para consultarlo rápido, y las extensiones se comparan en minúsculas. Las colisiones de nombre se resuelven con un sufijo numérico construido con <code>stem</code> y <code>suffix</code>, comprobando tanto lo que hay en disco como lo que el propio plan ya ha reservado. <code>ejecutar</code> atrapa <code>OSError</code> fichero a fichero para que un permiso denegado no tire el trabajo entero. Y la capa de terminal se limita a <code>argparse</code>, dos tablas alineadas con f-strings, los errores por <code>stderr</code> y un código de salida que distingue &quot;no había nada que hacer&quot; de &quot;algo ha fallado&quot;.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Ampliaciones</p><p>El organizador funciona, pero le falta bastante para ser una herramienta seria. En orden de dificultad:</p>
+<ol><li><strong>Limpiar las carpetas vacías.</strong> Añade una opción <code>--limpiar</code> que, después de mover, borre las subcarpetas que se hayan quedado sin nada, como <code>facturas/</code> en la sesión de ejemplo. Necesitarás <code>Path.rmdir()</code>, que solo borra carpetas vacías, y recorrer el árbol de abajo arriba para que una carpeta que solo contenía carpetas vacías también desaparezca.</li><li><strong>Una opción <code>--categoria</code> a medida.</strong> Permite <code>--categoria musica=.mp3,.flac,.wav</code> para añadir categorías sin tocar el código. Con <code>action=&quot;append&quot;</code> y <code>nargs</code> ya sabes recoger varias; lo interesante es partir el texto y fundirlo con el diccionario <code>CATEGORIAS</code>.</li><li><strong>Fichero de configuración.</strong> Lo anterior se cansa de escribirse. Mueve el mapa de categorías a un <code>organizador.toml</code> que se lea con <code>tomllib</code>, y haz que el programa use el del usuario si existe y el de por defecto si no. Aprovecha para permitir que se configure también si se ignoran los ficheros ocultos.</li><li><strong>Ordenar por fecha.</strong> Añade <code>--por-fecha</code>, que en vez de por categoría reparta en carpetas <code>2026/09</code>, usando <code>Path.stat().st_mtime</code> y <code>datetime.fromtimestamp()</code>. Fíjate en que solo cambia el cálculo del destino dentro de <code>planificar</code>: el resto del programa no se entera.</li><li><strong>Deshacer.</strong> Haz que cada ejecución real escriba un <code>organizador-ultima-vez.json</code> con la lista de movimientos, y añade un subcomando <code>deshacer</code> que lo lea y los invierta. Aquí tendrás que pasar de banderas a subcomandos con <code>add_subparsers</code>, y pensar qué hacer si el fichero ya no está donde lo dejaste.</li><li><strong>Pruebas automáticas.</strong> Escribe pruebas con <code>pytest</code> para <code>categoria_de</code>, <code>nombre_libre</code> y <code>planificar</code>. La pieza que te falta es <code>tmp_path</code>, el parámetro mágico que te da una carpeta temporal limpia en cada prueba. Comprueba también que <code>planificar</code> no toca el disco: ejecútala y verifica con <code>exists()</code> que no se ha creado ni una carpeta.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#como-se-va-a-usar">Cómo se va a usar</a></li><li class="nivel-2"><a href="#el-diseno">El diseño</a></li><li class="nivel-2"><a href="#parte-1-el-mapa-de-categorias">Parte 1: el mapa de categorías</a></li><li class="nivel-2"><a href="#parte-2-que-ficheros-hay-que-mover">Parte 2: qué ficheros hay que mover</a></li><li class="nivel-2"><a href="#parte-3-las-colisiones-de-nombre">Parte 3: las colisiones de nombre</a></li><li class="nivel-2"><a href="#parte-4-el-plan-y-su-ejecucion">Parte 4: el plan y su ejecución</a></li><li class="nivel-2"><a href="#el-apartado-importante-por-que-simular">El apartado importante: por qué --simular</a></li><li class="nivel-2"><a href="#parte-5-la-interfaz">Parte 5: la interfaz</a></li><li class="nivel-2"><a href="#parte-6-el-resumen-en-tabla">Parte 6: el resumen en tabla</a></li><li class="nivel-2"><a href="#parte-7-codigos-de-salida-y-errores">Parte 7: códigos de salida y errores</a></li><li class="nivel-2"><a href="#el-programa-completo">El programa completo</a></li><li class="nivel-2"><a href="#una-sesion-de-uso">Una sesión de uso</a></li><li class="nivel-2"><a href="#lo-que-se-ha-usado">Lo que se ha usado</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../terminal/rich-tablas-y-progreso.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">rich: tablas y progreso</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../terminal/proyecto-gestor-de-gastos.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">Proyecto: gestor de gastos</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

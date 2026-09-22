@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyecto: buscador de texto · Curso de Python</title>
+<meta name="description" content="Un clon sencillo de grep con expresiones regulares, entrada estándar, resaltado en color y los códigos de salida que lo hacen encadenable.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="terminal/proyecto-buscador-de-texto">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../terminal/index.html">Aplicaciones de terminal</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 2 &middot; Lección 28 de 28</p>
+    <h1>Proyecto: buscador de texto</h1>
+    <p class="resumen-leccion">Un clon sencillo de grep con expresiones regulares, entrada estándar, resaltado en color y los códigos de salida que lo hacen encadenable.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 45 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p><code>grep</code> es la herramienta que más se usa en una terminal después de <code>cd</code> y <code>ls</code>. Busca un texto dentro de ficheros y escribe las líneas que lo contienen. Existe desde 1973 y no ha cambiado mucho, porque no hace falta.</p>
+<p>Escribir una versión propia es el mejor cierre posible para este módulo, porque obliga a tocar todo lo que se ha visto: argumentos, colores, entrada estándar, tuberías, códigos de salida y errores por <code>stderr</code>. Y de paso introduce lo único nuevo de esta lección: las <strong>expresiones regulares</strong>, que son la forma de describir un patrón de texto en vez de un texto concreto.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Construir un buscador de texto en ficheros con expresiones regulares. Se practica el módulo <code>re</code>, la lectura desde <code>sys.stdin</code> para encadenar la herramienta con tuberías, el resaltado con códigos ANSI, los códigos de salida como convención (0 si encuentra, 1 si no), el manejo de <code>BrokenPipeError</code> y la detección de ficheros binarios.</p></aside>
+<h2 id="como-se-va-a-usar">Cómo se va a usar<a class="ancla" href="#como-se-va-a-usar" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-texto">&quot;TODO&quot;</span> tienda/src/tienda.py
+buscar <span class="t-palabra">-rn</span> <span class="t-texto">&quot;ERROR&quot;</span> tienda
+<span class="t-integrada">cat</span> registro.log <span class="t-operador">|</span> buscar <span class="t-texto">&quot;^2026-09-18.*ERROR&quot;</span>
+buscar <span class="t-palabra">-rc</span> <span class="t-texto">&quot;TODO&quot;</span> tienda</code></pre></div>
+<p>Y lo que lo hace una herramienta de terminal de verdad y no un programa suelto:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">if buscar <span class="t-palabra">-r</span> <span class="t-texto">&quot;contraseña&quot;</span> src/ <span class="t-operador">&gt;</span> /dev/null<span class="t-operador">;</span> then
+  <span class="t-integrada">echo</span> <span class="t-texto">&quot;hay una contraseña en el código&quot;</span>
+fi</code></pre></div>
+<p>Ese <code>if</code> funciona porque el programa devuelve 0 cuando encuentra algo y 1 cuando no. Volveremos a ello.</p>
+<h2 id="lo-imprescindible-de-las-expresiones-regulares">Lo imprescindible de las expresiones regulares<a class="ancla" href="#lo-imprescindible-de-las-expresiones-regulares" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Una expresión regular es un patrón que describe una familia de textos. En vez de buscar <code>ERROR</code>, buscas &quot;cuatro dígitos, un guion, dos dígitos&quot; y encuentras todas las fechas del fichero.</p>
+<p>El módulo se llama <code>re</code> y viene en la biblioteca estándar.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> re
+
+texto <span class="t-operador">=</span> <span class="t-texto">&quot;El pedido 8812 salió el 2026-09-18 y el 8813 el 2026-09-19.&quot;</span>
+
+<span class="t-integrada">print</span><span class="t-operador">(</span>re<span class="t-operador">.</span>search<span class="t-operador">(</span><span class="t-texto">r&quot;\d+&quot;</span><span class="t-operador">,</span> texto<span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>re<span class="t-operador">.</span>search<span class="t-operador">(</span><span class="t-texto">r&quot;\d+&quot;</span><span class="t-operador">,</span> texto<span class="t-operador">)</span><span class="t-operador">.</span>group<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>re<span class="t-operador">.</span>findall<span class="t-operador">(</span><span class="t-texto">r&quot;\d{4}-\d{2}-\d{2}&quot;</span><span class="t-operador">,</span> texto<span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>re<span class="t-operador">.</span>search<span class="t-operador">(</span><span class="t-texto">r&quot;bizum&quot;</span><span class="t-operador">,</span> texto<span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>&lt;re.Match object; span=(10, 14), match=&#x27;8812&#x27;&gt;
+8812
+[&#x27;2026-09-18&#x27;, &#x27;2026-09-19&#x27;]
+None</code></pre></div>
+<p>Cuatro cosas ya en este ejemplo:</p>
+<ul><li><strong><code>re.search</code> busca el patrón en cualquier parte del texto</strong> y devuelve un objeto <code>Match</code> con lo encontrado, o <code>None</code> si no hay nada. Ese <code>None</code> es lo que permite escribir <code>if re.search(...)</code>.</li><li><strong><code>.group()</code></strong> saca el texto que encajó, y <strong><code>.span()</code></strong> las posiciones de inicio y fin, que es lo que hará falta para resaltarlo en color.</li><li><strong><code>re.findall</code></strong> devuelve una lista con todas las coincidencias.</li><li><strong><code>\d</code></strong> significa &quot;un dígito&quot; y <strong><code>{4}</code></strong> significa &quot;cuatro veces&quot;.</li></ul>
+<p>Los patrones se escriben siempre entre <code>r&quot;...&quot;</code>, una <strong>cadena en bruto</strong>. La razón es que la barra invertida es el carácter de escape de Python y también el de las expresiones regulares, y sin la <code>r</code> habría que duplicarla:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">r&quot;\d+&quot;</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-integrada">len</span><span class="t-operador">(</span><span class="t-texto">r&quot;\d+&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-integrada">len</span><span class="t-operador">(</span><span class="t-texto">&quot;\n&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>\d+
+3 1</code></pre></div>
+<p><code>r&quot;\d+&quot;</code> son tres caracteres: barra, d, más. <code>&quot;\n&quot;</code> es uno solo, el salto de línea. Escribir <code>&quot;\d+&quot;</code> sin la <code>r</code> funciona hoy de milagro, pero Python ya avisa:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>SyntaxWarning: &quot;\d&quot; is an invalid escape sequence. Such sequences will not work in the future. Did you mean &quot;\\d&quot;? A raw string is also an option.</code></pre></div>
+<p>La regla es mecánica: <strong>todo patrón, con <code>r</code> delante</strong>. Siempre.</p>
+<p>Esto es lo que necesitas para esta lección y para el noventa por ciento de lo que te vas a encontrar:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Patrón</th><th>Significa</th></tr></thead><tbody><tr><td><code>abc</code></td><td>Ese texto tal cual</td></tr><tr><td><code>.</code></td><td>Un carácter cualquiera, menos el salto de línea</td></tr><tr><td><code>\d</code></td><td>Un dígito. <code>\D</code> es lo contrario</td></tr><tr><td><code>\w</code></td><td>Una letra, un dígito o un guion bajo. <code>\W</code> es lo contrario</td></tr><tr><td><code>\s</code></td><td>Un espacio, tabulador o salto de línea. <code>\S</code> es lo contrario</td></tr><tr><td><code>[aeiou]</code></td><td>Uno cualquiera de esos caracteres</td></tr><tr><td><code>[^aeiou]</code></td><td>Cualquiera menos esos</td></tr><tr><td><code>[a-z]</code></td><td>Un carácter del rango</td></tr><tr><td><code>*</code></td><td>Cero o más veces lo anterior</td></tr><tr><td><code>+</code></td><td>Una o más veces lo anterior</td></tr><tr><td><code>?</code></td><td>Cero o una vez lo anterior</td></tr><tr><td><code>{3}</code></td><td>Exactamente tres veces. <code>{2,5}</code>, entre dos y cinco</td></tr><tr><td><code>^</code></td><td>El principio de la línea</td></tr><tr><td><code>$</code></td><td>El final de la línea</td></tr><tr><td><code>\b</code></td><td>Un límite de palabra</td></tr><tr><td><code>(...)</code></td><td>Un grupo, para agrupar o para capturar</td></tr></tbody></table></div>
+<p>Falta uno que no cabe en la tabla porque su símbolo rompería las columnas: la <strong>barra vertical</strong> es la alternativa, y <code>ERROR|WARNING</code> encaja con cualquiera de las dos palabras.</p>
+<p>Algunos ejemplos que ya se pueden leer:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Patrón</th><th>Encuentra</th></tr></thead><tbody><tr><td><code>r&quot;^def &quot;</code></td><td>Las líneas que empiezan por <code>def</code></td></tr><tr><td><code>r&quot;\d{4}-\d{2}-\d{2}&quot;</code></td><td>Fechas como <code>2026-09-18</code></td></tr><tr><td><code>r&quot;\bIVA\b&quot;</code></td><td>La palabra IVA suelta, no la de <code>PRIVADO</code></td></tr><tr><td><code>r&quot;^\s*$&quot;</code></td><td>Las líneas vacías o con solo espacios</td></tr><tr><td><code>r&quot;[\w.+-]+@[\w-]+\.[\w.]+&quot;</code></td><td>Direcciones de correo, más o menos</td></tr></tbody></table></div>
+<p>Y con la barra vertical, <code>r&quot;TODO|FIXME&quot;</code> encuentra cualquiera de las dos marcas, y <code>r&quot;ERROR|WARNING&quot;</code> cualquiera de los dos niveles de un registro.</p>
+<p>Dos funciones más que hacen falta para el proyecto:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> re
+
+texto <span class="t-operador">=</span> <span class="t-texto">&quot;El pedido 8812 salió el 2026-09-18 y el 8813 el 2026-09-19.&quot;</span>
+
+<span class="t-palabra">for</span> encaje <span class="t-palabra">in</span> re<span class="t-operador">.</span>finditer<span class="t-operador">(</span><span class="t-texto">r&quot;pedido (\d+)&quot;</span><span class="t-operador">,</span> texto<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span>encaje<span class="t-operador">.</span>span<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> encaje<span class="t-operador">.</span>group<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> encaje<span class="t-operador">.</span>group<span class="t-operador">(</span><span class="t-numero">1</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+<span class="t-integrada">print</span><span class="t-operador">(</span>re<span class="t-operador">.</span>search<span class="t-operador">(</span><span class="t-texto">r&quot;PEDIDO&quot;</span><span class="t-operador">,</span> texto<span class="t-operador">,</span> re<span class="t-operador">.</span>IGNORECASE<span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>(3, 14) pedido 8812 8812
+&lt;re.Match object; span=(3, 9), match=&#x27;pedido&#x27;&gt;</code></pre></div>
+<ul><li><strong><code>re.finditer</code></strong> recorre todas las coincidencias entregando el <code>Match</code> completo, con sus posiciones. Es lo que usaremos para saber qué tramos hay que pintar de rojo.</li><li><strong><code>group(1)</code></strong> da el contenido del primer paréntesis. Los grupos se numeran desde 1; el 0 es la coincidencia entera.</li><li><strong><code>re.IGNORECASE</code></strong> es una <strong>bandera</strong> que hace que no distinga mayúsculas de minúsculas. Es la que implementa la opción <code>-i</code>.</li></ul>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Compila los patrones que vas a usar muchas veces</p><p><code>re.search(patron, texto)</code> compila el patrón cada vez que se llama. Hay una caché interna que lo disimula, pero cuando el mismo patrón se va a aplicar a cien mil líneas, lo correcto es compilarlo una vez:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">expresion <span class="t-operador">=</span> re<span class="t-operador">.</span>compile<span class="t-operador">(</span><span class="t-texto">r&quot;\d{4}-\d{2}-\d{2}&quot;</span><span class="t-operador">)</span>
+<span class="t-palabra">for</span> linea <span class="t-palabra">in</span> fichero<span class="t-operador">:</span>
+        <span class="t-palabra">if</span> expresion<span class="t-operador">.</span>search<span class="t-operador">(</span>linea<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-operador">...</span></code></pre></div>
+<p>El objeto que devuelve <code>re.compile</code> tiene los mismos métodos, <code>search</code>, <code>findall</code>, <code>finditer</code>, pero sin el primer argumento. Es lo que hace el buscador.</p></aside>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">Si buscas un texto literal, escápalo</p><p><code>re.search(&quot;3.99&quot;, &quot;cuesta 3X99 euros&quot;)</code> encuentra algo, porque el punto significa &quot;un carácter cualquiera&quot;. Cuando el patrón viene de fuera y tiene que tomarse al pie de la letra, <code>re.escape()</code> pone las barras invertidas donde hacen falta:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-integrada">print</span><span class="t-operador">(</span>re<span class="t-operador">.</span>escape<span class="t-operador">(</span><span class="t-texto">&quot;precio: 3.99 (oferta)&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>precio:\ 3\.99\ \(oferta\)</code></pre></div>
+<p>En nuestro buscador el patrón se interpreta como expresión regular a propósito, igual que en <code>grep</code>. Pero si algún día construyes uno a partir de lo que escribe un usuario en un formulario, <code>re.escape</code> es obligatorio.</p></aside>
+<h2 id="el-diseno">El diseño<a class="ancla" href="#el-diseno" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Dos módulos, la separación de siempre:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">estructura del proyecto</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-text">buscador/
+    pyproject.toml
+    src/
+        buscador/
+            __init__.py
+            busqueda.py   Compilar, buscar, recorrer ficheros, detectar binarios
+            cli.py        Argumentos, color, entrada estándar y códigos de salida
+            __main__.py</code></pre></div>
+<div class="envoltura-tabla"><table><thead><tr><th>Módulo</th><th>De qué se encarga</th><th>¿Imprime?</th></tr></thead><tbody><tr><td><code>busqueda.py</code></td><td>Encontrar las líneas que encajan y decir dónde</td><td>No</td></tr><tr><td><code>cli.py</code></td><td>Argumentos, color, tuberías, códigos de salida</td><td>Sí</td></tr></tbody></table></div>
+<p>La pieza que las une es una dataclass. <code>busqueda.py</code> no devuelve texto ya formateado: devuelve <strong>datos</strong> sobre lo encontrado, y <code>cli.py</code> decide cómo se ven.</p>
+<h2 id="parte-1-compilar-el-patron">Parte 1: compilar el patrón<a class="ancla" href="#parte-1-compilar-el-patron" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">src/buscador/busqueda.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> re
+<span class="t-palabra">from</span> collections<span class="t-operador">.</span>abc <span class="t-palabra">import</span> Iterable<span class="t-operador">,</span> Iterator
+<span class="t-palabra">from</span> dataclasses <span class="t-palabra">import</span> dataclass
+<span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+TAMANO_MUESTRA <span class="t-operador">=</span> <span class="t-numero">1024</span>
+
+
+<span class="t-operador">@</span>dataclass
+<span class="t-palabra">class</span> <span class="t-definicion">Coincidencia</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Una línea que cumple lo que se buscaba.&quot;&quot;&quot;</span>
+
+    origen<span class="t-operador">:</span> <span class="t-integrada">str</span>
+    numero<span class="t-operador">:</span> <span class="t-integrada">int</span>
+    linea<span class="t-operador">:</span> <span class="t-integrada">str</span>
+    tramos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">tuple</span><span class="t-operador">[</span><span class="t-integrada">int</span><span class="t-operador">,</span> <span class="t-integrada">int</span><span class="t-operador">]</span><span class="t-operador">]</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">compilar</span><span class="t-operador">(</span>patron<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> ignorar_mayusculas<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> re<span class="t-operador">.</span>Pattern<span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Compila el patrón una sola vez y traduce re.error a ValueError.&quot;&quot;&quot;</span>
+    banderas <span class="t-operador">=</span> re<span class="t-operador">.</span>IGNORECASE <span class="t-palabra">if</span> ignorar_mayusculas <span class="t-palabra">else</span> <span class="t-numero">0</span>
+    <span class="t-palabra">try</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> re<span class="t-operador">.</span>compile<span class="t-operador">(</span>patron<span class="t-operador">,</span> banderas<span class="t-operador">)</span>
+    <span class="t-palabra">except</span> re<span class="t-operador">.</span>error <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                <span class="t-palabra">raise</span> ValueError<span class="t-operador">(</span>f&quot;patrón no válido: <span class="t-operador">{</span>error<span class="t-operador">}</span>&quot;<span class="t-operador">)</span> <span class="t-palabra">from</span> <span class="t-palabra">None</span></code></pre></div>
+<ul><li><strong><code>Coincidencia</code> guarda las posiciones, no el texto pintado.</strong> El campo <code>tramos</code> es una lista de parejas <code>(inicio, fin)</code>: las posiciones dentro de la línea donde encajó el patrón. Con eso, la capa de interfaz puede pintarlas de rojo, subrayarlas, rodearlas de asteriscos o ignorarlas. Si <code>busqueda.py</code> devolviera la línea con los códigos ANSI ya metidos, la opción <code>--color nunca</code> sería imposible sin duplicar código.</li><li><strong><code>origen</code> es una cadena y no un <code>Path</code></strong> porque una de las fuentes no es un fichero: es la entrada estándar, y se identifica con un texto.</li><li><strong>Un patrón mal escrito lanza <code>re.error</code></strong>, que es una excepción del módulo y que <code>cli.py</code> no debería tener que conocer. Se traduce a <code>ValueError</code>, que es lo que significa de verdad: el valor que te han dado no vale.</li><li><strong><code>banderas</code> vale <code>0</code> cuando no hay ninguna</strong>, porque las banderas de <code>re</code> son números que se combinan sumando bits, y el cero es &quot;ninguna&quot;. Es el valor neutro.</li></ul>
+<h2 id="parte-2-buscar-en-las-lineas">Parte 2: buscar en las líneas<a class="ancla" href="#parte-2-buscar-en-las-lineas" aria-label="Enlace a esta seccion">#</a></h2>
+<p>El corazón del programa son nueve líneas:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">src/buscador/busqueda.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">buscar_en_lineas</span><span class="t-operador">(</span>
+    expresion<span class="t-operador">:</span> re<span class="t-operador">.</span>Pattern<span class="t-operador">,</span>
+    lineas<span class="t-operador">:</span> Iterable<span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span><span class="t-operador">,</span>
+    origen<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span>
+    invertir<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">,</span>
+<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> Iterator<span class="t-operador">[</span>Coincidencia<span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Recorre las líneas y va entregando las que cumplen el patrón.&quot;&quot;&quot;</span>
+    <span class="t-palabra">for</span> numero<span class="t-operador">,</span> linea <span class="t-palabra">in</span> <span class="t-integrada">enumerate</span><span class="t-operador">(</span>lineas<span class="t-operador">,</span> start<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                linea <span class="t-operador">=</span> linea<span class="t-operador">.</span>rstrip<span class="t-operador">(</span><span class="t-texto">&quot;\n&quot;</span><span class="t-operador">)</span>
+        tramos <span class="t-operador">=</span> <span class="t-operador">[</span>encaje<span class="t-operador">.</span>span<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">for</span> encaje <span class="t-palabra">in</span> expresion<span class="t-operador">.</span>finditer<span class="t-operador">(</span>linea<span class="t-operador">)</span><span class="t-operador">]</span>
+        <span class="t-palabra">if</span> invertir<span class="t-operador">:</span>
+                        <span class="t-palabra">if</span> <span class="t-palabra">not</span> tramos<span class="t-operador">:</span>
+                                <span class="t-palabra">yield</span> Coincidencia<span class="t-operador">(</span>origen<span class="t-operador">,</span> numero<span class="t-operador">,</span> linea<span class="t-operador">,</span> <span class="t-operador">[</span><span class="t-operador">]</span><span class="t-operador">)</span>
+        <span class="t-palabra">elif</span> tramos<span class="t-operador">:</span>
+                        <span class="t-palabra">yield</span> Coincidencia<span class="t-operador">(</span>origen<span class="t-operador">,</span> numero<span class="t-operador">,</span> linea<span class="t-operador">,</span> tramos<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> buscador<span class="t-operador">.</span>busqueda <span class="t-palabra">import</span> buscar_en_lineas<span class="t-operador">,</span> compilar
+
+lineas <span class="t-operador">=</span> <span class="t-operador">[</span>
+    <span class="t-texto">&quot;2026-09-18 10:03:41 WARNING stock negativo en el producto 44\n&quot;</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;2026-09-18 10:04:02 ERROR  no se ha podido conectar\n&quot;</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;2026-09-18 10:05:00 INFO  pedido 8812 confirmado\n&quot;</span><span class="t-operador">,</span>
+<span class="t-operador">]</span>
+
+expresion <span class="t-operador">=</span> compilar<span class="t-operador">(</span><span class="t-texto">r&quot;\d{4}&quot;</span><span class="t-operador">)</span>
+<span class="t-palabra">for</span> coincidencia <span class="t-palabra">in</span> buscar_en_lineas<span class="t-operador">(</span>expresion<span class="t-operador">,</span> lineas<span class="t-operador">,</span> <span class="t-texto">&quot;registro.log&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span>coincidencia<span class="t-operador">.</span>numero<span class="t-operador">,</span> coincidencia<span class="t-operador">.</span>tramos<span class="t-operador">,</span> coincidencia<span class="t-operador">.</span>linea<span class="t-operador">[</span><span class="t-operador">:</span><span class="t-numero">30</span><span class="t-operador">]</span><span class="t-operador">)</span>
+
+expresion <span class="t-operador">=</span> compilar<span class="t-operador">(</span><span class="t-texto">&quot;error&quot;</span><span class="t-operador">,</span> ignorar_mayusculas<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-operador">[</span>c<span class="t-operador">.</span>numero <span class="t-palabra">for</span> c <span class="t-palabra">in</span> buscar_en_lineas<span class="t-operador">(</span>expresion<span class="t-operador">,</span> lineas<span class="t-operador">,</span> <span class="t-texto">&quot;x&quot;</span><span class="t-operador">)</span><span class="t-operador">]</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-operador">[</span>c<span class="t-operador">.</span>numero <span class="t-palabra">for</span> c <span class="t-palabra">in</span> buscar_en_lineas<span class="t-operador">(</span>expresion<span class="t-operador">,</span> lineas<span class="t-operador">,</span> <span class="t-texto">&quot;x&quot;</span><span class="t-operador">,</span> invertir<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span><span class="t-operador">]</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>1 [(0, 4)] 2026-09-18 10:03:41 WARNING st
+2 [(0, 4)] 2026-09-18 10:04:02 ERROR  no 
+3 [(0, 4), (33, 37)] 2026-09-18 10:05:00 INFO  pedi</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>[2]
+[1, 3]</code></pre></div>
+<p>Las decisiones:</p>
+<ul><li><strong>Es un generador.</strong> El <code>yield</code> en vez de acumular en una lista es lo que permite buscar en un registro de doce megas sin cargarlo entero en memoria, y es lo que hace que la primera coincidencia aparezca en pantalla al instante en vez de al final. Combinado con la lectura línea a línea, el consumo de memoria del programa no depende del tamaño del fichero.</li><li><strong>Recibe cualquier iterable de cadenas</strong>, no una ruta. Por eso la misma función sirve para un fichero abierto, para <code>sys.stdin</code> y para la lista de tres cadenas del ejemplo. Probarla no requiere crear ficheros.</li><li><strong><code>enumerate(lineas, start=1)</code></strong> numera desde 1 porque los editores de texto numeran desde 1.</li><li><strong><code>rstrip(&quot;\n&quot;)</code></strong> quita el salto final, que si no se cuela en el <code>print</code>. Se usa <code>rstrip(&quot;\n&quot;)</code> y no <code>strip()</code> a secas para no perder la sangría de la línea, que en código fuente es información.</li><li><strong>La inversión se resuelve con los mismos tramos.</strong> Con <code>-v</code> la línea buena es la que no encajó, así que sus <code>tramos</code> están vacíos y se entrega con la lista vacía. No hay nada que resaltar en una línea que se ha elegido por no contener el patrón.</li><li><strong>La tercera línea del ejemplo tiene dos tramos</strong>, <code>2026</code> y <code>8812</code>, y ahí se ve para qué sirve guardar las posiciones.</li></ul>
+<h2 id="parte-3-que-ficheros-mirar-y-cuales-no">Parte 3: qué ficheros mirar, y cuáles no<a class="ancla" href="#parte-3-que-ficheros-mirar-y-cuales-no" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">src/buscador/busqueda.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">es_binario</span><span class="t-operador">(</span>ruta<span class="t-operador">:</span> Path<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">bool</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Un fichero con un byte cero en su primer kilobyte no es texto.&quot;&quot;&quot;</span>
+    <span class="t-palabra">with</span> <span class="t-integrada">open</span><span class="t-operador">(</span>ruta<span class="t-operador">,</span> <span class="t-texto">&quot;rb&quot;</span><span class="t-operador">)</span> <span class="t-palabra">as</span> fichero<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-texto">b&quot;\x00&quot;</span> <span class="t-palabra">in</span> fichero<span class="t-operador">.</span>read<span class="t-operador">(</span>TAMANO_MUESTRA<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">leer_lineas</span><span class="t-operador">(</span>ruta<span class="t-operador">:</span> Path<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> Iterator<span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee el fichero línea a línea sin cargarlo entero en memoria.&quot;&quot;&quot;</span>
+    <span class="t-palabra">with</span> <span class="t-integrada">open</span><span class="t-operador">(</span>ruta<span class="t-operador">,</span> encoding<span class="t-operador">=</span><span class="t-texto">&quot;utf-8&quot;</span><span class="t-operador">,</span> errors<span class="t-operador">=</span><span class="t-texto">&quot;replace&quot;</span><span class="t-operador">)</span> <span class="t-palabra">as</span> fichero<span class="t-operador">:</span>
+                <span class="t-palabra">yield</span> <span class="t-palabra">from</span> fichero
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">expandir</span><span class="t-operador">(</span>rutas<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Path<span class="t-operador">]</span><span class="t-operador">,</span> recursivo<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">tuple</span><span class="t-operador">[</span><span class="t-integrada">list</span><span class="t-operador">[</span>Path<span class="t-operador">]</span><span class="t-operador">,</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span><span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Convierte lo que se pidió en una lista de ficheros, y avisa de lo que descarta.&quot;&quot;&quot;</span>
+    ficheros<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Path<span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    avisos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+
+    <span class="t-palabra">for</span> ruta <span class="t-palabra">in</span> rutas<span class="t-operador">:</span>
+                <span class="t-palabra">if</span> <span class="t-palabra">not</span> ruta<span class="t-operador">.</span>exists<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        avisos<span class="t-operador">.</span>append<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>ruta<span class="t-operador">}</span>: no existe&quot;<span class="t-operador">)</span>
+        <span class="t-palabra">elif</span> ruta<span class="t-operador">.</span>is_file<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        ficheros<span class="t-operador">.</span>append<span class="t-operador">(</span>ruta<span class="t-operador">)</span>
+        <span class="t-palabra">elif</span> ruta<span class="t-operador">.</span>is_dir<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">and</span> recursivo<span class="t-operador">:</span>
+                        ficheros<span class="t-operador">.</span>extend<span class="t-operador">(</span>
+                hijo <span class="t-palabra">for</span> hijo <span class="t-palabra">in</span> <span class="t-integrada">sorted</span><span class="t-operador">(</span>ruta<span class="t-operador">.</span>rglob<span class="t-operador">(</span><span class="t-texto">&quot;*&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+                <span class="t-palabra">if</span> hijo<span class="t-operador">.</span>is_file<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">and</span> <span class="t-palabra">not</span> <span class="t-integrada">any</span><span class="t-operador">(</span>parte<span class="t-operador">.</span>startswith<span class="t-operador">(</span><span class="t-texto">&quot;.&quot;</span><span class="t-operador">)</span> <span class="t-palabra">for</span> parte <span class="t-palabra">in</span> hijo<span class="t-operador">.</span>parts<span class="t-operador">)</span>
+            <span class="t-operador">)</span>
+        <span class="t-palabra">elif</span> ruta<span class="t-operador">.</span>is_dir<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        avisos<span class="t-operador">.</span>append<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>ruta<span class="t-operador">}</span>: es una carpeta (usa -r)&quot;<span class="t-operador">)</span>
+        <span class="t-palabra">else</span><span class="t-operador">:</span>
+                        avisos<span class="t-operador">.</span>append<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>ruta<span class="t-operador">}</span>: no es un fichero normal&quot;<span class="t-operador">)</span>
+
+    <span class="t-palabra">return</span> ficheros<span class="t-operador">,</span> avisos</code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+<span class="t-palabra">from</span> buscador<span class="t-operador">.</span>busqueda <span class="t-palabra">import</span> es_binario<span class="t-operador">,</span> expandir
+
+<span class="t-integrada">print</span><span class="t-operador">(</span>es_binario<span class="t-operador">(</span>Path<span class="t-operador">(</span><span class="t-texto">&quot;tienda/datos.bin&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">,</span> es_binario<span class="t-operador">(</span>Path<span class="t-operador">(</span><span class="t-texto">&quot;tienda/registro.log&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+ficheros<span class="t-operador">,</span> avisos <span class="t-operador">=</span> expandir<span class="t-operador">(</span><span class="t-operador">[</span>Path<span class="t-operador">(</span><span class="t-texto">&quot;tienda&quot;</span><span class="t-operador">)</span><span class="t-operador">]</span><span class="t-operador">,</span> recursivo<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">(</span>f<span class="t-operador">)</span> <span class="t-palabra">for</span> f <span class="t-palabra">in</span> ficheros<span class="t-operador">]</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>expandir<span class="t-operador">(</span><span class="t-operador">[</span>Path<span class="t-operador">(</span><span class="t-texto">&quot;tienda&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> Path<span class="t-operador">(</span><span class="t-texto">&quot;no-existe.txt&quot;</span><span class="t-operador">)</span><span class="t-operador">]</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>True False
+[&#x27;tienda/datos.bin&#x27;, &#x27;tienda/docs/leeme.md&#x27;, &#x27;tienda/registro.log&#x27;, &#x27;tienda/src/clientes.py&#x27;, &#x27;tienda/src/tienda.py&#x27;]
+([], [&#x27;tienda: es una carpeta (usa -r)&#x27;, &#x27;no-existe.txt: no existe&#x27;])</code></pre></div>
+<p>Las decisiones:</p>
+<ul><li><strong>Los binarios se detectan buscando un byte cero.</strong> Es la heurística que usan <code>grep</code>, <code>git</code> y casi todo el mundo, y funciona porque un fichero de texto en UTF-8 no contiene nunca el byte <code>0x00</code>, mientras que casi cualquier formato binario lo tiene en el primer kilobyte. No es infalible, pero se equivoca poquísimo y cuesta dos líneas. Sin ella, buscar en una carpeta con imágenes llena la terminal de basura y puede dejarla en un estado raro, porque entre esos bytes hay secuencias de control.</li><li><strong>Solo se lee el primer kilobyte</strong>, no el fichero entero. Con un vídeo de dos gigas la diferencia no es pequeña.</li><li><strong><code>errors=&quot;replace&quot;</code> al leer texto.</strong> Un fichero de texto puede tener un byte suelto que no es UTF-8 válido, por ejemplo porque viene de un sistema antiguo. Sin esa opción, el programa moriría con <code>UnicodeDecodeError</code> a mitad de la búsqueda; con ella, ese byte se convierte en el carácter de reemplazo y la línea se busca igual.</li><li><strong><code>yield from fichero</code></strong> es un generador que entrega las líneas del fichero según se piden. Lo importante es que el <code>with</code> sigue abierto mientras se consume: el fichero se cierra cuando el generador se agota.</li><li><strong><code>expandir</code> devuelve los avisos en vez de imprimirlos.</strong> Es la misma regla del resto del módulo: la lógica informa, la interfaz decide. Aquí se nota porque esos avisos van a <code>stderr</code>, y decidir eso no es asunto de <code>busqueda.py</code>.</li><li><strong>Los ficheros ocultos se saltan al bajar por una carpeta.</strong> Sin ese <code>any(...)</code>, un <code>buscar -r &quot;algo&quot; .</code> en un proyecto con Git se metería en <code>.git/</code> y sacaría cientos de resultados inútiles. Si se nombra el fichero oculto explícitamente, en cambio, se busca en él: lo pediste tú.</li></ul>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">Un fichero nombrado explícitamente no se discute</p><p>Fíjate en la asimetría: <code>-r</code> sobre una carpeta salta los ocultos y los binarios, pero <code>buscar &quot;x&quot; .gitignore</code> busca en <code>.gitignore</code> sin rechistar. Es la convención de las herramientas de terminal: cuando el usuario nombra algo, sabe lo que hace; cuando la herramienta adivina, se pone prudente. Las opciones por defecto son para el caso en que nadie ha dicho nada.</p></aside>
+<h2 id="parte-4-resaltar-las-coincidencias">Parte 4: resaltar las coincidencias<a class="ancla" href="#parte-4-resaltar-las-coincidencias" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">src/buscador/cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">NORMAL <span class="t-operador">=</span> <span class="t-texto">&quot;\033[0m&quot;</span>
+ROJO <span class="t-operador">=</span> <span class="t-texto">&quot;\033[1;31m&quot;</span>
+MAGENTA <span class="t-operador">=</span> <span class="t-texto">&quot;\033[35m&quot;</span>
+VERDE <span class="t-operador">=</span> <span class="t-texto">&quot;\033[32m&quot;</span>
+CIAN <span class="t-operador">=</span> <span class="t-texto">&quot;\033[36m&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">resaltar</span><span class="t-operador">(</span>coincidencia<span class="t-operador">:</span> Coincidencia<span class="t-operador">,</span> color<span class="t-operador">:</span> <span class="t-integrada">bool</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Devuelve la línea con los tramos encontrados envueltos en rojo.&quot;&quot;&quot;</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> color <span class="t-palabra">or</span> <span class="t-palabra">not</span> coincidencia<span class="t-operador">.</span>tramos<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> coincidencia<span class="t-operador">.</span>linea
+
+    trozos <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    final_anterior <span class="t-operador">=</span> <span class="t-numero">0</span>
+    <span class="t-palabra">for</span> inicio<span class="t-operador">,</span> fin <span class="t-palabra">in</span> coincidencia<span class="t-operador">.</span>tramos<span class="t-operador">:</span>
+                trozos<span class="t-operador">.</span>append<span class="t-operador">(</span>coincidencia<span class="t-operador">.</span>linea<span class="t-operador">[</span>final_anterior<span class="t-operador">:</span>inicio<span class="t-operador">]</span><span class="t-operador">)</span>
+        trozos<span class="t-operador">.</span>append<span class="t-operador">(</span>ROJO <span class="t-operador">+</span> coincidencia<span class="t-operador">.</span>linea<span class="t-operador">[</span>inicio<span class="t-operador">:</span>fin<span class="t-operador">]</span> <span class="t-operador">+</span> NORMAL<span class="t-operador">)</span>
+        final_anterior <span class="t-operador">=</span> fin
+    trozos<span class="t-operador">.</span>append<span class="t-operador">(</span>coincidencia<span class="t-operador">.</span>linea<span class="t-operador">[</span>final_anterior<span class="t-operador">:</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-texto">&quot;&quot;</span><span class="t-operador">.</span>join<span class="t-operador">(</span>trozos<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">pintar_coincidencia</span><span class="t-operador">(</span>coincidencia<span class="t-operador">:</span> Coincidencia<span class="t-operador">,</span> opciones<span class="t-operador">,</span> varios<span class="t-operador">:</span> <span class="t-integrada">bool</span><span class="t-operador">,</span> color<span class="t-operador">:</span> <span class="t-integrada">bool</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Imprime una línea al estilo de grep: fichero, número y texto.&quot;&quot;&quot;</span>
+    partes <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    <span class="t-palabra">if</span> varios<span class="t-operador">:</span>
+                nombre <span class="t-operador">=</span> coincidencia<span class="t-operador">.</span>origen
+        partes<span class="t-operador">.</span>append<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>MAGENTA<span class="t-operador">}</span><span class="t-operador">{</span>nombre<span class="t-operador">}</span><span class="t-operador">{</span>NORMAL<span class="t-operador">}</span>&quot; <span class="t-palabra">if</span> color <span class="t-palabra">else</span> nombre<span class="t-operador">)</span>
+    <span class="t-palabra">if</span> opciones<span class="t-operador">.</span>numero_de_linea<span class="t-operador">:</span>
+                numero <span class="t-operador">=</span> <span class="t-integrada">str</span><span class="t-operador">(</span>coincidencia<span class="t-operador">.</span>numero<span class="t-operador">)</span>
+        partes<span class="t-operador">.</span>append<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>VERDE<span class="t-operador">}</span><span class="t-operador">{</span>numero<span class="t-operador">}</span><span class="t-operador">{</span>NORMAL<span class="t-operador">}</span>&quot; <span class="t-palabra">if</span> color <span class="t-palabra">else</span> numero<span class="t-operador">)</span>
+    partes<span class="t-operador">.</span>append<span class="t-operador">(</span>resaltar<span class="t-operador">(</span>coincidencia<span class="t-operador">,</span> color<span class="t-operador">)</span><span class="t-operador">)</span>
+    separador <span class="t-operador">=</span> f&quot;<span class="t-operador">{</span>CIAN<span class="t-operador">}</span>:<span class="t-operador">{</span>NORMAL<span class="t-operador">}</span>&quot; <span class="t-palabra">if</span> color <span class="t-palabra">else</span> <span class="t-texto">&quot;:&quot;</span>
+    <span class="t-integrada">print</span><span class="t-operador">(</span>separador<span class="t-operador">.</span>join<span class="t-operador">(</span>partes<span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<p><code>resaltar</code> reconstruye la línea a trozos alternando lo que no encajó con lo que sí, usando <code>final_anterior</code> para no perderse nada por el camino. La tentación es hacerlo con <code>linea.replace(encontrado, ROJO + encontrado + NORMAL)</code>, y es un error: <code>replace</code> sustituiría también las apariciones que el patrón no había seleccionado, y con <code>-i</code> ni siquiera encontraría las que tienen otra capitalización. Las posiciones que devuelve <code>finditer</code> son exactas; el texto, no.</p>
+<p>Se construyen los trozos en una lista y se juntan al final con <code>&quot;&quot;.join()</code> en vez de ir concatenando con <code>+=</code>, que es lo que viste en la lección de cadenas: concatenar en un bucle crea una cadena nueva en cada vuelta.</p>
+<p><code>pintar_coincidencia</code> arma la línea con la estructura clásica de <code>grep</code>, <code>fichero:numero:texto</code>, saltándose las partes que no toquen. Y el nombre del fichero solo sale <strong>si hay más de uno</strong>: cuando buscas en un solo fichero ya sabes cuál es, y repetirlo ochenta veces solo estorba.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">--color</span> siempre <span class="t-palabra">-n</span> <span class="t-texto">&quot;ERROR|WARNING&quot;</span> tienda/registro.log</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>3:2026-09-18 10:03:41 WARNING stock negativo en el producto 44
+4:2026-09-18 10:04:02 ERROR  no se ha podido conectar con la pasarela de pago
+6:2026-09-18 10:04:19 ERROR  no se ha podido conectar con la pasarela de pago</code></pre></div>
+<p>Esta salida está capturada a un fichero, así que sale limpia. En la terminal, el número de línea va en verde, los dos puntos en cian y <code>ERROR</code> y <code>WARNING</code> en rojo brillante. Lo que de verdad viaja por la tubería es esto:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">text</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-text">\033[32m3\033[0m\033[36m:\033[0m2026-09-18 10:03:41 \033[1;31mWARNING\033[0m stock negativo...</code></pre></div>
+<p>Por eso existe <code>--color</code> con sus tres valores y por eso, en modo <code>auto</code>, el color se apaga solo cuando la salida no va a una terminal. Igual que en el proyecto anterior:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">src/buscador/cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">quiere_color</span><span class="t-operador">(</span>modo<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">bool</span><span class="t-operador">:</span>
+        <span class="t-palabra">if</span> modo <span class="t-operador">==</span> <span class="t-texto">&quot;nunca&quot;</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+    <span class="t-palabra">if</span> modo <span class="t-operador">==</span> <span class="t-texto">&quot;siempre&quot;</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-palabra">True</span>
+    <span class="t-palabra">if</span> os<span class="t-operador">.</span>environ<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&quot;NO_COLOR&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+    <span class="t-palabra">return</span> sys<span class="t-operador">.</span>stdout<span class="t-operador">.</span>isatty<span class="t-operador">(</span><span class="t-operador">)</span></code></pre></div>
+<h2 id="parte-5-leer-de-la-entrada-estandar">Parte 5: leer de la entrada estándar<a class="ancla" href="#parte-5-leer-de-la-entrada-estandar" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Esta es la diferencia entre un programa que busca en ficheros y una herramienta de terminal:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">src/buscador/cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">        <span class="t-palabra">if</span> <span class="t-palabra">not</span> opciones<span class="t-operador">.</span>ficheros<span class="t-operador">:</span>
+                fuentes <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">(</span>ENTRADA_ESTANDAR<span class="t-operador">,</span> sys<span class="t-operador">.</span>stdin<span class="t-operador">)</span><span class="t-operador">]</span>
+        varios <span class="t-operador">=</span> <span class="t-palabra">False</span>
+    <span class="t-palabra">else</span><span class="t-operador">:</span>
+                fuentes <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+        varios <span class="t-operador">=</span> <span class="t-integrada">len</span><span class="t-operador">(</span>ficheros<span class="t-operador">)</span> <span class="t-operador">&gt;</span> <span class="t-numero">1</span>
+        <span class="t-palabra">for</span> fichero <span class="t-palabra">in</span> ficheros<span class="t-operador">:</span>
+                        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                                <span class="t-palabra">if</span> es_binario<span class="t-operador">(</span>fichero<span class="t-operador">)</span><span class="t-operador">:</span>
+                                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;buscador: <span class="t-operador">{</span>fichero<span class="t-operador">}</span>: fichero binario, me lo salto&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+                    <span class="t-palabra">continue</span>
+                fuentes<span class="t-operador">.</span>append<span class="t-operador">(</span><span class="t-operador">(</span><span class="t-integrada">str</span><span class="t-operador">(</span>fichero<span class="t-operador">)</span><span class="t-operador">,</span> leer_lineas<span class="t-operador">(</span>fichero<span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+            <span class="t-palabra">except</span> OSError <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;buscador: <span class="t-operador">{</span>fichero<span class="t-operador">}</span>: <span class="t-operador">{</span>error<span class="t-operador">.</span>strerror<span class="t-operador">}</span>&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+                hubo_errores <span class="t-operador">=</span> <span class="t-palabra">True</span></code></pre></div>
+<p>La clave es que <code>fuentes</code> es una lista de parejas <code>(nombre, iterable de líneas)</code>, y a <code>buscar_en_lineas</code> le da exactamente igual de dónde salgan esas líneas. <code>sys.stdin</code> se recorre con un <code>for</code> como cualquier fichero abierto, porque es un fichero abierto: el que el sistema operativo conecta a la entrada del proceso.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">cat</span> tienda/registro.log <span class="t-operador">|</span> buscar <span class="t-texto">&quot;ERROR&quot;</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>2026-09-18 10:04:02 ERROR  no se ha podido conectar con la pasarela de pago
+2026-09-18 10:04:19 ERROR  no se ha podido conectar con la pasarela de pago</code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">ls</span> tienda <span class="t-operador">|</span> buscar <span class="t-texto">&quot;\.log$&quot;</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>registro.log</code></pre></div>
+<p>En el segundo ejemplo el buscador ni siquiera está leyendo un fichero: está filtrando la salida de <code>ls</code>. Eso es lo que significa encajar en la terminal, y sale de una sola decisión de diseño: <strong>si no hay ficheros, la fuente es <code>sys.stdin</code></strong>.</p>
+<ul><li><strong><code>nargs=&quot;*&quot;</code> en el argumento <code>ficheros</code></strong> es lo que permite que la lista esté vacía sin que <code>argparse</code> proteste.</li><li><strong>Con la entrada estándar, <code>varios</code> es <code>False</code></strong>, así que no se imprime el nombre del origen delante de cada línea. Poner <code>(entrada estándar):</code> ochenta veces sería ruido, y además rompería el encadenado con otras herramientas.</li></ul>
+<h2 id="parte-6-el-codigo-de-salida-que-es-lo-que-lo-hace-encadenable">Parte 6: el código de salida, que es lo que lo hace encadenable<a class="ancla" href="#parte-6-el-codigo-de-salida-que-es-lo-que-lo-hace-encadenable" aria-label="Enlace a esta seccion">#</a></h2>
+<p><code>grep</code> tiene una convención que lleva cincuenta años en pie:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Código</th><th>Significa</th></tr></thead><tbody><tr><td><code>0</code></td><td>Ha encontrado al menos una coincidencia</td></tr><tr><td><code>1</code></td><td>No ha encontrado ninguna. No es un error</td></tr><tr><td><code>2</code></td><td>Ha habido un problema: un fichero que no existe, un patrón mal escrito</td></tr></tbody></table></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">src/buscador/cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">        <span class="t-palabra">if</span> hubo_errores <span class="t-palabra">and</span> <span class="t-palabra">not</span> encontrado<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-numero">2</span>
+    <span class="t-palabra">return</span> <span class="t-numero">0</span> <span class="t-palabra">if</span> encontrado <span class="t-palabra">else</span> <span class="t-numero">1</span></code></pre></div>
+<p>Dos líneas, y son las que convierten el programa en una pieza de construcción. La terminal usa el código de salida como valor de verdad, así que:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">if buscar <span class="t-palabra">-r</span> <span class="t-texto">&quot;IVA&quot;</span> tienda <span class="t-operador">&gt;</span> /dev/null 2<span class="t-operador">&gt;</span><span class="t-operador">&amp;</span>1<span class="t-operador">;</span> then
+  <span class="t-integrada">echo</span> <span class="t-texto">&quot;queda IVA por revisar&quot;</span>
+else
+  <span class="t-integrada">echo</span> <span class="t-texto">&quot;nada de IVA&quot;</span>
+fi</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>queda IVA por revisar</code></pre></div>
+<p>Fíjate en que <strong>&quot;no he encontrado nada&quot; devuelve 1 y no es un fallo</strong>. Es la parte que más cuesta aceptar, porque un 1 parece un error. Pero si &quot;no encontrado&quot; devolviera 0, el <code>if</code> de arriba sería siempre verdadero y no serviría para nada. El código de salida no dice &quot;¿ha ido bien?&quot;, dice &quot;¿la respuesta es que sí?&quot;.</p>
+<p>Y por eso el 2 existe: hay que poder distinguir &quot;he mirado y no hay&quot; de &quot;no he podido mirar&quot;. El <code>if hubo_errores and not encontrado</code> es deliberado: si se encontró algo en cuatro ficheros y el quinto no existía, la respuesta útil sigue siendo que sí, y el aviso ya salió por <code>stderr</code>.</p>
+<h2 id="parte-7-cuando-quien-te-lee-se-va">Parte 7: cuando quien te lee se va<a class="ancla" href="#parte-7-cuando-quien-te-lee-se-va" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Prueba a encadenar cualquier programa largo con <code>head</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">-n</span> <span class="t-texto">&quot;peticion&quot;</span> grande.log <span class="t-operador">|</span> head -3</code></pre></div>
+<p><code>head</code> imprime tres líneas y se cierra. Pero el buscador sigue escribiendo en una tubería que ya no tiene a nadie al otro lado, y el siguiente <code>print</code> revienta con <code>BrokenPipeError</code>. Sin tratarlo, la salida es un traceback feísimo y, de propina, un segundo mensaje de &quot;Exception ignored&quot; cuando el intérprete intenta vaciar la salida al cerrar.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">src/buscador/cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">ejecutar</span><span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">int</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Envoltorio que aguanta las tuberías cerradas y el Ctrl+C.&quot;&quot;&quot;</span>
+    <span class="t-palabra">try</span><span class="t-operador">:</span>
+                codigo <span class="t-operador">=</span> main<span class="t-operador">(</span><span class="t-operador">)</span>
+        sys<span class="t-operador">.</span>stdout<span class="t-operador">.</span>flush<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">except</span> KeyboardInterrupt<span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;\nbuscador: interrumpido&quot;</span><span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">130</span>
+    <span class="t-palabra">except</span> BrokenPipeError<span class="t-operador">:</span>
+        <span class="t-comentario"># Quien leía se ha ido. Se desvía la salida al vacío para que Python</span>
+        <span class="t-comentario"># no vuelva a intentar vaciarla al cerrar y se queje.</span>
+                os<span class="t-operador">.</span>dup2<span class="t-operador">(</span>os<span class="t-operador">.</span><span class="t-integrada">open</span><span class="t-operador">(</span>os<span class="t-operador">.</span>devnull<span class="t-operador">,</span> os<span class="t-operador">.</span>O_WRONLY<span class="t-operador">)</span><span class="t-operador">,</span> sys<span class="t-operador">.</span>stdout<span class="t-operador">.</span>fileno<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">141</span>
+    <span class="t-palabra">return</span> codigo</code></pre></div>
+<p>Tres detalles, y ninguno es evidente:</p>
+<ul><li><strong>El <code>flush</code> va dentro del <code>try</code>.</strong> La salida está en un búfer, así que el <code>BrokenPipeError</code> puede no aparecer en el <code>print</code> sino más tarde, al vaciarlo. Si el <code>flush</code> quedara fuera, la excepción se escaparía del <code>try</code> y no habríamos ganado nada.</li><li><strong>El <code>dup2</code> sobre <code>/dev/null</code></strong> sustituye el descriptor de la salida estándar por el agujero negro del sistema. Sin eso, al terminar el programa Python intenta vaciar <code>stdout</code> una última vez, vuelve a fallar y escribe por <code>stderr</code> un <code>Exception ignored in: &lt;_io.TextIOWrapper name=&#x27;&lt;stdout&gt;&#x27;...&gt;</code> que no hay forma de capturar desde el código normal.</li><li><strong>El 141 es 128 más 13</strong>, y 13 es el número de la señal <code>SIGPIPE</code>. Es lo que devolvería un programa en C, que se muere por la señal en vez de recibir una excepción. Python desactiva esa señal y te la entrega como <code>BrokenPipeError</code>, pero el código de salida conviene mantenerlo por compatibilidad.</li></ul>
+<p>Y hay una trampa más, que se ve mirando la jerarquía de excepciones:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">src/buscador/cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">                <span class="t-palabra">except</span> BrokenPipeError<span class="t-operador">:</span>
+            <span class="t-comentario"># Es un OSError, así que hay que dejarlo pasar antes del except de abajo.</span>
+                        <span class="t-palabra">raise</span>
+        <span class="t-palabra">except</span> OSError <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;buscador: <span class="t-operador">{</span>origen<span class="t-operador">}</span>: <span class="t-operador">{</span>error<span class="t-operador">.</span>strerror<span class="t-operador">}</span>&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span></code></pre></div>
+<p><strong><code>BrokenPipeError</code> hereda de <code>OSError</code>.</strong> El bucle que recorre los ficheros captura <code>OSError</code> para avisar de permisos denegados, y sin ese <code>except ... raise</code> delante se tragaría también la tubería rota, imprimiendo un absurdo <code>buscador: grande.log: Broken pipe</code> justo después de que <code>head</code> haya hecho su trabajo. Poner primero el <code>except</code> más específico y volver a lanzarlo es la forma de dejarlo pasar.</p>
+<p>Con todo en su sitio, el encadenado con <code>head</code> es limpio:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">-n</span> <span class="t-texto">&quot;peticion&quot;</span> grande.log <span class="t-operador">|</span> head -3
+<span class="t-integrada">echo</span> <span class="t-operador">$</span>?</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>1:2026-09-18 10:00:00 INFO  peticion 0 atendida en 0 ms
+2:2026-09-18 10:00:01 INFO  peticion 1 atendida en 1 ms
+3:2026-09-18 10:00:02 INFO  peticion 2 atendida en 2 ms
+0</code></pre></div>
+<p>El <code>0</code> es el código de <code>head</code>, que es el último de la tubería. El 141 del buscador está ahí, pero la terminal informa del último eslabón.</p>
+<h2 id="el-programa-completo">El programa completo<a class="ancla" href="#el-programa-completo" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">src/buscador/busqueda.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;La lógica de la búsqueda. No imprime ni lee argumentos.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">import</span> re
+<span class="t-palabra">from</span> collections<span class="t-operador">.</span>abc <span class="t-palabra">import</span> Iterable<span class="t-operador">,</span> Iterator
+<span class="t-palabra">from</span> dataclasses <span class="t-palabra">import</span> dataclass
+<span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+TAMANO_MUESTRA <span class="t-operador">=</span> <span class="t-numero">1024</span>
+
+
+<span class="t-operador">@</span>dataclass
+<span class="t-palabra">class</span> <span class="t-definicion">Coincidencia</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Una línea que cumple lo que se buscaba.&quot;&quot;&quot;</span>
+
+    origen<span class="t-operador">:</span> <span class="t-integrada">str</span>
+    numero<span class="t-operador">:</span> <span class="t-integrada">int</span>
+    linea<span class="t-operador">:</span> <span class="t-integrada">str</span>
+    tramos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">tuple</span><span class="t-operador">[</span><span class="t-integrada">int</span><span class="t-operador">,</span> <span class="t-integrada">int</span><span class="t-operador">]</span><span class="t-operador">]</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">compilar</span><span class="t-operador">(</span>patron<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> ignorar_mayusculas<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> re<span class="t-operador">.</span>Pattern<span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Compila el patrón una sola vez y traduce re.error a ValueError.&quot;&quot;&quot;</span>
+    banderas <span class="t-operador">=</span> re<span class="t-operador">.</span>IGNORECASE <span class="t-palabra">if</span> ignorar_mayusculas <span class="t-palabra">else</span> <span class="t-numero">0</span>
+    <span class="t-palabra">try</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> re<span class="t-operador">.</span>compile<span class="t-operador">(</span>patron<span class="t-operador">,</span> banderas<span class="t-operador">)</span>
+    <span class="t-palabra">except</span> re<span class="t-operador">.</span>error <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                <span class="t-palabra">raise</span> ValueError<span class="t-operador">(</span>f&quot;patrón no válido: <span class="t-operador">{</span>error<span class="t-operador">}</span>&quot;<span class="t-operador">)</span> <span class="t-palabra">from</span> <span class="t-palabra">None</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">buscar_en_lineas</span><span class="t-operador">(</span>
+    expresion<span class="t-operador">:</span> re<span class="t-operador">.</span>Pattern<span class="t-operador">,</span>
+    lineas<span class="t-operador">:</span> Iterable<span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span><span class="t-operador">,</span>
+    origen<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span>
+    invertir<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">,</span>
+<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> Iterator<span class="t-operador">[</span>Coincidencia<span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Recorre las líneas y va entregando las que cumplen el patrón.&quot;&quot;&quot;</span>
+    <span class="t-palabra">for</span> numero<span class="t-operador">,</span> linea <span class="t-palabra">in</span> <span class="t-integrada">enumerate</span><span class="t-operador">(</span>lineas<span class="t-operador">,</span> start<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                linea <span class="t-operador">=</span> linea<span class="t-operador">.</span>rstrip<span class="t-operador">(</span><span class="t-texto">&quot;\n&quot;</span><span class="t-operador">)</span>
+        tramos <span class="t-operador">=</span> <span class="t-operador">[</span>encaje<span class="t-operador">.</span>span<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">for</span> encaje <span class="t-palabra">in</span> expresion<span class="t-operador">.</span>finditer<span class="t-operador">(</span>linea<span class="t-operador">)</span><span class="t-operador">]</span>
+        <span class="t-palabra">if</span> invertir<span class="t-operador">:</span>
+                        <span class="t-palabra">if</span> <span class="t-palabra">not</span> tramos<span class="t-operador">:</span>
+                                <span class="t-palabra">yield</span> Coincidencia<span class="t-operador">(</span>origen<span class="t-operador">,</span> numero<span class="t-operador">,</span> linea<span class="t-operador">,</span> <span class="t-operador">[</span><span class="t-operador">]</span><span class="t-operador">)</span>
+        <span class="t-palabra">elif</span> tramos<span class="t-operador">:</span>
+                        <span class="t-palabra">yield</span> Coincidencia<span class="t-operador">(</span>origen<span class="t-operador">,</span> numero<span class="t-operador">,</span> linea<span class="t-operador">,</span> tramos<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">es_binario</span><span class="t-operador">(</span>ruta<span class="t-operador">:</span> Path<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">bool</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Un fichero con un byte cero en su primer kilobyte no es texto.&quot;&quot;&quot;</span>
+    <span class="t-palabra">with</span> <span class="t-integrada">open</span><span class="t-operador">(</span>ruta<span class="t-operador">,</span> <span class="t-texto">&quot;rb&quot;</span><span class="t-operador">)</span> <span class="t-palabra">as</span> fichero<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-texto">b&quot;\x00&quot;</span> <span class="t-palabra">in</span> fichero<span class="t-operador">.</span>read<span class="t-operador">(</span>TAMANO_MUESTRA<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">leer_lineas</span><span class="t-operador">(</span>ruta<span class="t-operador">:</span> Path<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> Iterator<span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee el fichero línea a línea sin cargarlo entero en memoria.&quot;&quot;&quot;</span>
+    <span class="t-palabra">with</span> <span class="t-integrada">open</span><span class="t-operador">(</span>ruta<span class="t-operador">,</span> encoding<span class="t-operador">=</span><span class="t-texto">&quot;utf-8&quot;</span><span class="t-operador">,</span> errors<span class="t-operador">=</span><span class="t-texto">&quot;replace&quot;</span><span class="t-operador">)</span> <span class="t-palabra">as</span> fichero<span class="t-operador">:</span>
+                <span class="t-palabra">yield</span> <span class="t-palabra">from</span> fichero
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">expandir</span><span class="t-operador">(</span>rutas<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Path<span class="t-operador">]</span><span class="t-operador">,</span> recursivo<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">tuple</span><span class="t-operador">[</span><span class="t-integrada">list</span><span class="t-operador">[</span>Path<span class="t-operador">]</span><span class="t-operador">,</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span><span class="t-operador">]</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Convierte lo que se pidió en una lista de ficheros, y avisa de lo que descarta.&quot;&quot;&quot;</span>
+    ficheros<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Path<span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    avisos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+
+    <span class="t-palabra">for</span> ruta <span class="t-palabra">in</span> rutas<span class="t-operador">:</span>
+                <span class="t-palabra">if</span> <span class="t-palabra">not</span> ruta<span class="t-operador">.</span>exists<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        avisos<span class="t-operador">.</span>append<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>ruta<span class="t-operador">}</span>: no existe&quot;<span class="t-operador">)</span>
+        <span class="t-palabra">elif</span> ruta<span class="t-operador">.</span>is_file<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        ficheros<span class="t-operador">.</span>append<span class="t-operador">(</span>ruta<span class="t-operador">)</span>
+        <span class="t-palabra">elif</span> ruta<span class="t-operador">.</span>is_dir<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">and</span> recursivo<span class="t-operador">:</span>
+                        ficheros<span class="t-operador">.</span>extend<span class="t-operador">(</span>
+                hijo <span class="t-palabra">for</span> hijo <span class="t-palabra">in</span> <span class="t-integrada">sorted</span><span class="t-operador">(</span>ruta<span class="t-operador">.</span>rglob<span class="t-operador">(</span><span class="t-texto">&quot;*&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+                <span class="t-palabra">if</span> hijo<span class="t-operador">.</span>is_file<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">and</span> <span class="t-palabra">not</span> <span class="t-integrada">any</span><span class="t-operador">(</span>parte<span class="t-operador">.</span>startswith<span class="t-operador">(</span><span class="t-texto">&quot;.&quot;</span><span class="t-operador">)</span> <span class="t-palabra">for</span> parte <span class="t-palabra">in</span> hijo<span class="t-operador">.</span>parts<span class="t-operador">)</span>
+            <span class="t-operador">)</span>
+        <span class="t-palabra">elif</span> ruta<span class="t-operador">.</span>is_dir<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        avisos<span class="t-operador">.</span>append<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>ruta<span class="t-operador">}</span>: es una carpeta (usa -r)&quot;<span class="t-operador">)</span>
+        <span class="t-palabra">else</span><span class="t-operador">:</span>
+                        avisos<span class="t-operador">.</span>append<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>ruta<span class="t-operador">}</span>: no es un fichero normal&quot;<span class="t-operador">)</span>
+
+    <span class="t-palabra">return</span> ficheros<span class="t-operador">,</span> avisos</code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">src/buscador/cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;La interfaz: argumentos, color, entrada estándar y códigos de salida.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">import</span> argparse
+<span class="t-palabra">import</span> os
+<span class="t-palabra">import</span> sys
+<span class="t-palabra">from</span> pathlib <span class="t-palabra">import</span> Path
+
+<span class="t-palabra">from</span> <span class="t-operador">.</span>busqueda <span class="t-palabra">import</span> <span class="t-operador">(</span>
+    Coincidencia<span class="t-operador">,</span>
+    buscar_en_lineas<span class="t-operador">,</span>
+    compilar<span class="t-operador">,</span>
+    es_binario<span class="t-operador">,</span>
+    expandir<span class="t-operador">,</span>
+    leer_lineas<span class="t-operador">,</span>
+<span class="t-operador">)</span>
+
+NORMAL <span class="t-operador">=</span> <span class="t-texto">&quot;\033[0m&quot;</span>
+ROJO <span class="t-operador">=</span> <span class="t-texto">&quot;\033[1;31m&quot;</span>
+MAGENTA <span class="t-operador">=</span> <span class="t-texto">&quot;\033[35m&quot;</span>
+VERDE <span class="t-operador">=</span> <span class="t-texto">&quot;\033[32m&quot;</span>
+CIAN <span class="t-operador">=</span> <span class="t-texto">&quot;\033[36m&quot;</span>
+
+ENTRADA_ESTANDAR <span class="t-operador">=</span> <span class="t-texto">&quot;(entrada estándar)&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">construir_analizador</span><span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> argparse<span class="t-operador">.</span>ArgumentParser<span class="t-operador">:</span>
+        analizador <span class="t-operador">=</span> argparse<span class="t-operador">.</span>ArgumentParser<span class="t-operador">(</span>
+        prog<span class="t-operador">=</span><span class="t-texto">&quot;buscador&quot;</span><span class="t-operador">,</span>
+        description<span class="t-operador">=</span><span class="t-texto">&quot;Busca un patrón en ficheros, o en lo que le llegue por una tubería.&quot;</span><span class="t-operador">,</span>
+        epilog<span class="t-operador">=</span><span class="t-texto">&quot;Sin ficheros, lee de la entrada estándar. Devuelve 0 si encuentra algo y 1 si no.&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span><span class="t-texto">&quot;patron&quot;</span><span class="t-operador">,</span> <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;expresión regular que hay que buscar&quot;</span><span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span>
+        <span class="t-texto">&quot;ficheros&quot;</span><span class="t-operador">,</span>
+        nargs<span class="t-operador">=</span><span class="t-texto">&quot;*&quot;</span><span class="t-operador">,</span>
+        <span class="t-palabra">type</span><span class="t-operador">=</span>Path<span class="t-operador">,</span>
+        <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;ficheros o carpetas donde buscar (si no pones ninguno, lee de la entrada estándar)&quot;</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span><span class="t-texto">&quot;-i&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;--ignorar-mayusculas&quot;</span><span class="t-operador">,</span> action<span class="t-operador">=</span><span class="t-texto">&quot;store_true&quot;</span><span class="t-operador">,</span>
+                            <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;no distinguir mayúsculas de minúsculas&quot;</span><span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span><span class="t-texto">&quot;-n&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;--numero-de-linea&quot;</span><span class="t-operador">,</span> action<span class="t-operador">=</span><span class="t-texto">&quot;store_true&quot;</span><span class="t-operador">,</span>
+                            <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;mostrar el número de línea&quot;</span><span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span><span class="t-texto">&quot;-r&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;--recursivo&quot;</span><span class="t-operador">,</span> action<span class="t-operador">=</span><span class="t-texto">&quot;store_true&quot;</span><span class="t-operador">,</span>
+                            <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;bajar por las subcarpetas de las carpetas indicadas&quot;</span><span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span><span class="t-texto">&quot;-c&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;--contar&quot;</span><span class="t-operador">,</span> action<span class="t-operador">=</span><span class="t-texto">&quot;store_true&quot;</span><span class="t-operador">,</span>
+                            <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;mostrar solo cuántas líneas encajan&quot;</span><span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span><span class="t-texto">&quot;-v&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;--invertir&quot;</span><span class="t-operador">,</span> action<span class="t-operador">=</span><span class="t-texto">&quot;store_true&quot;</span><span class="t-operador">,</span>
+                            <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;mostrar las líneas que NO encajan&quot;</span><span class="t-operador">)</span>
+    analizador<span class="t-operador">.</span>add_argument<span class="t-operador">(</span><span class="t-texto">&quot;--color&quot;</span><span class="t-operador">,</span> choices<span class="t-operador">=</span><span class="t-operador">[</span><span class="t-texto">&quot;auto&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;siempre&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;nunca&quot;</span><span class="t-operador">]</span><span class="t-operador">,</span> default<span class="t-operador">=</span><span class="t-texto">&quot;auto&quot;</span><span class="t-operador">,</span>
+                            <span class="t-integrada">help</span><span class="t-operador">=</span><span class="t-texto">&quot;cuándo colorear las coincidencias (por defecto: auto)&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> analizador
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">quiere_color</span><span class="t-operador">(</span>modo<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">bool</span><span class="t-operador">:</span>
+        <span class="t-palabra">if</span> modo <span class="t-operador">==</span> <span class="t-texto">&quot;nunca&quot;</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+    <span class="t-palabra">if</span> modo <span class="t-operador">==</span> <span class="t-texto">&quot;siempre&quot;</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-palabra">True</span>
+    <span class="t-palabra">if</span> os<span class="t-operador">.</span>environ<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&quot;NO_COLOR&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+    <span class="t-palabra">return</span> sys<span class="t-operador">.</span>stdout<span class="t-operador">.</span>isatty<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">resaltar</span><span class="t-operador">(</span>coincidencia<span class="t-operador">:</span> Coincidencia<span class="t-operador">,</span> color<span class="t-operador">:</span> <span class="t-integrada">bool</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Devuelve la línea con los tramos encontrados envueltos en rojo.&quot;&quot;&quot;</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> color <span class="t-palabra">or</span> <span class="t-palabra">not</span> coincidencia<span class="t-operador">.</span>tramos<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> coincidencia<span class="t-operador">.</span>linea
+
+    trozos <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    final_anterior <span class="t-operador">=</span> <span class="t-numero">0</span>
+    <span class="t-palabra">for</span> inicio<span class="t-operador">,</span> fin <span class="t-palabra">in</span> coincidencia<span class="t-operador">.</span>tramos<span class="t-operador">:</span>
+                trozos<span class="t-operador">.</span>append<span class="t-operador">(</span>coincidencia<span class="t-operador">.</span>linea<span class="t-operador">[</span>final_anterior<span class="t-operador">:</span>inicio<span class="t-operador">]</span><span class="t-operador">)</span>
+        trozos<span class="t-operador">.</span>append<span class="t-operador">(</span>ROJO <span class="t-operador">+</span> coincidencia<span class="t-operador">.</span>linea<span class="t-operador">[</span>inicio<span class="t-operador">:</span>fin<span class="t-operador">]</span> <span class="t-operador">+</span> NORMAL<span class="t-operador">)</span>
+        final_anterior <span class="t-operador">=</span> fin
+    trozos<span class="t-operador">.</span>append<span class="t-operador">(</span>coincidencia<span class="t-operador">.</span>linea<span class="t-operador">[</span>final_anterior<span class="t-operador">:</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-texto">&quot;&quot;</span><span class="t-operador">.</span>join<span class="t-operador">(</span>trozos<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">pintar_coincidencia</span><span class="t-operador">(</span>coincidencia<span class="t-operador">:</span> Coincidencia<span class="t-operador">,</span> opciones<span class="t-operador">,</span> varios<span class="t-operador">:</span> <span class="t-integrada">bool</span><span class="t-operador">,</span> color<span class="t-operador">:</span> <span class="t-integrada">bool</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Imprime una línea al estilo de grep: fichero, número y texto.&quot;&quot;&quot;</span>
+    partes <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+    <span class="t-palabra">if</span> varios<span class="t-operador">:</span>
+                nombre <span class="t-operador">=</span> coincidencia<span class="t-operador">.</span>origen
+        partes<span class="t-operador">.</span>append<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>MAGENTA<span class="t-operador">}</span><span class="t-operador">{</span>nombre<span class="t-operador">}</span><span class="t-operador">{</span>NORMAL<span class="t-operador">}</span>&quot; <span class="t-palabra">if</span> color <span class="t-palabra">else</span> nombre<span class="t-operador">)</span>
+    <span class="t-palabra">if</span> opciones<span class="t-operador">.</span>numero_de_linea<span class="t-operador">:</span>
+                numero <span class="t-operador">=</span> <span class="t-integrada">str</span><span class="t-operador">(</span>coincidencia<span class="t-operador">.</span>numero<span class="t-operador">)</span>
+        partes<span class="t-operador">.</span>append<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>VERDE<span class="t-operador">}</span><span class="t-operador">{</span>numero<span class="t-operador">}</span><span class="t-operador">{</span>NORMAL<span class="t-operador">}</span>&quot; <span class="t-palabra">if</span> color <span class="t-palabra">else</span> numero<span class="t-operador">)</span>
+    partes<span class="t-operador">.</span>append<span class="t-operador">(</span>resaltar<span class="t-operador">(</span>coincidencia<span class="t-operador">,</span> color<span class="t-operador">)</span><span class="t-operador">)</span>
+    separador <span class="t-operador">=</span> f&quot;<span class="t-operador">{</span>CIAN<span class="t-operador">}</span>:<span class="t-operador">{</span>NORMAL<span class="t-operador">}</span>&quot; <span class="t-palabra">if</span> color <span class="t-palabra">else</span> <span class="t-texto">&quot;:&quot;</span>
+    <span class="t-integrada">print</span><span class="t-operador">(</span>separador<span class="t-operador">.</span>join<span class="t-operador">(</span>partes<span class="t-operador">)</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">main</span><span class="t-operador">(</span>argumentos<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">int</span><span class="t-operador">:</span>
+        opciones <span class="t-operador">=</span> construir_analizador<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>parse_args<span class="t-operador">(</span>argumentos<span class="t-operador">)</span>
+    color <span class="t-operador">=</span> quiere_color<span class="t-operador">(</span>opciones<span class="t-operador">.</span>color<span class="t-operador">)</span>
+
+    <span class="t-palabra">try</span><span class="t-operador">:</span>
+                expresion <span class="t-operador">=</span> compilar<span class="t-operador">(</span>opciones<span class="t-operador">.</span>patron<span class="t-operador">,</span> opciones<span class="t-operador">.</span>ignorar_mayusculas<span class="t-operador">)</span>
+    <span class="t-palabra">except</span> ValueError <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;buscador: <span class="t-operador">{</span>error<span class="t-operador">}</span>&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">2</span>
+
+    ficheros<span class="t-operador">,</span> avisos <span class="t-operador">=</span> expandir<span class="t-operador">(</span>opciones<span class="t-operador">.</span>ficheros<span class="t-operador">,</span> opciones<span class="t-operador">.</span>recursivo<span class="t-operador">)</span>
+    <span class="t-palabra">for</span> aviso <span class="t-palabra">in</span> avisos<span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;buscador: <span class="t-operador">{</span>aviso<span class="t-operador">}</span>&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+
+    hubo_errores <span class="t-operador">=</span> <span class="t-integrada">bool</span><span class="t-operador">(</span>avisos<span class="t-operador">)</span>
+    encontrado <span class="t-operador">=</span> <span class="t-palabra">False</span>
+
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> opciones<span class="t-operador">.</span>ficheros<span class="t-operador">:</span>
+                fuentes <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">(</span>ENTRADA_ESTANDAR<span class="t-operador">,</span> sys<span class="t-operador">.</span>stdin<span class="t-operador">)</span><span class="t-operador">]</span>
+        varios <span class="t-operador">=</span> <span class="t-palabra">False</span>
+    <span class="t-palabra">else</span><span class="t-operador">:</span>
+                fuentes <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+        varios <span class="t-operador">=</span> <span class="t-integrada">len</span><span class="t-operador">(</span>ficheros<span class="t-operador">)</span> <span class="t-operador">&gt;</span> <span class="t-numero">1</span>
+        <span class="t-palabra">for</span> fichero <span class="t-palabra">in</span> ficheros<span class="t-operador">:</span>
+                        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                                <span class="t-palabra">if</span> es_binario<span class="t-operador">(</span>fichero<span class="t-operador">)</span><span class="t-operador">:</span>
+                                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;buscador: <span class="t-operador">{</span>fichero<span class="t-operador">}</span>: fichero binario, me lo salto&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+                    <span class="t-palabra">continue</span>
+                fuentes<span class="t-operador">.</span>append<span class="t-operador">(</span><span class="t-operador">(</span><span class="t-integrada">str</span><span class="t-operador">(</span>fichero<span class="t-operador">)</span><span class="t-operador">,</span> leer_lineas<span class="t-operador">(</span>fichero<span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+            <span class="t-palabra">except</span> OSError <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                                <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;buscador: <span class="t-operador">{</span>fichero<span class="t-operador">}</span>: <span class="t-operador">{</span>error<span class="t-operador">.</span>strerror<span class="t-operador">}</span>&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+                hubo_errores <span class="t-operador">=</span> <span class="t-palabra">True</span>
+
+    <span class="t-palabra">for</span> origen<span class="t-operador">,</span> lineas <span class="t-palabra">in</span> fuentes<span class="t-operador">:</span>
+                cuantas <span class="t-operador">=</span> <span class="t-numero">0</span>
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        <span class="t-palabra">for</span> coincidencia <span class="t-palabra">in</span> buscar_en_lineas<span class="t-operador">(</span>expresion<span class="t-operador">,</span> lineas<span class="t-operador">,</span> origen<span class="t-operador">,</span> opciones<span class="t-operador">.</span>invertir<span class="t-operador">)</span><span class="t-operador">:</span>
+                                encontrado <span class="t-operador">=</span> <span class="t-palabra">True</span>
+                cuantas <span class="t-operador">+=</span> <span class="t-numero">1</span>
+                <span class="t-palabra">if</span> <span class="t-palabra">not</span> opciones<span class="t-operador">.</span>contar<span class="t-operador">:</span>
+                                        pintar_coincidencia<span class="t-operador">(</span>coincidencia<span class="t-operador">,</span> opciones<span class="t-operador">,</span> varios<span class="t-operador">,</span> color<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> BrokenPipeError<span class="t-operador">:</span>
+            <span class="t-comentario"># Es un OSError, así que hay que dejarlo pasar antes del except de abajo.</span>
+                        <span class="t-palabra">raise</span>
+        <span class="t-palabra">except</span> OSError <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;buscador: <span class="t-operador">{</span>origen<span class="t-operador">}</span>: <span class="t-operador">{</span>error<span class="t-operador">.</span>strerror<span class="t-operador">}</span>&quot;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+            hubo_errores <span class="t-operador">=</span> <span class="t-palabra">True</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">if</span> opciones<span class="t-operador">.</span>contar<span class="t-operador">:</span>
+                        etiqueta <span class="t-operador">=</span> f&quot;<span class="t-operador">{</span>MAGENTA<span class="t-operador">}</span><span class="t-operador">{</span>origen<span class="t-operador">}</span><span class="t-operador">{</span>NORMAL<span class="t-operador">}</span>:&quot; <span class="t-palabra">if</span> color <span class="t-palabra">else</span> f&quot;<span class="t-operador">{</span>origen<span class="t-operador">}</span>:&quot;
+            <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>etiqueta<span class="t-operador">}</span><span class="t-operador">{</span>cuantas<span class="t-operador">}</span>&quot; <span class="t-palabra">if</span> varios <span class="t-palabra">else</span> cuantas<span class="t-operador">)</span>
+
+    <span class="t-palabra">if</span> hubo_errores <span class="t-palabra">and</span> <span class="t-palabra">not</span> encontrado<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-numero">2</span>
+    <span class="t-palabra">return</span> <span class="t-numero">0</span> <span class="t-palabra">if</span> encontrado <span class="t-palabra">else</span> <span class="t-numero">1</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">ejecutar</span><span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">int</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Envoltorio que aguanta las tuberías cerradas y el Ctrl+C.&quot;&quot;&quot;</span>
+    <span class="t-palabra">try</span><span class="t-operador">:</span>
+                codigo <span class="t-operador">=</span> main<span class="t-operador">(</span><span class="t-operador">)</span>
+        sys<span class="t-operador">.</span>stdout<span class="t-operador">.</span>flush<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">except</span> KeyboardInterrupt<span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;\nbuscador: interrumpido&quot;</span><span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">130</span>
+    <span class="t-palabra">except</span> BrokenPipeError<span class="t-operador">:</span>
+        <span class="t-comentario"># Quien leía se ha ido. Se desvía la salida al vacío para que Python</span>
+        <span class="t-comentario"># no vuelva a intentar vaciarla al cerrar y se queje.</span>
+                os<span class="t-operador">.</span>dup2<span class="t-operador">(</span>os<span class="t-operador">.</span><span class="t-integrada">open</span><span class="t-operador">(</span>os<span class="t-operador">.</span>devnull<span class="t-operador">,</span> os<span class="t-operador">.</span>O_WRONLY<span class="t-operador">)</span><span class="t-operador">,</span> sys<span class="t-operador">.</span>stdout<span class="t-operador">.</span>fileno<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-numero">141</span>
+    <span class="t-palabra">return</span> codigo
+
+
+<span class="t-palabra">if</span> __name__ <span class="t-operador">==</span> <span class="t-texto">&quot;__main__&quot;</span><span class="t-operador">:</span>
+        sys<span class="t-operador">.</span>exit<span class="t-operador">(</span>ejecutar<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">pyproject.toml</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-text">[project]
+name = &quot;buscador&quot;
+version = &quot;1.0.0&quot;
+description = &quot;Un buscador de texto en ficheros, al estilo de grep&quot;
+requires-python = &quot;&gt;=3.11&quot;
+
+[project.scripts]
+buscar = &quot;buscador.cli:ejecutar&quot;
+
+[build-system]
+requires = [&quot;setuptools&gt;=68&quot;]
+build-backend = &quot;setuptools.build_meta&quot;</code></pre></div>
+<p>Con <code>pip install -e .</code> el comando pasa a llamarse <code>buscar</code>, que es como se usa en el resto de la lección.</p>
+<h2 id="una-sesion-de-uso">Una sesión de uso<a class="ancla" href="#una-sesion-de-uso" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Trabajamos sobre esta carpeta, que imita un proyecto pequeño:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">text</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-text">tienda/
+    datos.bin
+    registro.log
+    docs/
+        leeme.md
+    src/
+        clientes.py
+        tienda.py</code></pre></div>
+<p>La ayuda:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">--help</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>usage: buscador [-h] [-i] [-n] [-r] [-c] [-v] [--color {auto,siempre,nunca}]
+                patron [ficheros ...]
+
+Busca un patrón en ficheros, o en lo que le llegue por una tubería.
+
+positional arguments:
+  patron                expresión regular que hay que buscar
+  ficheros              ficheros o carpetas donde buscar (si no pones ninguno,
+                        lee de la entrada estándar)
+
+options:
+  -h, --help            show this help message and exit
+  -i, --ignorar-mayusculas
+                        no distinguir mayúsculas de minúsculas
+  -n, --numero-de-linea
+                        mostrar el número de línea
+  -r, --recursivo       bajar por las subcarpetas de las carpetas indicadas
+  -c, --contar          mostrar solo cuántas líneas encajan
+  -v, --invertir        mostrar las líneas que NO encajan
+  --color {auto,siempre,nunca}
+                        cuándo colorear las coincidencias (por defecto: auto)
+
+Sin ficheros, lee de la entrada estándar. Devuelve 0 si encuentra algo y 1 si
+no.</code></pre></div>
+<p>Un fichero suelto, sin nombre delante porque solo hay uno:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-texto">&quot;TODO&quot;</span> tienda/src/tienda.py</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>    # TODO: aplicar el IVA correspondiente</code></pre></div>
+<p>Toda la carpeta, con número de línea:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">-rn</span> <span class="t-texto">&quot;TODO&quot;</span> tienda</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>buscador: tienda/datos.bin: fichero binario, me lo salto
+tienda/docs/leeme.md:11:- TODO: escribir las pruebas del carrito
+tienda/src/clientes.py:9:    # TODO: aceptar también los dominios con acentos
+tienda/src/tienda.py:14:    # TODO: aplicar el IVA correspondiente</code></pre></div>
+<p>El aviso del binario sale por <code>stderr</code> y las coincidencias por <code>stdout</code>, así que <code>buscar -rn &quot;TODO&quot; tienda 2&gt; /dev/null</code> deja solo los resultados.</p>
+<p>Contando en vez de listando:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">-rc</span> <span class="t-texto">&quot;TODO&quot;</span> tienda 2<span class="t-operador">&gt;</span> /dev/null</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>tienda/docs/leeme.md:1
+tienda/registro.log:0
+tienda/src/clientes.py:1
+tienda/src/tienda.py:1</code></pre></div>
+<p>Sin distinguir mayúsculas:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">-in</span> <span class="t-texto">&quot;todo&quot;</span> tienda/docs/leeme.md</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>11:- TODO: escribir las pruebas del carrito</code></pre></div>
+<p>Al revés, las líneas que no llevan <code>INFO</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">-vn</span> <span class="t-texto">&quot;INFO&quot;</span> tienda/registro.log</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>3:2026-09-18 10:03:41 WARNING stock negativo en el producto 44
+4:2026-09-18 10:04:02 ERROR  no se ha podido conectar con la pasarela de pago
+6:2026-09-18 10:04:19 ERROR  no se ha podido conectar con la pasarela de pago</code></pre></div>
+<p>Y con una expresión regular de verdad, para quedarse solo con los errores de una hora concreta:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">-n</span> <span class="t-texto">&quot;\d{2}:\d{2}:\d{2} ERROR&quot;</span> tienda/registro.log</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>4:2026-09-18 10:04:02 ERROR  no se ha podido conectar con la pasarela de pago
+6:2026-09-18 10:04:19 ERROR  no se ha podido conectar con la pasarela de pago</code></pre></div>
+<p>Los errores, cada uno con su código:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-texto">&quot;TODO&quot;</span> tienda
+<span class="t-integrada">echo</span> <span class="t-operador">$</span>?</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>buscador: tienda: es una carpeta (usa -r)
+2</code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-texto">&quot;(abierto&quot;</span> tienda/registro.log
+<span class="t-integrada">echo</span> <span class="t-operador">$</span>?</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>buscador: patrón no válido: missing ), unterminated subpattern at position 0
+2</code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">-r</span> <span class="t-texto">&quot;Bizum&quot;</span> tienda 2<span class="t-operador">&gt;</span> /dev/null
+<span class="t-integrada">echo</span> <span class="t-operador">$</span>?</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>1</code></pre></div>
+<h2 id="encadenado-con-el-resto-de-la-terminal">Encadenado con el resto de la terminal<a class="ancla" href="#encadenado-con-el-resto-de-la-terminal" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Aquí es donde el módulo entero cobra sentido. El buscador no es un programa que se usa solo: es una pieza que se conecta con las demás.</p>
+<p>Contar las líneas de código que definen algo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">-r</span> <span class="t-texto">&quot;^def |^class &quot;</span> tienda/src <span class="t-palabra">-n</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>tienda/src/clientes.py:8:def validar_correo(texto):
+tienda/src/clientes.py:13:def normalizar(nombre):
+tienda/src/tienda.py:7:class Producto:
+tienda/src/tienda.py:13:def total_del_carrito(productos):
+tienda/src/tienda.py:18:def buscar_producto(catalogo, nombre):</code></pre></div>
+<p>Cuántos avisos hay de cada nivel en el registro, pasando el resultado por <code>cut</code>, <code>sort</code> y <code>uniq</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-texto">&quot;INFO|ERROR|WARNING&quot;</span> tienda/registro.log <span class="t-operador">|</span> cut <span class="t-palabra">-d</span><span class="t-texto">&#x27; &#x27;</span> <span class="t-palabra">-f3</span> <span class="t-operador">|</span> sort <span class="t-operador">|</span> uniq <span class="t-palabra">-c</span> <span class="t-operador">|</span> sort <span class="t-palabra">-rn</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>   5 INFO
+   2 ERROR
+   1 WARNING</code></pre></div>
+<p>Filtrando la salida de otro programa, sin ficheros de por medio:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">ls</span> tienda <span class="t-operador">|</span> buscar <span class="t-texto">&quot;\.log$&quot;</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>registro.log</code></pre></div>
+<p>Y encadenando el buscador consigo mismo, que es la prueba definitiva de que se comporta:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">buscar <span class="t-palabra">-rn</span> <span class="t-texto">&quot;def &quot;</span> tienda 2<span class="t-operador">&gt;</span> /dev/null <span class="t-operador">|</span> buscar <span class="t-texto">&quot;producto&quot;</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>tienda/src/tienda.py:13:def total_del_carrito(productos):
+tienda/src/tienda.py:18:def buscar_producto(catalogo, nombre):</code></pre></div>
+<p>El primer buscador escribe en la tubería, detecta que su salida no es una terminal y apaga el color. El segundo lee esas líneas por <code>sys.stdin</code> y las filtra otra vez. Ninguno de los dos sabe que el otro existe, y eso es exactamente lo que se pretendía.</p>
+<h2 id="lo-que-se-ha-usado">Lo que se ha usado<a class="ancla" href="#lo-que-se-ha-usado" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="envoltura-tabla"><table><thead><tr><th>Del curso</th><th>Dónde</th></tr></thead><tbody><tr><td><code>re</code>: <code>compile</code>, <code>finditer</code>, <code>span</code>, <code>IGNORECASE</code></td><td><code>busqueda.py</code></td></tr><tr><td>Generadores con <code>yield</code> y <code>yield from</code></td><td><code>buscar_en_lineas</code> y <code>leer_lineas</code></td></tr><tr><td>Dataclasses</td><td><code>Coincidencia</code></td></tr><tr><td><code>pathlib</code>, <code>rglob</code>, lectura en binario</td><td><code>es_binario</code> y <code>expandir</code></td></tr><tr><td>Excepciones y jerarquía de <code>OSError</code></td><td>El tratamiento de la tubería rota</td></tr><tr><td><code>argparse</code> con <code>nargs</code>, banderas y <code>choices</code></td><td><code>cli.py</code></td></tr><tr><td><code>sys.stdin</code>, <code>sys.stdout.isatty()</code>, <code>sys.stderr</code></td><td>La entrada estándar y el color</td></tr><tr><td>Códigos ANSI y rebanado de cadenas</td><td><code>resaltar</code></td></tr><tr><td>Códigos de salida como convención</td><td><code>main</code> y <code>ejecutar</code></td></tr><tr><td><code>os.environ</code> y <code>os.dup2</code></td><td><code>NO_COLOR</code> y el <code>BrokenPipeError</code></td></tr></tbody></table></div>
+<aside class="aviso aviso-error"><p class="titulo-aviso">re.error: missing ), unterminated subpattern at position 0</p><p>Has abierto un paréntesis y no lo has cerrado, casi siempre porque buscabas un paréntesis literal. En una expresión regular los paréntesis agrupan, así que para buscar uno de verdad hay que escaparlo: <code>\(</code>.</p>
+<p>Los otros dos mensajes de esta familia son <code>nothing to repeat at position 0</code>, que sale al empezar un patrón con <code>*</code> o <code>+</code> sin nada delante que repetir, y <code>bad character range</code>, cuando dentro de unos corchetes el rango va al revés, como <code>[z-a]</code>.</p></aside>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">Las expresiones regulares no sirven para todo</p><p>Hay una regla que conviene aprenderse pronto: las expresiones regulares valen para texto plano con estructura simple, y no valen para lenguajes anidados. No intentes analizar HTML, JSON ni código fuente con ellas. Funcionará con tus tres ejemplos y fallará con el cuarto, porque esos formatos permiten anidamiento infinito y una expresión regular no sabe contar paréntesis abiertos.</p>
+<p>Para HTML hay analizadores, para JSON está <code>json</code>, y para el código de Python está <code>ast</code>. Para un registro de texto o un CSV mal formado, <code>re</code> es perfecto.</p></aside>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>El buscador es un clon reducido de <code>grep</code>, y sale de dos módulos: <code>busqueda.py</code>, que compila el patrón con <code>re.compile</code>, recorre las líneas con un generador y devuelve objetos <code>Coincidencia</code> con las posiciones de lo encontrado; y <code>cli.py</code>, que decide cómo se ve eso. Guardar las posiciones en vez del texto ya pintado es lo que permite que <code>--color nunca</code> y <code>--color siempre</code> compartan todo el código. Las expresiones regulares se escriben siempre en cadenas en bruto, <code>r&quot;...&quot;</code>, y se compilan una vez cuando se van a aplicar a muchas líneas. La herramienta lee de <code>sys.stdin</code> cuando no le dan ficheros, lo que la convierte en una pieza encadenable; apaga el color sola cuando la salida no va a una terminal; se salta los binarios buscando un byte cero en el primer kilobyte; y devuelve 0 si encontró algo, 1 si no y 2 si hubo un problema, que es la convención que permite usarla dentro de un <code>if</code>. Y como toda herramienta que escribe mucho, atrapa <code>BrokenPipeError</code> para morirse en silencio cuando <code>head</code> cierra la tubería, con cuidado de dejarlo pasar antes del <code>except OSError</code> del que hereda.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Ampliaciones</p><p>El buscador funciona, pero a <code>grep</code> le quedan cuarenta opciones más. En orden de dificultad:</p>
+<ol><li><strong>Contexto alrededor.</strong> Añade <code>-A n</code> y <code>-B n</code> para mostrar n líneas después y antes de cada coincidencia, y <code>-C n</code> para las dos cosas. La estructura que lo resuelve limpiamente es <code>collections.deque</code> con <code>maxlen</code>, que guarda las últimas n líneas sin que tengas que recortar nada.</li><li><strong>Solo los nombres.</strong> Añade <code>-l</code>, que en vez de las líneas enseñe solo los ficheros que tienen alguna coincidencia, y <code>-L</code>, que enseñe los que no tienen ninguna. Lo interesante es que con <code>-l</code> puedes parar de leer el fichero en cuanto encuentres la primera, y eso en un fichero de un giga se nota.</li><li><strong>Filtrar por nombre de fichero.</strong> Añade <code>--incluir &quot;*.py&quot;</code> y <code>--excluir &quot;*.min.js&quot;</code> para acotar qué se mira al bajar por una carpeta. El módulo <code>fnmatch</code> compara un nombre con un patrón de los de la terminal, que no son expresiones regulares.</li><li><strong>Texto literal.</strong> Añade <code>-F</code>, que trate el patrón como texto tal cual en vez de como expresión regular. Tienes la pieza en la lección: <code>re.escape</code>. Aprovecha para añadir <code>-w</code>, que exija que la coincidencia sea una palabra entera, rodeando el patrón con <code>\b</code>.</li><li><strong>Sustituir.</strong> Añade un modo <code>--reemplazar TEXTO</code> que escriba las líneas con las coincidencias cambiadas, usando <code>expresion.sub()</code>, y una opción <code>--en-el-sitio</code> que reescriba el fichero. Esta última es destructiva, así que aplica lo aprendido en el primer proyecto: fase de plan, opción de simulación, y escritura en un temporal que se renombra encima.</li><li><strong>Paralelo.</strong> Cuando hay que mirar miles de ficheros, casi todo el tiempo se va en esperar al disco. Reparte el trabajo con <code>concurrent.futures.ThreadPoolExecutor</code>, un fichero por tarea. El reto no es lanzarlas, es que la salida siga saliendo ordenada por fichero y que el código de salida siga siendo correcto.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#como-se-va-a-usar">Cómo se va a usar</a></li><li class="nivel-2"><a href="#lo-imprescindible-de-las-expresiones-regulares">Lo imprescindible de las expresiones regulares</a></li><li class="nivel-2"><a href="#el-diseno">El diseño</a></li><li class="nivel-2"><a href="#parte-1-compilar-el-patron">Parte 1: compilar el patrón</a></li><li class="nivel-2"><a href="#parte-2-buscar-en-las-lineas">Parte 2: buscar en las líneas</a></li><li class="nivel-2"><a href="#parte-3-que-ficheros-mirar-y-cuales-no">Parte 3: qué ficheros mirar, y cuáles no</a></li><li class="nivel-2"><a href="#parte-4-resaltar-las-coincidencias">Parte 4: resaltar las coincidencias</a></li><li class="nivel-2"><a href="#parte-5-leer-de-la-entrada-estandar">Parte 5: leer de la entrada estándar</a></li><li class="nivel-2"><a href="#parte-6-el-codigo-de-salida-que-es-lo-que-lo-hace-encadenable">Parte 6: el código de salida, que es lo que lo hace encadenable</a></li><li class="nivel-2"><a href="#parte-7-cuando-quien-te-lee-se-va">Parte 7: cuando quien te lee se va</a></li><li class="nivel-2"><a href="#el-programa-completo">El programa completo</a></li><li class="nivel-2"><a href="#una-sesion-de-uso">Una sesión de uso</a></li><li class="nivel-2"><a href="#encadenado-con-el-resto-de-la-terminal">Encadenado con el resto de la terminal</a></li><li class="nivel-2"><a href="#lo-que-se-ha-usado">Lo que se ha usado</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../terminal/proyecto-gestor-de-gastos.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">Proyecto: gestor de gastos</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../tkinter/que-es-una-interfaz-grafica.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">Qué es una interfaz gráfica</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

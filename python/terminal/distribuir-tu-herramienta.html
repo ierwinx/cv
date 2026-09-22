@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distribuir tu herramienta · Curso de Python</title>
+<meta name="description" content="Cómo llega tu programa al ordenador de otra persona: instalación desde git, pipx, construcción de paquetes y publicación en PyPI.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="terminal/distribuir-tu-herramienta">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../terminal/index.html">Aplicaciones de terminal</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 2 &middot; Lección 22 de 28</p>
+    <h1>Distribuir tu herramienta</h1>
+    <p class="resumen-leccion">Cómo llega tu programa al ordenador de otra persona: instalación desde git, pipx, construcción de paquetes y publicación en PyPI.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 22 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>Tu herramienta se instala con <code>pip install -e .</code> y funciona. Pero esa orden solo la puedes ejecutar tú, porque necesita la carpeta del proyecto delante. Para que la use otra persona hay que responder a una pregunta nueva: cómo consigue esa persona el código y qué escribe para tenerlo funcionando.</p>
+<p>Hay tres respuestas, de menos a más formal: le pasas la carpeta, le pasas la dirección del repositorio o lo publicas en el índice público de paquetes. Las tres usan las mismas herramientas y el mismo <code>pyproject.toml</code> que ya tienes.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Al terminar sabrás instalar desde una carpeta o desde un repositorio de git, usar <code>pipx</code> para las herramientas de línea de comandos, construir los ficheros distribuibles con <code>python -m build</code> y recorrer la publicación en PyPI con <code>twine</code>.</p></aside>
+<h2 id="instalar-desde-una-carpeta">Instalar desde una carpeta<a class="ancla" href="#instalar-desde-una-carpeta" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Es lo mismo que hiciste en la lección anterior, pero sin la <code>-e</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">pip</span> install /Users/erwin/proyectos/misgastos</code></pre></div>
+<p>Sin <code>-e</code>, <code>pip</code> construye el paquete y <strong>copia</strong> el resultado dentro del entorno. A partir de ese momento las dos cosas son independientes: puedes borrar la carpeta del proyecto y el comando seguirá funcionando.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">misgastos resumen</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>comida            55.80 €
+ocio              18.00 €
+transporte         2.40 €</code></pre></div>
+<p>Esta es la forma de probar que tu proyecto se instala de verdad, y conviene hacerlo en un entorno virtual limpio antes de dárselo a nadie. Si te has dejado un módulo fuera del paquete o el punto de entrada está mal, aquí se ve; con la instalación editable, no.</p>
+<h2 id="instalar-desde-un-repositorio-de-git">Instalar desde un repositorio de git<a class="ancla" href="#instalar-desde-un-repositorio-de-git" aria-label="Enlace a esta seccion">#</a></h2>
+<p><code>pip</code> sabe clonar. Le das la dirección del repositorio con el prefijo <code>git+</code> y él se encarga:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">pip</span> install <span class="t-integrada">git</span>+https://github.com/erwin/misgastos.<span class="t-integrada">git</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Building wheels for collected packages: misgastos
+  Building wheel for misgastos (pyproject.toml): started
+  Building wheel for misgastos (pyproject.toml): finished with status &#x27;done&#x27;
+  Created wheel for misgastos: filename=misgastos-0.1.0-py3-none-any.whl size=5132
+Successfully built misgastos
+Installing collected packages: misgastos
+Successfully installed misgastos-0.1.0</code></pre></div>
+<p>Clona en una carpeta temporal, encuentra el <code>pyproject.toml</code>, construye el paquete, lo instala y borra la copia. Quien lo ejecute no necesita saber nada de tu proyecto más allá de la dirección.</p>
+<p>Se puede pedir una rama, una etiqueta o un commit concreto añadiendo <code>@</code> al final:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">pip</span> install <span class="t-integrada">git</span>+https://github.com/erwin/misgastos.<span class="t-integrada">git</span>@v0.2.0
+<span class="t-integrada">pip</span> install <span class="t-integrada">git</span>+https://github.com/erwin/misgastos.<span class="t-integrada">git</span>@desarrollo</code></pre></div>
+<p>Esta es la forma habitual de compartir algo que todavía no está publicado, o que nunca lo estará porque solo lo usáis en tu equipo.</p>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">Funciona con cualquier repositorio accesible</p><p>No tiene que ser GitHub. Vale cualquier servidor de git al que tengas acceso, incluido uno de tu empresa, y también una ruta local con <code>git+file:///ruta/al/repositorio</code>. Si el repositorio es privado, <code>pip</code> usará las credenciales que ya tenga configuradas tu git.</p></aside>
+<h2 id="pipx-la-forma-correcta-de-instalar-herramientas"><code>pipx</code>: la forma correcta de instalar herramientas<a class="ancla" href="#pipx-la-forma-correcta-de-instalar-herramientas" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Aquí hay un problema que todavía no hemos mirado de frente. Una herramienta de línea de comandos no es una biblioteca: no la vas a importar desde tus programas, la vas a <strong>ejecutar</strong>. Y quieres ejecutarla desde cualquier carpeta, sin acordarte de activar ningún entorno.</p>
+<p>La tentación es instalarla en el Python del sistema:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">pip</span> install <span class="t-palabra">--user</span> misgastos</code></pre></div>
+<p>Y ahí empiezan los problemas que ya conoces de la lección de entornos virtuales, multiplicados. Si <code>misgastos</code> necesita <code>rich&gt;=13</code> y otra herramienta que instalaste el año pasado necesita <code>rich&lt;13</code>, una de las dos se rompe. Cada herramienta que instalas así ensucia un poco más un entorno compartido que nadie controla, y tarde o temprano una actualización deja algo inservible.</p>
+<p><code>pipx</code> resuelve esto con una idea muy simple: <strong>crea un entorno virtual por herramienta y deja solo el comando a la vista</strong>. Cada programa tiene sus dependencias aisladas, y tú escribes su nombre desde cualquier sitio sin activar nada.</p>
+<h3 id="instalar-pipx">Instalar pipx<a class="ancla" href="#instalar-pipx" aria-label="Enlace a esta seccion">#</a></h3>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python3</span> <span class="t-palabra">-m</span> <span class="t-integrada">pip</span> install <span class="t-palabra">--user</span> pipx
+<span class="t-integrada">python3</span> <span class="t-palabra">-m</span> pipx ensurepath</code></pre></div>
+<p><code>ensurepath</code> añade a tu <code>PATH</code> la carpeta donde <code>pipx</code> deja los comandos. Hay que abrir una terminal nueva para que el cambio surta efecto. En macOS con Homebrew, <code>brew install pipx</code> hace las dos cosas.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pipx <span class="t-palabra">--version</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>1.17.4</code></pre></div>
+<h3 id="instalar-una-herramienta">Instalar una herramienta<a class="ancla" href="#instalar-una-herramienta" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Admite lo mismo que <code>pip</code>: un nombre del índice público, una carpeta o una dirección de git con <code>git+</code>. Como <code>misgastos</code> todavía no está publicado, se instala desde su carpeta:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pipx install /Users/erwin/proyectos/misgastos</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>creating virtual environment...
+determining package name from &#x27;/Users/erwin/proyectos/misgastos&#x27;...
+creating virtual environment...
+installing misgastos from spec &#x27;/Users/erwin/proyectos/misgastos&#x27;...
+done! ✨ 🌟 ✨
+  installed package misgastos 0.1.0, installed using Python 3.14.7
+  These apps are now available
+    - misgastos</code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">misgastos resumen</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>comida            55.80 €
+ocio              18.00 €
+transporte         2.40 €</code></pre></div>
+<p>Y ahí está lo importante: eso funciona con cualquier entorno virtual activado y sin ninguno.</p>
+<h3 id="las-ordenes-de-pipx">Las órdenes de pipx<a class="ancla" href="#las-ordenes-de-pipx" aria-label="Enlace a esta seccion">#</a></h3>
+<div class="envoltura-tabla"><table><thead><tr><th>Orden</th><th>Qué hace</th></tr></thead><tbody><tr><td><code>pipx install NOMBRE</code></td><td>Instala la herramienta en su propio entorno</td></tr><tr><td><code>pipx list</code></td><td>Enseña lo instalado y qué comandos expone cada cosa</td></tr><tr><td><code>pipx list --short</code></td><td>Lo mismo, una línea por herramienta</td></tr><tr><td><code>pipx upgrade NOMBRE</code></td><td>Actualiza una</td></tr><tr><td><code>pipx upgrade-all</code></td><td>Actualiza todas</td></tr><tr><td><code>pipx uninstall NOMBRE</code></td><td>La borra con su entorno</td></tr><tr><td><code>pipx reinstall-all</code></td><td>Rehace todos los entornos, útil al cambiar de versión de Python</td></tr><tr><td><code>pipx run NOMBRE</code></td><td>La ejecuta sin instalarla, descargándola a un caché temporal</td></tr><tr><td><code>pipx runpip NOMBRE pip ...</code></td><td>Ejecuta <code>pip</code> dentro del entorno de esa herramienta</td></tr></tbody></table></div>
+<p>Ver lo que hay instalado:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pipx list</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>venvs are in /Users/erwin/.local/share/pipx/venvs
+apps are exposed on your $PATH at /Users/erwin/.local/bin
+manual pages are exposed at /Users/erwin/.local/share/man
+shell completions are exposed at /Users/erwin/.local/share
+   package misgastos 0.1.0, installed using Python 3.14.7
+    - misgastos</code></pre></div>
+<p>Actualizar, después de subir la versión a <code>0.2.0</code> en el <code>pyproject.toml</code> y en el <code>__init__.py</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pipx upgrade misgastos</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>upgrading shared libraries...
+upgrading misgastos from spec &#x27;/Users/erwin/proyectos/misgastos&#x27;...
+upgraded package misgastos from 0.1.0 to 0.2.0 (location:
+/Users/erwin/.local/share/pipx/venvs/misgastos)</code></pre></div>
+<p>Mirar qué hay dentro del entorno de una herramienta, sin activarlo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pipx runpip misgastos list</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Package   Version
+--------- -------
+misgastos 0.2.0
+pip       26.2.1</code></pre></div>
+<p>Y desinstalar, que se lleva por delante el entorno entero:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pipx uninstall misgastos</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>uninstalled misgastos! ✨ 🌟 ✨</code></pre></div>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso"><code>pipx run</code> para lo que usas una vez al año</p><p>Hay herramientas que solo necesitas de uvas a peras. Con <code>pipx run</code> se descargan a un caché, se ejecutan y no dejan nada instalado: <code>pipx run cowsay hola</code>. Es el equivalente al <code>npx</code> de Node para quien venga de ahí, y evita acumular comandos que no vuelves a usar.</p></aside>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso"><code>pipx</code> es para herramientas, no para bibliotecas</p><p>Si lo que instalas es algo que vas a <strong>importar</strong> desde tu código, como <code>requests</code> o <code>pandas</code>, <code>pipx</code> no sirve: quedaría en un entorno aislado al que tu programa no tiene acceso. Esas van con <code>pip install</code> dentro del entorno virtual del proyecto, como siempre. La regla: si el paquete trae un comando que escribes en la terminal, <code>pipx</code>; si trae módulos que importas, <code>pip</code> en tu entorno.</p></aside>
+<h2 id="construir-los-paquetes-distribuibles">Construir los paquetes distribuibles<a class="ancla" href="#construir-los-paquetes-distribuibles" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Hasta ahora la instalación partía de tu carpeta o de un repositorio, y el paquete se construía sobre la marcha en el ordenador de destino. Para publicar hay que construirlo antes y subir el resultado.</p>
+<p>La herramienta se llama <code>build</code> y se instala en el entorno virtual:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">pip</span> install build</code></pre></div>
+<p>Desde la raíz del proyecto:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python</span> <span class="t-palabra">-m</span> build</code></pre></div>
+<p>Tarda unos segundos y termina así:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Successfully built misgastos-0.1.0.tar.gz and misgastos-0.1.0-py3-none-any.whl</code></pre></div>
+<p>En una carpeta <code>dist/</code> nueva han aparecido dos ficheros:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">ls</span> <span class="t-palabra">-l</span> dist</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>-rw-r--r--  1 erwin  staff  5132 19 sep 14:20 misgastos-0.1.0-py3-none-any.whl
+-rw-r--r--  1 erwin  staff  5526 19 sep 14:20 misgastos-0.1.0.tar.gz</code></pre></div>
+<p>Son las dos formas en que viaja un paquete Python, y conviene entender en qué se diferencian.</p>
+<h3 id="el-whl-la-rueda">El <code>.whl</code>, la rueda<a class="ancla" href="#el-whl-la-rueda" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Es un fichero ZIP con el paquete <strong>ya construido</strong>, listo para copiar. Instalarlo es descomprimirlo en el sitio correcto y escribir los ejecutables: no se ejecuta código tuyo, no se compila nada y tarda un instante.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">unzip <span class="t-palabra">-l</span> dist/misgastos-0.1.0-py3-none-any.whl</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Archive:  dist/misgastos-0.1.0-py3-none-any.whl
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+       89  09-19-2026 20:17   misgastos/__init__.py
+      121  09-19-2026 20:18   misgastos/__main__.py
+      836  09-19-2026 20:17   misgastos/almacen.py
+     3116  09-19-2026 20:18   misgastos/cli.py
+     1663  09-19-2026 20:17   misgastos/modelo.py
+      185  09-19-2026 20:20   misgastos-0.1.0.dist-info/licenses/LICENSE
+      571  09-19-2026 20:20   misgastos-0.1.0.dist-info/METADATA
+       91  09-19-2026 20:20   misgastos-0.1.0.dist-info/WHEEL
+       49  09-19-2026 20:20   misgastos-0.1.0.dist-info/entry_points.txt
+       10  09-19-2026 20:20   misgastos-0.1.0.dist-info/top_level.txt
+      878  09-19-2026 20:20   misgastos-0.1.0.dist-info/RECORD
+---------                     -------
+     7609                     11 files</code></pre></div>
+<p>Fíjate en dos cosas. La primera: la carpeta <code>src/</code> ha desaparecido. Dentro de la rueda el paquete está en la raíz, porque <code>src/</code> solo servía para organizar el proyecto, no para instalarlo. La segunda: ahí está el punto de entrada que escribiste, convertido en un fichero de texto:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">unzip <span class="t-palabra">-p</span> dist/misgastos-0.1.0-py3-none-any.whl misgastos-0.1.0.dist-info/entry_points.txt</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>[console_scripts]
+misgastos = misgastos.cli:main</code></pre></div>
+<p>El nombre del fichero también dice cosas: <code>misgastos-0.1.0-py3-none-any.whl</code> significa nombre, versión, cualquier Python 3, ninguna ABI concreta y cualquier sistema operativo. Un paquete con código en C tendría ahí algo como <code>cp313-cp313-macosx_11_0_arm64</code>, y habría una rueda distinta por cada combinación.</p>
+<h3 id="el-tar-gz-la-distribucion-de-fuentes">El <code>.tar.gz</code>, la distribución de fuentes<a class="ancla" href="#el-tar-gz-la-distribucion-de-fuentes" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Es un comprimido con el proyecto <strong>tal como lo escribiste</strong>, incluidas las cosas que no se instalan:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">tar tzf dist/misgastos-0.1.0.tar.gz</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>misgastos-0.1.0/
+misgastos-0.1.0/LICENSE
+misgastos-0.1.0/PKG-INFO
+misgastos-0.1.0/README.md
+misgastos-0.1.0/pyproject.toml
+misgastos-0.1.0/setup.cfg
+misgastos-0.1.0/src/
+misgastos-0.1.0/src/misgastos/
+misgastos-0.1.0/src/misgastos/__init__.py
+misgastos-0.1.0/src/misgastos/__main__.py
+misgastos-0.1.0/src/misgastos/almacen.py
+misgastos-0.1.0/src/misgastos/cli.py
+misgastos-0.1.0/src/misgastos/modelo.py
+misgastos-0.1.0/tests/
+misgastos-0.1.0/tests/test_almacen.py
+misgastos-0.1.0/tests/test_cli.py
+misgastos-0.1.0/tests/test_modelo.py</code></pre></div>
+<p>Aquí sí está <code>src/</code>, está el <code>pyproject.toml</code> y están las pruebas. Para instalarlo hay que construirlo primero, así que es más lento.</p>
+<div class="envoltura-tabla"><table><thead><tr><th></th><th><code>.whl</code></th><th><code>.tar.gz</code></th></tr></thead><tbody><tr><td>Qué contiene</td><td>El paquete construido</td><td>El proyecto entero</td></tr><tr><td>Al instalar</td><td>Se descomprime y ya</td><td>Hay que construirlo antes</td></tr><tr><td>Velocidad</td><td>Inmediata</td><td>Segundos o minutos</td></tr><tr><td>Lleva <code>src/</code>, pruebas y configuración</td><td>No</td><td>Sí</td></tr><tr><td>Sirve para compilar en otra plataforma</td><td>No</td><td>Sí</td></tr></tbody></table></div>
+<p>Se publican los dos. <code>pip</code> usará la rueda siempre que pueda, y recurrirá al <code>.tar.gz</code> cuando no haya una rueda compatible con ese sistema. Y <code>python -m build</code> los genera a la vez precisamente porque lo normal es subir ambos.</p>
+<aside class="aviso aviso-nota"><p class="titulo-aviso"><code>dist/</code> y <code>build/</code> no se suben a git</p><p>Son resultados, no fuentes, y se regeneran con una orden. Por eso están en el <code>.gitignore</code> de la lección 20. Además, dejar ruedas antiguas en <code>dist/</code> es una fuente de accidentes: <code>twine upload dist/*</code> subiría también las versiones viejas que se quedaron ahí. Borra la carpeta antes de construir.</p></aside>
+<h2 id="publicar-en-pypi">Publicar en PyPI<a class="ancla" href="#publicar-en-pypi" aria-label="Enlace a esta seccion">#</a></h2>
+<p>PyPI es el índice público de paquetes de Python: el sitio del que descarga <code>pip install</code> cuando le das un nombre a secas. Publicar ahí significa que cualquiera en el mundo puede instalar tu herramienta escribiendo su nombre.</p>
+<p>La herramienta para subir se llama <code>twine</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">pip</span> install twine</code></pre></div>
+<h3 id="antes-de-subir-comprobar">Antes de subir: comprobar<a class="ancla" href="#antes-de-subir-comprobar" aria-label="Enlace a esta seccion">#</a></h3>
+<p><code>twine</code> sabe revisar los ficheros construidos y avisar de los problemas que rechazaría el índice, sobre todo un <code>README.md</code> que no se renderiza bien:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">twine check dist/*</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Checking dist/misgastos-0.1.0-py3-none-any.whl: PASSED
+Checking dist/misgastos-0.1.0.tar.gz: PASSED</code></pre></div>
+<h3 id="testpypi-el-indice-de-pruebas">TestPyPI: el índice de pruebas<a class="ancla" href="#testpypi-el-indice-de-pruebas" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Hay una copia completa de PyPI para practicar, con su propio registro de usuarios y sus propios nombres de paquete. Se llama TestPyPI y sirve exactamente para lo que suena: equivocarse sin consecuencias.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">twine upload <span class="t-palabra">--repository</span> testpypi dist/*</code></pre></div>
+<p>Te pedirá credenciales, que se obtienen creando una cuenta en <code>test.pypi.org</code> y generando allí un <em>token</em>. Una vez subido, se puede probar la instalación de verdad apuntando <code>pip</code> a ese índice:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pipx install <span class="t-palabra">--index-url</span> https://test.pypi.org/simple/ misgastos</code></pre></div>
+<p>Hazlo al menos una vez antes de tu primera publicación real. Es la única manera de ver el aspecto que tendrá la página de tu proyecto y de comprobar que la instalación desde un índice funciona.</p>
+<h3 id="el-indice-de-verdad">El índice de verdad<a class="ancla" href="#el-indice-de-verdad" aria-label="Enlace a esta seccion">#</a></h3>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">twine upload dist/*</code></pre></div>
+<p>Y con eso, cualquiera puede hacer:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pipx install misgastos</code></pre></div>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">Una versión publicada no se puede reemplazar</p><p>PyPI no deja subir dos veces la misma versión, ni siquiera borrando la anterior: el número queda quemado para siempre. Es una decisión deliberada, porque si se pudiera cambiar el contenido de una versión ya publicada, nadie podría fiarse de que <code>misgastos==0.1.0</code> significa lo mismo hoy que ayer.</p>
+<p>Si publicas algo roto, la única salida es subir <code>0.1.1</code> con el arreglo. Por eso conviene pasar por TestPyPI y por eso existe la lista de comprobación del final de esta lección.</p></aside>
+<h2 id="versionado-semantico">Versionado semántico<a class="ancla" href="#versionado-semantico" aria-label="Enlace a esta seccion">#</a></h2>
+<p>El número de versión no es un contador. La convención que sigue casi todo el ecosistema se llama <strong>versionado semántico</strong> y tiene tres números separados por puntos:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">text</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-text">MAYOR.MENOR.PARCHE</code></pre></div>
+<p>Cada uno se sube por una razón distinta:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Número</th><th>Cuándo sube</th><th>Ejemplo en <code>misgastos</code></th></tr></thead><tbody><tr><td><strong>PARCHE</strong></td><td>Arreglas un fallo sin cambiar nada más</td><td>El total sumaba mal con la categoría vacía</td></tr><tr><td><strong>MENOR</strong></td><td>Añades algo nuevo sin romper lo anterior</td><td>Un subcomando <code>exportar</code></td></tr><tr><td><strong>MAYOR</strong></td><td>Cambias algo que rompe el uso actual</td><td><code>anadir</code> pasa a exigir la categoría</td></tr></tbody></table></div>
+<p>Y la regla que lo ata todo: <strong>al subir un número, los de su derecha se ponen a cero</strong>. De la <code>1.4.7</code>, un arreglo lleva a la <code>1.4.8</code>, una función nueva a la <code>1.5.0</code> y un cambio incompatible a la <code>2.0.0</code>.</p>
+<p>Lo que cuenta como &quot;romper&quot; es cualquier cosa que obligue a quien usa tu herramienta a cambiar lo que hacía: quitar un subcomando, renombrar una opción, cambiar el formato del fichero de datos o modificar un código de salida. Si alguien tenía un script que llamaba a tu comando y ese script deja de funcionar, es un cambio mayor.</p>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">El cero de la izquierda es una promesa de inestabilidad</p><p>Mientras la versión mayor sea <code>0</code>, la convención dice que no garantizas nada: <code>0.2.0</code> puede romper cosas de <code>0.1.0</code> sin remordimiento. Publicar la <code>1.0.0</code> es declarar que la interfaz se queda quieta, y a partir de ahí los cambios incompatibles cuestan una versión mayor. No tengas prisa en llegar al uno.</p></aside>
+<h2 id="lista-de-comprobacion-antes-de-publicar">Lista de comprobación antes de publicar<a class="ancla" href="#lista-de-comprobacion-antes-de-publicar" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Repásala entera cada vez. Ocupa cinco minutos y evita una versión quemada.</p>
+<ol><li><strong>Las pruebas pasan.</strong> <code>pytest</code> en verde, que es lo de la lección siguiente.</li><li><strong>El número de versión está subido en los dos sitios</strong>, <code>pyproject.toml</code> y <code>__init__.py</code>, y el salto es el que corresponde según el versionado semántico.</li><li><strong>El <code>README.md</code> está al día.</strong> Es la portada pública: si documenta un subcomando que ya no existe, se nota enseguida.</li><li><strong>El <code>LICENSE</code> está en la raíz</strong> y el campo <code>license</code> del <code>pyproject.toml</code> dice lo mismo.</li><li><strong><code>dependencies</code> está completo.</strong> Instala el proyecto en un entorno virtual recién creado y ejecútalo: si falta una biblioteca, ahí saltará el <code>ModuleNotFoundError</code>.</li><li><strong><code>requires-python</code> es cierto.</strong> No declares 3.9 si nunca lo has probado con 3.9.</li><li><strong>Borra <code>dist/</code> y reconstruye.</strong> <code>rm -rf dist build</code> y después <code>python -m build</code>, para no subir restos de versiones anteriores.</li><li><strong><code>twine check dist/*</code> pasa.</strong></li><li><strong>Prueba la instalación desde el fichero construido</strong>, no desde la carpeta: <code>pip install dist/misgastos-0.1.0-py3-none-any.whl</code> en un entorno limpio, y ejecuta el comando.</li><li><strong>Sube primero a TestPyPI</strong> si es tu primera vez o si has tocado el <code>pyproject.toml</code>.</li><li><strong>Pon una etiqueta en git</strong> con la versión, <code>git tag v0.1.0</code>, para poder volver exactamente a lo que publicaste.</li></ol>
+<aside class="aviso aviso-error"><p class="titulo-aviso">ERROR: File already exists</p><p>El mensaje al intentar subir una versión que ya está publicada. No hay forma de forzarlo: sube el número de <code>PARCHE</code>, reconstruye y vuelve a subir. Si te pasa en TestPyPI, recuerda que allí tampoco se puede repetir versión, así que lo habitual es ir gastando números sin miedo porque ese índice no lo mira nadie.</p></aside>
+<aside class="aviso aviso-error"><p class="titulo-aviso">ModuleNotFoundError al instalar desde el <code>.whl</code></p><p>Si el comando funciona con <code>pip install -e .</code> pero falla al instalarlo desde la rueda, casi siempre es que un módulo se quedó fuera del paquete. Abre el <code>.whl</code> con <code>unzip -l</code> y comprueba que están todos tus ficheros. Con la disposición <code>src/</code> esto es raro; con la disposición plana es el pan de cada día, porque la herramienta de construcción tiene que adivinar qué carpetas son tuyas.</p></aside>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>Hay tres maneras de que tu herramienta llegue a otra persona. La directa es <code>pip install</code> apuntando a una carpeta o a un repositorio con <code>git+https://...</code>, que sirve para compartir algo sin publicarlo. La correcta para una herramienta de línea de comandos es <code>pipx</code>, que le da a cada programa su propio entorno virtual y deja solo el comando en el <code>PATH</code>, de modo que dos herramientas con dependencias incompatibles pueden convivir; <code>pipx</code> se usa para lo que se ejecuta y <code>pip</code> para lo que se importa. Para publicar se construye con <code>python -m build</code>, que genera un <code>.whl</code> con el paquete listo para copiar y un <code>.tar.gz</code> con el proyecto entero, y se sube con <code>twine</code>, practicando antes en TestPyPI porque una versión publicada no se puede reemplazar nunca. El número de versión sigue el esquema mayor, menor y parche, que sube según arregles, añadas o rompas, y antes de publicar se repasa una lista que empieza por las pruebas en verde y termina por probar la instalación desde el fichero construido en un entorno limpio.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><p>Sigue con <code>misnotas</code>. Necesitarás <code>build</code>, <code>twine</code> y <code>pipx</code> instalados.</p>
+<ol><li>Crea un entorno virtual nuevo en otra carpeta e instala <code>misnotas</code> desde su ruta con <code>pip install /ruta/al/proyecto</code>, sin la <code>-e</code>. Comprueba que el comando funciona y después borra la carpeta original para verificar que sigue funcionando.</li><li>Convierte tu proyecto en un repositorio de git con un commit, e instálalo en otro entorno con <code>pip install git+file:///ruta/al/proyecto</code>. Lee la salida y localiza el momento en que construye la rueda.</li><li>Instálalo con <code>pipx</code>, desactiva todos los entornos virtuales y comprueba que el comando responde igual. Ejecuta <code>pipx list</code> y localiza dónde ha dejado el entorno.</li><li>Construye los distribuibles con <code>python -m build</code>. Abre el <code>.whl</code> con <code>unzip -l</code> y el <code>.tar.gz</code> con <code>tar tzf</code>, y anota tres diferencias entre lo que hay dentro de cada uno.</li><li>Extrae el <code>entry_points.txt</code> de la rueda y comprueba que coincide con lo que escribiste en <code>[project.scripts]</code>.</li><li>Ejecuta <code>twine check dist/*</code>. Después rompe el <code>README.md</code> a propósito, reconstruye y vuelve a comprobar para ver qué avisa.</li><li>Sube la versión a <code>0.2.0</code> en los dos sitios, reconstruye y recorre la lista de comprobación entera anotando en qué punto te habrías dado cuenta de un error si no la hubieras seguido.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#instalar-desde-una-carpeta">Instalar desde una carpeta</a></li><li class="nivel-2"><a href="#instalar-desde-un-repositorio-de-git">Instalar desde un repositorio de git</a></li><li class="nivel-2"><a href="#pipx-la-forma-correcta-de-instalar-herramientas">pipx: la forma correcta de instalar herramientas</a></li><li class="nivel-3"><a href="#instalar-pipx">Instalar pipx</a></li><li class="nivel-3"><a href="#instalar-una-herramienta">Instalar una herramienta</a></li><li class="nivel-3"><a href="#las-ordenes-de-pipx">Las órdenes de pipx</a></li><li class="nivel-2"><a href="#construir-los-paquetes-distribuibles">Construir los paquetes distribuibles</a></li><li class="nivel-3"><a href="#el-whl-la-rueda">El .whl, la rueda</a></li><li class="nivel-3"><a href="#el-tar-gz-la-distribucion-de-fuentes">El .tar.gz, la distribución de fuentes</a></li><li class="nivel-2"><a href="#publicar-en-pypi">Publicar en PyPI</a></li><li class="nivel-3"><a href="#antes-de-subir-comprobar">Antes de subir: comprobar</a></li><li class="nivel-3"><a href="#testpypi-el-indice-de-pruebas">TestPyPI: el índice de pruebas</a></li><li class="nivel-3"><a href="#el-indice-de-verdad">El índice de verdad</a></li><li class="nivel-2"><a href="#versionado-semantico">Versionado semántico</a></li><li class="nivel-2"><a href="#lista-de-comprobacion-antes-de-publicar">Lista de comprobación antes de publicar</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../terminal/comandos-instalables.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">Comandos instalables</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../terminal/probar-una-cli.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">Probar una CLI</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

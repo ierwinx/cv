@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El área de texto: Text · Curso de Python</title>
+<meta name="description" content="El widget más potente de Tkinter y el que tiene sus propias reglas: índices de línea y columna, el salto de línea que nunca pediste, etiquetas que dan formato, y deshacer sin que se lleve el contenido inicial.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="tkinter/el-area-de-texto-text">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../tkinter/index.html">Aplicaciones con Tkinter</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 3 &middot; Lección 16 de 50</p>
+    <h1>El área de texto: Text</h1>
+    <p class="resumen-leccion">El widget más potente de Tkinter y el que tiene sus propias reglas: índices de línea y columna, el salto de línea que nunca pediste, etiquetas que dan formato, y deshacer sin que se lleve el contenido inicial.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 24 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>El <code>Text</code> es el widget más potente de Tkinter, y no por poco. Los demás hacen una cosa; este es un editor completo: admite varias líneas, deshacer y rehacer, buscar, marcar tramos con colores y tipos de letra distintos, poner imágenes y hasta otros widgets incrustados entre las letras. El editor de texto que se escribe como proyecto del bloque E se apoya en él casi entero.</p>
+<p>El precio de esa potencia es que <strong>el <code>Text</code> no se maneja como el resto del módulo</strong>. No tiene versión temática, no se lee con <code>get()</code> a secas y no usa posiciones de carácter, sino un sistema propio de índices que hay que aprender. Nada de eso es difícil, pero conviene saber desde el principio que aquí las reglas cambian.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Crear un área de texto y entender su sistema de índices de línea y columna; leer y escribir su contenido evitando el salto de línea de más; dar formato con etiquetas y buscar dentro del texto; activar el deshacer sin que el primer deshacer se lleve el contenido cargado; y montar un área de solo lectura para un registro de actividad.</p></aside>
+<h2 id="un-widget-sin-version-tematica">Un widget sin versión temática<a class="ancla" href="#un-widget-sin-version-tematica" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Lo primero, porque rompe el criterio del módulo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> hasattr(ttk, <span class="t-texto">&quot;Text&quot;</span>)
+False</code></pre></div>
+<p>No hay <code>ttk.Text</code>. El área de texto solo existe en la familia clásica, así que aquí se usa <code>tk.Text</code> sin excusas ni comentario justificativo. Lo mismo pasará con <code>Listbox</code> y <code>Canvas</code> en sus lecciones. La consecuencia práctica es que su aspecto <strong>no</strong> viene del tema: los colores, el borde y la fuente se le ponen encima, y hay que tener cuidado de que no cante al lado de los widgets temáticos que lo rodean.</p>
+<p>Se crea con su tamaño en líneas y caracteres:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">notas <span class="t-operador">=</span> tk<span class="t-operador">.</span>Text<span class="t-operador">(</span>ventana<span class="t-operador">,</span> height<span class="t-operador">=</span><span class="t-numero">6</span><span class="t-operador">,</span> wrap<span class="t-operador">=</span><span class="t-texto">&quot;word&quot;</span><span class="t-operador">)</span>
+notas<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span></code></pre></div>
+<p>Sus valores por defecto son grandes y sorprenden la primera vez:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> tk.Text(ventana).cget(<span class="t-texto">&quot;height&quot;</span>), tk.Text(ventana).cget(<span class="t-texto">&quot;width&quot;</span>)
+(<span class="t-numero">24</span>, <span class="t-numero">80</span>)</code></pre></div>
+<p>Veinticuatro líneas por ochenta caracteres, que son las medidas de un terminal clásico. Si no pones <code>height</code>, el widget pide un tamaño enorme y se lleva por delante el diseño de la ventana. Ponle siempre <code>height</code>.</p>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso"><code>wrap</code> viene mal puesto por defecto</p><p>El valor de fábrica parte las líneas por el carácter, no por la palabra:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> tk.Text(ventana).cget(<span class="t-texto">&quot;wrap&quot;</span>)
+<span class="t-texto">&#x27;char&#x27;</span></code></pre></div>
+<p>Eso significa que una línea larga se corta a mitad de palabra, como en los terminales antiguos. Los tres valores son:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> tk.Text(ventana, wrap=<span class="t-texto">&quot;z&quot;</span>)
+_tkinter.TclError: bad wrap <span class="t-texto">&quot;z&quot;</span>: must be char, none, or word</code></pre></div>
+<p><code>word</code> es lo que quieres casi siempre, y <code>none</code> sirve para lo que no debe partirse nunca, como código o una tabla, a costa de necesitar una barra de desplazamiento horizontal. Pon <code>wrap=&quot;word&quot;</code> por costumbre, igual que pones <code>height</code>.</p></aside>
+<h2 id="los-indices">Los índices<a class="ancla" href="#los-indices" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Aquí está la diferencia de fondo. Una posición en un <code>Text</code> no es un número, es una cadena con la forma <code>&quot;línea.columna&quot;</code>, y va con una trampa incorporada: <strong>las líneas empiezan en uno y las columnas en cero.</strong></p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">notas<span class="t-operador">.</span>insert<span class="t-operador">(</span><span class="t-texto">&quot;1.0&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;def saludar(nombre):\n    return f\&quot;Hola {nombre}\&quot;\n&quot;</span><span class="t-operador">)</span></code></pre></div>
+<p><code>&quot;1.0&quot;</code> es el principio del contenido, y es el índice que más vas a escribir. Que no sea <code>&quot;0.0&quot;</code> es la causa de la mitad de los despistes al empezar.</p>
+<p>Además de los índices literales, hay palabras y aritmética. Estas son las que se usan de verdad, medidas sobre el texto de arriba:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> for idx in (<span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;1.end&quot;</span>, <span class="t-texto">&quot;2.4&quot;</span>, <span class="t-texto">&quot;end&quot;</span>, <span class="t-texto">&quot;end-1c&quot;</span>, <span class="t-texto">&quot;insert&quot;</span>, <span class="t-texto">&quot;1.0 lineend&quot;</span>):
+...     print(f<span class="t-texto">&quot;{idx!r:15} -&gt; {notas.index(idx)}&quot;</span>)
+...
+<span class="t-texto">&#x27;1.0&#x27;</span>           -&gt; <span class="t-numero">1.0</span>
+<span class="t-texto">&#x27;1.end&#x27;</span>         -&gt; <span class="t-numero">1.20</span>
+<span class="t-texto">&#x27;2.4&#x27;</span>           -&gt; <span class="t-numero">2.4</span>
+<span class="t-texto">&#x27;end&#x27;</span>           -&gt; <span class="t-numero">4.0</span>
+<span class="t-texto">&#x27;end-1c&#x27;</span>        -&gt; <span class="t-numero">3.0</span>
+<span class="t-texto">&#x27;insert&#x27;</span>        -&gt; <span class="t-numero">3.0</span>
+<span class="t-texto">&#x27;1.0 lineend&#x27;</span>   -&gt; <span class="t-numero">1.20</span></code></pre></div>
+<p><code>index()</code> traduce cualquier índice a su forma canónica, y es la herramienta para entender lo que está pasando cuando algo no cuadra. Lo que hay ahí:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Índice</th><th>Qué señala</th></tr></thead><tbody><tr><td><code>&quot;1.0&quot;</code></td><td>El principio de todo</td></tr><tr><td><code>&quot;2.4&quot;</code></td><td>Línea dos, quinto carácter</td></tr><tr><td><code>&quot;1.end&quot;</code></td><td>El final de la línea uno</td></tr><tr><td><code>&quot;end&quot;</code></td><td>El final del contenido, y lee bien el apartado siguiente</td></tr><tr><td><code>&quot;insert&quot;</code></td><td>Donde está el cursor</td></tr><tr><td><code>&quot;sel.first&quot;</code>, <code>&quot;sel.last&quot;</code></td><td>Los extremos de la selección</td></tr><tr><td><code>&quot;end-1c&quot;</code></td><td>Un carácter antes del final</td></tr><tr><td><code>&quot;insert linestart&quot;</code></td><td>El principio de la línea del cursor</td></tr><tr><td><code>&quot;2.0 wordend&quot;</code></td><td>El final de la palabra que empieza en <code>2.0</code></td></tr></tbody></table></div>
+<p>La aritmética se escribe pegada (<code>end-1c</code>, <code>insert+5c</code>, <code>end-1l</code>) y las unidades son <code>c</code> para caracteres, <code>l</code> para líneas, <code>w</code> para palabras. Y para contar líneas, el idioma es este:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> int(notas.index(<span class="t-texto">&quot;end-1c&quot;</span>).split(<span class="t-texto">&quot;.&quot;</span>)[<span class="t-numero">0</span>])
+<span class="t-numero">3</span></code></pre></div>
+<h2 id="el-salto-de-linea-que-no-pediste">El salto de línea que no pediste<a class="ancla" href="#el-salto-de-linea-que-no-pediste" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Este es <strong>el</strong> detalle del <code>Text</code>, el que hay que saber antes de escribir la primera línea de código que lo use. Un <code>Text</code> siempre termina en un salto de línea, lo hayas puesto tú o no. Así que leerlo de la forma evidente devuelve un <code>\n</code> de más:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> notas.get(<span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;end&quot;</span>)
+<span class="t-texto">&#x27;def saludar(nombre):\n    return f&quot;Hola {nombre}&quot;\n\n&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> notas.get(<span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;end-1c&quot;</span>)
+<span class="t-texto">&#x27;def saludar(nombre):\n    return f&quot;Hola {nombre}&quot;\n&#x27;</span></code></pre></div>
+<p>Mira las dos comillas del final de la primera: hay dos <code>\n</code> y solo uno se insertó. Por eso <strong>la forma correcta de leer un <code>Text</code> completo es <code>get(&quot;1.0&quot;, &quot;end-1c&quot;)</code></strong>, y conviene aprenderla de memoria, porque si no, cada vez que guardes el contenido en un fichero le añadirás una línea en blanco, y cada vez que compares lo guardado con lo que hay en pantalla te dirá que son distintos.</p>
+<p>Lo mismo explica un valor que desconcierta en un widget recién creado y vacío:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> vacio = tk.Text(ventana)
+<span class="t-operador">&gt;&gt;&gt;</span> vacio.index(<span class="t-texto">&quot;end&quot;</span>)
+<span class="t-texto">&#x27;2.0&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> vacio.get(<span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;end-1c&quot;</span>)
+<span class="t-texto">&#x27;&#x27;</span></code></pre></div>
+<p>Un <code>Text</code> vacío ya tiene dos líneas para Tk, porque tiene ese salto. De ahí que la manera de preguntar si está vacío sea mirar el contenido y no el índice:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">if</span> <span class="t-palabra">not</span> notas<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&quot;1.0&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;end-1c&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-operador">...</span></code></pre></div>
+<p>Lo demás funciona como esperas. Se escribe con <code>insert</code>, se borra con <code>delete</code> y se vacía con el mismo tramo de siempre:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">notas<span class="t-operador">.</span>insert<span class="t-operador">(</span><span class="t-texto">&quot;end&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;una línea más\n&quot;</span><span class="t-operador">)</span>
+notas<span class="t-operador">.</span>delete<span class="t-operador">(</span><span class="t-texto">&quot;2.0&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;3.0&quot;</span><span class="t-operador">)</span>        <span class="t-comentario"># borra la línea dos entera</span>
+notas<span class="t-operador">.</span>delete<span class="t-operador">(</span><span class="t-texto">&quot;1.0&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;end&quot;</span><span class="t-operador">)</span>        <span class="t-comentario"># lo vacía todo</span></code></pre></div>
+<h2 id="etiquetas-el-formato">Etiquetas: el formato<a class="ancla" href="#etiquetas-el-formato" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Una <strong>etiqueta</strong> de <code>Text</code>, que no tiene nada que ver con el widget <code>Label</code>, es un nombre que se le pone a uno o varios tramos de texto. Se configura una vez y se aplica donde haga falta:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">notas<span class="t-operador">.</span>tag_configure<span class="t-operador">(</span><span class="t-texto">&quot;clave&quot;</span><span class="t-operador">,</span> foreground<span class="t-operador">=</span><span class="t-texto">&quot;#AF52DE&quot;</span><span class="t-operador">)</span>
+notas<span class="t-operador">.</span>tag_configure<span class="t-operador">(</span><span class="t-texto">&quot;error&quot;</span><span class="t-operador">,</span> background<span class="t-operador">=</span><span class="t-texto">&quot;#FFE5E5&quot;</span><span class="t-operador">,</span> foreground<span class="t-operador">=</span><span class="t-texto">&quot;#B02A37&quot;</span><span class="t-operador">)</span>
+notas<span class="t-operador">.</span>tag_add<span class="t-operador">(</span><span class="t-texto">&quot;clave&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;1.0&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;1.3&quot;</span><span class="t-operador">)</span></code></pre></div>
+<p>Y se puede aplicar en el mismo <code>insert</code>, que es lo cómodo cuando vas escribiendo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> notas.insert(<span class="t-texto">&quot;end&quot;</span>, <span class="t-texto">&quot;import&quot;</span>, <span class="t-texto">&quot;clave&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> [str(i) for i in notas.tag_ranges(<span class="t-texto">&quot;clave&quot;</span>)]
+[<span class="t-texto">&#x27;3.0&#x27;</span>, <span class="t-texto">&#x27;3.6&#x27;</span>]</code></pre></div>
+<p><code>tag_ranges</code> devuelve las parejas de extremos de todos los tramos marcados. Lo que una etiqueta puede cambiar es casi todo el aspecto del tramo: <code>foreground</code>, <code>background</code>, <code>font</code>, <code>underline</code>, <code>overstrike</code>, <code>justify</code>, <code>spacing1</code> y <code>spacing3</code> para el aire de alrededor, y <code>lmargin1</code>, <code>lmargin2</code> y <code>rmargin</code> para los márgenes. Con eso se hace el resaltado de sintaxis de un editor, y con <code>tag_bind</code> se hace que un tramo responda al ratón, que es como se pintan los enlaces.</p>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">La selección es una etiqueta llamada <code>sel</code></p><p>No es una cosa aparte: lo que está seleccionado es lo que lleva la etiqueta <code>sel</code>, y se puede leer y manipular como cualquier otra.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> notas.tag_add(<span class="t-texto">&quot;sel&quot;</span>, <span class="t-texto">&quot;1.4&quot;</span>, <span class="t-texto">&quot;1.11&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> notas.get(<span class="t-texto">&quot;sel.first&quot;</span>, <span class="t-texto">&quot;sel.last&quot;</span>)
+<span class="t-texto">&#x27;saludar&#x27;</span></code></pre></div>
+<p>Con un aviso importante, y es que si no hay nada seleccionado esos índices no existen y <code>get</code> no devuelve vacío, sino que falla:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> notas.tag_remove(<span class="t-texto">&quot;sel&quot;</span>, <span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;end&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> notas.get(<span class="t-texto">&quot;sel.first&quot;</span>, <span class="t-texto">&quot;sel.last&quot;</span>)
+_tkinter.TclError: text doesn&#x27;t contain any characters tagged with <span class="t-texto">&quot;sel&quot;</span></code></pre></div>
+<p>Así que cualquier función de copiar o de poner en negrita lo seleccionado tiene que comprobar antes que haya selección, con un <code>try</code> o preguntando por <code>notas.tag_ranges(&quot;sel&quot;)</code>.</p></aside>
+<h2 id="buscar">Buscar<a class="ancla" href="#buscar" aria-label="Enlace a esta seccion">#</a></h2>
+<p><code>search</code> devuelve el índice de la primera coincidencia, o la cadena vacía si no hay ninguna:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> notas.search(<span class="t-texto">&quot;return&quot;</span>, <span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;end&quot;</span>)
+<span class="t-texto">&#x27;2.4&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> notas.search(<span class="t-texto">&quot;nada&quot;</span>, <span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;end&quot;</span>)
+<span class="t-texto">&#x27;&#x27;</span></code></pre></div>
+<p>Acepta ir hacia atrás y buscar con expresiones regulares, aunque las de Tcl, no las de Python:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> notas.search(r<span class="t-texto">&quot;f\&quot;</span>[^\<span class="t-texto">&quot;]*\&quot;</span><span class="t-texto">&quot;, &quot;</span><span class="t-numero">1.0</span><span class="t-texto">&quot;, &quot;</span>end&quot;, regexp=True)
+<span class="t-texto">&#x27;2.11&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> notas.search(<span class="t-texto">&quot;a&quot;</span>, <span class="t-texto">&quot;end&quot;</span>, <span class="t-texto">&quot;1.0&quot;</span>, backwards=True)
+<span class="t-texto">&#x27;2.16&#x27;</span></code></pre></div>
+<p>Un buscar todas las coincidencias se monta encadenando llamadas desde el final de la anterior, y con <code>count</code> se recupera la longitud de lo encontrado para poder marcarlo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">marcar_todas</span><span class="t-operador">(</span>texto<span class="t-operador">,</span> patron<span class="t-operador">,</span> etiqueta<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Marca con una etiqueta todas las apariciones de un patrón.&quot;&quot;&quot;</span>
+    texto<span class="t-operador">.</span>tag_remove<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> <span class="t-texto">&quot;1.0&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;end&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> patron<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-numero">0</span>
+    largo <span class="t-operador">=</span> tk<span class="t-operador">.</span>IntVar<span class="t-operador">(</span><span class="t-operador">)</span>
+    posicion<span class="t-operador">,</span> encontradas <span class="t-operador">=</span> <span class="t-texto">&quot;1.0&quot;</span><span class="t-operador">,</span> <span class="t-numero">0</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                posicion <span class="t-operador">=</span> texto<span class="t-operador">.</span>search<span class="t-operador">(</span>patron<span class="t-operador">,</span> posicion<span class="t-operador">,</span> <span class="t-texto">&quot;end&quot;</span><span class="t-operador">,</span> count<span class="t-operador">=</span>largo<span class="t-operador">,</span> nocase<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> posicion <span class="t-palabra">or</span> largo<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-numero">0</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> encontradas
+        fin <span class="t-operador">=</span> f&quot;<span class="t-operador">{</span>posicion<span class="t-operador">}</span>+<span class="t-operador">{</span>largo<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">}</span>c&quot;
+        texto<span class="t-operador">.</span>tag_add<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> posicion<span class="t-operador">,</span> fin<span class="t-operador">)</span>
+        posicion<span class="t-operador">,</span> encontradas <span class="t-operador">=</span> fin<span class="t-operador">,</span> encontradas <span class="t-operador">+</span> <span class="t-numero">1</span></code></pre></div>
+<p>Fíjate en que <code>count</code> no devuelve un número: se le pasa un <code>IntVar</code> que Tk rellena. Es una costumbre de Tcl que aparece en varios sitios del widget.</p>
+<h2 id="deshacer">Deshacer<a class="ancla" href="#deshacer" aria-label="Enlace a esta seccion">#</a></h2>
+<p>El <code>Text</code> trae deshacer y rehacer, pero apagados:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">editor <span class="t-operador">=</span> tk<span class="t-operador">.</span>Text<span class="t-operador">(</span>ventana<span class="t-operador">,</span> height<span class="t-operador">=</span><span class="t-numero">10</span><span class="t-operador">,</span> wrap<span class="t-operador">=</span><span class="t-texto">&quot;word&quot;</span><span class="t-operador">,</span> undo<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> maxundo<span class="t-operador">=</span><span class="t-operador">-</span><span class="t-numero">1</span><span class="t-operador">)</span></code></pre></div>
+<p>Con eso funcionan <code>edit_undo()</code> y <code>edit_redo()</code>, y también los atajos del sistema. <code>maxundo=-1</code> es sin límite, y <code>autoseparators</code>, que viene a <code>1</code>, es lo que agrupa las pulsaciones en pasos razonables en vez de deshacer letra a letra.</p>
+<p>Y aquí hay una trampa preciosa:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> editor = tk.Text(ventana, undo=True)
+<span class="t-operador">&gt;&gt;&gt;</span> editor.insert(<span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;contenido cargado del fichero&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> editor.edit_undo()
+<span class="t-operador">&gt;&gt;&gt;</span> editor.get(<span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;end-1c&quot;</span>)
+<span class="t-texto">&#x27;&#x27;</span></code></pre></div>
+<p><strong>El primer deshacer se ha llevado el fichero entero.</strong> Es lógico cuando lo piensas: tu <code>insert</code> es una modificación como cualquier otra y ha entrado en la pila de deshacer. Pero desde fuera es un editor que borra el documento al pulsar <kbd>Cmd</kbd> + <kbd>Z</kbd> recién abierto.</p>
+<p>La solución es vaciar el historial después de cargar:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> editor = tk.Text(ventana, undo=True)
+<span class="t-operador">&gt;&gt;&gt;</span> editor.insert(<span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;contenido cargado del fichero&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> editor.edit_reset()
+<span class="t-operador">&gt;&gt;&gt;</span> editor.edit_undo()
+_tkinter.TclError: nothing to undo
+<span class="t-operador">&gt;&gt;&gt;</span> editor.get(<span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;end-1c&quot;</span>)
+<span class="t-texto">&#x27;contenido cargado del fichero&#x27;</span></code></pre></div>
+<p><code>edit_reset()</code> después de cada carga, y <code>edit_undo()</code> dentro de un <code>try</code>, porque cuando no hay nada que deshacer lanza esa excepción en vez de no hacer nada.</p>
+<p>El compañero de todo esto es <code>edit_modified()</code>, la bandera de &quot;hay cambios sin guardar&quot;, que devuelve un entero y no un booleano:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> editor.edit_modified()
+<span class="t-numero">0</span>
+<span class="t-operador">&gt;&gt;&gt;</span> editor.insert(<span class="t-texto">&quot;end&quot;</span>, <span class="t-texto">&quot;algo&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> editor.edit_modified()
+<span class="t-numero">1</span>
+<span class="t-operador">&gt;&gt;&gt;</span> editor.edit_modified(False)
+<span class="t-operador">&gt;&gt;&gt;</span> editor.edit_modified()
+<span class="t-numero">0</span></code></pre></div>
+<p>Se pone a cero al guardar y se consulta al cerrar, que es como se decide si hay que preguntar &quot;¿quieres guardar los cambios?&quot;. El diálogo en sí es del bloque D.</p>
+<h2 id="un-area-de-solo-lectura">Un área de solo lectura<a class="ancla" href="#un-area-de-solo-lectura" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Un registro de actividad, una consola de salida o un panel de ayuda son áreas de texto que el programa escribe y nadie más. Se consigue con <code>state=&quot;disabled&quot;</code>, y tiene el mismo comportamiento que viste en el <code>Entry</code>: <strong>el estado también te bloquea a ti</strong>, en silencio.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> registro = tk.Text(ventana, height=<span class="t-numero">4</span>, state=<span class="t-texto">&quot;disabled&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> registro.insert(<span class="t-texto">&quot;end&quot;</span>, <span class="t-texto">&quot;no va a entrar\n&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> registro.get(<span class="t-texto">&quot;1.0&quot;</span>, <span class="t-texto">&quot;end-1c&quot;</span>)
+<span class="t-texto">&#x27;&#x27;</span></code></pre></div>
+<p>Ni error ni contenido. El patrón, que vas a escribir muchas veces, es abrir, escribir y cerrar:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">anotar</span><span class="t-operador">(</span>registro<span class="t-operador">,</span> mensaje<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Añade una línea a un área de solo lectura y baja la vista hasta ella.&quot;&quot;&quot;</span>
+    registro<span class="t-operador">.</span>configure<span class="t-operador">(</span>state<span class="t-operador">=</span><span class="t-texto">&quot;normal&quot;</span><span class="t-operador">)</span>
+    registro<span class="t-operador">.</span>insert<span class="t-operador">(</span><span class="t-texto">&quot;end&quot;</span><span class="t-operador">,</span> f&quot;<span class="t-operador">{</span>mensaje<span class="t-operador">}</span>\n&quot;<span class="t-operador">)</span>
+    registro<span class="t-operador">.</span>configure<span class="t-operador">(</span>state<span class="t-operador">=</span><span class="t-texto">&quot;disabled&quot;</span><span class="t-operador">)</span>
+    registro<span class="t-operador">.</span>see<span class="t-operador">(</span><span class="t-texto">&quot;end&quot;</span><span class="t-operador">)</span></code></pre></div>
+<p><code>see()</code> es la pieza que se olvida: desplaza la vista para que ese índice quede visible. Sin él, el registro sigue creciendo pero se queda mirando la primera línea.</p>
+<h2 id="las-demas-opciones">Las demás opciones<a class="ancla" href="#las-demas-opciones" aria-label="Enlace a esta seccion">#</a></h2>
+<p><code>tk.Text</code> tiene cuarenta y tres opciones, más que ningún otro widget del módulo. Las que no se han nombrado y de verdad se usan:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Opción</th><th>Qué hace</th></tr></thead><tbody><tr><td><code>spacing1</code>, <code>spacing2</code>, <code>spacing3</code></td><td>Aire antes del párrafo, entre líneas partidas y después del párrafo</td></tr><tr><td><code>tabs</code></td><td>Las posiciones de tabulación</td></tr><tr><td><code>insertbackground</code></td><td>Color del cursor de escritura</td></tr><tr><td><code>insertwidth</code></td><td>Grosor del cursor</td></tr><tr><td><code>selectbackground</code></td><td>Color del fondo de lo seleccionado</td></tr><tr><td><code>padx</code>, <code>pady</code></td><td>Margen interior, que por defecto es de un píxel y queda apretado</td></tr><tr><td><code>yscrollcommand</code></td><td>Conexión con la barra de desplazamiento</td></tr><tr><td><code>exportselection</code></td><td>Si la selección se lleva el portapapeles del sistema</td></tr></tbody></table></div>
+<p>De esas, <code>spacing3</code> merece una mención porque es la forma barata de que un texto largo se lea bien: un par de píxeles de aire después de cada párrafo cambian bastante la sensación.</p>
+<p>Y la conexión con la barra de desplazamiento son estas dos líneas, que aparecen en pareja siempre y que tienen lección propia:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">barra <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Scrollbar<span class="t-operador">(</span>contenedor<span class="t-operador">,</span> orient<span class="t-operador">=</span><span class="t-texto">&quot;vertical&quot;</span><span class="t-operador">,</span> command<span class="t-operador">=</span>notas<span class="t-operador">.</span>yview<span class="t-operador">)</span>
+notas<span class="t-operador">.</span>configure<span class="t-operador">(</span>yscrollcommand<span class="t-operador">=</span>barra<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">)</span></code></pre></div>
+<p>Cada uno apunta al otro: la barra mueve el texto y el texto mueve la barra. Es exactamente lo que hace el área de notas del panel de control de referencia.</p>
+<h2 id="un-editor-pequeno-pero-honesto">Un editor pequeño pero honesto<a class="ancla" href="#un-editor-pequeno-pero-honesto" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">areatexto.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;Text: índices, etiquetas, búsqueda, deshacer y un registro de solo lectura.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">import</span> tkinter <span class="t-palabra">as</span> tk
+<span class="t-palabra">from</span> tkinter <span class="t-palabra">import</span> ttk
+
+MARGEN <span class="t-operador">=</span> <span class="t-numero">12</span>
+AIRE <span class="t-operador">=</span> <span class="t-numero">4</span>
+
+INICIAL <span class="t-operador">=</span> <span class="t-texto">&quot;&quot;&quot;El widget Text admite varias líneas y da formato por tramos.
+
+Escribe algo y fíjate en el contador de abajo: cuenta líneas, palabras y
+caracteres en cada pulsación. Busca una palabra arriba y se marcará en
+amarillo en todas sus apariciones.
+
+Prueba también a deshacer: el historial se vació al cargar este texto, así
+que el primer deshacer no se lleva el documento.&quot;&quot;&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">centrar</span><span class="t-operador">(</span>ventana<span class="t-operador">:</span> tk<span class="t-operador">.</span>Misc<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Coloca la ventana en el centro de la pantalla.&quot;&quot;&quot;</span>
+    ventana<span class="t-operador">.</span>update_idletasks<span class="t-operador">(</span><span class="t-operador">)</span>
+    ancho <span class="t-operador">=</span> ventana<span class="t-operador">.</span>winfo_width<span class="t-operador">(</span><span class="t-operador">)</span>
+    alto <span class="t-operador">=</span> ventana<span class="t-operador">.</span>winfo_height<span class="t-operador">(</span><span class="t-operador">)</span>
+    x <span class="t-operador">=</span> <span class="t-operador">(</span>ventana<span class="t-operador">.</span>winfo_screenwidth<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> ancho<span class="t-operador">)</span> <span class="t-operador">//</span> <span class="t-numero">2</span>
+    y <span class="t-operador">=</span> <span class="t-operador">(</span>ventana<span class="t-operador">.</span>winfo_screenheight<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> alto<span class="t-operador">)</span> <span class="t-operador">//</span> <span class="t-numero">2</span>
+    ventana<span class="t-operador">.</span>geometry<span class="t-operador">(</span>f&quot;+<span class="t-operador">{</span>x<span class="t-operador">}</span>+<span class="t-operador">{</span>y<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">anotar</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Añade una línea al registro, que está en solo lectura.&quot;&quot;&quot;</span>
+    registro<span class="t-operador">.</span>configure<span class="t-operador">(</span>state<span class="t-operador">=</span><span class="t-texto">&quot;normal&quot;</span><span class="t-operador">)</span>
+    registro<span class="t-operador">.</span>insert<span class="t-operador">(</span><span class="t-texto">&quot;end&quot;</span><span class="t-operador">,</span> f&quot;<span class="t-operador">{</span>mensaje<span class="t-operador">}</span>\n&quot;<span class="t-operador">)</span>
+    registro<span class="t-operador">.</span>configure<span class="t-operador">(</span>state<span class="t-operador">=</span><span class="t-texto">&quot;disabled&quot;</span><span class="t-operador">)</span>
+    registro<span class="t-operador">.</span>see<span class="t-operador">(</span><span class="t-texto">&quot;end&quot;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">contar</span><span class="t-operador">(</span><span class="t-operador">*</span><span class="t-palabra">_</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Se llama en cada modificación del editor.&quot;&quot;&quot;</span>
+    contenido <span class="t-operador">=</span> editor<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&quot;1.0&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;end-1c&quot;</span><span class="t-operador">)</span>
+    lineas <span class="t-operador">=</span> <span class="t-integrada">int</span><span class="t-operador">(</span>editor<span class="t-operador">.</span>index<span class="t-operador">(</span><span class="t-texto">&quot;end-1c&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>split<span class="t-operador">(</span><span class="t-texto">&quot;.&quot;</span><span class="t-operador">)</span><span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    resumen<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>lineas<span class="t-operador">}</span> líneas, <span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>contenido<span class="t-operador">.</span>split<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">}</span> palabras, &quot;
+                f&quot;<span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>contenido<span class="t-operador">)</span><span class="t-operador">}</span> caracteres&quot;<span class="t-operador">)</span>
+    <span class="t-comentario"># La bandera hay que rearmarla a mano o el evento no vuelve a dispararse.</span>
+    editor<span class="t-operador">.</span>edit_modified<span class="t-operador">(</span><span class="t-palabra">False</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">marcar_todas</span><span class="t-operador">(</span>patron<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Marca todas las apariciones del patrón y devuelve cuántas hay.&quot;&quot;&quot;</span>
+    editor<span class="t-operador">.</span>tag_remove<span class="t-operador">(</span><span class="t-texto">&quot;hallado&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;1.0&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;end&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> patron<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-numero">0</span>
+    largo <span class="t-operador">=</span> tk<span class="t-operador">.</span>IntVar<span class="t-operador">(</span><span class="t-operador">)</span>
+    posicion<span class="t-operador">,</span> encontradas <span class="t-operador">=</span> <span class="t-texto">&quot;1.0&quot;</span><span class="t-operador">,</span> <span class="t-numero">0</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                posicion <span class="t-operador">=</span> editor<span class="t-operador">.</span>search<span class="t-operador">(</span>patron<span class="t-operador">,</span> posicion<span class="t-operador">,</span> <span class="t-texto">&quot;end&quot;</span><span class="t-operador">,</span> count<span class="t-operador">=</span>largo<span class="t-operador">,</span> nocase<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> posicion <span class="t-palabra">or</span> largo<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-numero">0</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> encontradas
+        fin <span class="t-operador">=</span> f&quot;<span class="t-operador">{</span>posicion<span class="t-operador">}</span>+<span class="t-operador">{</span>largo<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">}</span>c&quot;
+        editor<span class="t-operador">.</span>tag_add<span class="t-operador">(</span><span class="t-texto">&quot;hallado&quot;</span><span class="t-operador">,</span> posicion<span class="t-operador">,</span> fin<span class="t-operador">)</span>
+        posicion<span class="t-operador">,</span> encontradas <span class="t-operador">=</span> fin<span class="t-operador">,</span> encontradas <span class="t-operador">+</span> <span class="t-numero">1</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">buscar</span><span class="t-operador">(</span><span class="t-operador">*</span><span class="t-palabra">_</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        encontradas <span class="t-operador">=</span> marcar_todas<span class="t-operador">(</span>patron<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">if</span> patron<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                anotar<span class="t-operador">(</span>f&quot;«<span class="t-operador">{</span>patron<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">}</span>»: <span class="t-operador">{</span>encontradas<span class="t-operador">}</span> apariciones&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">negrita</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Pone en negrita lo seleccionado, si hay algo seleccionado.&quot;&quot;&quot;</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> editor<span class="t-operador">.</span>tag_ranges<span class="t-operador">(</span><span class="t-texto">&quot;sel&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                anotar<span class="t-operador">(</span><span class="t-texto">&quot;No hay nada seleccionado&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span>
+    editor<span class="t-operador">.</span>tag_add<span class="t-operador">(</span><span class="t-texto">&quot;negrita&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;sel.first&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;sel.last&quot;</span><span class="t-operador">)</span>
+    anotar<span class="t-operador">(</span>f&quot;Negrita de <span class="t-operador">{</span>editor<span class="t-operador">.</span>index<span class="t-operador">(</span><span class="t-texto">&#x27;sel.first&#x27;</span><span class="t-operador">)</span><span class="t-operador">}</span> a <span class="t-operador">{</span>editor<span class="t-operador">.</span>index<span class="t-operador">(</span><span class="t-texto">&#x27;sel.last&#x27;</span><span class="t-operador">)</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">deshacer</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                editor<span class="t-operador">.</span>edit_undo<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">except</span> tk<span class="t-operador">.</span>TclError<span class="t-operador">:</span>
+                anotar<span class="t-operador">(</span><span class="t-texto">&quot;Nada que deshacer&quot;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">rehacer</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                editor<span class="t-operador">.</span>edit_redo<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">except</span> tk<span class="t-operador">.</span>TclError<span class="t-operador">:</span>
+                anotar<span class="t-operador">(</span><span class="t-texto">&quot;Nada que rehacer&quot;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">crear_barra</span><span class="t-operador">(</span>ventana<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Buscador y acciones de formato.&quot;&quot;&quot;</span>
+    barra <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>ventana<span class="t-operador">,</span> padding<span class="t-operador">=</span><span class="t-operador">(</span>MARGEN<span class="t-operador">,</span> AIRE<span class="t-operador">)</span><span class="t-operador">)</span>
+    barra<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;top&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">)</span>
+
+    ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>barra<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Buscar:&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> padx<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> AIRE<span class="t-operador">)</span><span class="t-operador">)</span>
+    campo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Entry<span class="t-operador">(</span>barra<span class="t-operador">,</span> textvariable<span class="t-operador">=</span>patron<span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">18</span><span class="t-operador">)</span>
+    campo<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">)</span>
+    ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>barra<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Marcar&quot;</span><span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">8</span><span class="t-operador">,</span> command<span class="t-operador">=</span>buscar<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>
+        side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> padx<span class="t-operador">=</span>AIRE<span class="t-operador">)</span>
+
+    ttk<span class="t-operador">.</span>Separator<span class="t-operador">(</span>barra<span class="t-operador">,</span> orient<span class="t-operador">=</span><span class="t-texto">&quot;vertical&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">,</span> padx<span class="t-operador">=</span>MARGEN<span class="t-operador">)</span>
+    ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>barra<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Negrita&quot;</span><span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">8</span><span class="t-operador">,</span> command<span class="t-operador">=</span>negrita<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">)</span>
+    ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>barra<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Deshacer&quot;</span><span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">9</span><span class="t-operador">,</span> command<span class="t-operador">=</span>deshacer<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>
+        side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> padx<span class="t-operador">=</span>AIRE<span class="t-operador">)</span>
+    ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>barra<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Rehacer&quot;</span><span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">9</span><span class="t-operador">,</span> command<span class="t-operador">=</span>rehacer<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">)</span>
+
+    ttk<span class="t-operador">.</span>Separator<span class="t-operador">(</span>ventana<span class="t-operador">,</span> orient<span class="t-operador">=</span><span class="t-texto">&quot;horizontal&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> barra
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">crear_editor</span><span class="t-operador">(</span>contenedor<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;El área principal, con su barra de desplazamiento.&quot;&quot;&quot;</span>
+    <span class="t-palabra">global</span> editor
+    caja <span class="t-operador">=</span> ttk<span class="t-operador">.</span>LabelFrame<span class="t-operador">(</span>contenedor<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Documento&quot;</span><span class="t-operador">,</span> padding<span class="t-operador">=</span>AIRE<span class="t-operador">)</span>
+    caja<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+    editor <span class="t-operador">=</span> tk<span class="t-operador">.</span>Text<span class="t-operador">(</span>caja<span class="t-operador">,</span> height<span class="t-operador">=</span><span class="t-numero">12</span><span class="t-operador">,</span> wrap<span class="t-operador">=</span><span class="t-texto">&quot;word&quot;</span><span class="t-operador">,</span> undo<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> maxundo<span class="t-operador">=</span><span class="t-operador">-</span><span class="t-numero">1</span><span class="t-operador">,</span>
+                     padx<span class="t-operador">=</span><span class="t-numero">6</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-numero">6</span><span class="t-operador">,</span> spacing3<span class="t-operador">=</span><span class="t-numero">4</span><span class="t-operador">,</span> relief<span class="t-operador">=</span><span class="t-texto">&quot;flat&quot;</span><span class="t-operador">,</span>
+                     highlightthickness<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">,</span> highlightbackground<span class="t-operador">=</span><span class="t-texto">&quot;#D1D1D6&quot;</span><span class="t-operador">)</span>
+    barra <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Scrollbar<span class="t-operador">(</span>caja<span class="t-operador">,</span> orient<span class="t-operador">=</span><span class="t-texto">&quot;vertical&quot;</span><span class="t-operador">,</span> command<span class="t-operador">=</span>editor<span class="t-operador">.</span>yview<span class="t-operador">)</span>
+    editor<span class="t-operador">.</span>configure<span class="t-operador">(</span>yscrollcommand<span class="t-operador">=</span>barra<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">)</span>
+
+    editor<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+    barra<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">)</span>
+
+    editor<span class="t-operador">.</span>tag_configure<span class="t-operador">(</span><span class="t-texto">&quot;hallado&quot;</span><span class="t-operador">,</span> background<span class="t-operador">=</span><span class="t-texto">&quot;#FFE58F&quot;</span><span class="t-operador">)</span>
+    editor<span class="t-operador">.</span>tag_configure<span class="t-operador">(</span><span class="t-texto">&quot;negrita&quot;</span><span class="t-operador">,</span> font<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;Helvetica&quot;</span><span class="t-operador">,</span> <span class="t-numero">13</span><span class="t-operador">,</span> <span class="t-texto">&quot;bold&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> caja
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">crear_registro</span><span class="t-operador">(</span>contenedor<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Área de solo lectura para el registro de lo que va pasando.&quot;&quot;&quot;</span>
+    <span class="t-palabra">global</span> registro
+    caja <span class="t-operador">=</span> ttk<span class="t-operador">.</span>LabelFrame<span class="t-operador">(</span>contenedor<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Registro&quot;</span><span class="t-operador">,</span> padding<span class="t-operador">=</span>AIRE<span class="t-operador">)</span>
+    caja<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span>MARGEN<span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+    registro <span class="t-operador">=</span> tk<span class="t-operador">.</span>Text<span class="t-operador">(</span>caja<span class="t-operador">,</span> height<span class="t-operador">=</span><span class="t-numero">4</span><span class="t-operador">,</span> wrap<span class="t-operador">=</span><span class="t-texto">&quot;word&quot;</span><span class="t-operador">,</span> state<span class="t-operador">=</span><span class="t-texto">&quot;disabled&quot;</span><span class="t-operador">,</span>
+                       padx<span class="t-operador">=</span><span class="t-numero">6</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-numero">6</span><span class="t-operador">,</span> relief<span class="t-operador">=</span><span class="t-texto">&quot;flat&quot;</span><span class="t-operador">,</span>
+                       highlightthickness<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">,</span> highlightbackground<span class="t-operador">=</span><span class="t-texto">&quot;#D1D1D6&quot;</span><span class="t-operador">)</span>
+    registro<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> caja
+
+
+ventana <span class="t-operador">=</span> tk<span class="t-operador">.</span>Tk<span class="t-operador">(</span><span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>title<span class="t-operador">(</span><span class="t-texto">&quot;Área de texto&quot;</span><span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>minsize<span class="t-operador">(</span><span class="t-numero">620</span><span class="t-operador">,</span> <span class="t-numero">520</span><span class="t-operador">)</span>
+
+<span class="t-comentario"># Variables sueltas y global: en el bloque E esto pasa a ser una clase.</span>
+patron <span class="t-operador">=</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span><span class="t-operador">)</span>
+resumen <span class="t-operador">=</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span><span class="t-operador">)</span>
+editor <span class="t-operador">=</span> <span class="t-palabra">None</span>
+registro <span class="t-operador">=</span> <span class="t-palabra">None</span>
+
+crear_barra<span class="t-operador">(</span>ventana<span class="t-operador">)</span>
+
+cuerpo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>ventana<span class="t-operador">,</span> padding<span class="t-operador">=</span>MARGEN<span class="t-operador">)</span>
+cuerpo<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+crear_editor<span class="t-operador">(</span>cuerpo<span class="t-operador">)</span>
+crear_registro<span class="t-operador">(</span>cuerpo<span class="t-operador">)</span>
+ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> textvariable<span class="t-operador">=</span>resumen<span class="t-operador">,</span> anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>
+    fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span>AIRE<span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+editor<span class="t-operador">.</span>insert<span class="t-operador">(</span><span class="t-texto">&quot;1.0&quot;</span><span class="t-operador">,</span> INICIAL<span class="t-operador">)</span>
+<span class="t-comentario"># Sin este edit_reset, el primer deshacer se llevaría el texto cargado.</span>
+editor<span class="t-operador">.</span>edit_reset<span class="t-operador">(</span><span class="t-operador">)</span>
+editor<span class="t-operador">.</span>edit_modified<span class="t-operador">(</span><span class="t-palabra">False</span><span class="t-operador">)</span>
+editor<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;&lt;Modified&gt;&gt;&quot;</span><span class="t-operador">,</span> contar<span class="t-operador">)</span>
+contar<span class="t-operador">(</span><span class="t-operador">)</span>
+anotar<span class="t-operador">(</span><span class="t-texto">&quot;Documento cargado&quot;</span><span class="t-operador">)</span>
+
+centrar<span class="t-operador">(</span>ventana<span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>mainloop<span class="t-operador">(</span><span class="t-operador">)</span></code></pre></div>
+<p>Dos detalles de ese programa que no son evidentes. El contador se engancha al evento <code>&lt;&lt;Modified&gt;&gt;</code>, que es del propio widget y avisa de cualquier cambio venga de donde venga, pero <strong>solo se dispara una vez</strong>: hasta que no pones la bandera otra vez a <code>False</code> con <code>edit_modified(False)</code> no vuelve a avisar, y ese rearme dentro de <code>contar</code> es la línea que hace que funcione a partir de la segunda pulsación. Y el <code>edit_reset()</code> después de cargar el texto inicial es lo que evita la trampa del deshacer; quítalo, ejecuta y deshaz para verlo.</p>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Cuándo <code>Text</code> y cuándo otra cosa</p><p>El <code>Text</code> es tentador porque lo hace todo, y se usa de más. Tres casos en los que no es lo que quieres:</p>
+<ul><li>Para <strong>una línea</strong> de texto, un <code>Entry</code>. Un <code>Text</code> de <code>height=1</code> parece lo mismo y no lo es: acepta saltos de línea pegados, no responde a <kbd>Intro</kbd> como un campo y no entra en el recorrido del tabulador igual.</li><li>Para <strong>elegir de una lista</strong>, un <code>Listbox</code> o un <code>Combobox</code>. Escribir opciones en un <code>Text</code> y leer la línea del cursor es reinventar mal esos widgets.</li><li>Para <strong>una tabla</strong>, un <code>Treeview</code>. Alinear columnas con tabulaciones en un <code>Text</code> funciona hasta que un dato es más largo de lo previsto.</li></ul></aside>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>El <code>Text</code> es el widget más potente de Tkinter y el que menos se parece a los demás: no tiene versión temática, así que se usa <code>tk.Text</code> sin excusas y su aspecto no lo pone el tema. Sus valores por defecto son de terminal antiguo, veinticuatro por ochenta y partiendo las líneas por el carácter, de modo que <code>height</code> y <code>wrap=&quot;word&quot;</code> se ponen por costumbre. Las posiciones no son números sino cadenas con la forma línea punto columna, donde las líneas empiezan en uno y las columnas en cero, y hay palabras y aritmética (<code>end</code>, <code>insert</code>, <code>sel.first</code>, <code>end-1c</code>, <code>insert linestart</code>) que <code>index()</code> traduce cuando algo no cuadra. Lo que nunca hay que olvidar es que un <code>Text</code> siempre acaba en un salto de línea que tú no pusiste, y por eso leerlo completo es <code>get(&quot;1.0&quot;, &quot;end-1c&quot;)</code> y no <code>get(&quot;1.0&quot;, &quot;end&quot;)</code>, que devuelve un <code>\n</code> de más, y también por eso un widget vacío dice que su final está en la línea dos. El formato se da con etiquetas, que son nombres aplicados a tramos y admiten color, fuente, subrayado y márgenes, y la selección no es más que una etiqueta llamada <code>sel</code> cuyos índices fallan si no hay nada seleccionado. <code>search</code> devuelve el índice de la primera coincidencia o la cadena vacía, y para marcarlas todas se encadena desde el final de la anterior pidiendo la longitud con un <code>IntVar</code>. El deshacer se activa con <code>undo=True</code> y hay que llamar a <code>edit_reset()</code> después de cargar contenido, porque si no el primer deshacer borra el documento, además de envolver <code>edit_undo()</code> en un <code>try</code> porque lanza excepción cuando no hay nada que deshacer. Y un área de solo lectura se hace con <code>state=&quot;disabled&quot;</code>, recordando que ese estado también bloquea a tu código, así que para escribir en ella hay que abrirla, escribir, cerrarla y llamar a <code>see(&quot;end&quot;)</code>.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><p>Trabaja en un fichero <code>16-texto.py</code> salvo donde se indique otra cosa:</p>
+<ol><li>Crea un <code>Text</code> y escribe tres líneas. Imprime <code>index(&quot;end&quot;)</code>, <code>index(&quot;end-1c&quot;)</code>, <code>get(&quot;1.0&quot;, &quot;end&quot;)</code> y <code>get(&quot;1.0&quot;, &quot;end-1c&quot;)</code>, y explica con tus palabras las diferencias entre los cuatro.</li><li>Haz un contador de líneas, palabras y caracteres que se actualice con el evento <code>&lt;&lt;Modified&gt;&gt;</code>. Pruébalo primero sin rearmar la bandera con <code>edit_modified(False)</code> y anota a partir de cuándo deja de contar.</li><li>Escribe en <code>16-resaltar.py</code> un buscador que marque en amarillo todas las apariciones de una palabra, cuente cuántas son y ponga el cursor en la primera con <code>see</code>.</li><li>Monta un editor con <code>undo=True</code> que cargue el contenido de un fichero de texto cualquiera. Pulsa deshacer nada más abrir, comprueba que se borra todo, y arréglalo con <code>edit_reset()</code>.</li><li>Haz un área de registro en solo lectura con un botón que le añada una línea con la hora. Comprueba qué pasa si te olvidas del <code>see(&quot;end&quot;)</code> cuando ya hay más líneas de las que caben.</li><li>Define tres etiquetas de formato (título, código y aviso) con fuentes y colores distintos y aplícalas a tramos de un texto de ejemplo. Después usa <code>tag_ranges</code> para imprimir qué tramos lleva cada una.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#un-widget-sin-version-tematica">Un widget sin versión temática</a></li><li class="nivel-2"><a href="#los-indices">Los índices</a></li><li class="nivel-2"><a href="#el-salto-de-linea-que-no-pediste">El salto de línea que no pediste</a></li><li class="nivel-2"><a href="#etiquetas-el-formato">Etiquetas: el formato</a></li><li class="nivel-2"><a href="#buscar">Buscar</a></li><li class="nivel-2"><a href="#deshacer">Deshacer</a></li><li class="nivel-2"><a href="#un-area-de-solo-lectura">Un área de solo lectura</a></li><li class="nivel-2"><a href="#las-demas-opciones">Las demás opciones</a></li><li class="nivel-2"><a href="#un-editor-pequeno-pero-honesto">Un editor pequeño pero honesto</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../tkinter/el-campo-de-texto-entry.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">El campo de texto: Entry</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../tkinter/la-casilla-checkbutton.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">La casilla de verificación: Checkbutton</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

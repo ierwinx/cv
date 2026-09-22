@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Imágenes con PhotoImage y Pillow · Curso de Python</title>
+<meta name="description" content="La imagen que desaparece sin dar ningún error, los formatos que Tk sí y no entiende (con una sorpresa en Tk 9), el escalado que solo admite enteros, y la trampa que Pillow añade encima.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="tkinter/imagenes-con-photoimage-y-pillow">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../tkinter/index.html">Aplicaciones con Tkinter</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 3 &middot; Lección 44 de 50</p>
+    <h1>Imágenes con PhotoImage y Pillow</h1>
+    <p class="resumen-leccion">La imagen que desaparece sin dar ningún error, los formatos que Tk sí y no entiende (con una sorpresa en Tk 9), el escalado que solo admite enteros, y la trampa que Pillow añade encima.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 26 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>Poner una imagen en una ventana son dos líneas. El problema es que una de esas dos líneas tiene la trampa más conocida de Tkinter, y la forma en que falla es la peor posible: <strong>no hay error, no hay excepción, no hay aviso en la consola. Solo un hueco donde iba la imagen.</strong></p>
+<p>Esta lección empieza por ahí, porque hasta que eso no se entiende no se puede trabajar con imágenes. Después vienen los formatos, donde hay una sorpresa agradable si tu Tk es el 9, y el escalado, donde Tk se queda muy corto y aparece la razón de instalar Pillow. Y Pillow, ya que estamos, tiene la misma trampa con un giro más.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Entender por qué una imagen desaparece y qué referencia exactamente hay que guardar, en los tres casos que hay (la imagen cargada, la imagen intermedia de un escalado y la de Pillow); saber qué formatos entiende <code>tk.PhotoImage</code> sin instalar nada y por qué el JPEG no está; escalar con lo que trae Tk y saber cuándo eso no basta; y usar Pillow para lo demás sin que el programa deje de funcionar si no está instalado.</p></aside>
+<h2 id="la-imagen-que-desaparece">La imagen que desaparece<a class="ancla" href="#la-imagen-que-desaparece" aria-label="Enlace a esta seccion">#</a></h2>
+<p>El código parece impecable:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">crear_mal</span><span class="t-operador">(</span>padre<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;La imagen es local: al volver, nadie la referencia.&quot;&quot;&quot;</span>
+    imagen <span class="t-operador">=</span> tk<span class="t-operador">.</span>PhotoImage<span class="t-operador">(</span>file<span class="t-operador">=</span><span class="t-texto">&quot;foto.png&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>padre<span class="t-operador">,</span> image<span class="t-operador">=</span>imagen<span class="t-operador">)</span></code></pre></div>
+<p>Y el resultado es una etiqueta vacía. Lo medido:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> etiqueta = crear_mal(ventana)
+<span class="t-operador">&gt;&gt;&gt;</span> etiqueta.cget(<span class="t-texto">&quot;image&quot;</span>)
+(<span class="t-texto">&#x27;pyimage14&#x27;</span>,)
+<span class="t-operador">&gt;&gt;&gt;</span> gc.collect()
+<span class="t-operador">&gt;&gt;&gt;</span> etiqueta.cget(<span class="t-texto">&quot;image&quot;</span>)
+(<span class="t-texto">&#x27;pyimage14&#x27;</span>,)
+<span class="t-operador">&gt;&gt;&gt;</span> ventana.tk.call(<span class="t-texto">&quot;image&quot;</span>, <span class="t-texto">&quot;width&quot;</span>, <span class="t-texto">&quot;pyimage14&quot;</span>)
+TclError: image <span class="t-texto">&quot;pyimage14&quot;</span> does not exist
+<span class="t-operador">&gt;&gt;&gt;</span> etiqueta.winfo_exists()
+True</code></pre></div>
+<p>Fíjate en lo cruel del detalle: <strong>la etiqueta sigue diciendo que tiene la imagen <code>pyimage14</code></strong>. Preguntarle al widget no delata nada. Solo preguntando al intérprete de Tcl se descubre que la imagen ya no está.</p>
+<p>La razón es la misma que la de las variables de control de la lección 33, y es el mismo hallazgo con otra cara: <strong><code>tk.PhotoImage</code> no guarda los píxeles, guarda el nombre de una imagen que vive en el intérprete de Tcl.</strong> Y el destructor del objeto Python borra la imagen de Tcl. Cuando la función acaba, <code>imagen</code> es basura, Python la recoge, el destructor se ejecuta, y en Tcl desaparece la imagen. El widget conserva un nombre que ya no apunta a nada, y Tk dibuja lo que puede dibujar: nada.</p>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">La regla y sus tres caras</p><p><strong>Una imagen tiene que estar referenciada desde Python mientras el widget la use.</strong> En la práctica, se guarda como atributo del widget o de la aplicación:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">etiqueta <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>padre<span class="t-operador">,</span> image<span class="t-operador">=</span>imagen<span class="t-operador">)</span>
+etiqueta<span class="t-operador">.</span>imagen <span class="t-operador">=</span> imagen          <span class="t-comentario"># la referencia vive con el widget</span></code></pre></div>
+<p>Y hay tres caras de la misma trampa que muerden por separado.</p>
+<p><strong>Primera: la imagen intermedia de un escalado es otro objeto.</strong></p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> original = tk.PhotoImage(file=<span class="t-texto">&quot;foto.png&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> etiqueta = ttk.Label(padre, image=original.subsample(<span class="t-numero">2</span>))
+<span class="t-operador">&gt;&gt;&gt;</span> <span class="t-comentario"># guardando &#x27;original&#x27; no basta: lo que se muestra es la reducida</span></code></pre></div>
+<p><code>subsample()</code> devuelve <strong>una imagen nueva</strong>, y es esa la que hay que guardar. Guardar la original no la protege.</p>
+<p><strong>Segunda: guardar el nombre no sirve de nada.</strong></p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">etiqueta<span class="t-operador">.</span>imagen <span class="t-operador">=</span> etiqueta<span class="t-operador">.</span>cget<span class="t-operador">(</span><span class="t-texto">&quot;image&quot;</span><span class="t-operador">)</span>   <span class="t-comentario"># NO: es una cadena, no el objeto</span></code></pre></div>
+<p>Medido: la imagen desaparece igual. <code>cget(&quot;image&quot;)</code> devuelve el nombre en Tcl, y una cadena no mantiene vivo nada.</p>
+<p><strong>Tercera, la de Pillow</strong>, que está más abajo: hay que guardar la <code>ImageTk.PhotoImage</code> y no la <code>Image</code>.</p></aside>
+<p>Para ver qué hay realmente vivo, el intérprete tiene la lista:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> len(ventana.tk.call(<span class="t-texto">&quot;image&quot;</span>, <span class="t-texto">&quot;names&quot;</span>))
+<span class="t-numero">22</span></code></pre></div>
+<p>Es el mejor sitio para mirar cuando una imagen no aparece y no entiendes por qué.</p>
+<h2 id="que-formatos-entiende-tk">Qué formatos entiende Tk<a class="ancla" href="#que-formatos-entiende-tk" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Aquí depende de la versión, y conviene comprobarlo en vez de suponerlo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> ventana.tk.eval(<span class="t-texto">&quot;info patchlevel&quot;</span>)
+<span class="t-texto">&#x27;9.0.4&#x27;</span></code></pre></div>
+<p>Con <strong>Tk 8.6</strong>, que es lo que viene con muchas instalaciones de Python, <code>tk.PhotoImage</code> lee <strong>GIF, PNG, PPM/PGM</strong>. Con <strong>Tk 9</strong> se añade una que sorprende:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> tk.PhotoImage(file=<span class="t-texto">&quot;dibujo.svg&quot;</span>).width()
+<span class="t-numero">80</span>
+<span class="t-operador">&gt;&gt;&gt;</span> tk.PhotoImage(file=<span class="t-texto">&quot;dibujo.svg&quot;</span>, format=<span class="t-texto">&quot;svg -scale 2&quot;</span>).width()
+<span class="t-numero">160</span></code></pre></div>
+<p><strong>SVG, y con escalado</strong>, sin instalar nada. Para iconos de barra de herramientas eso es una noticia excelente, porque un icono en SVG se ve nítido a cualquier tamaño y en cualquier pantalla, que es justo el problema de los iconos en PNG.</p>
+<p>Lo que <strong>no</strong> está en ninguna versión es el JPEG:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> tk.PhotoImage(file=<span class="t-texto">&quot;foto.jpg&quot;</span>)
+TclError: couldn&#x27;t recognize data in image file <span class="t-texto">&quot;foto.jpg&quot;</span></code></pre></div>
+<p>Y ese es el motivo principal de instalar Pillow: las fotos del mundo real son JPEG.</p>
+<p>Los dos errores al cargar son distintos y conviene distinguirlos, porque uno es culpa del usuario y el otro casi siempre del programa:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> tk.PhotoImage(file=<span class="t-texto">&quot;roto.png&quot;</span>)
+TclError: couldn&#x27;t recognize data in image file <span class="t-texto">&quot;roto.png&quot;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> tk.PhotoImage(file=<span class="t-texto">&quot;nada.png&quot;</span>)
+TclError: couldn&#x27;t open <span class="t-texto">&quot;nada.png&quot;</span>: no such file or directory</code></pre></div>
+<p>Los dos son <code>TclError</code>, así que hay que mirar el texto o, mejor, comprobar antes con <code>pathlib</code> que el fichero existe y dejar el <code>except</code> para el contenido.</p>
+<h3 id="escribir-imagenes">Escribir imágenes<a class="ancla" href="#escribir-imagenes" aria-label="Enlace a esta seccion">#</a></h3>
+<p><code>write()</code> guarda, y aquí hay un detalle que muerde:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> imagen.write(<span class="t-texto">&quot;a.png&quot;</span>, format=<span class="t-texto">&quot;png&quot;</span>)       <span class="t-comentario"># ok</span>
+<span class="t-operador">&gt;&gt;&gt;</span> imagen.write(<span class="t-texto">&quot;a.ppm&quot;</span>, format=<span class="t-texto">&quot;ppm&quot;</span>)       <span class="t-comentario"># ok</span>
+<span class="t-operador">&gt;&gt;&gt;</span> imagen.write(<span class="t-texto">&quot;a.gif&quot;</span>, format=<span class="t-texto">&quot;gif&quot;</span>)
+TclError: too many colors
+<span class="t-operador">&gt;&gt;&gt;</span> imagen.write(<span class="t-texto">&quot;a.jpg&quot;</span>, format=<span class="t-texto">&quot;jpeg&quot;</span>)
+TclError: image file format <span class="t-texto">&quot;jpeg&quot;</span> is unknown</code></pre></div>
+<p>El GIF solo admite 256 colores, así que cualquier degradado o foto no cabe. Y lo importante:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> pathlib.Path(<span class="t-texto">&quot;a.gif&quot;</span>).exists()
+True
+<span class="t-operador">&gt;&gt;&gt;</span> pathlib.Path(<span class="t-texto">&quot;a.gif&quot;</span>).stat().st_size
+<span class="t-numero">6</span></code></pre></div>
+<p><strong>La escritura fallida deja el fichero creado y roto.</strong> Seis bytes de cabecera y nada más. Si tu programa guarda imágenes, un <code>except TclError</code> que solo avise no basta: hay que borrar el fichero a medias, o usar el <code>os.replace</code> sobre un temporal de la lección 43, que aquí sirve igual.</p>
+<h2 id="escalar-con-lo-que-trae-tk">Escalar con lo que trae Tk<a class="ancla" href="#escalar-con-lo-que-trae-tk" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Hay dos métodos y los dos solo admiten enteros:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> base.width(), base.height()
+(<span class="t-numero">64</span>, <span class="t-numero">48</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> base.subsample(<span class="t-numero">2</span>).width()
+<span class="t-numero">32</span>
+<span class="t-operador">&gt;&gt;&gt;</span> base.zoom(<span class="t-numero">3</span>).width()
+<span class="t-numero">192</span></code></pre></div>
+<p><code>subsample(n)</code> se queda con uno de cada <em>n</em> píxeles y <code>zoom(n)</code> repite cada píxel <em>n</em> veces. Rápidos, sin dependencias, y con tres problemas.</p>
+<p><strong>Uno: redondean hacia arriba.</strong> <code>subsample(3)</code> sobre 64 da 22, no 21, porque es el techo de la división.</p>
+<p><strong>Dos: los valores raros no avisan.</strong></p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> base.subsample(<span class="t-numero">1.5</span>)
+TclError: expected integer but got <span class="t-texto">&quot;1.5&quot;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> base.subsample(<span class="t-numero">0</span>).width()
+<span class="t-numero">0</span>
+<span class="t-operador">&gt;&gt;&gt;</span> base.subsample(-<span class="t-numero">1</span>).width()
+<span class="t-numero">64</span></code></pre></div>
+<p><code>1.5</code> falla con un error claro, que está bien. Pero <strong><code>0</code> devuelve una imagen de 0×0 sin protestar</strong> y <code>-1</code> devuelve la original tal cual. Si el factor sale de un cálculo, un cero accidental no da ningún error: da una imagen invisible, que es otra vez el fallo silencioso de esta lección.</p>
+<p><strong>Tres, y es el que decide si necesitas Pillow: no se puede llegar a un tamaño concreto.</strong> Desde 64×48, con enteros, se llega a 32×24, a 21×16, a 128×96… pero no a 100×75. Y «que la miniatura mida 100 píxeles de ancho» es exactamente lo que se pide en la vida real.</p>
+<p>Hay una forma de acercarse, combinando los dos:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> escalado = tk.PhotoImage()
+<span class="t-operador">&gt;&gt;&gt;</span> escalado.copy_replace(base, zoom=<span class="t-numero">2</span>, subsample=<span class="t-numero">3</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> escalado.width(), escalado.height()
+(<span class="t-numero">44</span>, <span class="t-numero">32</span>)</code></pre></div>
+<p>Y el resultado enseña cómo funciona por dentro: <strong><code>subsample</code> se aplica antes que <code>zoom</code></strong>, así que de 64 sale techo(64/3) = 22 y luego 22×2 = 44, no los 42 que daría la fracción exacta. Los tamaños alcanzables son pocos y la calidad del reescalado es mala (es tirar píxeles, sin promediar). Sirve para un icono, no para una foto.</p>
+<p><code>copy_replace</code> es además la forma moderna de recortar:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> destino = tk.PhotoImage(width=<span class="t-numero">32</span>, height=<span class="t-numero">24</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> destino.copy_replace(base, from_coords=(<span class="t-numero">0</span>, <span class="t-numero">0</span>, <span class="t-numero">32</span>, <span class="t-numero">24</span>))</code></pre></div>
+<p>Y una advertencia sobre otro método que parece lo que no es:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> copia.blank()
+<span class="t-operador">&gt;&gt;&gt;</span> copia.width(), copia.height()
+(<span class="t-numero">64</span>, <span class="t-numero">48</span>)</code></pre></div>
+<p><strong><code>blank()</code> no borra la imagen</strong>: la deja del mismo tamaño y completamente transparente. Para quitar una imagen de un widget se pone <code>image=&quot;&quot;</code>.</p>
+<h2 id="donde-se-puede-poner-una-imagen">Dónde se puede poner una imagen<a class="ancla" href="#donde-se-puede-poner-una-imagen" aria-label="Enlace a esta seccion">#</a></h2>
+<p>En más sitios de los que uno espera, y en todos con la misma regla de la referencia:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> ttk.Label(ventana, image=base)              <span class="t-comentario"># y Button, Checkbutton, Radiobutton</span>
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.create_image(<span class="t-numero">10</span>, <span class="t-numero">10</span>, image=base, anchor=<span class="t-texto">&quot;nw&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> texto.image_create(<span class="t-texto">&quot;1.0&quot;</span>, image=base)
+<span class="t-operador">&gt;&gt;&gt;</span> menu.add_command(label=<span class="t-texto">&quot;Con icono&quot;</span>, image=base, compound=<span class="t-texto">&quot;left&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> arbol.insert(<span class="t-texto">&quot;&quot;</span>, <span class="t-texto">&quot;end&quot;</span>, text=<span class="t-texto">&quot;fila&quot;</span>, image=base)
+<span class="t-operador">&gt;&gt;&gt;</span> ventana.iconphoto(True, base)               <span class="t-comentario"># el icono de la ventana</span></code></pre></div>
+<p>El <code>compound</code> es el que decide cómo conviven imagen y texto, y es el que hace las barras de herramientas de la lección 32:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> for valor in (<span class="t-texto">&quot;top&quot;</span>, <span class="t-texto">&quot;bottom&quot;</span>, <span class="t-texto">&quot;left&quot;</span>, <span class="t-texto">&quot;right&quot;</span>, <span class="t-texto">&quot;center&quot;</span>, <span class="t-texto">&quot;none&quot;</span>, <span class="t-texto">&quot;image&quot;</span>, <span class="t-texto">&quot;text&quot;</span>):
+...     etiqueta.configure(compound=valor)      <span class="t-comentario"># los ocho valen</span>
+<span class="t-operador">&gt;&gt;&gt;</span> etiqueta.configure(compound=<span class="t-texto">&quot;mal&quot;</span>)
+TclError: bad compound <span class="t-texto">&quot;mal&quot;</span>: must be none, text, image, center, top, bottom</code></pre></div>
+<p><code>compound=&quot;image&quot;</code> muestra solo la imagen y <code>compound=&quot;text&quot;</code> solo el texto, lo cual es cómodo: se pueden configurar las dos cosas una vez y cambiar de vista con una sola opción, que es cómo se hace un botón de «mostrar iconos y texto» en las preferencias.</p>
+<p>Y el <code>iconphoto</code> de la ventana merece un recordatorio: <strong>también hay que mantener viva esa imagen.</strong> Un icono de ventana que se pone en el <code>__init__</code> con una variable local desaparece por el mismo motivo que todo lo demás.</p>
+<h2 id="pillow-para-lo-que-tk-no-llega">Pillow, para lo que Tk no llega<a class="ancla" href="#pillow-para-lo-que-tk-no-llega" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Pillow es la biblioteca de imágenes de Python y no es de la biblioteca estándar, así que hay que instalarla:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python3</span> <span class="t-palabra">-m</span> <span class="t-integrada">pip</span> install pillow</code></pre></div>
+<p>Se importa como <code>PIL</code>, por razones históricas (era la <em>Python Imaging Library</em>), y lo que hace falta son dos cosas: <code>Image</code> para trabajar con la imagen y <code>ImageTk</code> para convertirla en algo que Tk pueda dibujar.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> PIL <span class="t-palabra">import</span> Image<span class="t-operador">,</span> ImageTk
+
+original <span class="t-operador">=</span> Image<span class="t-operador">.</span><span class="t-integrada">open</span><span class="t-operador">(</span><span class="t-texto">&quot;foto.jpg&quot;</span><span class="t-operador">)</span>          <span class="t-comentario"># Tk no sabe leer esto</span>
+original<span class="t-operador">.</span>thumbnail<span class="t-operador">(</span><span class="t-operador">(</span><span class="t-numero">200</span><span class="t-operador">,</span> <span class="t-numero">200</span><span class="t-operador">)</span><span class="t-operador">)</span>             <span class="t-comentario"># cualquier tamaño, no solo enteros</span>
+lista <span class="t-operador">=</span> ImageTk<span class="t-operador">.</span>PhotoImage<span class="t-operador">(</span>original<span class="t-operador">)</span>
+etiqueta<span class="t-operador">.</span>configure<span class="t-operador">(</span>image<span class="t-operador">=</span>lista<span class="t-operador">)</span>
+etiqueta<span class="t-operador">.</span>imagen <span class="t-operador">=</span> lista                    <span class="t-comentario"># la referencia, otra vez</span></code></pre></div>
+<p>Lo que aporta, medido:</p>
+<p><strong>Formatos.</strong> 42 registrados, entre ellos JPEG, WEBP, TIFF, BMP e ICO.</p>
+<p><strong>Escalado a cualquier tamaño</strong>, con <code>resize((ancho, alto))</code>, y sobre todo con <code>thumbnail</code>, que es el que se quiere casi siempre porque <strong>respeta la proporción</strong>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> img.size
+(<span class="t-numero">120</span>, <span class="t-numero">90</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> copia = img.copy(); copia.thumbnail((<span class="t-numero">100</span>, <span class="t-numero">100</span>)); copia.size
+(<span class="t-numero">100</span>, <span class="t-numero">75</span>)</code></pre></div>
+<p>Dos cosas de <code>thumbnail</code> que sorprenden: <strong>modifica la imagen en el sitio</strong> y no devuelve nada (de ahí el <code>copy()</code> si quieres conservar la original), y <strong>nunca agranda</strong>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> chica = Image.new(<span class="t-texto">&quot;RGB&quot;</span>, (<span class="t-numero">30</span>, <span class="t-numero">20</span>))
+<span class="t-operador">&gt;&gt;&gt;</span> chica.thumbnail((<span class="t-numero">200</span>, <span class="t-numero">200</span>)); chica.size
+(<span class="t-numero">30</span>, <span class="t-numero">20</span>)</code></pre></div>
+<p>Eso último es una decisión sensata, no un fallo: agrandar una imagen pequeña se ve mal. Pero si esperabas que rellenara la caja, no lo hará.</p>
+<p><strong>Filtros de reescalado</strong>, que es lo que Tk no tiene:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">img<span class="t-operador">.</span>resize<span class="t-operador">(</span><span class="t-operador">(</span><span class="t-numero">40</span><span class="t-operador">,</span> <span class="t-numero">30</span><span class="t-operador">)</span><span class="t-operador">,</span> Image<span class="t-operador">.</span>Resampling<span class="t-operador">.</span>LANCZOS<span class="t-operador">)</span></code></pre></div>
+<p><code>LANCZOS</code> para reducir fotos (promedia, así que no aparecen esos dientes de sierra del <code>subsample</code>), y <code>NEAREST</code> cuando quieres el efecto contrario, que es conservar los píxeles cuadrados de un dibujo de píxel art.</p>
+<p><strong>Rotar</strong>, con un detalle útil:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> img.rotate(<span class="t-numero">90</span>, expand=True).size
+(<span class="t-numero">90</span>, <span class="t-numero">120</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> img.transpose(Image.Transpose.ROTATE_90).size
+(<span class="t-numero">90</span>, <span class="t-numero">120</span>)</code></pre></div>
+<p>Dan el mismo tamaño, pero <code>rotate</code> interpola (calcula píxeles nuevos) y <code>transpose</code> solo reordena. <strong>Para giros de 90, 180 y 270 grados usa <code>transpose</code></strong>: es más rápido y no pierde nada.</p>
+<p>Y un detalle de rendimiento que importa al abrir ficheros grandes: <strong><code>Image.open</code> es perezoso.</strong> Lee la cabecera, así que <code>size</code> ya se sabe, pero no descomprime los píxeles hasta que hace falta. Por eso abrir un fichero enorme es instantáneo y el <code>resize</code> es lo que tarda, que es justo el caso de la lección 42: si vas a cargar una carpeta de fotos, el hilo va en el <code>resize</code>, no en el <code>open</code>.</p>
+<aside class="aviso aviso-error"><p class="titulo-aviso">La trampa de Pillow: guardar la <code>Image</code> no sirve</p><p>Esta es la variante que hace perder una tarde incluso a quien ya conoce la trampa de <code>PhotoImage</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">mal</span><span class="t-operador">(</span>padre<span class="t-operador">)</span><span class="t-operador">:</span>
+        original <span class="t-operador">=</span> Image<span class="t-operador">.</span><span class="t-integrada">open</span><span class="t-operador">(</span><span class="t-texto">&quot;foto.jpg&quot;</span><span class="t-operador">)</span>
+    lista <span class="t-operador">=</span> ImageTk<span class="t-operador">.</span>PhotoImage<span class="t-operador">(</span>original<span class="t-operador">)</span>
+    etiqueta <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>padre<span class="t-operador">,</span> image<span class="t-operador">=</span>lista<span class="t-operador">)</span>
+    etiqueta<span class="t-operador">.</span>original <span class="t-operador">=</span> original       <span class="t-comentario"># se guarda... la equivocada</span>
+    <span class="t-palabra">return</span> etiqueta</code></pre></div>
+<p>Medido: la imagen desaparece igual. <strong>La que hay que guardar es la <code>ImageTk.PhotoImage</code></strong>, porque es la que tiene el nombre en Tcl y la que borra el intérprete al recogerse. La <code>Image</code> de Pillow es un objeto de Python que a Tk no le consta.</p>
+<p>Y hay un detalle relacionado que conviene saber:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> isinstance(lista, tk.PhotoImage)
+False
+<span class="t-operador">&gt;&gt;&gt;</span> lista.subsample(<span class="t-numero">2</span>)
+AttributeError: <span class="t-texto">&#x27;PhotoImage&#x27;</span> object has no attribute <span class="t-texto">&#x27;subsample&#x27;</span></code></pre></div>
+<p><code>ImageTk.PhotoImage</code> <strong>no hereda de <code>tk.PhotoImage</code></strong>. Vale en cualquier sitio donde se acepte <code>image=</code>, y tiene <code>width()</code> y <code>height()</code>, pero no tiene los métodos de Tk. Es lógico: con Pillow, el escalado se hace antes de convertir.</p></aside>
+<p>Los errores de Pillow son excepciones de Python normales, lo cual es una mejora sobre los <code>TclError</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> Image.open(<span class="t-texto">&quot;falso.jpg&quot;</span>)
+UnidentifiedImageError: cannot identify image file <span class="t-texto">&#x27;falso.jpg&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> Image.open(<span class="t-texto">&quot;nada.jpg&quot;</span>)
+FileNotFoundError: [Errno <span class="t-numero">2</span>] No such file or directory: <span class="t-texto">&#x27;nada.jpg&#x27;</span></code></pre></div>
+<p><code>UnidentifiedImageError</code> hereda de <code>OSError</code>, así que un <code>except OSError</code> cubre las dos.</p>
+<h2 id="si-pillow-no-esta">Si Pillow no está<a class="ancla" href="#si-pillow-no-esta" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Este módulo no ha instalado nada de fuera hasta ahora, y una imagen no debería ser la razón de que un programa no arranque. Así que el ejemplo hace lo que conviene hacer siempre: <strong>importa Pillow si está, y si no, sigue con lo que trae Tk</strong>, avisando de lo que no podrá hacer.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">try</span><span class="t-operador">:</span>
+        <span class="t-palabra">from</span> PIL <span class="t-palabra">import</span> Image<span class="t-operador">,</span> ImageTk
+    HAY_PILLOW <span class="t-operador">=</span> <span class="t-palabra">True</span>
+<span class="t-palabra">except</span> ImportError<span class="t-operador">:</span>
+        HAY_PILLOW <span class="t-operador">=</span> <span class="t-palabra">False</span></code></pre></div>
+<p>Ese patrón es el estándar para una dependencia opcional, y tiene una ventaja que se nota al empaquetar (lección 45): el programa funciona en la máquina de alguien que no ha instalado nada.</p>
+<h2 id="el-ejemplo">El ejemplo<a class="ancla" href="#el-ejemplo" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Un visor de imágenes con miniaturas que usa Pillow si está y <code>subsample</code> si no, con las referencias bien guardadas y los dos errores de carga distinguidos.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">visor_imagenes.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;Miniaturas con Pillow si está, y con lo de Tk si no.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">import</span> math
+<span class="t-palabra">import</span> pathlib
+<span class="t-palabra">import</span> tkinter <span class="t-palabra">as</span> tk
+<span class="t-palabra">from</span> tkinter <span class="t-palabra">import</span> filedialog<span class="t-operador">,</span> ttk
+
+<span class="t-palabra">try</span><span class="t-operador">:</span>
+        <span class="t-palabra">from</span> PIL <span class="t-palabra">import</span> Image<span class="t-operador">,</span> ImageTk<span class="t-operador">,</span> UnidentifiedImageError
+    HAY_PILLOW <span class="t-operador">=</span> <span class="t-palabra">True</span>
+<span class="t-palabra">except</span> ImportError<span class="t-operador">:</span>
+        HAY_PILLOW <span class="t-operador">=</span> <span class="t-palabra">False</span>
+
+MARGEN <span class="t-operador">=</span> <span class="t-numero">12</span>
+AIRE <span class="t-operador">=</span> <span class="t-numero">6</span>
+GRIS <span class="t-operador">=</span> <span class="t-texto">&quot;#8E8E93&quot;</span>
+ROSA <span class="t-operador">=</span> <span class="t-texto">&quot;#C2185B&quot;</span>
+
+LADO_MINIATURA <span class="t-operador">=</span> <span class="t-numero">96</span>
+COLUMNAS <span class="t-operador">=</span> <span class="t-numero">4</span>
+
+<span class="t-comentario"># Lo que lee tk.PhotoImage sin ayuda. El SVG solo en Tk 9, y el JPEG nunca.</span>
+DE_TK <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-texto">&quot;.png&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.gif&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.ppm&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.pgm&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.svg&quot;</span><span class="t-operador">}</span>
+DE_PILLOW <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-texto">&quot;.jpg&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.jpeg&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.webp&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.bmp&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.tif&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.tiff&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.ico&quot;</span><span class="t-operador">}</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">Miniatura</span><span class="t-operador">(</span>ttk<span class="t-operador">.</span>Frame<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Una imagen escalada con su nombre debajo.
+
+    Guarda la imagen como atributo: sin esa referencia la imagen se recoge y
+    queda un hueco, sin ningún error.
+    &quot;&quot;&quot;</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">__init__</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> padre<span class="t-operador">,</span> ruta<span class="t-operador">,</span> al_elegir<span class="t-operador">,</span> <span class="t-operador">**</span>opciones<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-integrada">super</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>__init__<span class="t-operador">(</span>padre<span class="t-operador">,</span> <span class="t-operador">**</span>opciones<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>ruta <span class="t-operador">=</span> ruta
+        <span class="t-constante">self</span><span class="t-operador">.</span>imagen <span class="t-operador">=</span> <span class="t-palabra">None</span>            <span class="t-comentario"># la referencia que lo mantiene vivo</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>problema <span class="t-operador">=</span> <span class="t-palabra">None</span>
+
+        <span class="t-constante">self</span><span class="t-operador">.</span>boton <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> text<span class="t-operador">=</span>ruta<span class="t-operador">.</span>name<span class="t-operador">,</span> compound<span class="t-operador">=</span><span class="t-texto">&quot;top&quot;</span><span class="t-operador">,</span>
+                                width<span class="t-operador">=</span><span class="t-numero">14</span><span class="t-operador">,</span> command<span class="t-operador">=</span><span class="t-palabra">lambda</span><span class="t-operador">:</span> al_elegir<span class="t-operador">(</span>ruta<span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>boton<span class="t-operador">.</span>pack<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>cargar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">cargar</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>imagen <span class="t-operador">=</span> miniatura<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>ruta<span class="t-operador">,</span> LADO_MINIATURA<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> <span class="t-operador">(</span>OSError<span class="t-operador">,</span> tk<span class="t-operador">.</span>TclError<span class="t-operador">)</span> <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>problema <span class="t-operador">=</span> error
+            <span class="t-constante">self</span><span class="t-operador">.</span>boton<span class="t-operador">.</span>configure<span class="t-operador">(</span>text<span class="t-operador">=</span>f&quot;<span class="t-operador">{</span><span class="t-constante">self</span><span class="t-operador">.</span>ruta<span class="t-operador">.</span>name<span class="t-operador">}</span>\n(no se puede leer)&quot;<span class="t-operador">,</span>
+                                 state<span class="t-operador">=</span><span class="t-texto">&quot;disabled&quot;</span><span class="t-operador">)</span>
+            <span class="t-palabra">return</span>
+        <span class="t-comentario"># Solo aquí se le da la imagen al widget, y la referencia ya está puesta.</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>boton<span class="t-operador">.</span>configure<span class="t-operador">(</span>image<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>imagen<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">miniatura</span><span class="t-operador">(</span>ruta<span class="t-operador">,</span> lado<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Devuelve una imagen escalada lista para un widget.
+
+    Con Pillow cabe exactamente en el cuadrado; sin Pillow solo se puede
+    dividir por enteros, así que la miniatura sale más pequeña de la cuenta.
+    &quot;&quot;&quot;</span>
+    <span class="t-palabra">if</span> HAY_PILLOW<span class="t-operador">:</span>
+                original <span class="t-operador">=</span> Image<span class="t-operador">.</span><span class="t-integrada">open</span><span class="t-operador">(</span>ruta<span class="t-operador">)</span>
+        original<span class="t-operador">.</span>thumbnail<span class="t-operador">(</span><span class="t-operador">(</span>lado<span class="t-operador">,</span> lado<span class="t-operador">)</span><span class="t-operador">,</span> Image<span class="t-operador">.</span>Resampling<span class="t-operador">.</span>LANCZOS<span class="t-operador">)</span>
+        <span class="t-comentario"># Hay que devolver la ImageTk, no la Image: la Image no le consta a Tk.</span>
+        <span class="t-palabra">return</span> ImageTk<span class="t-operador">.</span>PhotoImage<span class="t-operador">(</span>original<span class="t-operador">)</span>
+    imagen <span class="t-operador">=</span> tk<span class="t-operador">.</span>PhotoImage<span class="t-operador">(</span>file<span class="t-operador">=</span><span class="t-integrada">str</span><span class="t-operador">(</span>ruta<span class="t-operador">)</span><span class="t-operador">)</span>
+    factor <span class="t-operador">=</span> <span class="t-integrada">max</span><span class="t-operador">(</span><span class="t-numero">1</span><span class="t-operador">,</span> math<span class="t-operador">.</span>ceil<span class="t-operador">(</span><span class="t-integrada">max</span><span class="t-operador">(</span>imagen<span class="t-operador">.</span>width<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> imagen<span class="t-operador">.</span>height<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span> <span class="t-operador">/</span> lado<span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> imagen<span class="t-operador">.</span>subsample<span class="t-operador">(</span>factor<span class="t-operador">)</span> <span class="t-palabra">if</span> factor <span class="t-operador">&gt;</span> <span class="t-numero">1</span> <span class="t-palabra">else</span> imagen
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">Aplicacion</span><span class="t-operador">(</span>tk<span class="t-operador">.</span>Tk<span class="t-operador">)</span><span class="t-operador">:</span>
+
+        <span class="t-palabra">def</span> <span class="t-definicion">__init__</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-integrada">super</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>__init__<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>title<span class="t-operador">(</span><span class="t-texto">&quot;Visor de imágenes&quot;</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>minsize<span class="t-operador">(</span><span class="t-numero">560</span><span class="t-operador">,</span> <span class="t-numero">420</span><span class="t-operador">)</span>
+
+        <span class="t-constante">self</span><span class="t-operador">.</span>grande <span class="t-operador">=</span> <span class="t-palabra">None</span>            <span class="t-comentario"># la imagen del panel derecho</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>miniaturas <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>          <span class="t-comentario"># y las de la rejilla</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>estado <span class="t-operador">=</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+        cuerpo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> padding<span class="t-operador">=</span>MARGEN<span class="t-operador">)</span>
+        cuerpo<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+        barra <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>cuerpo<span class="t-operador">)</span>
+        barra<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">)</span>
+        ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>barra<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Abrir carpeta…&quot;</span><span class="t-operador">,</span>
+                   command<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>elegir_carpeta<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">)</span>
+        ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>barra<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>que_se_puede<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> foreground<span class="t-operador">=</span>GRIS<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>
+            side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> padx<span class="t-operador">=</span>AIRE<span class="t-operador">)</span>
+
+        paneles <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Panedwindow<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> orient<span class="t-operador">=</span><span class="t-texto">&quot;horizontal&quot;</span><span class="t-operador">)</span>
+        paneles<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span>MARGEN<span class="t-operador">,</span> AIRE<span class="t-operador">)</span><span class="t-operador">)</span>
+        izquierda <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Labelframe<span class="t-operador">(</span>paneles<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Miniaturas&quot;</span><span class="t-operador">,</span> padding<span class="t-operador">=</span>AIRE<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>rejilla <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>izquierda<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>rejilla<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+        derecha <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Labelframe<span class="t-operador">(</span>paneles<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Vista&quot;</span><span class="t-operador">,</span> padding<span class="t-operador">=</span>AIRE<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>vista <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>derecha<span class="t-operador">,</span> anchor<span class="t-operador">=</span><span class="t-texto">&quot;center&quot;</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>vista<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+        paneles<span class="t-operador">.</span>add<span class="t-operador">(</span>izquierda<span class="t-operador">,</span> weight<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">)</span>
+        paneles<span class="t-operador">.</span>add<span class="t-operador">(</span>derecha<span class="t-operador">,</span> weight<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">)</span>
+
+        <span class="t-constante">self</span><span class="t-operador">.</span>pie <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> textvariable<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>estado<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>pie<span class="t-operador">.</span>pack<span class="t-operador">(</span>anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">)</span>
+
+        <span class="t-constante">self</span><span class="t-operador">.</span>centrar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">que_se_puede</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                version <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>tk<span class="t-operador">.</span><span class="t-integrada">eval</span><span class="t-operador">(</span><span class="t-texto">&quot;info patchlevel&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> HAY_PILLOW<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> f&quot;Tk <span class="t-operador">{</span>version<span class="t-operador">}</span> con Pillow: cualquier formato y cualquier tamaño&quot;
+        <span class="t-palabra">return</span> <span class="t-operador">(</span>f&quot;Tk <span class="t-operador">{</span>version<span class="t-operador">}</span> sin Pillow: <span class="t-operador">{</span><span class="t-texto">&#x27; &#x27;</span><span class="t-operador">.</span>join<span class="t-operador">(</span><span class="t-integrada">sorted</span><span class="t-operador">(</span>DE_TK<span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">}</span>&quot;
+                <span class="t-texto">&quot; y escalado por enteros&quot;</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">extensiones_que_valen</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> DE_TK <span class="t-operador">|</span> <span class="t-operador">(</span>DE_PILLOW <span class="t-palabra">if</span> HAY_PILLOW <span class="t-palabra">else</span> <span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">elegir_carpeta</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                carpeta <span class="t-operador">=</span> filedialog<span class="t-operador">.</span>askdirectory<span class="t-operador">(</span>parent<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">,</span> title<span class="t-operador">=</span><span class="t-texto">&quot;Carpeta de imágenes&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> carpeta<span class="t-operador">:</span>               <span class="t-comentario"># cancelar devuelve cadena vacía</span>
+                        <span class="t-palabra">return</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>mostrar_carpeta<span class="t-operador">(</span>pathlib<span class="t-operador">.</span>Path<span class="t-operador">(</span>carpeta<span class="t-operador">)</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">mostrar_carpeta</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> carpeta<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">for</span> pieza <span class="t-palabra">in</span> <span class="t-constante">self</span><span class="t-operador">.</span>miniaturas<span class="t-operador">:</span>
+                        pieza<span class="t-operador">.</span>destroy<span class="t-operador">(</span><span class="t-operador">)</span>           <span class="t-comentario"># y con ellas se van sus imágenes</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>miniaturas<span class="t-operador">.</span>clear<span class="t-operador">(</span><span class="t-operador">)</span>
+
+        validas <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>extensiones_que_valen<span class="t-operador">(</span><span class="t-operador">)</span>
+        rutas <span class="t-operador">=</span> <span class="t-integrada">sorted</span><span class="t-operador">(</span>ruta <span class="t-palabra">for</span> ruta <span class="t-palabra">in</span> carpeta<span class="t-operador">.</span>iterdir<span class="t-operador">(</span><span class="t-operador">)</span>
+                       <span class="t-palabra">if</span> ruta<span class="t-operador">.</span>is_file<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">and</span> ruta<span class="t-operador">.</span>suffix<span class="t-operador">.</span>lower<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">in</span> validas<span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> rutas<span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>estado<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;No hay imágenes legibles en <span class="t-operador">{</span>carpeta<span class="t-operador">.</span>name<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+            <span class="t-constante">self</span><span class="t-operador">.</span>pie<span class="t-operador">.</span>configure<span class="t-operador">(</span>foreground<span class="t-operador">=</span>GRIS<span class="t-operador">)</span>
+            <span class="t-palabra">return</span>
+
+        <span class="t-palabra">for</span> numero<span class="t-operador">,</span> ruta <span class="t-palabra">in</span> <span class="t-integrada">enumerate</span><span class="t-operador">(</span>rutas<span class="t-operador">[</span><span class="t-operador">:</span><span class="t-numero">24</span><span class="t-operador">]</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        pieza <span class="t-operador">=</span> Miniatura<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>rejilla<span class="t-operador">,</span> ruta<span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>mostrar_grande<span class="t-operador">,</span>
+                              padding<span class="t-operador">=</span>AIRE <span class="t-operador">//</span> <span class="t-numero">2</span><span class="t-operador">)</span>
+            pieza<span class="t-operador">.</span>grid<span class="t-operador">(</span>row<span class="t-operador">=</span>numero <span class="t-operador">//</span> COLUMNAS<span class="t-operador">,</span> column<span class="t-operador">=</span>numero <span class="t-operador">%</span> COLUMNAS<span class="t-operador">)</span>
+            <span class="t-constante">self</span><span class="t-operador">.</span>miniaturas<span class="t-operador">.</span>append<span class="t-operador">(</span>pieza<span class="t-operador">)</span>
+
+        fallos <span class="t-operador">=</span> <span class="t-operador">[</span>p<span class="t-operador">.</span>ruta<span class="t-operador">.</span>name <span class="t-palabra">for</span> p <span class="t-palabra">in</span> <span class="t-constante">self</span><span class="t-operador">.</span>miniaturas <span class="t-palabra">if</span> p<span class="t-operador">.</span>problema<span class="t-operador">]</span>
+        <span class="t-palabra">if</span> fallos<span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>estado<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>rutas<span class="t-operador">)</span><span class="t-operador">}</span> imágenes, <span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>fallos<span class="t-operador">)</span><span class="t-operador">}</span> ilegibles: &quot;
+                            f&quot;<span class="t-operador">{</span><span class="t-texto">&#x27;, &#x27;</span><span class="t-operador">.</span>join<span class="t-operador">(</span>fallos<span class="t-operador">[</span><span class="t-operador">:</span><span class="t-numero">3</span><span class="t-operador">]</span><span class="t-operador">)</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+            <span class="t-constante">self</span><span class="t-operador">.</span>pie<span class="t-operador">.</span>configure<span class="t-operador">(</span>foreground<span class="t-operador">=</span>ROSA<span class="t-operador">)</span>
+        <span class="t-palabra">else</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>estado<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>rutas<span class="t-operador">)</span><span class="t-operador">}</span> imágenes en <span class="t-operador">{</span>carpeta<span class="t-operador">.</span>name<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+            <span class="t-constante">self</span><span class="t-operador">.</span>pie<span class="t-operador">.</span>configure<span class="t-operador">(</span>foreground<span class="t-operador">=</span>GRIS<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">mostrar_grande</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> ruta<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;El panel derecho, a un tamaño que quepa.&quot;&quot;&quot;</span>
+        lado <span class="t-operador">=</span> <span class="t-integrada">max</span><span class="t-operador">(</span><span class="t-numero">200</span><span class="t-operador">,</span> <span class="t-integrada">min</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>vista<span class="t-operador">.</span>winfo_width<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>vista<span class="t-operador">.</span>winfo_height<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>grande <span class="t-operador">=</span> miniatura<span class="t-operador">(</span>ruta<span class="t-operador">,</span> lado<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> <span class="t-operador">(</span>OSError<span class="t-operador">,</span> tk<span class="t-operador">.</span>TclError<span class="t-operador">)</span> <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>estado<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;No se ha podido abrir <span class="t-operador">{</span>ruta<span class="t-operador">.</span>name<span class="t-operador">}</span>: <span class="t-operador">{</span>error<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+            <span class="t-constante">self</span><span class="t-operador">.</span>pie<span class="t-operador">.</span>configure<span class="t-operador">(</span>foreground<span class="t-operador">=</span>ROSA<span class="t-operador">)</span>
+            <span class="t-palabra">return</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>vista<span class="t-operador">.</span>configure<span class="t-operador">(</span>image<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>grande<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>estado<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>ruta<span class="t-operador">.</span>name<span class="t-operador">}</span> — <span class="t-operador">{</span><span class="t-constante">self</span><span class="t-operador">.</span>grande<span class="t-operador">.</span>width<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">}</span>×<span class="t-operador">{</span><span class="t-constante">self</span><span class="t-operador">.</span>grande<span class="t-operador">.</span>height<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">}</span>&quot;
+                        f&quot; px mostrados&quot;<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>pie<span class="t-operador">.</span>configure<span class="t-operador">(</span>foreground<span class="t-operador">=</span>GRIS<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">centrar</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>update_idletasks<span class="t-operador">(</span><span class="t-operador">)</span>
+        x <span class="t-operador">=</span> <span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>winfo_screenwidth<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> <span class="t-constante">self</span><span class="t-operador">.</span>winfo_width<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span> <span class="t-operador">//</span> <span class="t-numero">2</span>
+        y <span class="t-operador">=</span> <span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>winfo_screenheight<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> <span class="t-constante">self</span><span class="t-operador">.</span>winfo_height<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span> <span class="t-operador">//</span> <span class="t-numero">2</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>geometry<span class="t-operador">(</span>f&quot;+<span class="t-operador">{</span>x<span class="t-operador">}</span>+<span class="t-operador">{</span>y<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">if</span> __name__ <span class="t-operador">==</span> <span class="t-texto">&quot;__main__&quot;</span><span class="t-operador">:</span>
+        Aplicacion<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>mainloop<span class="t-operador">(</span><span class="t-operador">)</span></code></pre></div>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>La trampa de las imágenes en Tkinter es la misma que la de las variables de control, con otra cara: <strong><code>tk.PhotoImage</code> no guarda los píxeles, guarda el nombre de una imagen que vive en Tcl</strong>, y el destructor del objeto Python la borra de ahí. Si nadie la referencia, se recoge y <strong>no hay error ninguno</strong>: el widget sigue diciendo que tiene la imagen <code>pyimage14</code> y solo preguntando al intérprete (<code>tk.call(&quot;image&quot;, &quot;width&quot;, ...)</code>) se descubre que ya no existe. La regla es que la imagen esté referenciada mientras el widget la use, normalmente como atributo del widget, y tiene tres caras que muerden por separado: <strong>la imagen intermedia de un <code>subsample()</code> es otro objeto</strong> y es esa la que hay que guardar; <strong>guardar <code>cget(&quot;image&quot;)</code> no sirve</strong>, porque es una cadena; y con Pillow hay que guardar la <code>ImageTk.PhotoImage</code> y no la <code>Image</code>. Sobre <strong>formatos</strong>, Tk 8.6 lee GIF, PNG y PPM/PGM, y <strong>Tk 9 añade SVG, con <code>format=&quot;svg -scale 2&quot;</code></strong>, que para iconos es excelente; <strong>el JPEG no está en ninguna versión</strong>, y ese es el motivo principal de instalar Pillow. Los dos errores de carga son <code>TclError</code> pero dicen cosas distintas (<code>couldn&#x27;t recognize data</code> frente a <code>couldn&#x27;t open ... no such file</code>), así que conviene comprobar la existencia con <code>pathlib</code> aparte. Al <strong>escribir</strong>, el GIF falla con <code>too many colors</code> en cualquier degradado, el JPEG no se puede escribir, y <strong>una escritura fallida deja el fichero creado y roto</strong> (seis bytes), así que hace falta borrarlo o usar el <code>os.replace</code> de la lección 43. Para <strong>escalar</strong>, <code>subsample(n)</code> y <code>zoom(n)</code> <strong>solo admiten enteros</strong>, redondean hacia arriba (<code>subsample(3)</code> de 64 da 22), y los valores raros no siempre avisan: <code>1.5</code> da <code>TclError</code> pero <strong><code>0</code> devuelve una imagen de 0×0 sin protestar</strong> y <code>-1</code> devuelve la original. Lo decisivo es que <strong>no se puede llegar a un tamaño concreto</strong>: de 64×48 no hay forma de sacar 100×75, y <code>copy_replace(zoom=2, subsample=3)</code> da 44 y no 42 porque <strong><code>subsample</code> se aplica antes que <code>zoom</code></strong>. Y <code>blank()</code> <strong>no borra la imagen</strong>: la deja del mismo tamaño y transparente; para quitarla del widget se pone <code>image=&quot;&quot;</code>. Una imagen se puede poner en <code>Label</code>, <code>Button</code>, <code>Checkbutton</code>, <code>Canvas</code> (<code>create_image</code>), <code>Text</code> (<code>image_create</code>), <code>Menu</code>, <code>Treeview</code> y en el icono de la ventana (<code>iconphoto</code>, que también hay que mantener vivo), y el <code>compound</code> decide cómo conviven con el texto, con <code>&quot;image&quot;</code> y <code>&quot;text&quot;</code> como forma cómoda de cambiar de vista sin reconfigurar nada. <strong>Pillow</strong> aporta 42 formatos, <code>resize</code> a cualquier tamaño y <code>thumbnail</code>, que respeta la proporción pero <strong>modifica en el sitio</strong> (de ahí el <code>copy()</code>) y <strong>nunca agranda</strong>; filtros de reescalado (<code>LANCZOS</code> para reducir fotos, <code>NEAREST</code> para píxel art); y <code>transpose</code> para giros de 90 grados, que no interpola, frente a <code>rotate</code>, que sí. <code>Image.open</code> es <strong>perezoso</strong>: sabe el <code>size</code> sin descomprimir, así que lo que tarda es el <code>resize</code>, y es ahí donde va el hilo de la lección 42. <code>ImageTk.PhotoImage</code> <strong>no hereda de <code>tk.PhotoImage</code></strong>, así que no tiene <code>subsample</code>, y sus errores son excepciones normales de Python (<code>UnidentifiedImageError</code>, que hereda de <code>OSError</code>). Y como Pillow no es de la biblioteca estándar, se importa dentro de un <code>try</code>/<code>except ImportError</code> con una bandera, para que el programa siga funcionando sin ella.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><ol><li>En <code>44-imagen.py</code>, escribe la función que crea la imagen en una variable local y devuelve la etiqueta. Comprueba que no se ve nada y que no hay ningún error.</li><li>Imprime <code>etiqueta.cget(&quot;image&quot;)</code> antes y después de un <code>gc.collect()</code>, y después pregunta a Tcl con <code>tk.call(&quot;image&quot;, &quot;width&quot;, nombre)</code>. Copia los tres resultados.</li><li>Arregla el ejercicio 1 guardando la imagen como atributo del widget.</li><li>Prueba a «arreglarlo» guardando <code>etiqueta.cget(&quot;image&quot;)</code> y explica por qué no funciona.</li><li>Escala con <code>subsample(2)</code>, pásale la reducida a la etiqueta y guarda solo la original. Comprueba qué pasa.</li><li>Imprime <code>ventana.tk.eval(&quot;info patchlevel&quot;)</code>. Si es 9 o más, crea un SVG a mano y cárgalo con <code>format=&quot;svg -scale 2&quot;</code>.</li><li>Intenta cargar un <code>.jpg</code> con <code>tk.PhotoImage</code> y copia el error. Después intenta cargar un fichero que no existe y compara los dos mensajes.</li><li>Crea una imagen con un degradado con <code>put()</code> e intenta escribirla en GIF. Copia el error y después comprueba el tamaño del fichero que ha quedado.</li><li>Prueba <code>subsample</code> con 1.5, con 0 y con -1. Anota qué hace cada uno.</li><li>Con una imagen de 64×48, intenta llegar a 100×75 con <code>subsample</code> y <code>zoom</code>. Explica por qué no se puede.</li><li>Usa <code>copy_replace(zoom=2, subsample=3)</code> y comprueba si el resultado es 42 o 44. Deduce en qué orden se aplican.</li><li>Pon la misma imagen en un <code>Button</code> con los ocho valores de <code>compound</code> y anota qué cambia.</li><li>Si tienes Pillow, escala un JPEG a exactamente 100 píxeles de ancho con <code>thumbnail</code> y comprueba el alto que sale. Si no, instálalo en un entorno virtual como en la lección 20 del módulo 1.</li><li>Con Pillow, guarda la <code>Image</code> en lugar de la <code>ImageTk.PhotoImage</code> y comprueba que la imagen desaparece igual.</li><li>Haz <code>isinstance(lista, tk.PhotoImage)</code> y prueba a llamar a <code>lista.subsample(2)</code>. Copia los dos resultados.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#la-imagen-que-desaparece">La imagen que desaparece</a></li><li class="nivel-2"><a href="#que-formatos-entiende-tk">Qué formatos entiende Tk</a></li><li class="nivel-3"><a href="#escribir-imagenes">Escribir imágenes</a></li><li class="nivel-2"><a href="#escalar-con-lo-que-trae-tk">Escalar con lo que trae Tk</a></li><li class="nivel-2"><a href="#donde-se-puede-poner-una-imagen">Dónde se puede poner una imagen</a></li><li class="nivel-2"><a href="#pillow-para-lo-que-tk-no-llega">Pillow, para lo que Tk no llega</a></li><li class="nivel-2"><a href="#si-pillow-no-esta">Si Pillow no está</a></li><li class="nivel-2"><a href="#el-ejemplo">El ejemplo</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../tkinter/preferencias-que-se-recuerdan.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">Preferencias que se recuerdan entre sesiones</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">Empaquetar como ejecutable con PyInstaller</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

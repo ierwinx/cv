@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyecto: un cliente de una API pública · Curso de Python</title>
+<meta name="description" content="Cuatro capas, veintitrés pruebas sin tocar internet, y dos sorpresas: un fallo que encontró la suite y un número que dice la verdad y miente.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="apis/proyecto-un-cliente-de-api">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../apis/index.html">APIs REST</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 5 &middot; Lección 10 de 30</p>
+    <h1>Proyecto: un cliente de una API pública</h1>
+    <p class="resumen-leccion">Cuatro capas, veintitrés pruebas sin tocar internet, y dos sorpresas: un fallo que encontró la suite y un número que dice la verdad y miente.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 22 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>Toca juntarlo todo. Vamos a escribir un programa de terminal que consulta la API de GitHub, y lo vamos a escribir como se escribe algo que va a durar: con las capas separadas y con pruebas que no necesitan red.</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>repos ver django/django
+repos incidencias psf/requests -n 6
+repos resumen psf/requests -n 100
+repos --json ver psf/requests | jq .estrellas</code></pre></div>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Construir un cliente de API completo separando transporte, modelos, lógica e interfaz; probarlo entero contra un servidor de mentira; y tratar de verdad la cuota, la paginación y los errores.</p></aside>
+<h2 id="las-cuatro-capas">Las cuatro capas<a class="ancla" href="#las-cuatro-capas" aria-label="Enlace a esta seccion">#</a></h2>
+<p>La decisión de arquitectura es esta, y es la que hace que el programa se pueda probar:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>repos/
+  errores.py     los fallos posibles, y nada más
+  cliente.py     HTTP: la ÚNICA capa que sabe de requests
+  modelos.py     lo que el programa usa, separado de lo que manda la API
+  servicio.py    las operaciones que tienen sentido
+  cli.py         argumentos y formato. No sabe de HTTP
+tests/
+  servidor_falso.py
+  test_cliente.py</code></pre></div>
+<p>La regla que lo sostiene: <strong><code>requests</code> solo se importa en <code>cliente.py</code></strong>. Si mañana hay que cambiar de biblioteca, se toca un fichero. Y más importante: todo lo demás se puede probar sin red.</p>
+<h2 id="los-errores-propios">Los errores propios<a class="ancla" href="#los-errores-propios" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Antes que nada, los fallos que el programa puede tener. En su vocabulario, no en el de HTTP:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">class</span> <span class="t-definicion">ErrorDeRepos</span><span class="t-operador">(</span>Exception<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Cualquier problema del cliente. Todo lo demás hereda de aquí.&quot;&quot;&quot;</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">SinRed</span><span class="t-operador">(</span>ErrorDeRepos<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;No hubo respuesta: DNS, conexión rechazada, tiempo agotado.&quot;&quot;&quot;</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">ErrorDeLaApi</span><span class="t-operador">(</span>ErrorDeRepos<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;El servidor contestó, y contestó algo que no sirve.&quot;&quot;&quot;</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">__init__</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> codigo<span class="t-operador">,</span> mensaje<span class="t-operador">,</span> url<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>codigo <span class="t-operador">=</span> codigo
+        <span class="t-constante">self</span><span class="t-operador">.</span>mensaje <span class="t-operador">=</span> mensaje
+        <span class="t-constante">self</span><span class="t-operador">.</span>url <span class="t-operador">=</span> url
+        <span class="t-integrada">super</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>__init__<span class="t-operador">(</span>f&#x27;<span class="t-operador">{</span>codigo<span class="t-operador">}</span> en <span class="t-operador">{</span>url<span class="t-operador">}</span>: <span class="t-operador">{</span>mensaje<span class="t-operador">}</span>&#x27;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">NoEncontrado</span><span class="t-operador">(</span>ErrorDeLaApi<span class="t-operador">)</span><span class="t-operador">:</span> <span class="t-operador">...</span>
+<span class="t-palabra">class</span> <span class="t-definicion">NoAutorizado</span><span class="t-operador">(</span>ErrorDeLaApi<span class="t-operador">)</span><span class="t-operador">:</span> <span class="t-operador">...</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">CuotaAgotada</span><span class="t-operador">(</span>ErrorDeLaApi<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">def</span> <span class="t-definicion">__init__</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> codigo<span class="t-operador">,</span> mensaje<span class="t-operador">,</span> url<span class="t-operador">,</span> reinicio<span class="t-operador">=</span><span class="t-palabra">None</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>reinicio <span class="t-operador">=</span> reinicio
+        <span class="t-integrada">super</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>__init__<span class="t-operador">(</span>codigo<span class="t-operador">,</span> mensaje<span class="t-operador">,</span> url<span class="t-operador">)</span>
+
+    <span class="t-operador">@</span>property
+    <span class="t-palabra">def</span> <span class="t-definicion">segundos_de_espera</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>reinicio <span class="t-palabra">is</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-palabra">None</span>
+        <span class="t-palabra">return</span> <span class="t-integrada">max</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>reinicio <span class="t-operador">-</span> time<span class="t-operador">.</span>time<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<p>Tres decisiones:</p>
+<p><strong>Una raíz común</strong>, para que quien use esto pueda protegerse con un <code>except</code> y punto. Es la misma idea que <code>RequestException</code>, de la lección 5.</p>
+<p><strong><code>SinRed</code> y <code>ErrorDeLaApi</code> separados</strong>, que es la distinción de <code>urllib</code> de la lección 4 y la que decide si se reintenta.</p>
+<p><strong><code>CuotaAgotada</code> sabe cuánto esperar.</strong> Es el único error que trae una instrucción de qué hacer, y por eso merece su propia clase.</p>
+<h2 id="el-cliente">El cliente<a class="ancla" href="#el-cliente" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">class</span> <span class="t-definicion">Cliente</span><span class="t-operador">:</span>
+        <span class="t-palabra">def</span> <span class="t-definicion">__init__</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> token<span class="t-operador">=</span><span class="t-palabra">None</span><span class="t-operador">,</span> base<span class="t-operador">=</span>BASE<span class="t-operador">,</span> margen_de_cuota<span class="t-operador">=</span><span class="t-numero">2</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>base <span class="t-operador">=</span> base<span class="t-operador">.</span>rstrip<span class="t-operador">(</span><span class="t-texto">&#x27;/&#x27;</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>margen_de_cuota <span class="t-operador">=</span> margen_de_cuota
+        <span class="t-constante">self</span><span class="t-operador">.</span>sesion <span class="t-operador">=</span> requests<span class="t-operador">.</span>Session<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>sesion<span class="t-operador">.</span>headers<span class="t-operador">.</span>update<span class="t-operador">(</span><span class="t-operador">{</span>
+            <span class="t-texto">&#x27;Accept&#x27;</span><span class="t-operador">:</span> <span class="t-texto">&#x27;application/vnd.github+json&#x27;</span><span class="t-operador">,</span>
+            <span class="t-texto">&#x27;X-GitHub-Api-Version&#x27;</span><span class="t-operador">:</span> <span class="t-texto">&#x27;2022-11-28&#x27;</span><span class="t-operador">,</span>
+            <span class="t-texto">&#x27;User-Agent&#x27;</span><span class="t-operador">:</span> AGENTE<span class="t-operador">,</span>
+        <span class="t-operador">}</span><span class="t-operador">)</span>
+
+        token <span class="t-operador">=</span> token <span class="t-palabra">or</span> os<span class="t-operador">.</span>environ<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;TOKEN_GITHUB&#x27;</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> token<span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>sesion<span class="t-operador">.</span>headers<span class="t-operador">[</span><span class="t-texto">&#x27;Authorization&#x27;</span><span class="t-operador">]</span> <span class="t-operador">=</span> f&#x27;Bearer <span class="t-operador">{</span>token<span class="t-operador">}</span>&#x27;
+
+        reintentos <span class="t-operador">=</span> Retry<span class="t-operador">(</span>
+            total<span class="t-operador">=</span><span class="t-numero">3</span><span class="t-operador">,</span>
+            backoff_factor<span class="t-operador">=</span><span class="t-numero">0.5</span><span class="t-operador">,</span>
+            backoff_jitter<span class="t-operador">=</span><span class="t-numero">1.0</span><span class="t-operador">,</span>
+            status_forcelist<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">429</span><span class="t-operador">,</span> <span class="t-numero">500</span><span class="t-operador">,</span> <span class="t-numero">502</span><span class="t-operador">,</span> <span class="t-numero">503</span><span class="t-operador">,</span> <span class="t-numero">504</span><span class="t-operador">)</span><span class="t-operador">,</span>
+            allowed_methods<span class="t-operador">=</span><span class="t-integrada">frozenset</span><span class="t-operador">(</span><span class="t-operador">{</span><span class="t-texto">&#x27;GET&#x27;</span><span class="t-operador">,</span> <span class="t-texto">&#x27;HEAD&#x27;</span><span class="t-operador">}</span><span class="t-operador">)</span><span class="t-operador">,</span>
+            respect_retry_after_header<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span>
+            raise_on_status<span class="t-operador">=</span><span class="t-palabra">False</span><span class="t-operador">,</span>
+        <span class="t-operador">)</span>
+        adaptador <span class="t-operador">=</span> HTTPAdapter<span class="t-operador">(</span>max_retries<span class="t-operador">=</span>reintentos<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>sesion<span class="t-operador">.</span>mount<span class="t-operador">(</span><span class="t-texto">&#x27;https://&#x27;</span><span class="t-operador">,</span> adaptador<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>sesion<span class="t-operador">.</span>mount<span class="t-operador">(</span><span class="t-texto">&#x27;http://&#x27;</span><span class="t-operador">,</span> adaptador<span class="t-operador">)</span></code></pre></div>
+<p>Todo lo del bloque, junto:</p>
+<p><strong><code>base</code> es un parámetro.</strong> Parece un detalle y es lo que permite apuntar al servidor de pruebas. Sin eso, no hay suite.</p>
+<p><strong>El <code>403</code> no está en la lista de reintentos</strong>, a propósito y en contra de lo que parecería. Es la medición de la lección 9: en esta API el <code>403</code> es la cuota, no trae cabecera de espera, y el reinicio tarda cuarenta minutos. Reintentar tres veces con espera exponencial son tres golpes a una puerta cerrada.</p>
+<p><strong><code>raise_on_status=False</code></strong>, para que al agotarse los reintentos llegue la respuesta y podamos leer el cuerpo, que es donde la API explica el problema.</p>
+<p><strong>Los dos esquemas montados.</strong> Volvemos a esto, porque tiene historia.</p>
+<p>El recorrido de páginas es el generador de la lección 9:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">recorrer</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> ruta<span class="t-operador">,</span> limite<span class="t-operador">=</span><span class="t-palabra">None</span><span class="t-operador">,</span> <span class="t-operador">**</span>parametros<span class="t-operador">)</span><span class="t-operador">:</span>
+        url <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>_url<span class="t-operador">(</span>ruta<span class="t-operador">)</span>
+    vistas <span class="t-operador">=</span> <span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-operador">)</span>
+    entregados <span class="t-operador">=</span> <span class="t-numero">0</span>
+
+    <span class="t-palabra">while</span> url <span class="t-palabra">and</span> url <span class="t-palabra">not</span> <span class="t-palabra">in</span> vistas<span class="t-operador">:</span>
+                vistas<span class="t-operador">.</span>add<span class="t-operador">(</span>url<span class="t-operador">)</span>
+        respuesta <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>_pedir<span class="t-operador">(</span>url<span class="t-operador">,</span> parametros<span class="t-operador">)</span>
+        parametros <span class="t-operador">=</span> <span class="t-palabra">None</span>          <span class="t-comentario"># el enlace siguiente ya los trae dentro</span>
+
+        lote <span class="t-operador">=</span> respuesta<span class="t-operador">.</span>json<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> lote<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span>
+        <span class="t-palabra">for</span> elemento <span class="t-palabra">in</span> lote<span class="t-operador">:</span>
+                        <span class="t-palabra">yield</span> elemento
+            entregados <span class="t-operador">+=</span> <span class="t-numero">1</span>
+            <span class="t-palabra">if</span> limite <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span> <span class="t-palabra">and</span> entregados <span class="t-operador">&gt;=</span> limite<span class="t-operador">:</span>
+                                <span class="t-palabra">return</span>
+
+        <span class="t-constante">self</span><span class="t-operador">.</span>_respetar_cuota<span class="t-operador">(</span>respuesta<span class="t-operador">)</span>
+        url <span class="t-operador">=</span> respuesta<span class="t-operador">.</span>links<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;next&#x27;</span><span class="t-operador">,</span> <span class="t-operador">{</span><span class="t-operador">}</span><span class="t-operador">)</span><span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;url&#x27;</span><span class="t-operador">)</span></code></pre></div>
+<p>Y la traducción de respuestas a errores propios:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">_traducir</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> respuesta<span class="t-operador">)</span><span class="t-operador">:</span>
+        url <span class="t-operador">=</span> respuesta<span class="t-operador">.</span>url<span class="t-operador">.</span>split<span class="t-operador">(</span><span class="t-texto">&#x27;?&#x27;</span><span class="t-operador">)</span><span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span>     <span class="t-comentario"># sin parámetros: pueden traer secretos</span>
+    mensaje <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>_motivo<span class="t-operador">(</span>respuesta<span class="t-operador">)</span>
+    codigo <span class="t-operador">=</span> respuesta<span class="t-operador">.</span>status_code
+
+    agotada <span class="t-operador">=</span> respuesta<span class="t-operador">.</span>headers<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;x-ratelimit-remaining&#x27;</span><span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-texto">&#x27;0&#x27;</span>
+    <span class="t-palabra">if</span> codigo <span class="t-palabra">in</span> <span class="t-operador">(</span><span class="t-numero">403</span><span class="t-operador">,</span> <span class="t-numero">429</span><span class="t-operador">)</span> <span class="t-palabra">and</span> agotada<span class="t-operador">:</span>
+                reinicio <span class="t-operador">=</span> respuesta<span class="t-operador">.</span>headers<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;x-ratelimit-reset&#x27;</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span> CuotaAgotada<span class="t-operador">(</span>codigo<span class="t-operador">,</span> mensaje<span class="t-operador">,</span> url<span class="t-operador">,</span>
+                            <span class="t-integrada">int</span><span class="t-operador">(</span>reinicio<span class="t-operador">)</span> <span class="t-palabra">if</span> reinicio <span class="t-palabra">else</span> <span class="t-palabra">None</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">if</span> codigo <span class="t-operador">==</span> <span class="t-numero">404</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> NoEncontrado<span class="t-operador">(</span>codigo<span class="t-operador">,</span> mensaje<span class="t-operador">,</span> url<span class="t-operador">)</span>
+    <span class="t-palabra">if</span> codigo <span class="t-palabra">in</span> <span class="t-operador">(</span><span class="t-numero">401</span><span class="t-operador">,</span> <span class="t-numero">403</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> NoAutorizado<span class="t-operador">(</span>codigo<span class="t-operador">,</span> mensaje<span class="t-operador">,</span> url<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> ErrorDeLaApi<span class="t-operador">(</span>codigo<span class="t-operador">,</span> mensaje<span class="t-operador">,</span> url<span class="t-operador">)</span></code></pre></div>
+<p>Fíjate en cómo se distinguen los dos <code>403</code>: <strong>por la cabecera de cuota, no por el código</strong>. Con la cuota a cero es el límite; con cuota disponible es que no tienes permiso. Son problemas distintos con soluciones distintas, y la API los manda con el mismo número.</p>
+<p>Y el recorte de los parámetros en <code>url</code> es la lección 7: si alguien pasa un secreto por la consulta, no queremos que acabe en el texto de una excepción que irá a un registro.</p>
+<h2 id="los-modelos">Los modelos<a class="ancla" href="#los-modelos" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Aquí está la idea que más se salta la gente: <strong>no pasear diccionarios de la API por todo el programa.</strong></p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-operador">@</span>dataclass<span class="t-operador">(</span>frozen<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> slots<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+<span class="t-palabra">class</span> <span class="t-definicion">Incidencia</span><span class="t-operador">:</span>
+        numero<span class="t-operador">:</span> <span class="t-integrada">int</span>
+    titulo<span class="t-operador">:</span> <span class="t-integrada">str</span>
+    estado<span class="t-operador">:</span> <span class="t-integrada">str</span>
+    autor<span class="t-operador">:</span> <span class="t-integrada">str</span>
+    etiquetas<span class="t-operador">:</span> <span class="t-integrada">tuple</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">,</span> <span class="t-operador">...</span><span class="t-operador">]</span>
+    creada<span class="t-operador">:</span> datetime<span class="t-operador">.</span>datetime <span class="t-operador">|</span> <span class="t-palabra">None</span>
+    es_propuesta<span class="t-operador">:</span> <span class="t-integrada">bool</span>
+
+    <span class="t-operador">@</span>classmethod
+    <span class="t-palabra">def</span> <span class="t-definicion">desde_api</span><span class="t-operador">(</span><span class="t-constante">cls</span><span class="t-operador">,</span> datos<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-constante">cls</span><span class="t-operador">(</span>
+            numero<span class="t-operador">=</span>datos<span class="t-operador">[</span><span class="t-texto">&#x27;number&#x27;</span><span class="t-operador">]</span><span class="t-operador">,</span>
+            titulo<span class="t-operador">=</span>datos<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;title&#x27;</span><span class="t-operador">,</span> <span class="t-texto">&#x27;&#x27;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+            estado<span class="t-operador">=</span>datos<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;state&#x27;</span><span class="t-operador">,</span> <span class="t-texto">&#x27;&#x27;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+            autor<span class="t-operador">=</span><span class="t-operador">(</span>datos<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;user&#x27;</span><span class="t-operador">)</span> <span class="t-palabra">or</span> <span class="t-operador">{</span><span class="t-operador">}</span><span class="t-operador">)</span><span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;login&#x27;</span><span class="t-operador">,</span> <span class="t-texto">&#x27;(sin autor)&#x27;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+            etiquetas<span class="t-operador">=</span><span class="t-integrada">tuple</span><span class="t-operador">(</span>e<span class="t-operador">[</span><span class="t-texto">&#x27;name&#x27;</span><span class="t-operador">]</span> <span class="t-palabra">for</span> e <span class="t-palabra">in</span> datos<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;labels&#x27;</span><span class="t-operador">,</span> <span class="t-operador">[</span><span class="t-operador">]</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">,</span>
+            creada<span class="t-operador">=</span>_fecha<span class="t-operador">(</span>datos<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;created_at&#x27;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">,</span>
+            <span class="t-comentario"># La API devuelve las propuestas de cambio mezcladas con las</span>
+            <span class="t-comentario"># incidencias, y solo se distinguen por esta clave.</span>
+            es_propuesta<span class="t-operador">=</span><span class="t-texto">&#x27;pull_request&#x27;</span> <span class="t-palabra">in</span> datos<span class="t-operador">,</span>
+        <span class="t-operador">)</span></code></pre></div>
+<p>Lo que se gana:</p>
+<p><strong>Los nombres son los tuyos.</strong> <code>estrellas</code> y no <code>stargazers_count</code>. El programa se lee en su idioma.</p>
+<p><strong>Las fechas ya son fechas</strong>, convertidas en un solo sitio con la función de la lección 3.</p>
+<p><strong>Los ochenta y seis campos se quedan en ocho.</strong> Los que usas.</p>
+<p><strong>Hay un solo sitio donde tocar</strong> si la API cambia un nombre.</p>
+<p>Y el <code>(datos.get(&#x27;user&#x27;) or {})</code> no es paranoia: cuando se borra una cuenta de GitHub, ese campo llega como nulo. Con <code>datos[&#x27;user&#x27;][&#x27;login&#x27;]</code> eso es un <code>TypeError</code> en producción y nunca en pruebas.</p>
+<h2 id="el-servicio-y-la-interfaz">El servicio y la interfaz<a class="ancla" href="#el-servicio-y-la-interfaz" aria-label="Enlace a esta seccion">#</a></h2>
+<p>El servicio son las operaciones con sentido, sin saber de HTTP:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">resumen</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> nombre<span class="t-operador">,</span> limite<span class="t-operador">=</span><span class="t-numero">200</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        abiertas <span class="t-operador">=</span> <span class="t-integrada">list</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>incidencias<span class="t-operador">(</span>nombre<span class="t-operador">,</span> limite<span class="t-operador">=</span>limite<span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-operador">{</span>
+        <span class="t-texto">&#x27;total&#x27;</span><span class="t-operador">:</span> <span class="t-integrada">len</span><span class="t-operador">(</span>abiertas<span class="t-operador">)</span><span class="t-operador">,</span>
+        <span class="t-texto">&#x27;por_etiqueta&#x27;</span><span class="t-operador">:</span> collections<span class="t-operador">.</span>Counter<span class="t-operador">(</span>
+            e <span class="t-palabra">for</span> i <span class="t-palabra">in</span> abiertas <span class="t-palabra">for</span> e <span class="t-palabra">in</span> i<span class="t-operador">.</span>etiquetas
+        <span class="t-operador">)</span><span class="t-operador">.</span>most_common<span class="t-operador">(</span><span class="t-numero">10</span><span class="t-operador">)</span><span class="t-operador">,</span>
+        <span class="t-texto">&#x27;por_autor&#x27;</span><span class="t-operador">:</span> collections<span class="t-operador">.</span>Counter<span class="t-operador">(</span>i<span class="t-operador">.</span>autor <span class="t-palabra">for</span> i <span class="t-palabra">in</span> abiertas<span class="t-operador">)</span><span class="t-operador">.</span>most_common<span class="t-operador">(</span><span class="t-numero">10</span><span class="t-operador">)</span><span class="t-operador">,</span>
+        <span class="t-texto">&#x27;sin_etiquetar&#x27;</span><span class="t-operador">:</span> <span class="t-integrada">sum</span><span class="t-operador">(</span><span class="t-numero">1</span> <span class="t-palabra">for</span> i <span class="t-palabra">in</span> abiertas <span class="t-palabra">if</span> <span class="t-palabra">not</span> i<span class="t-operador">.</span>etiquetas<span class="t-operador">)</span><span class="t-operador">,</span>
+        <span class="t-texto">&#x27;mas_antigua&#x27;</span><span class="t-operador">:</span> <span class="t-integrada">min</span><span class="t-operador">(</span><span class="t-operador">(</span>i <span class="t-palabra">for</span> i <span class="t-palabra">in</span> abiertas <span class="t-palabra">if</span> i<span class="t-operador">.</span>creada<span class="t-operador">)</span><span class="t-operador">,</span>
+                           key<span class="t-operador">=</span><span class="t-palabra">lambda</span> i<span class="t-operador">:</span> i<span class="t-operador">.</span>creada<span class="t-operador">,</span> default<span class="t-operador">=</span><span class="t-palabra">None</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-operador">}</span></code></pre></div>
+<p>Y la interfaz traduce errores a mensajes y a códigos de salida, que es lo del módulo 2:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">try</span><span class="t-operador">:</span>
+        <span class="t-palabra">with</span> Cliente<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">as</span> cliente<span class="t-operador">:</span>
+                salida <span class="t-operador">=</span> _ejecutar<span class="t-operador">(</span>argumentos<span class="t-operador">,</span> Repos<span class="t-operador">(</span>cliente<span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-palabra">except</span> NoEncontrado <span class="t-palabra">as</span> e<span class="t-operador">:</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span>f&#x27;No existe: <span class="t-operador">{</span>e<span class="t-operador">.</span>url<span class="t-operador">}</span>&#x27;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-numero">4</span>
+<span class="t-palabra">except</span> CuotaAgotada <span class="t-palabra">as</span> e<span class="t-operador">:</span>
+        espera <span class="t-operador">=</span> e<span class="t-operador">.</span>segundos_de_espera
+    <span class="t-integrada">print</span><span class="t-operador">(</span>f&#x27;Cuota agotada. Vuelve en <span class="t-operador">{</span>espera <span class="t-operador">/</span> <span class="t-numero">60</span><span class="t-operador">:</span>.0f<span class="t-operador">}</span> minutos.&#x27;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> _hay_token<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&#x27;Con un token tendrías 5000 peticiones por hora en vez de 60.&#x27;</span><span class="t-operador">,</span>
+              file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-numero">3</span>
+<span class="t-palabra">except</span> ErrorDeRepos <span class="t-palabra">as</span> e<span class="t-operador">:</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span>f&#x27;Error: <span class="t-operador">{</span>e<span class="t-operador">}</span>&#x27;<span class="t-operador">,</span> file<span class="t-operador">=</span>sys<span class="t-operador">.</span>stderr<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-numero">2</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>no existe  -&gt; 4
+bien       -&gt; 0
+sin orden  -&gt; 2</code></pre></div>
+<p>El consejo del token en el mensaje de cuota es lo que distingue un error útil de uno que solo informa: dice <strong>qué hacer</strong>, y sale solo cuando aplica.</p>
+<h2 id="el-servidor-de-mentira">El servidor de mentira<a class="ancla" href="#el-servidor-de-mentira" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Las pruebas no tocan internet. Un servidor HTTP de la biblioteca estándar en un hilo, al que se le dice qué contestar:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">class</span> <span class="t-definicion">ServidorFalso</span><span class="t-operador">:</span>
+        <span class="t-palabra">def</span> <span class="t-definicion">responder</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> ruta<span class="t-operador">,</span> cuerpo<span class="t-operador">,</span> codigo<span class="t-operador">=</span><span class="t-numero">200</span><span class="t-operador">,</span> cabeceras<span class="t-operador">=</span><span class="t-palabra">None</span><span class="t-operador">,</span> veces<span class="t-operador">=</span><span class="t-palabra">None</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>respuestas<span class="t-operador">.</span>setdefault<span class="t-operador">(</span>ruta<span class="t-operador">,</span> <span class="t-operador">[</span><span class="t-operador">]</span><span class="t-operador">)</span><span class="t-operador">.</span>append<span class="t-operador">(</span>
+            <span class="t-operador">{</span><span class="t-texto">&#x27;cuerpo&#x27;</span><span class="t-operador">:</span> cuerpo<span class="t-operador">,</span> <span class="t-texto">&#x27;codigo&#x27;</span><span class="t-operador">:</span> codigo<span class="t-operador">,</span>
+             <span class="t-texto">&#x27;cabeceras&#x27;</span><span class="t-operador">:</span> cabeceras <span class="t-palabra">or</span> <span class="t-operador">{</span><span class="t-operador">}</span><span class="t-operador">,</span> <span class="t-texto">&#x27;veces&#x27;</span><span class="t-operador">:</span> veces<span class="t-operador">}</span>
+        <span class="t-operador">)</span></code></pre></div>
+<p>Se puede encolar más de una respuesta por ruta, que es lo que permite probar los reintentos: dos veces <code>503</code> y luego bien. Y apunta lo que le piden, que es lo que permite comprobar las cabeceras enviadas.</p>
+<p>Por qué un servidor de verdad en lugar de sustituir funciones: porque prueba <strong>la biblioteca de verdad</strong>, con sus reintentos, sus conexiones y su análisis de la cabecera de navegación. Un sustituto de <code>requests.get</code> no habría encontrado el fallo que viene ahora.</p>
+<h2 id="las-veintitres-pruebas">Las veintitrés pruebas<a class="ancla" href="#las-veintitres-pruebas" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Ran 23 tests in 17.312s
+OK</code></pre></div>
+<p>Agrupadas en cinco bloques: peticiones y cabeceras, errores, reintentos, paginación y cuota. Las que más valen:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">test_403_con_cuota_a_cero_es_cuota_agotada</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        reinicio <span class="t-operador">=</span> <span class="t-integrada">int</span><span class="t-operador">(</span>time<span class="t-operador">.</span>time<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span> <span class="t-operador">+</span> <span class="t-numero">600</span>
+    <span class="t-constante">self</span><span class="t-operador">.</span>servidor<span class="t-operador">.</span>responder<span class="t-operador">(</span>
+        <span class="t-texto">&#x27;/x&#x27;</span><span class="t-operador">,</span> <span class="t-operador">{</span><span class="t-texto">&#x27;message&#x27;</span><span class="t-operador">:</span> <span class="t-texto">&#x27;API rate limit exceeded&#x27;</span><span class="t-operador">}</span><span class="t-operador">,</span> <span class="t-numero">403</span><span class="t-operador">,</span>
+        <span class="t-operador">{</span><span class="t-texto">&#x27;X-RateLimit-Remaining&#x27;</span><span class="t-operador">:</span> <span class="t-texto">&#x27;0&#x27;</span><span class="t-operador">,</span> <span class="t-texto">&#x27;X-RateLimit-Reset&#x27;</span><span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">(</span>reinicio<span class="t-operador">)</span><span class="t-operador">}</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+    <span class="t-palabra">with</span> <span class="t-constante">self</span><span class="t-operador">.</span>assertRaises<span class="t-operador">(</span>CuotaAgotada<span class="t-operador">)</span> <span class="t-palabra">as</span> caso<span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>cliente<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>obtener<span class="t-operador">(</span><span class="t-texto">&#x27;/x&#x27;</span><span class="t-operador">)</span>
+    <span class="t-constante">self</span><span class="t-operador">.</span>assertAlmostEqual<span class="t-operador">(</span>caso<span class="t-operador">.</span>exception<span class="t-operador">.</span>segundos_de_espera<span class="t-operador">,</span> <span class="t-numero">600</span><span class="t-operador">,</span> delta<span class="t-operador">=</span><span class="t-numero">5</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_los_parametros_solo_van_en_la_primera</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>servidor<span class="t-operador">.</span>responder<span class="t-operador">(</span><span class="t-texto">&#x27;/l&#x27;</span><span class="t-operador">,</span> <span class="t-operador">[</span><span class="t-operador">{</span><span class="t-texto">&#x27;n&#x27;</span><span class="t-operador">:</span> <span class="t-numero">1</span><span class="t-operador">}</span><span class="t-operador">]</span><span class="t-operador">,</span> cabeceras<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>_enlazar<span class="t-operador">(</span><span class="t-texto">&#x27;/l2?cursor=xyz&#x27;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-constante">self</span><span class="t-operador">.</span>servidor<span class="t-operador">.</span>responder<span class="t-operador">(</span><span class="t-texto">&#x27;/l2&#x27;</span><span class="t-operador">,</span> <span class="t-operador">[</span><span class="t-operador">{</span><span class="t-texto">&#x27;n&#x27;</span><span class="t-operador">:</span> <span class="t-numero">2</span><span class="t-operador">}</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    <span class="t-integrada">list</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>cliente<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>recorrer<span class="t-operador">(</span><span class="t-texto">&#x27;/l&#x27;</span><span class="t-operador">,</span> state<span class="t-operador">=</span><span class="t-texto">&#x27;open&#x27;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-constante">self</span><span class="t-operador">.</span>assertIn<span class="t-operador">(</span><span class="t-texto">&#x27;state=open&#x27;</span><span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>servidor<span class="t-operador">.</span>peticiones<span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span><span class="t-operador">[</span><span class="t-texto">&#x27;ruta&#x27;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    <span class="t-constante">self</span><span class="t-operador">.</span>assertEqual<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>servidor<span class="t-operador">.</span>peticiones<span class="t-operador">[</span><span class="t-numero">1</span><span class="t-operador">]</span><span class="t-operador">[</span><span class="t-texto">&#x27;ruta&#x27;</span><span class="t-operador">]</span><span class="t-operador">,</span> <span class="t-texto">&#x27;/l2?cursor=xyz&#x27;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_es_perezoso</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        generador <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>cliente<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>recorrer<span class="t-operador">(</span><span class="t-texto">&#x27;/l&#x27;</span><span class="t-operador">)</span>
+    <span class="t-constante">self</span><span class="t-operador">.</span>assertEqual<span class="t-operador">(</span><span class="t-integrada">len</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>servidor<span class="t-operador">.</span>peticiones<span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span>   <span class="t-comentario"># aún no ha pedido nada</span>
+    <span class="t-integrada">next</span><span class="t-operador">(</span>generador<span class="t-operador">)</span>
+    <span class="t-constante">self</span><span class="t-operador">.</span>assertEqual<span class="t-operador">(</span><span class="t-integrada">len</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>servidor<span class="t-operador">.</span>peticiones<span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-numero">1</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_el_error_no_guarda_los_parametros</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">with</span> <span class="t-constante">self</span><span class="t-operador">.</span>assertRaises<span class="t-operador">(</span>NoEncontrado<span class="t-operador">)</span> <span class="t-palabra">as</span> caso<span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>cliente<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>obtener<span class="t-operador">(</span><span class="t-texto">&#x27;/x&#x27;</span><span class="t-operador">,</span> token_secreto<span class="t-operador">=</span><span class="t-texto">&#x27;NO-DEBE-SALIR&#x27;</span><span class="t-operador">)</span>
+    <span class="t-constante">self</span><span class="t-operador">.</span>assertNotIn<span class="t-operador">(</span><span class="t-texto">&#x27;NO-DEBE-SALIR&#x27;</span><span class="t-operador">,</span> <span class="t-integrada">str</span><span class="t-operador">(</span>caso<span class="t-operador">.</span>exception<span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<p>La última es de las que más valen por línea escrita: comprueba que <strong>un secreto no acaba en el texto de una excepción</strong>. Es una propiedad de seguridad, y sin prueba se pierde en el primer refactor.</p>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">El fallo que encontró la suite</p><p>De las veintitrés, una falló a la primera:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>ERROR: test_reintenta_los_503
+repos.errores.ErrorDeLaApi: 503 en http://127.0.0.1:54317/x: oops</code></pre></div>
+<p>Cero reintentos donde tenía que haber tres. Y el fallo no estaba en la prueba, estaba en el cliente:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-constante">self</span><span class="t-operador">.</span>sesion<span class="t-operador">.</span>mount<span class="t-operador">(</span><span class="t-texto">&#x27;https://&#x27;</span><span class="t-operador">,</span> HTTPAdapter<span class="t-operador">(</span>max_retries<span class="t-operador">=</span>reintentos<span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<p><strong>Solo <code>https://</code>.</strong> Es la línea que aparece en toda la documentación y en todos los ejemplos, y es incompleta: <code>mount</code> funciona por prefijo, así que cualquier dirección <code>http://</code> usa el adaptador por defecto, <strong>sin reintentos y en silencio</strong>.</p>
+<p>Con la API de GitHub nunca se habría notado, porque es siempre <code>https</code>. Se habría notado el día que alguien apuntara el cliente a un servicio interno por <code>http</code>, o a un entorno de pruebas, y entonces el reintentador estaría puesto en el código y no haría nada. Es exactamente el fallo silencioso de la lección 8, en otra capa.</p>
+<p>El arreglo son tres líneas, y lo que importa es cómo apareció: <strong>la prueba usaba <code>http</code> porque un servidor local no tiene certificado</strong>, y esa diferencia accidental destapó el fallo. Una prueba con sustitutos de funciones no lo habría encontrado nunca, porque nunca habría llegado a mirar el esquema.</p></aside>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">El número que dice la verdad y miente</p><p>Al ejecutarlo de verdad salió esto:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>$ repos ver django/django
+incidencias abiertas  509
+
+$ repos incidencias django/django
+No hay incidencias abiertas.</code></pre></div>
+<p>Que parece una contradicción evidente y no lo es: <strong>las dos respuestas son correctas</strong>.</p>
+<p>El campo <code>open_issues_count</code> de GitHub <strong>cuenta también las propuestas de cambio</strong>. Y Django gestiona sus incidencias en Trac, fuera de GitHub, así que las 509 son propuestas, todas, y el filtro de <code>es_propuesta</code> las descarta correctamente:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>con propuestas: 10
+  22018 propuesta  Fixed #37361 -- Support permission renames...
+  22016 propuesta  Added missing notes about including latest...</code></pre></div>
+<p>Dos cosas que llevarse.</p>
+<p><strong>El listado de incidencias devuelve propuestas mezcladas</strong>, y solo se distinguen por si el objeto trae una clave <code>pull_request</code>. No hay ningún campo de tipo. Es una decisión histórica de la API que sorprende a todo el mundo la primera vez, y que hace que los recuentos no cuadren si no la conoces.</p>
+<p><strong>Un nombre de campo no es su definición.</strong> <code>open_issues_count</code> parece que cuenta incidencias abiertas, y cuenta otra cosa. Eso es la sexta pregunta de la lección 1 —leerse la documentación— y es el motivo de que convenga probar contra datos reales y no contra los del ejemplo: ningún servidor de mentira te habría enseñado esto.</p></aside>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Lo que le falta para ser tuyo</p><p>El proyecto está completo y hay cinco cosas naturales que añadir.</p>
+<p><strong>Caché en disco con la huella del contenido.</strong> Es la lección 2: guardar la respuesta y su <code>ETag</code>, mandarlo en la siguiente petición y usar lo guardado si contesta <code>304</code>. Baja el tráfico casi a cero, aunque no la cuota.</p>
+<p><strong>Un fichero de configuración</strong>, para no repetir el repositorio en cada orden. Un <code>~/.config/repos.toml</code> leído con <code>tomllib</code>, que es de la biblioteca estándar desde la 3.11.</p>
+<p><strong>Marca de la última pasada</strong>, que es la optimización más rentable de la lección 9: guardar la fecha y pedir solo lo posterior, con unos minutos de margen y guardándola solo si todo fue bien.</p>
+<p><strong>Salida a CSV</strong>, para abrirlo en una hoja de cálculo. Es el <code>csv</code> del módulo 2 con los modelos que ya tienes.</p>
+<p><strong>Más de una API.</strong> Es la prueba de fuego del diseño: si añadir un segundo servicio obliga a tocar <code>servicio.py</code> o <code>cli.py</code>, las capas no estaban tan separadas como parecía.</p></aside>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>El proyecto separa cuatro capas con una regla que lo sostiene todo: <code>requests</code> se importa en un solo fichero, de modo que el resto se puede probar sin red. Los errores son propios y en el vocabulario del programa, con una raíz común para protegerse de una vez, la distinción entre &quot;no hubo respuesta&quot; y &quot;contestó mal&quot;, y una clase de cuota que además sabe cuánto hay que esperar. El cliente junta todo el bloque: sesión con cabeceras fijas, reintentos que <strong>dejan fuera el <code>403</code> a propósito</strong> porque en esta API es la cuota y esperar no sirve, recorrido de páginas siguiendo el enlace en un generador perezoso, y traducción de respuestas a errores distinguiendo los dos <code>403</code> por la cabecera de cuota y no por el código. Los modelos convierten los ochenta y seis campos de la API en los ocho que se usan, con nombres propios y fechas ya convertidas. Las veintitrés pruebas corren contra un servidor HTTP de mentira en un hilo, que prueba la biblioteca de verdad en lugar de sustituirla, y eso destapó un fallo real: montar el adaptador de reintentos solo en <code>https://</code> deja sin reintentos cualquier dirección <code>http</code>, en silencio, y es la línea que aparece en toda la documentación. Al ejecutarlo contra datos reales apareció la otra sorpresa: <code>open_issues_count</code> cuenta también las propuestas de cambio, así que un repositorio puede declarar 509 incidencias abiertas y no tener ninguna.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><ol><li>Monta el proyecto con sus cuatro capas y haz que la primera orden funcione.</li><li>Comprueba que <code>requests</code> solo se importa en un fichero.</li><li>Escribe el servidor de mentira y una prueba que compruebe las cabeceras enviadas.</li><li>Prueba que un <code>403</code> con cuota a cero y uno con cuota disponible dan errores distintos.</li><li>Escribe la prueba de que los parámetros no se repiten en la segunda página.</li><li>Escribe la prueba de que el recorrido es perezoso.</li><li>Monta el adaptador solo en un esquema y comprueba que la prueba de reintentos falla.</li><li>Añade la prueba de que un secreto no aparece en el texto de una excepción.</li><li>Comprueba los códigos de salida de las tres situaciones de error.</li><li>Añade la caché en disco con la huella del contenido.</li><li>Añade la marca de la última pasada y mide cuántas peticiones te ahorra.</li><li>Añade una segunda API y comprueba cuántos ficheros has tenido que tocar.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#las-cuatro-capas">Las cuatro capas</a></li><li class="nivel-2"><a href="#los-errores-propios">Los errores propios</a></li><li class="nivel-2"><a href="#el-cliente">El cliente</a></li><li class="nivel-2"><a href="#los-modelos">Los modelos</a></li><li class="nivel-2"><a href="#el-servicio-y-la-interfaz">El servicio y la interfaz</a></li><li class="nivel-2"><a href="#el-servidor-de-mentira">El servidor de mentira</a></li><li class="nivel-2"><a href="#las-veintitres-pruebas">Las veintitrés pruebas</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../apis/paginacion-y-limites.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">Paginación y límites de uso</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../apis/disenar-los-recursos-y-las-rutas.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">Diseñar los recursos y las rutas</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

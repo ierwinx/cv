@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introducción a FastAPI · Curso de Python</title>
+<meta name="description" content="La misma API en cincuenta líneas, diez veces más rápida serializando, y el error de validación que te devuelve la contraseña que acabas de rechazar.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="apis/introduccion-a-fastapi">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../apis/index.html">APIs REST</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 5 &middot; Lección 23 de 30</p>
+    <h1>Introducción a FastAPI</h1>
+    <p class="resumen-leccion">La misma API en cincuenta líneas, diez veces más rápida serializando, y el error de validación que te devuelve la contraseña que acabas de rechazar.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 16 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>Empieza el último bloque del curso. FastAPI es la otra forma de escribir una API en Python, y lleva unos años siendo la que todo el mundo recomienda.</p>
+<p>Las comparaciones que se leen por ahí son de dos tipos: las que dicen que es diez veces más rápido y las que dicen que eso no importa. Vamos a medirlo, y vamos a ver que las dos tienen parte de razón y ninguna dice lo que de verdad decide la elección.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Escribir una API con FastAPI y compararla con la misma en DRF, midiendo lo que cuesta cada una en dependencias y en velocidad, y conocer las tres diferencias de comportamiento que hay que decidir antes de elegir.</p></aside>
+<h2 id="la-misma-api">La misma API<a class="ancla" href="#la-misma-api" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Esta es entera, con tres puntos de acceso, validación y documentación:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> datetime <span class="t-palabra">import</span> date
+<span class="t-palabra">from</span> decimal <span class="t-palabra">import</span> Decimal
+<span class="t-palabra">from</span> enum <span class="t-palabra">import</span> Enum
+
+<span class="t-palabra">from</span> fastapi <span class="t-palabra">import</span> FastAPI<span class="t-operador">,</span> HTTPException<span class="t-operador">,</span> Query
+<span class="t-palabra">from</span> pydantic <span class="t-palabra">import</span> BaseModel<span class="t-operador">,</span> Field
+
+app <span class="t-operador">=</span> FastAPI<span class="t-operador">(</span>title<span class="t-operador">=</span><span class="t-texto">&#x27;API del catálogo&#x27;</span><span class="t-operador">,</span> version<span class="t-operador">=</span><span class="t-texto">&#x27;1.0.0&#x27;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">Estado</span><span class="t-operador">(</span><span class="t-integrada">str</span><span class="t-operador">,</span> Enum<span class="t-operador">)</span><span class="t-operador">:</span>
+        borrador <span class="t-operador">=</span> <span class="t-texto">&#x27;borrador&#x27;</span>
+    publicado <span class="t-operador">=</span> <span class="t-texto">&#x27;publicado&#x27;</span>
+    descatalogado <span class="t-operador">=</span> <span class="t-texto">&#x27;descatalogado&#x27;</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">LibroEntrada</span><span class="t-operador">(</span>BaseModel<span class="t-operador">)</span><span class="t-operador">:</span>
+        titulo<span class="t-operador">:</span> <span class="t-integrada">str</span> <span class="t-operador">=</span> Field<span class="t-operador">(</span>max_length<span class="t-operador">=</span><span class="t-numero">200</span><span class="t-operador">)</span>
+    isbn<span class="t-operador">:</span> <span class="t-integrada">str</span> <span class="t-operador">=</span> Field<span class="t-operador">(</span>max_length<span class="t-operador">=</span><span class="t-numero">17</span><span class="t-operador">)</span>
+    precio<span class="t-operador">:</span> Decimal <span class="t-operador">=</span> Field<span class="t-operador">(</span>max_digits<span class="t-operador">=</span><span class="t-numero">7</span><span class="t-operador">,</span> decimal_places<span class="t-operador">=</span><span class="t-numero">2</span><span class="t-operador">)</span>
+    paginas<span class="t-operador">:</span> <span class="t-integrada">int</span> <span class="t-operador">=</span> Field<span class="t-operador">(</span>default<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">,</span> ge<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">)</span>
+    estado<span class="t-operador">:</span> Estado <span class="t-operador">=</span> Estado<span class="t-operador">.</span>borrador
+    publicado_en<span class="t-operador">:</span> date <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">Libro</span><span class="t-operador">(</span>LibroEntrada<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-integrada">id</span><span class="t-operador">:</span> <span class="t-integrada">int</span>
+
+
+<span class="t-operador">@</span>app<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;/api/libros/&#x27;</span><span class="t-operador">)</span>
+<span class="t-palabra">def</span> <span class="t-definicion">listar</span><span class="t-operador">(</span>estado<span class="t-operador">:</span> Estado <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+           limite<span class="t-operador">:</span> <span class="t-integrada">int</span> <span class="t-operador">=</span> Query<span class="t-operador">(</span>default<span class="t-operador">=</span><span class="t-numero">20</span><span class="t-operador">,</span> le<span class="t-operador">=</span><span class="t-numero">100</span><span class="t-operador">)</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">list</span><span class="t-operador">[</span>Libro<span class="t-operador">]</span><span class="t-operador">:</span>
+        libros <span class="t-operador">=</span> <span class="t-operador">[</span>l <span class="t-palabra">for</span> l <span class="t-palabra">in</span> LIBROS<span class="t-operador">.</span>values<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">if</span> estado <span class="t-palabra">is</span> <span class="t-palabra">None</span> <span class="t-palabra">or</span> l<span class="t-operador">.</span>estado <span class="t-operador">==</span> estado<span class="t-operador">]</span>
+    <span class="t-palabra">return</span> libros<span class="t-operador">[</span><span class="t-operador">:</span>limite<span class="t-operador">]</span>
+
+
+<span class="t-operador">@</span>app<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-texto">&#x27;/api/libros/{libro_id}&#x27;</span><span class="t-operador">)</span>
+<span class="t-palabra">def</span> <span class="t-definicion">obtener</span><span class="t-operador">(</span>libro_id<span class="t-operador">:</span> <span class="t-integrada">int</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> Libro<span class="t-operador">:</span>
+        <span class="t-palabra">if</span> libro_id <span class="t-palabra">not</span> <span class="t-palabra">in</span> LIBROS<span class="t-operador">:</span>
+                <span class="t-palabra">raise</span> HTTPException<span class="t-operador">(</span><span class="t-numero">404</span><span class="t-operador">,</span> <span class="t-texto">&#x27;No existe ese libro.&#x27;</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> LIBROS<span class="t-operador">[</span>libro_id<span class="t-operador">]</span>
+
+
+<span class="t-operador">@</span>app<span class="t-operador">.</span>post<span class="t-operador">(</span><span class="t-texto">&#x27;/api/libros/&#x27;</span><span class="t-operador">,</span> status_code<span class="t-operador">=</span><span class="t-numero">201</span><span class="t-operador">)</span>
+<span class="t-palabra">def</span> <span class="t-definicion">crear</span><span class="t-operador">(</span>datos<span class="t-operador">:</span> LibroEntrada<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> Libro<span class="t-operador">:</span>
+        nuevo <span class="t-operador">=</span> Libro<span class="t-operador">(</span><span class="t-integrada">id</span><span class="t-operador">=</span><span class="t-integrada">len</span><span class="t-operador">(</span>LIBROS<span class="t-operador">)</span> <span class="t-operador">+</span> <span class="t-numero">1</span><span class="t-operador">,</span> <span class="t-operador">**</span>datos<span class="t-operador">.</span>model_dump<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    LIBROS<span class="t-operador">[</span>nuevo<span class="t-operador">.</span><span class="t-integrada">id</span><span class="t-operador">]</span> <span class="t-operador">=</span> nuevo
+    <span class="t-palabra">return</span> nuevo</code></pre></div>
+<p>Cincuenta líneas, sin ficheros de ajustes ni de rutas. Se arranca con:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">fastapi dev app/main.py</code></pre></div>
+<p>Y la idea central es esta: <strong>las anotaciones de tipo de Python son la especificación.</strong> Ese <code>libro_id: int</code> de la ruta hace cuatro cosas a la vez:</p>
+<p><strong>Convierte</strong> el texto de la dirección a entero.</p>
+<p><strong>Valida</strong>, devolviendo un error si no es un número.</p>
+<p><strong>Documenta</strong>, apareciendo en el esquema OpenAPI como entero.</p>
+<p><strong>Y ayuda al editor</strong>, porque es una anotación normal.</p>
+<p>Es la misma idea que la lección 21 pedía a mano con un decorador para arreglar la documentación, aquí llevada al centro del diseño. Nada de esto es un invento de FastAPI: es Python estándar, y por eso no hay que aprender un lenguaje de declaración aparte.</p>
+<h2 id="lo-que-cuesta-instalarlo">Lo que cuesta instalarlo<a class="ancla" href="#lo-que-cuesta-instalarlo" aria-label="Enlace a esta seccion">#</a></h2>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>fastapi + uvicorn   14 paquetes,  29 MB
+fastapi[standard]   45 paquetes,  74 MB
+django + DRF        22 paquetes,  68 MB</code></pre></div>
+<p>Aquí hay una sorpresa. FastAPI tiene fama de ligero, y lo es <strong>si lo instalas a secas</strong>: catorce paquetes y la mitad de espacio que Django.</p>
+<p>Lo que casi todos los tutoriales instalan es <code>fastapi[standard]</code>, y eso son cuarenta y cinco paquetes, más que Django con DRF. Y entre ellos:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>sentry-sdk 2.70.0
+fastapi-cloud-cli 0.26.0
+agent-detector 2.0.0
+detect-installer 0.2.1</code></pre></div>
+<p><strong>Un cliente de un servicio comercial de nube, un sistema de informes de errores y dos detectores</strong> que miran cómo instalaste el paquete. Nada de eso hace falta para servir una API, y en un contenedor de producción son megabytes y superficie de ataque que nadie pidió.</p>
+<p>La recomendación práctica: instala lo que necesites y no el ramo entero.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">pip</span> install fastapi <span class="t-integrada">uvicorn</span>[standard]</code></pre></div>
+<p>Es la misma disciplina que la lección 22 del módulo 2 pedía con las dependencias, y aquí se nota más porque el corchete parece inofensivo.</p>
+<h2 id="lo-que-cuesta-ejecutarlo">Lo que cuesta ejecutarlo<a class="ancla" href="#lo-que-cuesta-ejecutarlo" aria-label="Enlace a esta seccion">#</a></h2>
+<p>La cifra que se repite es que FastAPI es mucho más rápido. Medido aquí, sirviendo una lista de cien objetos:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>FastAPI listado de 100: mediana 0,88 ms
+DRF     listado de 100: mediana 7,81 ms</code></pre></div>
+<p>Nueve veces. Y esa comparación es <strong>tramposa</strong>, porque la de FastAPI no toca la base de datos. La prueba está en el otro caso:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>FastAPI un objeto: mediana 0,77 ms
+DRF     un objeto: mediana 0,73 ms</code></pre></div>
+<p><strong>DRF va igual o mejor</strong>, porque cuando solo hay un objeto la base de datos apenas cuesta y lo que queda es el armazón, que es comparable.</p>
+<p>Así que aislemos lo único que de verdad se puede comparar, que es serializar, sin HTTP y sin base de datos, cien objetos con siete campos:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>DRF, serializador plano:  0,969 ms
+pydantic, validar:        0,098 ms
+pydantic, volcar a dict:  0,097 ms
+pydantic, volcar a JSON:  0,125 ms</code></pre></div>
+<p><strong>Diez veces</strong>, y ese sí es un número honrado. Pydantic tiene el núcleo escrito en Rust y se nota.</p>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">Los números que circulan están medidos mal, en los dos sentidos</p><p>El primer intento de medición de esta lección dio <strong>ciento noventa y cinco veces</strong> a favor de pydantic. Ese número era falso, y la causa merece contarse porque es la misma de casi todas las comparaciones que se publican:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>DRF con fields=&#x27;__all__&#x27; : 18,98 ms  y 100 consultas
+DRF con serializador plano: 0,969 ms y 0 consultas</code></pre></div>
+<p>El serializador de <code>__all__</code> incluye una relación de muchos a muchos, así que <strong>el 95 % de esos 18,98 ms era el N+1 de la lección 14</strong>, no serialización. Comparar eso con pydantic —que no tenía base de datos— es comparar una consulta mal escrita con ninguna consulta.</p>
+<p>Y el error simétrico también es común: concluir que da igual porque sirviendo un objeto suelto van iguales.</p>
+<p>Lo que hay que llevarse es lo que significan diez veces en 0,9 milisegundos. Una petición real tiene una consulta de base de datos de entre 1 y 50 milisegundos, una llamada a otro servicio quizá, y la red por delante. <strong>Ahorrar 0,8 ms de serialización sobre una petición de 40 ms es un 2 %.</strong></p>
+<p>Por eso el rendimiento es la peor razón para elegir FastAPI, salvo en dos casos concretos donde sí decide: cuando devuelves respuestas enormes —miles de objetos, y ahí las diez veces se multiplican— y cuando tu aplicación pasa el tiempo esperando a otros servicios, que es lo que resuelve la asincronía y es la lección 26.</p></aside>
+<h2 id="las-tres-diferencias-que-si-deciden">Las tres diferencias que sí deciden<a class="ancla" href="#las-tres-diferencias-que-si-deciden" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Más importantes que los milisegundos.</p>
+<p><strong>Primera: FastAPI no trae base de datos.</strong> Ni ORM, ni migraciones, ni panel de administración, ni sistema de usuarios, ni correo. Eso se elige y se monta, normalmente con SQLAlchemy y Alembic, y es la lección 26.</p>
+<p>Para un proyecto que necesita todo eso, Django ya lo tiene resuelto y probado, y montarlo pieza a pieza son semanas. Para un servicio que habla con otra cosa y no tiene modelos propios, el armazón de Django es peso muerto.</p>
+<p><strong>Segunda: la asincronía es de primera clase.</strong> FastAPI la soporta de verdad porque nació así; Django la ha ido añadiendo y el ORM asíncrono aún tiene esquinas. Es la lección 26 y es el argumento técnico real.</p>
+<p><strong>Tercera: los errores son distintos</strong>, y hay que verlo.</p>
+<h2 id="los-errores">Los errores<a class="ancla" href="#los-errores" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Las dos partes de esto sorprenden. Enviando un cuerpo vacío:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>POST /api/libros/  {}
+422 Unprocessable Content
+
+{&quot;detail&quot;: [
+  {&quot;type&quot;: &quot;missing&quot;, &quot;loc&quot;: [&quot;body&quot;, &quot;titulo&quot;], &quot;msg&quot;: &quot;Field required&quot;, &quot;input&quot;: {}},
+  {&quot;type&quot;: &quot;missing&quot;, &quot;loc&quot;: [&quot;body&quot;, &quot;isbn&quot;],   &quot;msg&quot;: &quot;Field required&quot;, &quot;input&quot;: {}},
+  {&quot;type&quot;: &quot;missing&quot;, &quot;loc&quot;: [&quot;body&quot;, &quot;precio&quot;], &quot;msg&quot;: &quot;Field required&quot;, &quot;input&quot;: {}}
+]}</code></pre></div>
+<p>Comparado con DRF:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>400 Bad Request
+{&quot;titulo&quot;: [&quot;Este campo es requerido.&quot;],
+ &quot;isbn&quot;: [&quot;Este campo es requerido.&quot;]}</code></pre></div>
+<p><strong>Tres diferencias.</strong> El código es <code>422</code> y no <code>400</code>, que es correcto según el estándar y lo usa casi nadie, así que quien consuma tu API tendrá que tratarlo aparte. La forma es una lista de objetos en vez de un diccionario por campo, más informativa y más incómoda de pintar en un formulario. Y <strong>están en inglés</strong>, sin traducción incluida, al revés que DRF.</p>
+<p>Las tres se pueden cambiar con un manejador propio, y conviene hacerlo el primer día, porque cambiar el formato de los errores después es de los cambios que rompen, según la tabla de la lección 22.</p>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">El error de validación te devuelve lo que enviaste</p><p>Esta es la parte seria. Con un modelo que tiene una contraseña:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>POST /registro  {&quot;correo&quot;: &quot;ana@t.es&quot;, &quot;contrasena&quot;: &quot;corta&quot;, &quot;edad&quot;: &quot;no-es-numero&quot;}
+
+422
+{&quot;detail&quot;: [
+  {&quot;type&quot;: &quot;string_too_short&quot;,
+   &quot;loc&quot;: [&quot;body&quot;, &quot;contrasena&quot;],
+   &quot;msg&quot;: &quot;String should have at least 12 characters&quot;,
+   &quot;input&quot;: &quot;corta&quot;,                              &lt;-- aquí
+   &quot;ctx&quot;: {&quot;min_length&quot;: 12}},
+  {&quot;type&quot;: &quot;int_parsing&quot;,
+   &quot;loc&quot;: [&quot;body&quot;, &quot;edad&quot;],
+   &quot;msg&quot;: &quot;Input should be a valid integer...&quot;,
+   &quot;input&quot;: &quot;no-es-numero&quot;}
+]}</code></pre></div>
+<p><strong><code>&quot;input&quot;: &quot;corta&quot;</code> es la contraseña que el usuario acaba de intentar poner</strong>, devuelta tal cual en el cuerpo de la respuesta.</p>
+<p>Y de ahí se va a tres sitios donde no debería estar: los registros del servidor si se anotan las respuestas de error, el servicio de seguimiento de errores si tienes uno, y la consola del navegador de quien lo esté usando. Con una tarjeta de crédito, un número de la seguridad social o una contraseña que la persona reutiliza en otros sitios, eso es una fuga.</p>
+<p>Es un valor por defecto pensado para depurar, y en producción hay que quitarlo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> fastapi <span class="t-palabra">import</span> Request<span class="t-operador">,</span> status
+<span class="t-palabra">from</span> fastapi<span class="t-operador">.</span>exceptions <span class="t-palabra">import</span> RequestValidationError
+<span class="t-palabra">from</span> fastapi<span class="t-operador">.</span>responses <span class="t-palabra">import</span> JSONResponse
+
+
+<span class="t-operador">@</span>app<span class="t-operador">.</span>exception_handler<span class="t-operador">(</span>RequestValidationError<span class="t-operador">)</span>
+<span class="t-palabra">async</span> <span class="t-palabra">def</span> <span class="t-definicion">errores_de_validacion</span><span class="t-operador">(</span>peticion<span class="t-operador">:</span> Request<span class="t-operador">,</span> exc<span class="t-operador">:</span> RequestValidationError<span class="t-operador">)</span><span class="t-operador">:</span>
+        errores <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-operador">}</span>
+    <span class="t-palabra">for</span> error <span class="t-palabra">in</span> exc<span class="t-operador">.</span>errors<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                campo <span class="t-operador">=</span> <span class="t-texto">&#x27;.&#x27;</span><span class="t-operador">.</span>join<span class="t-operador">(</span><span class="t-integrada">str</span><span class="t-operador">(</span>x<span class="t-operador">)</span> <span class="t-palabra">for</span> x <span class="t-palabra">in</span> error<span class="t-operador">[</span><span class="t-texto">&#x27;loc&#x27;</span><span class="t-operador">]</span><span class="t-operador">[</span><span class="t-numero">1</span><span class="t-operador">:</span><span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-palabra">or</span> <span class="t-texto">&#x27;general&#x27;</span>
+        errores<span class="t-operador">.</span>setdefault<span class="t-operador">(</span>campo<span class="t-operador">,</span> <span class="t-operador">[</span><span class="t-operador">]</span><span class="t-operador">)</span><span class="t-operador">.</span>append<span class="t-operador">(</span>error<span class="t-operador">[</span><span class="t-texto">&#x27;msg&#x27;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> JSONResponse<span class="t-operador">(</span>status_code<span class="t-operador">=</span>status<span class="t-operador">.</span>HTTP_400_BAD_REQUEST<span class="t-operador">,</span>
+                        content<span class="t-operador">=</span><span class="t-operador">{</span><span class="t-texto">&#x27;errores&#x27;</span><span class="t-operador">:</span> errores<span class="t-operador">}</span><span class="t-operador">)</span></code></pre></div>
+<p>Veinte líneas que arreglan las cuatro cosas a la vez: quitan el valor enviado, agrupan por campo, devuelven <code>400</code> en lugar de <code>422</code> y dejan un sitio donde traducir los mensajes. <strong>Va en la primera versión</strong>, no en la segunda.</p></aside>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">Lo que FastAPI hace bien de fábrica y DRF no</p><p>Tres aciertos que conviene reconocer, porque son los reversos de los avisos de las lecciones 12 y 21.</p>
+<p><strong>El dinero sale como texto</strong>, igual que DRF:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>{&quot;titulo&quot;:&quot;El número ñ&quot;,&quot;precio&quot;:&quot;19.98&quot;,&quot;paginas&quot;:234}</code></pre></div>
+<p>Un <code>Decimal</code> se serializa entre comillas. Es la regla de la lección 3 y los dos armazones la respetan.</p>
+<p><strong>Y los acentos salen sin escapar</strong>, también igual.</p>
+<p><strong>La documentación es correcta desde el principio.</strong> Aquí sí hay diferencia: como el esquema sale de las anotaciones de tipo, no puede desalinearse del código. El problema de la lección 21 —un campo documentado como texto que devuelve una lista— <strong>no puede ocurrir</strong>, porque la anotación es a la vez la documentación y lo que valida la respuesta.</p>
+<p>Esa es, en la práctica, la mejor característica de FastAPI y la que menos se menciona: no que la documentación se genere sola, que eso también lo hace DRF, sino que <strong>no puede mentir</strong>.</p></aside>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Cuándo elegir cada uno</p><p>Sin la parte de moda:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Elige Django y DRF si…</th><th>Elige FastAPI si…</th></tr></thead><tbody><tr><td>Hay modelos, y bastantes</td><td>El servicio no tiene base de datos propia, o es sencilla</td></tr><tr><td>Quieres panel de administración</td><td>No lo necesitas</td></tr><tr><td>Necesitas usuarios, permisos, correo</td><td>Te basta con validar un token</td></tr><tr><td>Habrá también páginas web</td><td>Es solo API</td></tr><tr><td>El equipo ya sabe Django</td><td>El equipo ya sabe anotaciones de tipo</td></tr><tr><td></td><td>Hay mucha espera a otros servicios</td></tr><tr><td></td><td>Las respuestas son enormes</td></tr></tbody></table></div>
+<p>Y dos consideraciones que pesan más que la tabla:</p>
+<p><strong>Lo que ya sabe tu equipo</strong> vale más que cualquier diferencia técnica de esta lección. Un equipo que sabe Django escribe una API en DRF en un día, y en FastAPI tarda una semana en decidir el ORM.</p>
+<p><strong>Un proyecto puede tener los dos.</strong> No es raro: Django para la aplicación con sus modelos y su panel, y un servicio pequeño en FastAPI para lo que necesita velocidad o asincronía. Se comunican por HTTP, que es de lo que iba el bloque A.</p>
+<p>Lo que no tiene sentido es reescribir una API de DRF que funciona para ganar 0,8 milisegundos.</p></aside>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>FastAPI escribe la misma API en cincuenta líneas, y su idea central es que <strong>las anotaciones de tipo de Python son la especificación</strong>: una anotación convierte, valida, documenta y ayuda al editor a la vez. Instalarlo a secas son catorce paquetes y la mitad de espacio que Django, pero el <code>[standard]</code> que instalan los tutoriales son cuarenta y cinco, más que Django con DRF, e incluye un cliente de un servicio comercial de nube y un sistema de informes de errores que nadie pidió. En rendimiento, las comparaciones que circulan están mal hechas en los dos sentidos: el primer intento de esta lección dio 195 veces, y el 95 % de esa diferencia era el N+1 de la lección 14 y no serialización; aislando solo el serializado de cien objetos, la cifra honrada es <strong>diez veces</strong>, que son 0,8 milisegundos sobre una petición real de cuarenta, es decir un 2 %, y por eso el rendimiento es la peor razón para elegirlo salvo con respuestas enormes o mucha espera a otros servicios. Lo que sí decide es que FastAPI no trae base de datos, ORM, panel, usuarios ni correo, y que su asincronía es de primera clase. Sus errores de validación son <code>422</code> en lugar de <code>400</code>, con una forma distinta y en inglés, y hay que cambiarlos el primer día porque después rompen a los clientes; sobre todo porque <strong>devuelven el valor rechazado dentro de la respuesta</strong>, de modo que una contraseña demasiado corta acaba en los registros, en el seguimiento de errores y en la consola del navegador. A cambio, el dinero y los acentos salen igual de bien que en DRF, y su documentación <strong>no puede mentir</strong>, porque la anotación es a la vez lo que documenta y lo que valida.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><ol><li>Escribe la API de tres puntos de acceso y arráncala.</li><li>Instala FastAPI a secas y con el extra, y compara los paquetes de cada uno.</li><li>Busca en la lista del extra los paquetes que no sirven para servir una API.</li><li>Mide el tiempo de un listado y de un objeto suelto, y compáralo con DRF.</li><li>Aísla la serialización sin HTTP ni base de datos y vuelve a medir.</li><li>Repite la medida de DRF con un serializador que tenga una relación múltiple, y cuenta las consultas.</li><li>Manda un cuerpo vacío y estudia el código y la forma del error.</li><li>Crea un modelo con un campo de contraseña y provoca un error de validación.</li><li>Busca el valor rechazado dentro de la respuesta.</li><li>Escribe el manejador que arregla las cuatro cosas a la vez.</li><li>Comprueba cómo sale un decimal y un texto con tildes.</li><li>Abre la documentación automática y compárala con la de DRF.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#la-misma-api">La misma API</a></li><li class="nivel-2"><a href="#lo-que-cuesta-instalarlo">Lo que cuesta instalarlo</a></li><li class="nivel-2"><a href="#lo-que-cuesta-ejecutarlo">Lo que cuesta ejecutarlo</a></li><li class="nivel-2"><a href="#las-tres-diferencias-que-si-deciden">Las tres diferencias que sí deciden</a></li><li class="nivel-2"><a href="#los-errores">Los errores</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../apis/versionado-y-pruebas.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">Versionado y pruebas</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../apis/rutas-y-parametros.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">Rutas y parámetros</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

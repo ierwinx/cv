@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El lienzo interactivo: eventos, imágenes y animación · Curso de Python</title>
+<meta name="description" content="Hacer que el dibujo responda: atar eventos a figuras y qué eventos no acepta, traducir el píxel de la ventana a coordenada del lienzo, arrastrar con el ratón, y la trampa de las imágenes con su diagnóstico exacto.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="tkinter/el-lienzo-interactivo">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../tkinter/index.html">Aplicaciones con Tkinter</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 3 &middot; Lección 26 de 50</p>
+    <h1>El lienzo interactivo: eventos, imágenes y animación</h1>
+    <p class="resumen-leccion">Hacer que el dibujo responda: atar eventos a figuras y qué eventos no acepta, traducir el píxel de la ventana a coordenada del lienzo, arrastrar con el ratón, y la trampa de las imágenes con su diagnóstico exacto.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 30 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>En la lección anterior el lienzo era un sitio donde dibujar. Aquí pasa a ser un sitio donde <strong>pasan cosas</strong>: figuras que responden al ratón, que se arrastran, que se iluminan al pasar por encima, que se mueven solas.</p>
+<p>Eso trae un mecanismo que no existe en ningún otro widget del módulo. Hasta ahora los eventos se ataban al widget con <code>bind</code>, y en el <code>Canvas</code> eso sigue funcionando, pero el widget es uno solo: un <code>bind</code> al lienzo te dice que alguien ha pulsado, no <strong>sobre qué</strong>. La respuesta es <code>tag_bind</code>, que ata eventos a las figuras. Y como todo en este widget, trabaja con etiquetas, con una consecuencia útil que se mide más abajo.</p>
+<p>También aquí toca resolver la deuda de coordenadas de la lección 24. Un evento del ratón trae la posición en píxeles de la ventana, y las figuras están en coordenadas del lienzo. Mientras no hay desplazamiento son el mismo número, y en cuanto lo hay dejan de serlo.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Atar eventos a figuras con <code>tag_bind</code> y saber qué eventos no acepta; usar la etiqueta <code>current</code> para saber sobre qué se ha actuado; conseguir el efecto de resalte sin escribir ningún evento; traducir la posición del ratón a coordenadas del lienzo; implementar el arrastre completo; poner imágenes sin arrastrar ficheros y reconocer el fallo de la referencia perdida; y animar con <code>after</code>.</p></aside>
+<h2 id="tag-bind"><code>tag_bind</code><a class="ancla" href="#tag-bind" aria-label="Enlace a esta seccion">#</a></h2>
+<p>La forma es igual que un <code>bind</code> normal, con un primer argumento que dice a qué figura:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">lienzo<span class="t-operador">.</span>tag_bind<span class="t-operador">(</span>identificador<span class="t-operador">,</span> <span class="t-texto">&quot;&lt;Button-1&gt;&quot;</span><span class="t-operador">,</span> pulsar<span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>tag_bind<span class="t-operador">(</span><span class="t-texto">&quot;nodo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;&lt;Enter&gt;&quot;</span><span class="t-operador">,</span> entrar<span class="t-operador">)</span></code></pre></div>
+<p>Y aquí está la parte que conviene entender bien, porque cambia cómo se organiza el código. Cuando le pasas una etiqueta, <strong>el evento se ata al nombre de la etiqueta y no a las figuras que la tienen</strong>. Se puede comprobar atando una etiqueta que todavía no usa nadie:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lienzo.find_withtag(<span class="t-texto">&quot;grupo&quot;</span>)
+()
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.tag_bind(<span class="t-texto">&quot;grupo&quot;</span>, <span class="t-texto">&quot;&lt;Button-1&gt;&quot;</span>, lambda evento: None)
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.tag_bind(<span class="t-texto">&quot;grupo&quot;</span>)
+(<span class="t-texto">&#x27;&lt;Button-1&gt;&#x27;</span>,)</code></pre></div>
+<p>No hay ni una figura con esa etiqueta y el binding ya existe. La consecuencia práctica es la buena noticia de la lección: <strong>las figuras que crees después con esa etiqueta responden al evento sin que hagas nada más.</strong> Puedes atar los eventos una sola vez al arrancar y luego crear, borrar y recrear figuras cuantas veces quieras.</p>
+<p>Eso encaja con el patrón de la lección anterior, borrar por etiqueta y redibujar. Si los eventos estuvieran atados a los identificadores habría que volver a atarlos en cada redibujado, y olvidarse una vez daría un dibujo que deja de responder sin ningún error. Con etiquetas, el problema no existe.</p>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso"><code>tag_bind</code> no acepta cualquier evento</p><p>Aquí la lista es corta y Tk la recita si te sales de ella:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lienzo.tag_bind(figura, <span class="t-texto">&quot;&lt;MouseWheel&gt;&quot;</span>, rueda)
+_tkinter.TclError: requested illegal events; only key, button, motion, enter,
+leave, and virtual events may be used</code></pre></div>
+<p>Solo teclas, botones del ratón, movimiento, entrada, salida y eventos virtuales. De modo que estos sí:</p>
+<p><code>&lt;Button-1&gt;</code>, <code>&lt;ButtonRelease-1&gt;</code>, <code>&lt;B1-Motion&gt;</code>, <code>&lt;Double-Button-1&gt;</code>, <code>&lt;Enter&gt;</code>, <code>&lt;Leave&gt;</code>, <code>&lt;Motion&gt;</code>, <code>&lt;Key&gt;</code>.</p>
+<p>Y estos no: <strong><code>&lt;MouseWheel&gt;</code> y <code>&lt;Configure&gt;</code></strong>, entre otros. Tiene sentido si lo piensas, porque una figura no cambia de tamaño por su cuenta ni recibe la rueda, esas cosas le pasan al widget. Pero conviene saberlo antes de diseñar: si querías que la rueda sobre una figura hiciera zoom, el binding va al <code>Canvas</code> y dentro averiguas qué figura había debajo. Y eso enlaza con lo de la lección 24, que el <code>Canvas</code> tampoco trae la rueda de serie: hay que atarla al widget y a mano.</p></aside>
+<h2 id="la-etiqueta-current">La etiqueta <code>current</code><a class="ancla" href="#la-etiqueta-current" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Cuando salta un evento de figura, la pregunta inmediata es «¿sobre cuál?». Tk mantiene una etiqueta reservada, <code>current</code>, que señala a la figura que está bajo el puntero:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">pulsar</span><span class="t-operador">(</span>evento<span class="t-operador">)</span><span class="t-operador">:</span>
+        figura <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>find_withtag<span class="t-operador">(</span><span class="t-texto">&quot;current&quot;</span><span class="t-operador">)</span><span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span>
+    etiquetas <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>gettags<span class="t-operador">(</span>figura<span class="t-operador">)</span></code></pre></div>
+<p>Fuera de un evento no apunta a nada, que es lo esperable:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lienzo.find_withtag(<span class="t-texto">&quot;current&quot;</span>)
+()</code></pre></div>
+<p>Con <code>current</code> y el patrón de dos etiquetas por figura de la lección anterior se resuelve la identificación sin guardar nada. La figura lleva su etiqueta de grupo y su etiqueta propia, y al recibir el evento se leen sus etiquetas y se deduce cuál es:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">pulsar</span><span class="t-operador">(</span>evento<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">for</span> etiqueta <span class="t-palabra">in</span> lienzo<span class="t-operador">.</span>gettags<span class="t-operador">(</span><span class="t-texto">&quot;current&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">if</span> etiqueta<span class="t-operador">.</span>startswith<span class="t-operador">(</span><span class="t-texto">&quot;nodo-&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        seleccionar<span class="t-operador">(</span>etiqueta<span class="t-operador">.</span>removeprefix<span class="t-operador">(</span><span class="t-texto">&quot;nodo-&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+            <span class="t-palabra">return</span></code></pre></div>
+<p>Ese es el puente entre el dibujo y los datos, y es la parte que hay que diseñar con cabeza en cualquier programa de lienzo: la etiqueta propia de cada figura tiene que llevar dentro la clave del dato que representa, porque es lo único que te va a llegar cuando alguien pulse.</p>
+<h2 id="resaltar-sin-escribir-eventos">Resaltar sin escribir eventos<a class="ancla" href="#resaltar-sin-escribir-eventos" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Antes de ponerse a atar <code>&lt;Enter&gt;</code> y <code>&lt;Leave&gt;</code>, conviene saber que para el caso más común no hacen falta. Las figuras tienen opciones que se aplican solas cuando el puntero está encima:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> a = lienzo.create_rectangle(<span class="t-numero">10</span>, <span class="t-numero">100</span>, <span class="t-numero">100</span>, <span class="t-numero">150</span>, fill=<span class="t-texto">&quot;#0A84FF&quot;</span>,
+...                            activefill=<span class="t-texto">&quot;#FF375F&quot;</span>, activewidth=<span class="t-numero">3</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.itemcget(a, <span class="t-texto">&quot;activefill&quot;</span>)
+<span class="t-texto">&#x27;#FF375F&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.itemcget(a, <span class="t-texto">&quot;activewidth&quot;</span>)
+<span class="t-texto">&#x27;3.0&#x27;</span></code></pre></div>
+<p>Con eso, la figura cambia de color y engorda su borde al pasar por encima, y vuelve sola al salir. Cero eventos, cero código. Hay una familia completa: <code>activefill</code>, <code>activeoutline</code>, <code>activewidth</code>, <code>activedash</code> y <code>activestipple</code>, más las equivalentes <code>disabled*</code> que se aplican cuando la figura está en <code>state=&quot;disabled&quot;</code>.</p>
+<p>Así que la regla es cómoda: <strong>si el resalte es solo visual, opciones <code>active*</code>; si además tiene que pasar algo, <code>tag_bind</code>.</strong> Poner un <code>&lt;Enter&gt;</code> que solo cambia un color es escribir código que el widget ya trae.</p>
+<h2 id="del-pixel-de-la-ventana-a-la-coordenada-del-lienzo">Del píxel de la ventana a la coordenada del lienzo<a class="ancla" href="#del-pixel-de-la-ventana-a-la-coordenada-del-lienzo" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Todo evento del ratón trae <code>evento.x</code> y <code>evento.y</code>, que son píxeles <strong>dentro del widget</strong>. Mientras el lienzo no esté desplazado, coinciden con las coordenadas del dibujo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lienzo.canvasx(<span class="t-numero">50</span>), lienzo.canvasy(<span class="t-numero">50</span>)
+(<span class="t-numero">50.0</span>, <span class="t-numero">50.0</span>)</code></pre></div>
+<p>Y en cuanto hay <code>scrollregion</code> y alguien desplaza, dejan de coincidir:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lienzo.xview_moveto(<span class="t-numero">0.5</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.yview_moveto(<span class="t-numero">0.25</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.canvasx(<span class="t-numero">50</span>), lienzo.canvasy(<span class="t-numero">50</span>)
+(<span class="t-numero">547.0</span>, <span class="t-numero">247.0</span>)</code></pre></div>
+<p>El píxel 50 de la ventana es ahora la coordenada 547 del lienzo. <code>evento.x</code> sigue valiendo 50, porque el ratón está donde está; lo que ha cambiado es qué parte del dibujo se ve ahí.</p>
+<aside class="aviso aviso-error"><p class="titulo-aviso">Usar <code>evento.x</code> directamente funciona hasta que el lienzo se desplaza</p><p>Es el fallo más difícil de encontrar de los dos lienzos, porque <strong>el programa funciona perfectamente mientras pruebas</strong>. Dibujas, arrastras, todo bien. Y el día que el dibujo crece y aparece la barra de desplazamiento, las figuras empiezan a saltar al pulsarlas, y con un desplazamiento de mitad de lienzo saltan cientos de píxeles.</p>
+<p>La regla, sin excepciones: <strong>en un <code>Canvas</code>, la primera línea de todo manejador de ratón traduce.</strong></p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">pulsar</span><span class="t-operador">(</span>evento<span class="t-operador">)</span><span class="t-operador">:</span>
+        x <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>canvasx<span class="t-operador">(</span>evento<span class="t-operador">.</span>x<span class="t-operador">)</span>
+    y <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>canvasy<span class="t-operador">(</span>evento<span class="t-operador">.</span>y<span class="t-operador">)</span></code></pre></div>
+<p>Cuesta dos líneas y no tiene ningún inconveniente: sin desplazamiento devuelven el mismo número, así que ponerlas siempre no cambia nada y te ahorra el día malo.</p>
+<p><code>canvasx</code> tiene además un segundo argumento que redondea a una rejilla, y es la forma más corta de conseguir que las cosas se coloquen alineadas:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lienzo.canvasx(<span class="t-numero">53</span>, <span class="t-numero">10</span>)
+<span class="t-numero">50.0</span>
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.canvasx(<span class="t-numero">57</span>, <span class="t-numero">10</span>)
+<span class="t-numero">60.0</span></code></pre></div></aside>
+<p>Relacionado con esto hay una opción del lienzo que explica un comportamiento raro. <code>closeenough</code> es la tolerancia en píxeles con la que se considera que el puntero está «encima» de una figura:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lienzo.cget(<span class="t-texto">&quot;closeenough&quot;</span>)
+<span class="t-numero">1.0</span></code></pre></div>
+<p>Un píxel de fábrica, lo que hace difícil pulsar sobre una línea fina. Subirlo a <code>5</code> da margen y se agradece en dibujos de líneas. Y una precisión medida que evita confusiones: <strong><code>closeenough</code> solo afecta a los eventos</strong>, no a las búsquedas.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lienzo.configure(closeenough=<span class="t-numero">5</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.find_overlapping(<span class="t-numero">100</span>, <span class="t-numero">102</span>, <span class="t-numero">100</span>, <span class="t-numero">102</span>)     <span class="t-comentario"># la línea está en y=100</span>
+()</code></pre></div>
+<p><code>find_overlapping</code> sigue siendo estricto. Así que si comparas lo que detecta un clic con lo que encuentra <code>find_overlapping</code>, pueden no coincidir, y no es un fallo tuyo.</p>
+<h2 id="arrastrar">Arrastrar<a class="ancla" href="#arrastrar" aria-label="Enlace a esta seccion">#</a></h2>
+<p>El arrastre son tres eventos y un dato que hay que recordar entre ellos. La clave es guardar la última posición del ratón y mover la figura <strong>por la diferencia</strong>, no a la posición absoluta, porque si no la figura salta para centrarse en el puntero.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">arrastre <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">:</span> <span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-texto">&quot;y&quot;</span><span class="t-operador">:</span> <span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-texto">&quot;figura&quot;</span><span class="t-operador">:</span> <span class="t-palabra">None</span><span class="t-operador">}</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">empezar</span><span class="t-operador">(</span>evento<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Guarda qué se agarró y dónde, traduciendo las coordenadas.&quot;&quot;&quot;</span>
+    arrastre<span class="t-operador">[</span><span class="t-texto">&quot;figura&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>find_withtag<span class="t-operador">(</span><span class="t-texto">&quot;current&quot;</span><span class="t-operador">)</span><span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span>
+    arrastre<span class="t-operador">[</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>canvasx<span class="t-operador">(</span>evento<span class="t-operador">.</span>x<span class="t-operador">)</span>
+    arrastre<span class="t-operador">[</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>canvasy<span class="t-operador">(</span>evento<span class="t-operador">.</span>y<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">mover</span><span class="t-operador">(</span>evento<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Mueve por la diferencia desde la última posición.&quot;&quot;&quot;</span>
+    x <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>canvasx<span class="t-operador">(</span>evento<span class="t-operador">.</span>x<span class="t-operador">)</span>
+    y <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>canvasy<span class="t-operador">(</span>evento<span class="t-operador">.</span>y<span class="t-operador">)</span>
+    lienzo<span class="t-operador">.</span>move<span class="t-operador">(</span>arrastre<span class="t-operador">[</span><span class="t-texto">&quot;figura&quot;</span><span class="t-operador">]</span><span class="t-operador">,</span> x <span class="t-operador">-</span> arrastre<span class="t-operador">[</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">]</span><span class="t-operador">,</span> y <span class="t-operador">-</span> arrastre<span class="t-operador">[</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    arrastre<span class="t-operador">[</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> x
+    arrastre<span class="t-operador">[</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> y
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">soltar</span><span class="t-operador">(</span>evento<span class="t-operador">)</span><span class="t-operador">:</span>
+        arrastre<span class="t-operador">[</span><span class="t-texto">&quot;figura&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-palabra">None</span>
+
+
+lienzo<span class="t-operador">.</span>tag_bind<span class="t-operador">(</span><span class="t-texto">&quot;nodo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;&lt;Button-1&gt;&quot;</span><span class="t-operador">,</span> empezar<span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>tag_bind<span class="t-operador">(</span><span class="t-texto">&quot;nodo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;&lt;B1-Motion&gt;&quot;</span><span class="t-operador">,</span> mover<span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>tag_bind<span class="t-operador">(</span><span class="t-texto">&quot;nodo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;&lt;ButtonRelease-1&gt;&quot;</span><span class="t-operador">,</span> soltar<span class="t-operador">)</span></code></pre></div>
+<p>Tres detalles de ese código que son los que suelen faltar. El <code>&lt;B1-Motion&gt;</code> es el movimiento <strong>con el botón pulsado</strong>, y no <code>&lt;Motion&gt;</code>, que se dispara siempre. La figura se agarra en <code>&lt;Button-1&gt;</code> con <code>current</code> y se recuerda, porque durante el arrastre el puntero puede salirse de ella y entonces <code>current</code> ya señala a otra cosa. Y <code>move</code> recibe la diferencia, con lo que da igual en qué punto de la figura se hizo clic: se mueve con el ratón sin dar un salto inicial.</p>
+<p>Si lo que arrastras son varias figuras que forman un dibujo, como un rectángulo con su texto dentro, lo cómodo es darles a todas una etiqueta común y mover la etiqueta, que arrastra el grupo entero de una vez.</p>
+<h2 id="las-teclas">Las teclas<a class="ancla" href="#las-teclas" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Un <code>Canvas</code> puede recibir teclas, pero no las pide:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lienzo.cget(<span class="t-texto">&quot;takefocus&quot;</span>)
+<span class="t-texto">&#x27;&#x27;</span></code></pre></div>
+<p>Vacío significa que Tk decide, y para un lienzo decide que no. Así que para que funcionen las flechas o el <code>Supr</code> hay que pedir el foco explícitamente, normalmente al pulsar sobre el lienzo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">lienzo<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Button-1&gt;&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> evento<span class="t-operador">:</span> lienzo<span class="t-operador">.</span>focus_set<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> add<span class="t-operador">=</span><span class="t-texto">&quot;+&quot;</span><span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Delete&gt;&quot;</span><span class="t-operador">,</span> borrar_seleccion<span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Left&gt;&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> evento<span class="t-operador">:</span> lienzo<span class="t-operador">.</span>move<span class="t-operador">(</span><span class="t-texto">&quot;seleccion&quot;</span><span class="t-operador">,</span> <span class="t-operador">-</span><span class="t-numero">5</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<p>Ese <code>add=&quot;+&quot;</code> es importante y es de la lección de eventos del bloque B: añade un manejador más en vez de sustituir el que ya hubiera para <code>&lt;Button-1&gt;</code>.</p>
+<p>Y aunque <code>tag_bind</code> acepta <code>&lt;Key&gt;</code>, en la práctica las teclas se atan al lienzo y no a las figuras, porque una figura no tiene foco de teclado. El patrón normal es mantener tú qué está seleccionado, con una etiqueta, y que las teclas actúen sobre esa etiqueta.</p>
+<h2 id="imagenes">Imágenes<a class="ancla" href="#imagenes" aria-label="Enlace a esta seccion">#</a></h2>
+<p><code>create_image</code> coloca una imagen en un punto, y como el texto, su <code>anchor</code> de fábrica es el centro:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lienzo.itemcget(lienzo.create_image(<span class="t-numero">0</span>, <span class="t-numero">0</span>, image=img), <span class="t-texto">&quot;anchor&quot;</span>)
+<span class="t-texto">&#x27;center&#x27;</span></code></pre></div>
+<p>El <code>bbox</code> sale del tamaño de la imagen, y las <code>coords</code> son un solo punto:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> i = lienzo.create_image(<span class="t-numero">100</span>, <span class="t-numero">100</span>, image=img, anchor=<span class="t-texto">&quot;nw&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.coords(i)
+[<span class="t-numero">100.0</span>, <span class="t-numero">100.0</span>]
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.bbox(i)
+(<span class="t-numero">100</span>, <span class="t-numero">100</span>, <span class="t-numero">140</span>, <span class="t-numero">140</span>)</code></pre></div>
+<p>Lo que Tk sabe leer por su cuenta es poco:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> ventana.call(<span class="t-texto">&quot;image&quot;</span>, <span class="t-texto">&quot;types&quot;</span>)
+(<span class="t-texto">&#x27;nsimage&#x27;</span>, <span class="t-texto">&#x27;photo&#x27;</span>, <span class="t-texto">&#x27;bitmap&#x27;</span>)</code></pre></div>
+<p>Un <code>PhotoImage</code> lee PNG y GIF, y no lee JPEG. Para eso hace falta Pillow, y hay una lección de imágenes en el bloque E que lo trata a fondo; aquí interesa solo lo que el lienzo necesita.</p>
+<p>Para practicar sin arrastrar ficheros se puede pintar una imagen por código, que es lo que hace el ejemplo y lo que ya viste en la lección 4 con el icono de la ventana:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">img <span class="t-operador">=</span> tk<span class="t-operador">.</span>PhotoImage<span class="t-operador">(</span>width<span class="t-operador">=</span><span class="t-numero">40</span><span class="t-operador">,</span> height<span class="t-operador">=</span><span class="t-numero">40</span><span class="t-operador">)</span>
+img<span class="t-operador">.</span>put<span class="t-operador">(</span><span class="t-texto">&quot;#0A84FF&quot;</span><span class="t-operador">,</span> to<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">40</span><span class="t-operador">,</span> <span class="t-numero">40</span><span class="t-operador">)</span><span class="t-operador">)</span>       <span class="t-comentario"># todo azul</span>
+img<span class="t-operador">.</span>put<span class="t-operador">(</span><span class="t-texto">&quot;#FF375F&quot;</span><span class="t-operador">,</span> to<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">10</span><span class="t-operador">,</span> <span class="t-numero">10</span><span class="t-operador">,</span> <span class="t-numero">30</span><span class="t-operador">,</span> <span class="t-numero">30</span><span class="t-operador">)</span><span class="t-operador">)</span>     <span class="t-comentario"># un cuadro rosa en medio</span></code></pre></div>
+<p>Y se puede leer un píxel, lo que sirve para comprobar que ha funcionado:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> img.get(<span class="t-numero">15</span>, <span class="t-numero">15</span>)
+(<span class="t-numero">255</span>, <span class="t-numero">55</span>, <span class="t-numero">95</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> img.get(<span class="t-numero">5</span>, <span class="t-numero">5</span>)
+(<span class="t-numero">10</span>, <span class="t-numero">132</span>, <span class="t-numero">255</span>)</code></pre></div>
+<p><code>zoom</code> y <code>subsample</code> cambian el tamaño en múltiplos enteros, sin necesidad de Pillow:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> img.zoom(<span class="t-numero">2</span>).width()
+<span class="t-numero">80</span>
+<span class="t-operador">&gt;&gt;&gt;</span> img.subsample(<span class="t-numero">2</span>).width()
+<span class="t-numero">20</span></code></pre></div>
+<aside class="aviso aviso-error"><p class="titulo-aviso">La imagen que desaparece, y cómo saber que es eso</p><p>Ya lo avisó la lección 13 y en el lienzo pasa igual: si el <code>PhotoImage</code> es una variable local, al salir de la función Python lo recoge y la imagen deja de dibujarse. Lo que hace este caso difícil de diagnosticar es lo que queda, que está medido:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> ident = dibujar_mal()          <span class="t-comentario"># crea el PhotoImage en una local</span>
+<span class="t-operador">&gt;&gt;&gt;</span> import gc; gc.collect()
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.type(ident)
+<span class="t-texto">&#x27;image&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> lienzo.bbox(ident)
+(<span class="t-numero">10</span>, <span class="t-numero">10</span>, <span class="t-numero">30</span>, <span class="t-numero">30</span>)</code></pre></div>
+<p><strong>La figura sigue existiendo y conserva su tamaño.</strong> No ha desaparecido nada del lienzo, no hay error, y <code>bbox</code> responde como si todo fuera bien. Solo falta el dibujo.</p>
+<p>La forma de confirmarlo es preguntar si la imagen a la que apunta la figura existe todavía:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> nombre = lienzo.itemcget(ident, <span class="t-texto">&quot;image&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> nombre
+<span class="t-texto">&#x27;pyimage1&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> nombre in ventana.call(<span class="t-texto">&quot;image&quot;</span>, <span class="t-texto">&quot;names&quot;</span>)
+False</code></pre></div>
+<p>Ese <code>False</code> es el diagnóstico. La figura guarda el <strong>nombre</strong> de una imagen que Tk ya ha destruido, porque el objeto de Python que la sostenía se fue. Con la referencia guardada, la misma comprobación da <code>True</code>.</p>
+<p>La solución es que la imagen viva tanto como la figura. En un programa con clases es un atributo; mientras no llegue el bloque E, una lista o un diccionario que no se destruya:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">imagenes <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>          <span class="t-comentario"># vive tanto como el programa</span>
+
+<span class="t-palabra">def</span> <span class="t-definicion">dibujar_nodo</span><span class="t-operador">(</span>x<span class="t-operador">,</span> y<span class="t-operador">)</span><span class="t-operador">:</span>
+        img <span class="t-operador">=</span> tk<span class="t-operador">.</span>PhotoImage<span class="t-operador">(</span>width<span class="t-operador">=</span><span class="t-numero">20</span><span class="t-operador">,</span> height<span class="t-operador">=</span><span class="t-numero">20</span><span class="t-operador">)</span>
+    img<span class="t-operador">.</span>put<span class="t-operador">(</span><span class="t-texto">&quot;#0A84FF&quot;</span><span class="t-operador">,</span> to<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">20</span><span class="t-operador">,</span> <span class="t-numero">20</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    imagenes<span class="t-operador">.</span>append<span class="t-operador">(</span>img<span class="t-operador">)</span>                     <span class="t-comentario"># esto es lo que salva el dibujo</span>
+    <span class="t-palabra">return</span> lienzo<span class="t-operador">.</span>create_image<span class="t-operador">(</span>x<span class="t-operador">,</span> y<span class="t-operador">,</span> image<span class="t-operador">=</span>img<span class="t-operador">,</span> anchor<span class="t-operador">=</span><span class="t-texto">&quot;nw&quot;</span><span class="t-operador">)</span></code></pre></div>
+<p>Y ojo con el patrón de borrar y redibujar de la lección anterior: si cada redibujado añade imágenes a la lista y nunca las quita, la lista crece sin parar. Lo correcto es vaciarla al borrar, o mejor, crear las imágenes una vez al arrancar y reutilizarlas, que es lo que hace el ejemplo.</p></aside>
+<h2 id="animar">Animar<a class="ancla" href="#animar" aria-label="Enlace a esta seccion">#</a></h2>
+<p>La animación es la técnica de la lección 23, la de trocear con <code>after</code>, aplicada a <code>move</code>. Un paso por llamada y el lienzo se repinta entre paso y paso:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">animar</span><span class="t-operador">(</span>paso<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">if</span> paso <span class="t-operador">&gt;=</span> <span class="t-numero">30</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span>
+    lienzo<span class="t-operador">.</span>move<span class="t-operador">(</span><span class="t-texto">&quot;nodo&quot;</span><span class="t-operador">,</span> <span class="t-numero">2</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span>
+    ventana<span class="t-operador">.</span>after<span class="t-operador">(</span><span class="t-numero">16</span><span class="t-operador">,</span> animar<span class="t-operador">,</span> paso <span class="t-operador">+</span> <span class="t-numero">1</span><span class="t-operador">)</span></code></pre></div>
+<p>Los dieciséis milisegundos son aproximadamente sesenta pasos por segundo, que es el objetivo razonable. Bajarlo más no gana nada porque la pantalla no va más rápido.</p>
+<p>Dos cosas que hay que tener en cuenta y que no aparecen en la versión de la barra de progreso. La primera es que hay que poder <strong>parar</strong>: guarda lo que devuelve <code>after</code>, que es un identificador, y cancela con <code>after_cancel</code> cuando haga falta. Si no, una animación lanzada dos veces corre dos veces a la vez y el dibujo se mueve al doble de velocidad.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">animacion <span class="t-operador">=</span> <span class="t-palabra">None</span>
+
+<span class="t-palabra">def</span> <span class="t-definicion">animar</span><span class="t-operador">(</span>paso<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">global</span> animacion
+    <span class="t-palabra">if</span> paso <span class="t-operador">&gt;=</span> <span class="t-numero">30</span><span class="t-operador">:</span>
+                animacion <span class="t-operador">=</span> <span class="t-palabra">None</span>
+        <span class="t-palabra">return</span>
+    lienzo<span class="t-operador">.</span>move<span class="t-operador">(</span><span class="t-texto">&quot;nodo&quot;</span><span class="t-operador">,</span> <span class="t-numero">2</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span>
+    animacion <span class="t-operador">=</span> ventana<span class="t-operador">.</span>after<span class="t-operador">(</span><span class="t-numero">16</span><span class="t-operador">,</span> animar<span class="t-operador">,</span> paso <span class="t-operador">+</span> <span class="t-numero">1</span><span class="t-operador">)</span>
+
+<span class="t-palabra">def</span> <span class="t-definicion">parar</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">global</span> animacion
+    <span class="t-palabra">if</span> animacion <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                ventana<span class="t-operador">.</span>after_cancel<span class="t-operador">(</span>animacion<span class="t-operador">)</span>
+        animacion <span class="t-operador">=</span> <span class="t-palabra">None</span></code></pre></div>
+<p>La segunda es que <strong><code>move</code> acumula</strong>. Si animas moviendo y no llevas la cuenta, no hay forma de volver al punto de partida más que redibujando, porque las coordenadas originales se han perdido. Para animaciones que van y vuelven es más fiable calcular la posición en cada paso con <code>coords</code> absolutas a partir de un origen que guardas, que ir sumando desplazamientos.</p>
+<h2 id="un-diagrama-que-se-manipula">Un diagrama que se manipula<a class="ancla" href="#un-diagrama-que-se-manipula" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Este programa junta todo: nodos arrastrables con líneas que los siguen, resalte automático, selección con la etiqueta <code>current</code>, teclas, una imagen generada por código y una animación que se puede parar.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">diagrama.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;Canvas interactivo: arrastrar, seleccionar, resaltar y animar.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">import</span> tkinter <span class="t-palabra">as</span> tk
+<span class="t-palabra">from</span> tkinter <span class="t-palabra">import</span> ttk
+
+MARGEN <span class="t-operador">=</span> <span class="t-numero">12</span>
+AIRE <span class="t-operador">=</span> <span class="t-numero">4</span>
+
+AZUL <span class="t-operador">=</span> <span class="t-texto">&quot;#0A84FF&quot;</span>
+ROSA <span class="t-operador">=</span> <span class="t-texto">&quot;#FF375F&quot;</span>
+GRIS <span class="t-operador">=</span> <span class="t-texto">&quot;#8E8E93&quot;</span>
+BORDE <span class="t-operador">=</span> <span class="t-texto">&quot;#3A3A3C&quot;</span>
+
+ANCHO_NODO<span class="t-operador">,</span> ALTO_NODO <span class="t-operador">=</span> <span class="t-numero">110</span><span class="t-operador">,</span> <span class="t-numero">46</span>
+
+NODOS <span class="t-operador">=</span> <span class="t-operador">{</span>
+    <span class="t-texto">&quot;entrada&quot;</span><span class="t-operador">:</span> <span class="t-operador">(</span><span class="t-texto">&quot;Entrada&quot;</span><span class="t-operador">,</span> <span class="t-numero">60</span><span class="t-operador">,</span> <span class="t-numero">60</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;validar&quot;</span><span class="t-operador">:</span> <span class="t-operador">(</span><span class="t-texto">&quot;Validar&quot;</span><span class="t-operador">,</span> <span class="t-numero">260</span><span class="t-operador">,</span> <span class="t-numero">60</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;guardar&quot;</span><span class="t-operador">:</span> <span class="t-operador">(</span><span class="t-texto">&quot;Guardar&quot;</span><span class="t-operador">,</span> <span class="t-numero">260</span><span class="t-operador">,</span> <span class="t-numero">180</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;informe&quot;</span><span class="t-operador">:</span> <span class="t-operador">(</span><span class="t-texto">&quot;Informe&quot;</span><span class="t-operador">,</span> <span class="t-numero">60</span><span class="t-operador">,</span> <span class="t-numero">180</span><span class="t-operador">)</span><span class="t-operador">,</span>
+<span class="t-operador">}</span>
+ENLACES <span class="t-operador">=</span> <span class="t-operador">(</span><span class="t-operador">(</span><span class="t-texto">&quot;entrada&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;validar&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-operador">(</span><span class="t-texto">&quot;validar&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;guardar&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+           <span class="t-operador">(</span><span class="t-texto">&quot;guardar&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;informe&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">centrar</span><span class="t-operador">(</span>ventana<span class="t-operador">:</span> tk<span class="t-operador">.</span>Misc<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Coloca la ventana en el centro de la pantalla.&quot;&quot;&quot;</span>
+    ventana<span class="t-operador">.</span>update_idletasks<span class="t-operador">(</span><span class="t-operador">)</span>
+    ancho <span class="t-operador">=</span> ventana<span class="t-operador">.</span>winfo_width<span class="t-operador">(</span><span class="t-operador">)</span>
+    alto <span class="t-operador">=</span> ventana<span class="t-operador">.</span>winfo_height<span class="t-operador">(</span><span class="t-operador">)</span>
+    x <span class="t-operador">=</span> <span class="t-operador">(</span>ventana<span class="t-operador">.</span>winfo_screenwidth<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> ancho<span class="t-operador">)</span> <span class="t-operador">//</span> <span class="t-numero">2</span>
+    y <span class="t-operador">=</span> <span class="t-operador">(</span>ventana<span class="t-operador">.</span>winfo_screenheight<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> alto<span class="t-operador">)</span> <span class="t-operador">//</span> <span class="t-numero">2</span>
+    ventana<span class="t-operador">.</span>geometry<span class="t-operador">(</span>f&quot;+<span class="t-operador">{</span>x<span class="t-operador">}</span>+<span class="t-operador">{</span>y<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">crear_icono</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Imagen pintada por código, para no arrastrar ficheros.
+
+    Se crea una vez y se guarda en una variable que vive tanto como el
+    programa: si fuera local, Python la recogería y no se dibujaría nada.
+    &quot;&quot;&quot;</span>
+    img <span class="t-operador">=</span> tk<span class="t-operador">.</span>PhotoImage<span class="t-operador">(</span>width<span class="t-operador">=</span><span class="t-numero">14</span><span class="t-operador">,</span> height<span class="t-operador">=</span><span class="t-numero">14</span><span class="t-operador">)</span>
+    img<span class="t-operador">.</span>put<span class="t-operador">(</span>AZUL<span class="t-operador">,</span> to<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">14</span><span class="t-operador">,</span> <span class="t-numero">14</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    img<span class="t-operador">.</span>put<span class="t-operador">(</span><span class="t-texto">&quot;#FFFFFF&quot;</span><span class="t-operador">,</span> to<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">4</span><span class="t-operador">,</span> <span class="t-numero">4</span><span class="t-operador">,</span> <span class="t-numero">10</span><span class="t-operador">,</span> <span class="t-numero">10</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> img
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">dibujar</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Dibuja el diagrama entero desde NODOS. Borra por etiqueta.&quot;&quot;&quot;</span>
+    lienzo<span class="t-operador">.</span>delete<span class="t-operador">(</span><span class="t-texto">&quot;diagrama&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">for</span> origen<span class="t-operador">,</span> destino <span class="t-palabra">in</span> ENLACES<span class="t-operador">:</span>
+        <span class="t-comentario"># Etiqueta propia con las dos claves dentro: así se sabe qué</span>
+        <span class="t-comentario"># línea hay que recolocar al mover un nodo.</span>
+                lienzo<span class="t-operador">.</span>create_line<span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">,</span> fill<span class="t-operador">=</span>GRIS<span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">2</span><span class="t-operador">,</span> arrow<span class="t-operador">=</span><span class="t-texto">&quot;last&quot;</span><span class="t-operador">,</span>
+                           tags<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;diagrama&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;enlace&quot;</span><span class="t-operador">,</span> f&quot;de-<span class="t-operador">{</span>origen<span class="t-operador">}</span>&quot;<span class="t-operador">,</span>
+                                 f&quot;a-<span class="t-operador">{</span>destino<span class="t-operador">}</span>&quot;<span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">for</span> clave<span class="t-operador">,</span> <span class="t-operador">(</span>texto<span class="t-operador">,</span> x<span class="t-operador">,</span> y<span class="t-operador">)</span> <span class="t-palabra">in</span> NODOS<span class="t-operador">.</span>items<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-comentario"># Tres figuras por nodo con una etiqueta común: mover esa</span>
+        <span class="t-comentario"># etiqueta arrastra el grupo entero de una vez.</span>
+                grupo <span class="t-operador">=</span> <span class="t-operador">(</span><span class="t-texto">&quot;diagrama&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;nodo&quot;</span><span class="t-operador">,</span> f&quot;nodo-<span class="t-operador">{</span>clave<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+        <span class="t-comentario"># La caja lleva además una etiqueta propia solo para rectángulos:</span>
+        <span class="t-comentario"># itemconfigure(outline=...) sobre &quot;nodo-x&quot; fallaría, porque el</span>
+        <span class="t-comentario"># texto y la imagen no tienen esa opción.</span>
+        lienzo<span class="t-operador">.</span>create_rectangle<span class="t-operador">(</span>x<span class="t-operador">,</span> y<span class="t-operador">,</span> x <span class="t-operador">+</span> ANCHO_NODO<span class="t-operador">,</span> y <span class="t-operador">+</span> ALTO_NODO<span class="t-operador">,</span>
+                                fill<span class="t-operador">=</span><span class="t-texto">&quot;white&quot;</span><span class="t-operador">,</span> outline<span class="t-operador">=</span>BORDE<span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">,</span>
+                                activeoutline<span class="t-operador">=</span>AZUL<span class="t-operador">,</span> activewidth<span class="t-operador">=</span><span class="t-numero">2</span><span class="t-operador">,</span>
+                                tags<span class="t-operador">=</span>grupo <span class="t-operador">+</span> <span class="t-operador">(</span><span class="t-texto">&quot;caja&quot;</span><span class="t-operador">,</span> f&quot;caja-<span class="t-operador">{</span>clave<span class="t-operador">}</span>&quot;<span class="t-operador">)</span><span class="t-operador">)</span>
+        lienzo<span class="t-operador">.</span>create_image<span class="t-operador">(</span>x <span class="t-operador">+</span> <span class="t-numero">10</span><span class="t-operador">,</span> y <span class="t-operador">+</span> <span class="t-numero">16</span><span class="t-operador">,</span> image<span class="t-operador">=</span>icono<span class="t-operador">,</span> anchor<span class="t-operador">=</span><span class="t-texto">&quot;nw&quot;</span><span class="t-operador">,</span>
+                            tags<span class="t-operador">=</span>grupo<span class="t-operador">)</span>
+        lienzo<span class="t-operador">.</span>create_text<span class="t-operador">(</span>x <span class="t-operador">+</span> <span class="t-numero">32</span><span class="t-operador">,</span> y <span class="t-operador">+</span> ALTO_NODO <span class="t-operador">/</span> <span class="t-numero">2</span><span class="t-operador">,</span> text<span class="t-operador">=</span>texto<span class="t-operador">,</span> anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">,</span>
+                           fill<span class="t-operador">=</span>BORDE<span class="t-operador">,</span> font<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;Helvetica&quot;</span><span class="t-operador">,</span> <span class="t-numero">12</span><span class="t-operador">)</span><span class="t-operador">,</span> tags<span class="t-operador">=</span>grupo<span class="t-operador">)</span>
+    recolocar_enlaces<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">recolocar_enlaces</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Cada línea va del centro de un nodo al centro del otro.&quot;&quot;&quot;</span>
+    <span class="t-palabra">for</span> origen<span class="t-operador">,</span> destino <span class="t-palabra">in</span> ENLACES<span class="t-operador">:</span>
+                caja_origen <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>bbox<span class="t-operador">(</span>f&quot;nodo-<span class="t-operador">{</span>origen<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+        caja_destino <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>bbox<span class="t-operador">(</span>f&quot;nodo-<span class="t-operador">{</span>destino<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+        <span class="t-palabra">if</span> caja_origen <span class="t-palabra">is</span> <span class="t-palabra">None</span> <span class="t-palabra">or</span> caja_destino <span class="t-palabra">is</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-palabra">continue</span>          <span class="t-comentario"># bbox devuelve None si no hay nada</span>
+        x1 <span class="t-operador">=</span> <span class="t-operador">(</span>caja_origen<span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span> <span class="t-operador">+</span> caja_origen<span class="t-operador">[</span><span class="t-numero">2</span><span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">/</span> <span class="t-numero">2</span>
+        y1 <span class="t-operador">=</span> <span class="t-operador">(</span>caja_origen<span class="t-operador">[</span><span class="t-numero">1</span><span class="t-operador">]</span> <span class="t-operador">+</span> caja_origen<span class="t-operador">[</span><span class="t-numero">3</span><span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">/</span> <span class="t-numero">2</span>
+        x2 <span class="t-operador">=</span> <span class="t-operador">(</span>caja_destino<span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span> <span class="t-operador">+</span> caja_destino<span class="t-operador">[</span><span class="t-numero">2</span><span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">/</span> <span class="t-numero">2</span>
+        y2 <span class="t-operador">=</span> <span class="t-operador">(</span>caja_destino<span class="t-operador">[</span><span class="t-numero">1</span><span class="t-operador">]</span> <span class="t-operador">+</span> caja_destino<span class="t-operador">[</span><span class="t-numero">3</span><span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">/</span> <span class="t-numero">2</span>
+        lienzo<span class="t-operador">.</span>coords<span class="t-operador">(</span>f&quot;de-<span class="t-operador">{</span>origen<span class="t-operador">}</span>&quot;<span class="t-operador">,</span> x1<span class="t-operador">,</span> y1<span class="t-operador">,</span> x2<span class="t-operador">,</span> y2<span class="t-operador">)</span>
+    lienzo<span class="t-operador">.</span>tag_lower<span class="t-operador">(</span><span class="t-texto">&quot;enlace&quot;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">clave_de</span><span class="t-operador">(</span>figura<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Saca la clave del dato de las etiquetas de la figura.&quot;&quot;&quot;</span>
+    <span class="t-palabra">for</span> etiqueta <span class="t-palabra">in</span> lienzo<span class="t-operador">.</span>gettags<span class="t-operador">(</span>figura<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">if</span> etiqueta<span class="t-operador">.</span>startswith<span class="t-operador">(</span><span class="t-texto">&quot;nodo-&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> etiqueta<span class="t-operador">.</span>removeprefix<span class="t-operador">(</span><span class="t-texto">&quot;nodo-&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-palabra">None</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">empezar</span><span class="t-operador">(</span>evento<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Agarra el nodo entero, no la figura suelta que se pulsó.&quot;&quot;&quot;</span>
+    clave <span class="t-operador">=</span> clave_de<span class="t-operador">(</span><span class="t-texto">&quot;current&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">if</span> clave <span class="t-palabra">is</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span>
+    arrastre<span class="t-operador">[</span><span class="t-texto">&quot;clave&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> clave
+    <span class="t-comentario"># canvasx y canvasy siempre: sin ellas esto se rompe al desplazar.</span>
+    arrastre<span class="t-operador">[</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>canvasx<span class="t-operador">(</span>evento<span class="t-operador">.</span>x<span class="t-operador">)</span>
+    arrastre<span class="t-operador">[</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>canvasy<span class="t-operador">(</span>evento<span class="t-operador">.</span>y<span class="t-operador">)</span>
+    seleccionar<span class="t-operador">(</span>clave<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">mover</span><span class="t-operador">(</span>evento<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Mueve por la diferencia, no a la posición absoluta.&quot;&quot;&quot;</span>
+    <span class="t-palabra">if</span> arrastre<span class="t-operador">[</span><span class="t-texto">&quot;clave&quot;</span><span class="t-operador">]</span> <span class="t-palabra">is</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span>
+    x <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>canvasx<span class="t-operador">(</span>evento<span class="t-operador">.</span>x<span class="t-operador">)</span>
+    y <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>canvasy<span class="t-operador">(</span>evento<span class="t-operador">.</span>y<span class="t-operador">)</span>
+    lienzo<span class="t-operador">.</span>move<span class="t-operador">(</span>f&quot;nodo-<span class="t-operador">{</span>arrastre<span class="t-operador">[</span><span class="t-texto">&#x27;clave&#x27;</span><span class="t-operador">]</span><span class="t-operador">}</span>&quot;<span class="t-operador">,</span> x <span class="t-operador">-</span> arrastre<span class="t-operador">[</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">]</span><span class="t-operador">,</span>
+                y <span class="t-operador">-</span> arrastre<span class="t-operador">[</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    arrastre<span class="t-operador">[</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> x
+    arrastre<span class="t-operador">[</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> y
+    recolocar_enlaces<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">soltar</span><span class="t-operador">(</span>evento<span class="t-operador">)</span><span class="t-operador">:</span>
+        arrastre<span class="t-operador">[</span><span class="t-texto">&quot;clave&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-palabra">None</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">seleccionar</span><span class="t-operador">(</span>clave<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;La selección es una etiqueta más, no una variable con ids.
+
+    Se pinta sobre &quot;caja-x&quot; y no sobre &quot;nodo-x&quot;: el grupo del nodo tiene
+    figuras de tres tipos y solo el rectángulo entiende de outline.
+    &quot;&quot;&quot;</span>
+    lienzo<span class="t-operador">.</span>itemconfigure<span class="t-operador">(</span><span class="t-texto">&quot;caja&quot;</span><span class="t-operador">,</span> outline<span class="t-operador">=</span>BORDE<span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">)</span>
+    lienzo<span class="t-operador">.</span>itemconfigure<span class="t-operador">(</span>f&quot;caja-<span class="t-operador">{</span>clave<span class="t-operador">}</span>&quot;<span class="t-operador">,</span> outline<span class="t-operador">=</span>ROSA<span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">2</span><span class="t-operador">)</span>
+    caja <span class="t-operador">=</span> lienzo<span class="t-operador">.</span>bbox<span class="t-operador">(</span>f&quot;nodo-<span class="t-operador">{</span>clave<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+    estado<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;Seleccionado: <span class="t-operador">{</span>NODOS<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span><span class="t-operador">}</span> — ocupa <span class="t-operador">{</span>caja<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+    seleccion<span class="t-operador">[</span><span class="t-texto">&quot;clave&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> clave
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">mover_con_teclas</span><span class="t-operador">(</span>dx<span class="t-operador">,</span> dy<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Las teclas van al lienzo, no a las figuras: no tienen foco.&quot;&quot;&quot;</span>
+    <span class="t-palabra">if</span> seleccion<span class="t-operador">[</span><span class="t-texto">&quot;clave&quot;</span><span class="t-operador">]</span> <span class="t-palabra">is</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span>
+    lienzo<span class="t-operador">.</span>move<span class="t-operador">(</span>f&quot;nodo-<span class="t-operador">{</span>seleccion<span class="t-operador">[</span><span class="t-texto">&#x27;clave&#x27;</span><span class="t-operador">]</span><span class="t-operador">}</span>&quot;<span class="t-operador">,</span> dx<span class="t-operador">,</span> dy<span class="t-operador">)</span>
+    recolocar_enlaces<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">animar</span><span class="t-operador">(</span>paso<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Un paso por llamada, guardando el identificador para poder parar.&quot;&quot;&quot;</span>
+    <span class="t-palabra">global</span> animacion
+    <span class="t-palabra">if</span> paso <span class="t-operador">&gt;=</span> <span class="t-numero">40</span><span class="t-operador">:</span>
+                animacion <span class="t-operador">=</span> <span class="t-palabra">None</span>
+        <span class="t-palabra">return</span>
+    lienzo<span class="t-operador">.</span>move<span class="t-operador">(</span><span class="t-texto">&quot;nodo&quot;</span><span class="t-operador">,</span> <span class="t-numero">1</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span>
+    recolocar_enlaces<span class="t-operador">(</span><span class="t-operador">)</span>
+    animacion <span class="t-operador">=</span> ventana<span class="t-operador">.</span>after<span class="t-operador">(</span><span class="t-numero">16</span><span class="t-operador">,</span> animar<span class="t-operador">,</span> paso <span class="t-operador">+</span> <span class="t-numero">1</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">alternar_animacion</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">global</span> animacion
+    <span class="t-palabra">if</span> animacion <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                ventana<span class="t-operador">.</span>after_cancel<span class="t-operador">(</span>animacion<span class="t-operador">)</span>
+        animacion <span class="t-operador">=</span> <span class="t-palabra">None</span>
+        estado<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-texto">&quot;Animación parada&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">else</span><span class="t-operador">:</span>
+                animar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+ventana <span class="t-operador">=</span> tk<span class="t-operador">.</span>Tk<span class="t-operador">(</span><span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>title<span class="t-operador">(</span><span class="t-texto">&quot;Diagrama&quot;</span><span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>minsize<span class="t-operador">(</span><span class="t-numero">520</span><span class="t-operador">,</span> <span class="t-numero">420</span><span class="t-operador">)</span>
+
+<span class="t-comentario"># Variables sueltas y global: en el bloque E esto pasa a ser una clase.</span>
+arrastre <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-texto">&quot;clave&quot;</span><span class="t-operador">:</span> <span class="t-palabra">None</span><span class="t-operador">,</span> <span class="t-texto">&quot;x&quot;</span><span class="t-operador">:</span> <span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-texto">&quot;y&quot;</span><span class="t-operador">:</span> <span class="t-numero">0</span><span class="t-operador">}</span>
+seleccion <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-texto">&quot;clave&quot;</span><span class="t-operador">:</span> <span class="t-palabra">None</span><span class="t-operador">}</span>
+animacion <span class="t-operador">=</span> <span class="t-palabra">None</span>
+estado <span class="t-operador">=</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span>value<span class="t-operador">=</span><span class="t-texto">&quot;Arrastra un nodo, o púlsalo y usa las flechas&quot;</span><span class="t-operador">)</span>
+
+cuerpo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>ventana<span class="t-operador">,</span> padding<span class="t-operador">=</span>MARGEN<span class="t-operador">)</span>
+cuerpo<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+lienzo <span class="t-operador">=</span> tk<span class="t-operador">.</span>Canvas<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> background<span class="t-operador">=</span><span class="t-texto">&quot;white&quot;</span><span class="t-operador">,</span> highlightthickness<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">,</span>
+                   borderwidth<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">,</span> relief<span class="t-operador">=</span><span class="t-texto">&quot;solid&quot;</span><span class="t-operador">,</span> closeenough<span class="t-operador">=</span><span class="t-numero">3</span><span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+<span class="t-comentario"># La imagen en una variable del módulo: si fuera local no se vería nada.</span>
+icono <span class="t-operador">=</span> crear_icono<span class="t-operador">(</span><span class="t-operador">)</span>
+
+botones <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>cuerpo<span class="t-operador">)</span>
+botones<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span>MARGEN<span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>botones<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Animar&quot;</span><span class="t-operador">,</span> command<span class="t-operador">=</span>alternar_animacion<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">)</span>
+ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>botones<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Redibujar&quot;</span><span class="t-operador">,</span> command<span class="t-operador">=</span>dibujar<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span>
+                                                            padx<span class="t-operador">=</span>AIRE<span class="t-operador">)</span>
+
+ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> textvariable<span class="t-operador">=</span>estado<span class="t-operador">,</span> foreground<span class="t-operador">=</span>GRIS<span class="t-operador">,</span> wraplength<span class="t-operador">=</span><span class="t-numero">460</span><span class="t-operador">,</span>
+          justify<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span>AIRE<span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+<span class="t-comentario"># Los eventos se atan a la etiqueta UNA vez: las figuras que se creen</span>
+<span class="t-comentario"># después la heredan, así que redibujar no obliga a volver a atarlos.</span>
+lienzo<span class="t-operador">.</span>tag_bind<span class="t-operador">(</span><span class="t-texto">&quot;nodo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;&lt;Button-1&gt;&quot;</span><span class="t-operador">,</span> empezar<span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>tag_bind<span class="t-operador">(</span><span class="t-texto">&quot;nodo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;&lt;B1-Motion&gt;&quot;</span><span class="t-operador">,</span> mover<span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>tag_bind<span class="t-operador">(</span><span class="t-texto">&quot;nodo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;&lt;ButtonRelease-1&gt;&quot;</span><span class="t-operador">,</span> soltar<span class="t-operador">)</span>
+
+<span class="t-comentario"># Las teclas, al lienzo, y pidiendo el foco: un Canvas no lo pide.</span>
+lienzo<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Button-1&gt;&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> evento<span class="t-operador">:</span> lienzo<span class="t-operador">.</span>focus_set<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> add<span class="t-operador">=</span><span class="t-texto">&quot;+&quot;</span><span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Left&gt;&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> evento<span class="t-operador">:</span> mover_con_teclas<span class="t-operador">(</span><span class="t-operador">-</span><span class="t-numero">8</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Right&gt;&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> evento<span class="t-operador">:</span> mover_con_teclas<span class="t-operador">(</span><span class="t-numero">8</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Up&gt;&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> evento<span class="t-operador">:</span> mover_con_teclas<span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-operador">-</span><span class="t-numero">8</span><span class="t-operador">)</span><span class="t-operador">)</span>
+lienzo<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Down&gt;&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> evento<span class="t-operador">:</span> mover_con_teclas<span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">8</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+dibujar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+centrar<span class="t-operador">(</span>ventana<span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>mainloop<span class="t-operador">(</span><span class="t-operador">)</span></code></pre></div>
+<p>Pulsa «Redibujar» después de arrastrar los nodos y verás dos cosas de golpe. Los nodos vuelven a su sitio, porque <code>dibujar</code> los coloca desde <code>NODOS</code> y el arrastre solo movió las figuras sin tocar los datos. Y <strong>el arrastre sigue funcionando</strong> sobre las figuras nuevas, sin haber vuelto a atar ningún evento, que es la propiedad de <code>tag_bind</code> sobre etiquetas.</p>
+<p>Esa primera parte, por cierto, es un defecto a propósito del ejemplo y una buena pregunta de diseño: si arrastrar tiene que ser permanente, lo que hay que actualizar al soltar son las coordenadas en <code>NODOS</code>, no las figuras. El dibujo se deriva de los datos, y cualquier cambio que deba durar tiene que llegar a los datos. Es el ejercicio 8.</p>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Que el lienzo no sea el dueño de los datos</p><p>El error de arquitectura típico de un programa de <code>Canvas</code> es dejar que el dibujo sea la única copia de la información. Cuando las posiciones, los nombres y las relaciones solo existen como figuras, cualquier cosa que quieras hacer después (guardar en un fichero, deshacer, exportar, contar) obliga a reconstruirlo leyendo <code>coords</code> y <code>gettags</code>, y eso se vuelve imposible enseguida.</p>
+<p>La estructura que aguanta es la del ejemplo: un diccionario con los datos, una función que dibuja el diccionario entero, y eventos que <strong>modifican el diccionario</strong> y vuelven a dibujar. El lienzo pasa a ser una vista de los datos y no su almacén, y entonces guardar es guardar el diccionario, deshacer es quedarse con el anterior, y el dibujo siempre es correcto porque se deriva.</p></aside>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>Para que un dibujo responda, los eventos se atan a las figuras con <code>tag_bind</code>, y cuando se ata a una etiqueta el evento vive en <strong>el nombre de la etiqueta</strong>, no en las figuras, de modo que las que crees después lo heredan y el patrón de borrar y redibujar no obliga a volver a atar nada. <code>tag_bind</code> solo acepta teclas, botones, movimiento, entrada, salida y eventos virtuales, así que rechaza <code>&lt;MouseWheel&gt;</code> y <code>&lt;Configure&gt;</code>, que van al widget. La etiqueta reservada <code>current</code> señala a la figura bajo el puntero y es la que te dice sobre qué se ha actuado, por lo que conviene que cada figura lleve una etiqueta propia con la clave del dato dentro. Para el resalte puramente visual no hace falta ningún evento: las opciones <code>activefill</code>, <code>activeoutline</code> y <code>activewidth</code> se aplican solas al pasar por encima. La posición del ratón llega en píxeles del widget y hay que traducirla con <code>canvasx</code> y <code>canvasy</code> en la primera línea de cada manejador, porque sin desplazamiento coinciden pero con el lienzo desplazado a la mitad el píxel 50 es la coordenada 547, y ese es el fallo que no aparece hasta que el dibujo crece; <code>canvasx</code> acepta además un segundo argumento que redondea a una rejilla. <code>closeenough</code>, un píxel de fábrica, da tolerancia al pulsar sobre líneas finas y solo afecta a los eventos, no a <code>find_overlapping</code>. El arrastre son tres eventos, con <code>&lt;B1-Motion&gt;</code> y no <code>&lt;Motion&gt;</code>, guardando en <code>&lt;Button-1&gt;</code> qué se agarró porque <code>current</code> cambia durante el arrastre, y moviendo por la diferencia para que la figura no salte. Las teclas se atan al lienzo y hay que pedir el foco con <code>focus_set</code>, porque un <code>Canvas</code> no lo pide. En las imágenes, <code>create_image</code> centra por omisión, Tk solo lee PNG y GIF, y si el <code>PhotoImage</code> no se guarda en algo que dure, la figura <strong>sobrevive con su <code>bbox</code> intacto</strong> mientras el dibujo desaparece; se confirma comprobando que el nombre que devuelve <code>itemcget(id, &quot;image&quot;)</code> ya no está en <code>ventana.call(&quot;image&quot;, &quot;names&quot;)</code>. Y la animación es el <code>after</code> de la lección 23 aplicado a <code>move</code>, guardando el identificador para poder cancelar y teniendo en cuenta que <code>move</code> acumula.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><p>Trabaja en un fichero <code>26-interactivo.py</code> salvo donde se indique otra cosa:</p>
+<ol><li>Dibuja cinco círculos y ata <code>&lt;Button-1&gt;</code> a su etiqueta común para que el pulsado se pinte de rojo, usando <code>current</code>. Después crea un sexto círculo con la misma etiqueta y comprueba si responde sin atar nada.</li><li>Intenta atar <code>&lt;MouseWheel&gt;</code> a una figura con <code>tag_bind</code> y lee el error completo. Consigue el mismo efecto atándolo al lienzo y averiguando la figura con <code>find_overlapping</code>.</li><li>Haz que un rectángulo cambie de color al pasar por encima, primero con <code>&lt;Enter&gt;</code> y <code>&lt;Leave&gt;</code> y luego con <code>activefill</code>. Compara el código.</li><li>Escribe en <code>26-coordenadas.py</code> un lienzo con <code>scrollregion</code> grande y un manejador de clic que muestre <code>evento.x</code> y <code>canvasx(evento.x)</code> en una etiqueta. Desplaza y comprueba cuándo dejan de coincidir.</li><li>Implementa el arrastre con <code>lienzo.coords(figura, x, y, ...)</code> en vez de con <code>move</code> y la diferencia. Observa el salto y explica por qué pasa.</li><li>Crea un <code>PhotoImage</code> dentro de una función sin guardarlo y colócalo en el lienzo. Comprueba <code>type</code>, <code>bbox</code> y si el nombre sigue en <code>ventana.call(&quot;image&quot;, &quot;names&quot;)</code>.</li><li>Anima una figura de ida y vuelta con <code>after</code>, con un botón para arrancar y parar. Pulsa «Animar» dos veces seguidas sin la protección de <code>after_cancel</code> y anota qué pasa.</li><li>En el ejemplo del diagrama, haz que al soltar un nodo se actualicen sus coordenadas en <code>NODOS</code>, de forma que «Redibujar» ya no lo devuelva a su sitio.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#tag-bind">tag_bind</a></li><li class="nivel-2"><a href="#la-etiqueta-current">La etiqueta current</a></li><li class="nivel-2"><a href="#resaltar-sin-escribir-eventos">Resaltar sin escribir eventos</a></li><li class="nivel-2"><a href="#del-pixel-de-la-ventana-a-la-coordenada-del-lienzo">Del píxel de la ventana a la coordenada del lienzo</a></li><li class="nivel-2"><a href="#arrastrar">Arrastrar</a></li><li class="nivel-2"><a href="#las-teclas">Las teclas</a></li><li class="nivel-2"><a href="#imagenes">Imágenes</a></li><li class="nivel-2"><a href="#animar">Animar</a></li><li class="nivel-2"><a href="#un-diagrama-que-se-manipula">Un diagrama que se manipula</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../tkinter/el-lienzo-canvas.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">El lienzo: Canvas</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../tkinter/la-tabla-treeview.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">La tabla: Treeview</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>
