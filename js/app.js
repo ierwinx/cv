@@ -47,6 +47,14 @@
             url: "https://ierwinx.com/superpets/"
           },
           {
+            name: "Python Course",
+            role: "Author & Developer",
+            description: "Free and complete Python course in Spanish: fundamentals, terminal applications, Tkinter GUIs, web development with Django, and REST APIs. 220 lessons with search and progress tracking.",
+            tags: ["Python", "Django", "Tkinter"],
+            emoji: "🐍",
+            url: "https://ierwinx.com/python/"
+          },
+          {
             name: "PagApp",
             role: "Tech Lead & iOS Developer",
             description: "Interbank transfer platform processing millions of transactions daily. Led mobile architecture and delivery.",
@@ -108,7 +116,7 @@
         heading: "Work Experience",
         jobs: [
           {
-            period: "2022 - Present",
+            period: "2022 - 2026",
             company: "Sistema De Transferencias y Pagos STP",
             roles: ["Tech Lead", "iOS Developer Sr"],
             description: "Technical lead for mobile applications on iOS, Android, and Backend. Responsible for making architecture decisions, participating directly in development, and aligning technically with business and product teams to deliver scalable and compliant solutions, leveraging AI tools like Claude Code."
@@ -249,6 +257,14 @@
             url: "https://ierwinx.com/superpets/"
           },
           {
+            name: "Curso de Python",
+            role: "Autor & Desarrollador",
+            description: "Curso completo y gratuito de Python en español: fundamentos, aplicaciones de terminal, interfaces gráficas con Tkinter, desarrollo web con Django y APIs REST. 220 lecciones con buscador y seguimiento de progreso.",
+            tags: ["Python", "Django", "Tkinter"],
+            emoji: "🐍",
+            url: "https://ierwinx.com/python/"
+          },
+          {
             name: "PagApp",
             role: "Tech Lead & iOS Developer",
             description: "Plataforma de transferencias interbancarias que procesa millones de transacciones diarias. Lideré la arquitectura móvil y entregas.",
@@ -310,7 +326,7 @@
         heading: "Experiencia Laboral",
         jobs: [
           {
-            period: "2022 - Actual",
+            period: "2022 - 2026",
             company: "Sistema De Transferencias y Pagos STP",
             roles: ["Tech Lead", "iOS Developer Sr"],
             description: "Líder técnico para aplicaciones móviles en iOS, Android y Backend. Responsable de tomar decisiones de arquitectura, participar directamente en el desarrollo y alinearme técnicamente con los equipos de negocio y producto para entregar soluciones escalables y que cumplan con las normativas apoyándome de IA como Claude Code."
