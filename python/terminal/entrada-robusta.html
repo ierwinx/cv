@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrada robusta por teclado · Curso de Python</title>
+<meta name="description" content="Funciones reutilizables para pedir textos, números, fechas y confirmaciones sin que el programa muera cuando alguien escribe cualquier cosa.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="terminal/entrada-robusta">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../terminal/index.html">Aplicaciones de terminal</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 2 &middot; Lección 3 de 28</p>
+    <h1>Entrada robusta por teclado</h1>
+    <p class="resumen-leccion">Funciones reutilizables para pedir textos, números, fechas y confirmaciones sin que el programa muera cuando alguien escribe cualquier cosa.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 27 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p><code>input()</code> devuelve siempre una cadena, y en cuanto la conviertes empiezan los problemas. Quien usa tu programa va a escribir <code>treinta y cuatro</code> donde esperabas un número, va a pulsar Intro sin escribir nada, va a poner una coma donde tú querías un punto y va a escribir una fecha al estilo español. Ninguna de esas cosas es un error suyo: es un fallo de tu programa si no las aguanta.</p>
+<p>La solución no es llenar el código de <code>try</code>/<code>except</code> por todas partes. Es escribir <strong>un puñado de funciones de lectura, una vez, y usarlas siempre</strong>. Eso es el contenido de esta lección: al terminar tendrás un módulo <code>entradas.py</code> que vas a reutilizar en el resto del módulo y, con suerte, en el resto de tu vida.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Escribir funciones reutilizables para leer texto, enteros, decimales, fechas, confirmaciones y opciones, todas con validación y bucle de reintento; leer contraseñas sin eco con <code>getpass</code>; y controlar lo que ocurre cuando alguien pulsa <kbd>Ctrl</kbd> + <kbd>D</kbd> o <kbd>Ctrl</kbd> + <kbd>C</kbd>.</p></aside>
+<h2 id="lo-que-pasa-hoy">Lo que pasa hoy<a class="ancla" href="#lo-que-pasa-hoy" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Este programa de dos líneas tiene tres formas distintas de romperse:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">edad.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">edad <span class="t-operador">=</span> <span class="t-integrada">int</span><span class="t-operador">(</span><span class="t-integrada">input</span><span class="t-operador">(</span><span class="t-texto">&quot;Tu edad: &quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;El año que viene tendrás <span class="t-operador">{</span>edad <span class="t-operador">+</span> <span class="t-numero">1</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span></code></pre></div>
+<p>Si escribes letras:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Tu edad: treinta y cuatro
+Traceback (most recent call last):
+  File &quot;/Users/erwin/curso-python/edad.py&quot;, line 1, in &lt;module&gt;
+    edad = int(input(&quot;Tu edad: &quot;))
+ValueError: invalid literal for int() with base 10: &#x27;treinta y cuatro&#x27;</code></pre></div>
+<p>Si pulsas Intro sin escribir nada:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Tu edad: 
+Traceback (most recent call last):
+  File &quot;/Users/erwin/curso-python/edad.py&quot;, line 1, in &lt;module&gt;
+    edad = int(input(&quot;Tu edad: &quot;))
+ValueError: invalid literal for int() with base 10: &#x27;&#x27;</code></pre></div>
+<p>Y si pulsas <kbd>Ctrl</kbd> + <kbd>D</kbd>, que significa &quot;se ha terminado la entrada&quot;:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Tu edad: 
+Traceback (most recent call last):
+  File &quot;/Users/erwin/curso-python/edad.py&quot;, line 1, in &lt;module&gt;
+    edad = int(input(&quot;Tu edad: &quot;))
+               ~~~~~^^^^^^^^^^^^^
+EOFError: EOF when reading a line</code></pre></div>
+<p>Tres pantallazos de traceback por un error de mecanografía. Y eso es solo la validación de tipo: <code>int(&quot;-5&quot;)</code> funciona perfectamente y una edad de menos cinco años no tiene sentido.</p>
+<h2 id="el-patron-de-las-tres-piezas">El patrón de las tres piezas<a class="ancla" href="#el-patron-de-las-tres-piezas" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Toda función de lectura robusta tiene la misma forma: un bucle infinito, un <code>try</code> que intenta convertir y un <code>except</code> que explica el problema y deja que el bucle dé otra vuelta.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">pedir_entero</span><span class="t-operador">(</span>etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">int</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Insiste hasta que escriban un número entero.&quot;&quot;&quot;</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-integrada">int</span><span class="t-operador">(</span><span class="t-integrada">input</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>etiqueta<span class="t-operador">}</span>: &quot;<span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">except</span> ValueError<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;  Eso no es un número entero.&quot;</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Unidades: abc
+  Eso no es un número entero.
+Unidades: 
+  Eso no es un número entero.
+Unidades: 7
+unidades=7</code></pre></div>
+<p>Fíjate en la estructura: el <code>return</code> está <strong>dentro</strong> del <code>try</code>. Si la conversión sale bien, la función termina ahí mismo y el bucle no vuelve a dar vueltas; si falla, el <code>except</code> imprime y el <code>while True</code> reintenta. No hace falta ninguna variable de control ni ningún <code>break</code>.</p>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Los dos sangrados del mensaje de error</p><p>Los mensajes de aviso llevan dos espacios delante. Es un detalle de nada, pero deja claro de un vistazo qué ha escrito la persona y qué ha contestado el programa, sobre todo cuando hay varios reintentos seguidos.</p></aside>
+<h2 id="un-texto-de-la-pregunta-consistente">Un texto de la pregunta consistente<a class="ancla" href="#un-texto-de-la-pregunta-consistente" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Antes de escribir seis funciones conviene decidir cómo se ven las preguntas, porque todas van a necesitar lo mismo: una etiqueta, a veces una pista del formato y a veces un valor por defecto. Una función pequeña lo compone:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">_pregunta</span><span class="t-operador">(</span>etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> pista<span class="t-operador">:</span> <span class="t-integrada">str</span> <span class="t-operador">=</span> <span class="t-texto">&quot;&quot;</span><span class="t-operador">,</span> por_defecto<span class="t-operador">:</span> <span class="t-integrada">object</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Compone el texto de la pregunta: etiqueta, pista y valor por defecto.&quot;&quot;&quot;</span>
+    texto <span class="t-operador">=</span> etiqueta
+    <span class="t-palabra">if</span> pista<span class="t-operador">:</span>
+                texto <span class="t-operador">+=</span> f&quot; (<span class="t-operador">{</span>pista<span class="t-operador">}</span>)&quot;
+    <span class="t-palabra">if</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                texto <span class="t-operador">+=</span> f&quot; [<span class="t-operador">{</span>por_defecto<span class="t-operador">}</span>]&quot;
+    <span class="t-palabra">return</span> texto <span class="t-operador">+</span> <span class="t-texto">&quot;: &quot;</span></code></pre></div>
+<p>Así, quien llama escribe <code>pedir_entero(&quot;Unidades&quot;, minimo=1, maximo=10)</code> y en la pantalla aparece <code>Unidades (1-10):</code>, sin tener que repetir el rango a mano en el texto. El guion bajo del nombre avisa de que es maquinaria interna del módulo.</p>
+<p>La convención del paréntesis y del corchete no es un invento: es la de las herramientas de Unix. El paréntesis indica lo que se espera y el corchete, lo que va a pasar si pulsas Intro a secas.</p>
+<h2 id="pedir-texto">pedir_texto<a class="ancla" href="#pedir-texto" aria-label="Enlace a esta seccion">#</a></h2>
+<p>La más sencilla, y la que más se usa. Tres comportamientos en una función: insistir si está vacía, aceptar el vacío o devolver un valor por defecto.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">pedir_texto</span><span class="t-operador">(</span>
+    etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span>
+    por_defecto<span class="t-operador">:</span> <span class="t-integrada">str</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+    permitir_vacio<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">,</span>
+<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee una cadena. Insiste mientras esté vacía, salvo que se permita.&quot;&quot;&quot;</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> por_defecto<span class="t-operador">=</span>por_defecto<span class="t-operador">)</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                respuesta <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> respuesta<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> respuesta
+        <span class="t-palabra">if</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> por_defecto
+        <span class="t-palabra">if</span> permitir_vacio<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-texto">&quot;&quot;</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;  No puede quedar en blanco.&quot;</span><span class="t-operador">)</span></code></pre></div>
+<p>El <code>.strip()</code> es obligatorio y no un adorno: un espacio de más al copiar y pegar no debería convertir una respuesta válida en un dato con basura. Y el orden de los tres <code>if</code> no es casual: primero se acepta lo que tiene contenido, después se aplica el valor por defecto, y solo al final se decide si el vacío vale o hay que insistir.</p>
+<h2 id="pedir-entero-con-minimo-y-maximo">pedir_entero, con mínimo y máximo<a class="ancla" href="#pedir-entero-con-minimo-y-maximo" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Aquí se juntan las dos validaciones: que sea un entero y que esté en el rango razonable.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">pedir_entero</span><span class="t-operador">(</span>
+    etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span>
+    minimo<span class="t-operador">:</span> <span class="t-integrada">int</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+    maximo<span class="t-operador">:</span> <span class="t-integrada">int</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+    por_defecto<span class="t-operador">:</span> <span class="t-integrada">int</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">int</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee un número entero dentro del rango indicado.&quot;&quot;&quot;</span>
+    <span class="t-palabra">if</span> minimo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span> <span class="t-palabra">and</span> maximo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> f&quot;<span class="t-operador">{</span>minimo<span class="t-operador">}</span>-<span class="t-operador">{</span>maximo<span class="t-operador">}</span>&quot;
+    <span class="t-palabra">elif</span> minimo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> f&quot;<span class="t-operador">{</span>minimo<span class="t-operador">}</span> o más&quot;
+    <span class="t-palabra">elif</span> maximo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> f&quot;<span class="t-operador">{</span>maximo<span class="t-operador">}</span> o menos&quot;
+    <span class="t-palabra">else</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> <span class="t-texto">&quot;&quot;</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> pista<span class="t-operador">,</span> por_defecto<span class="t-operador">)</span>
+
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                escrito <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> escrito <span class="t-palabra">and</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> por_defecto
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        numero <span class="t-operador">=</span> <span class="t-integrada">int</span><span class="t-operador">(</span>escrito<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> ValueError<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  &#x27;<span class="t-operador">{</span>escrito<span class="t-operador">}</span>&#x27; no es un número entero.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">if</span> minimo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span> <span class="t-palabra">and</span> numero <span class="t-operador">&lt;</span> minimo<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Tiene que ser <span class="t-operador">{</span>minimo<span class="t-operador">}</span> o más.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">if</span> maximo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span> <span class="t-palabra">and</span> numero <span class="t-operador">&gt;</span> maximo<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Tiene que ser <span class="t-operador">{</span>maximo<span class="t-operador">}</span> o menos.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">return</span> numero</code></pre></div>
+<p>Con esto, el programa del principio de la lección se vuelve insensible a los despistes:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">edad <span class="t-operador">=</span> pedir_entero<span class="t-operador">(</span><span class="t-texto">&quot;Tu edad&quot;</span><span class="t-operador">,</span> minimo<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">,</span> maximo<span class="t-operador">=</span><span class="t-numero">120</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;El año que viene tendrás <span class="t-operador">{</span>edad <span class="t-operador">+</span> <span class="t-numero">1</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Tu edad (0-120): treinta y cuatro
+  &#x27;treinta y cuatro&#x27; no es un número entero.
+Tu edad (0-120): 34,5
+  &#x27;34,5&#x27; no es un número entero.
+Tu edad (0-120): 
+  &#x27;&#x27; no es un número entero.
+Tu edad (0-120): 34
+El año que viene tendrás 35</code></pre></div>
+<p>Dos decisiones que merecen explicación:</p>
+<ul><li><strong>Los límites se comprueban con <code>continue</code>, no con <code>raise</code>.</strong> Un valor fuera de rango no es un fallo del programa: es una respuesta que hay que corregir. El <code>continue</code> manda al bucle a preguntar otra vez, exactamente igual que el error de conversión.</li><li><strong><code>minimo</code> y <code>maximo</code> valen <code>None</code> por defecto</strong>, y se comparan con <code>is not None</code> y no con un <code>if minimo:</code>. La diferencia importa: <code>if minimo:</code> daría falso con <code>minimo=0</code>, y un mínimo de cero es lo más habitual del mundo.</li></ul>
+<h2 id="pedir-decimal-y-la-coma-espanola">pedir_decimal y la coma española<a class="ancla" href="#pedir-decimal-y-la-coma-espanola" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Un decimal se lee igual, con dos diferencias: se convierte con <code>float</code> y se acepta la coma, porque en España es lo que la gente escribe.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">pedir_decimal</span><span class="t-operador">(</span>
+    etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span>
+    minimo<span class="t-operador">:</span> <span class="t-integrada">float</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+    maximo<span class="t-operador">:</span> <span class="t-integrada">float</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">float</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee un número con decimales y acepta la coma como separador.&quot;&quot;&quot;</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">)</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                escrito <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>replace<span class="t-operador">(</span><span class="t-texto">&quot;,&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        numero <span class="t-operador">=</span> <span class="t-integrada">float</span><span class="t-operador">(</span>escrito<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> ValueError<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  &#x27;<span class="t-operador">{</span>escrito<span class="t-operador">}</span>&#x27; no es un número.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">if</span> minimo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span> <span class="t-palabra">and</span> numero <span class="t-operador">&lt;</span> minimo<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Tiene que ser <span class="t-operador">{</span>minimo<span class="t-operador">}</span> o más.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">if</span> maximo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span> <span class="t-palabra">and</span> numero <span class="t-operador">&gt;</span> maximo<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Tiene que ser <span class="t-operador">{</span>maximo<span class="t-operador">}</span> o menos.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">return</span> numero</code></pre></div>
+<p>Ese <code>.replace(&quot;,&quot;, &quot;.&quot;)</code> de una línea evita un montón de frustración:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">precio <span class="t-operador">=</span> pedir_decimal<span class="t-operador">(</span><span class="t-texto">&quot;Precio en euros&quot;</span><span class="t-operador">,</span> minimo<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>precio<span class="t-operador">=</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;Tres unidades: <span class="t-operador">{</span>precio <span class="t-operador">*</span> <span class="t-numero">3</span><span class="t-operador">:</span>.2f<span class="t-operador">}</span> €&quot;<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Precio en euros: doce euros
+  &#x27;doce euros&#x27; no es un número.
+Precio en euros: -3
+  Tiene que ser 0 o más.
+Precio en euros: 12,50
+precio=12.5
+Tres unidades: 37.50 €</code></pre></div>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">Ojo con el separador de millares</p><p><code>replace(&quot;,&quot;, &quot;.&quot;)</code> funciona con <code>12,50</code>, pero convierte <code>1.234,56</code> en <code>1.234.56</code>, que no es un número y será rechazado. Si tu programa maneja cantidades grandes escritas a mano, quita primero los puntos de millares y después cambia la coma por el punto. Para la mayoría de los casos, la versión simple sobra.</p></aside>
+<h2 id="pedir-fecha">pedir_fecha<a class="ancla" href="#pedir-fecha" aria-label="Enlace a esta seccion">#</a></h2>
+<p><code>date.fromisoformat</code> hace todo el trabajo de validación, incluidos los días imposibles como el 31 de febrero. Lo único que hay que hacer es capturar su <code>ValueError</code> y explicar el formato:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">pedir_fecha</span><span class="t-operador">(</span>etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> por_defecto<span class="t-operador">:</span> date <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> date<span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee una fecha escrita como AAAA-MM-DD.&quot;&quot;&quot;</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> <span class="t-texto">&quot;AAAA-MM-DD&quot;</span><span class="t-operador">,</span> por_defecto<span class="t-operador">)</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                escrito <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> escrito <span class="t-palabra">and</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> por_defecto
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> date<span class="t-operador">.</span>fromisoformat<span class="t-operador">(</span>escrito<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> ValueError <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Fecha no válida: <span class="t-operador">{</span>error<span class="t-operador">}</span>.&quot;<span class="t-operador">)</span></code></pre></div>
+<p>Aquí el mensaje del <code>except</code> reaprovecha el texto de la excepción, que es sorprendentemente claro, como se ve en el ejemplo grande de más abajo. La función devuelve un objeto <code>date</code>, no una cadena, así que quien la llame puede restar fechas o compararlas sin más conversiones.</p>
+<h2 id="pedir-confirmacion">pedir_confirmacion<a class="ancla" href="#pedir-confirmacion" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Preguntar &quot;¿seguro?&quot; parece trivial hasta que te pones. Hay que aceptar <code>s</code>, <code>si</code>, <code>sí</code> y <code>n</code> y <code>no</code>, no distinguir mayúsculas, y dejar que Intro signifique la respuesta más probable.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">AFIRMATIVAS <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-texto">&quot;s&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;si&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;sí&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;y&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;yes&quot;</span><span class="t-operador">}</span>
+NEGATIVAS <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-texto">&quot;n&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;no&quot;</span><span class="t-operador">}</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">pedir_confirmacion</span><span class="t-operador">(</span>etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> por_defecto<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">bool</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee un sí o un no. Con por_defecto, Intro ya vale como respuesta.&quot;&quot;&quot;</span>
+    <span class="t-palabra">if</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> <span class="t-texto">&quot;S/n&quot;</span>
+    <span class="t-palabra">elif</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">False</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> <span class="t-texto">&quot;s/N&quot;</span>
+    <span class="t-palabra">else</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> <span class="t-texto">&quot;s/n&quot;</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> pista<span class="t-operador">)</span>
+
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                respuesta <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>lower<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> respuesta <span class="t-palabra">and</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> por_defecto
+        <span class="t-palabra">if</span> respuesta <span class="t-palabra">in</span> AFIRMATIVAS<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-palabra">True</span>
+        <span class="t-palabra">if</span> respuesta <span class="t-palabra">in</span> NEGATIVAS<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;  Responde s o n.&quot;</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-integrada">print</span><span class="t-operador">(</span>pedir_confirmacion<span class="t-operador">(</span><span class="t-texto">&quot;¿Continuar?&quot;</span><span class="t-operador">,</span> por_defecto<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>pedir_confirmacion<span class="t-operador">(</span><span class="t-texto">&quot;¿Borro el fichero?&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>pedir_confirmacion<span class="t-operador">(</span><span class="t-texto">&quot;¿Guardar los cambios?&quot;</span><span class="t-operador">,</span> por_defecto<span class="t-operador">=</span><span class="t-palabra">False</span><span class="t-operador">)</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>pedir_confirmacion<span class="t-operador">(</span><span class="t-texto">&quot;¿Seguro?&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>¿Continuar? (S/n): 
+True
+¿Borro el fichero? (s/n): s
+True
+¿Guardar los cambios? (s/N): 
+False
+¿Seguro? (s/n): no
+False</code></pre></div>
+<p>Tres detalles con su razón:</p>
+<ul><li><strong>Los conjuntos, no listas.</strong> La comprobación <code>in</code> sobre un conjunto es inmediata y el conjunto deja claro que no hay orden ni repeticiones. Además se lee mejor: añadir <code>&quot;vale&quot;</code> a <code>AFIRMATIVAS</code> es evidente.</li><li><strong>La mayúscula de la pista indica el valor por defecto.</strong> <code>(S/n)</code> significa &quot;si pulsas Intro, digo sí&quot;. Es la convención de todo Unix y quien use tu programa la entenderá sin explicaciones.</li><li><strong>Sin <code>por_defecto</code>, Intro no vale.</strong> Para una pregunta peligrosa, como borrar un fichero, no hay respuesta por defecto y hay que escribir algo. Eso es deliberado: la tecla Intro es la que más se pulsa por inercia.</li></ul>
+<h2 id="pedir-opcion">pedir_opcion<a class="ancla" href="#pedir-opcion" aria-label="Enlace a esta seccion">#</a></h2>
+<p>La variante de elegir entre unas pocas posibilidades, que verás en la lección de menús:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">pedir_opcion</span><span class="t-operador">(</span>etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> validas<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee una de las opciones dadas, sin distinguir mayúsculas.&quot;&quot;&quot;</span>
+    permitidas <span class="t-operador">=</span> <span class="t-operador">{</span>opcion<span class="t-operador">.</span>lower<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span> opcion <span class="t-palabra">for</span> opcion <span class="t-palabra">in</span> validas<span class="t-operador">}</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> <span class="t-texto">&quot;/&quot;</span><span class="t-operador">.</span>join<span class="t-operador">(</span>validas<span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                respuesta <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>lower<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> respuesta <span class="t-palabra">in</span> permitidas<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> permitidas<span class="t-operador">[</span>respuesta<span class="t-operador">]</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Elige una de estas: <span class="t-operador">{</span><span class="t-texto">&#x27;, &#x27;</span><span class="t-operador">.</span>join<span class="t-operador">(</span>validas<span class="t-operador">)</span><span class="t-operador">}</span>.&quot;<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">color <span class="t-operador">=</span> pedir_opcion<span class="t-operador">(</span><span class="t-texto">&quot;Color&quot;</span><span class="t-operador">,</span> <span class="t-operador">[</span><span class="t-texto">&quot;rojo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;verde&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;azul&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>color<span class="t-operador">=</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Color (rojo/verde/azul): roja
+  Elige una de estas: rojo, verde, azul.
+Color (rojo/verde/azul): verde
+color=&#x27;verde&#x27;</code></pre></div>
+<p>El diccionario por comprensión asocia la versión en minúsculas con la original. Así quien escriba <code>VERDE</code> obtiene <code>&quot;verde&quot;</code>, con la grafía exacta que espera el resto del programa, y no la que haya teclado.</p>
+<h2 id="contrasenas-sin-eco">Contraseñas sin eco<a class="ancla" href="#contrasenas-sin-eco" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Si lees una contraseña con <code>input()</code>, aparece escrita en la pantalla y se queda ahí, visible para quien pase por detrás y para quien mire el historial de la sesión. <code>getpass</code>, de la biblioteca estándar, lee sin mostrar nada:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> getpass <span class="t-palabra">import</span> getpass
+
+clave <span class="t-operador">=</span> getpass<span class="t-operador">(</span><span class="t-texto">&quot;Contraseña: &quot;</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;He leído <span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>clave<span class="t-operador">)</span><span class="t-operador">}</span> caracteres&quot;<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Contraseña: 
+He leído 7 caracteres</code></pre></div>
+<p>Mientras escribes no se ve nada: ni asteriscos ni puntos. Es lo normal en Unix y desconcierta la primera vez, pero está bien: no se filtra ni la longitud.</p>
+<p>Con el patrón de siempre se construye una versión que además pide la contraseña dos veces:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">pedir_contrasena</span><span class="t-operador">(</span>etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span> <span class="t-operador">=</span> <span class="t-texto">&quot;Contraseña&quot;</span><span class="t-operador">,</span> minimo<span class="t-operador">:</span> <span class="t-integrada">int</span> <span class="t-operador">=</span> <span class="t-numero">8</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee una contraseña sin mostrarla y la pide dos veces.&quot;&quot;&quot;</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                primera <span class="t-operador">=</span> getpass<span class="t-operador">(</span>_pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> f&quot;<span class="t-operador">{</span>minimo<span class="t-operador">}</span> caracteres o más&quot;<span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-integrada">len</span><span class="t-operador">(</span>primera<span class="t-operador">)</span> <span class="t-operador">&lt;</span> minimo<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Demasiado corta: <span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>primera<span class="t-operador">)</span><span class="t-operador">}</span> caracteres.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        segunda <span class="t-operador">=</span> getpass<span class="t-operador">(</span>_pregunta<span class="t-operador">(</span><span class="t-texto">&quot;Repítela&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> primera <span class="t-operador">!=</span> segunda<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;  No coinciden. Otra vez.&quot;</span><span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">return</span> primera</code></pre></div>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">getpass necesita una terminal de verdad</p><p>Si ejecutas un programa con <code>getpass</code> desde un editor que captura la salida, o con la entrada redirigida, no puede apagar el eco y avisa:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Warning: Password input may be echoed.</code></pre></div>
+<p>Es un <code>GetPassWarning</code> y significa lo que dice: lo que escribas se va a ver. Prueba estos ejemplos en una terminal de verdad.</p></aside>
+<h2 id="ctrl-d-y-ctrl-c">Ctrl+D y Ctrl+C<a class="ancla" href="#ctrl-d-y-ctrl-c" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Quedan dos teclas que no escriben texto sino que interrumpen la lectura, y conviene saber qué lanza cada una:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Tecla</th><th>Significa</th><th>Excepción</th></tr></thead><tbody><tr><td><kbd>Ctrl</kbd> + <kbd>D</kbd></td><td>Se ha terminado la entrada</td><td><code>EOFError</code></td></tr><tr><td><kbd>Ctrl</kbd> + <kbd>C</kbd></td><td>Cancela lo que estés haciendo</td><td><code>KeyboardInterrupt</code></td></tr></tbody></table></div>
+<p>Las dos atraviesan tu bucle <code>while True</code> sin inmutarse, porque no son <code>ValueError</code>. Y eso es lo correcto: si alguien quiere salirse, hay que dejarle. Lo que no hay que hacer es enseñarle un traceback, así que se capturan <strong>arriba</strong>, en el <code>main</code>, y no dentro de cada función de lectura:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">main</span><span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                nombre <span class="t-operador">=</span> pedir_texto<span class="t-operador">(</span><span class="t-texto">&quot;Nombre&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">except</span> <span class="t-operador">(</span>EOFError<span class="t-operador">,</span> KeyboardInterrupt<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;\nCancelado.&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span>
+    <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;Hola, <span class="t-operador">{</span>nombre<span class="t-operador">}</span>.&quot;<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Nombre: 
+Cancelado.</code></pre></div>
+<p>Ese <code>\n</code> del principio del mensaje no está de adorno: cuando cancelas, el cursor está al final de la línea de la pregunta, y sin el salto el &quot;Cancelado&quot; saldría pegado a ella.</p>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Captúralas una sola vez, en el sitio más alto</p><p>Poner <code>except KeyboardInterrupt</code> dentro de <code>pedir_entero</code> obliga a decidir ahí qué valor devolver, y no hay ninguna respuesta buena. Capturarlas en el <code>main</code>, alrededor de todo el programa, permite una salida limpia con un mensaje y un código de salida correcto, que es el tema de otra lección de este módulo.</p></aside>
+<h2 id="el-modulo-completo">El módulo completo<a class="ancla" href="#el-modulo-completo" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Junta todo esto en un fichero al lado de tus programas y ya no vuelves a escribir un <code>try</code> de conversión en la vida:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">entradas.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;Funciones para leer datos por teclado sin que el programa se rompa.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">from</span> datetime <span class="t-palabra">import</span> date
+<span class="t-palabra">from</span> getpass <span class="t-palabra">import</span> getpass
+
+AFIRMATIVAS <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-texto">&quot;s&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;si&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;sí&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;y&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;yes&quot;</span><span class="t-operador">}</span>
+NEGATIVAS <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-texto">&quot;n&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;no&quot;</span><span class="t-operador">}</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">_pregunta</span><span class="t-operador">(</span>etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> pista<span class="t-operador">:</span> <span class="t-integrada">str</span> <span class="t-operador">=</span> <span class="t-texto">&quot;&quot;</span><span class="t-operador">,</span> por_defecto<span class="t-operador">:</span> <span class="t-integrada">object</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Compone el texto de la pregunta: etiqueta, pista y valor por defecto.&quot;&quot;&quot;</span>
+    texto <span class="t-operador">=</span> etiqueta
+    <span class="t-palabra">if</span> pista<span class="t-operador">:</span>
+                texto <span class="t-operador">+=</span> f&quot; (<span class="t-operador">{</span>pista<span class="t-operador">}</span>)&quot;
+    <span class="t-palabra">if</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                texto <span class="t-operador">+=</span> f&quot; [<span class="t-operador">{</span>por_defecto<span class="t-operador">}</span>]&quot;
+    <span class="t-palabra">return</span> texto <span class="t-operador">+</span> <span class="t-texto">&quot;: &quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">pedir_texto</span><span class="t-operador">(</span>
+    etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span>
+    por_defecto<span class="t-operador">:</span> <span class="t-integrada">str</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+    permitir_vacio<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span><span class="t-operador">,</span>
+<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee una cadena. Insiste mientras esté vacía, salvo que se permita.&quot;&quot;&quot;</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> por_defecto<span class="t-operador">=</span>por_defecto<span class="t-operador">)</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                respuesta <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> respuesta<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> respuesta
+        <span class="t-palabra">if</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> por_defecto
+        <span class="t-palabra">if</span> permitir_vacio<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-texto">&quot;&quot;</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;  No puede quedar en blanco.&quot;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">pedir_entero</span><span class="t-operador">(</span>
+    etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span>
+    minimo<span class="t-operador">:</span> <span class="t-integrada">int</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+    maximo<span class="t-operador">:</span> <span class="t-integrada">int</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+    por_defecto<span class="t-operador">:</span> <span class="t-integrada">int</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">int</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee un número entero dentro del rango indicado.&quot;&quot;&quot;</span>
+    <span class="t-palabra">if</span> minimo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span> <span class="t-palabra">and</span> maximo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> f&quot;<span class="t-operador">{</span>minimo<span class="t-operador">}</span>-<span class="t-operador">{</span>maximo<span class="t-operador">}</span>&quot;
+    <span class="t-palabra">elif</span> minimo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> f&quot;<span class="t-operador">{</span>minimo<span class="t-operador">}</span> o más&quot;
+    <span class="t-palabra">elif</span> maximo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> f&quot;<span class="t-operador">{</span>maximo<span class="t-operador">}</span> o menos&quot;
+    <span class="t-palabra">else</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> <span class="t-texto">&quot;&quot;</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> pista<span class="t-operador">,</span> por_defecto<span class="t-operador">)</span>
+
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                escrito <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> escrito <span class="t-palabra">and</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> por_defecto
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        numero <span class="t-operador">=</span> <span class="t-integrada">int</span><span class="t-operador">(</span>escrito<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> ValueError<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  &#x27;<span class="t-operador">{</span>escrito<span class="t-operador">}</span>&#x27; no es un número entero.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">if</span> minimo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span> <span class="t-palabra">and</span> numero <span class="t-operador">&lt;</span> minimo<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Tiene que ser <span class="t-operador">{</span>minimo<span class="t-operador">}</span> o más.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">if</span> maximo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span> <span class="t-palabra">and</span> numero <span class="t-operador">&gt;</span> maximo<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Tiene que ser <span class="t-operador">{</span>maximo<span class="t-operador">}</span> o menos.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">return</span> numero
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">pedir_decimal</span><span class="t-operador">(</span>
+    etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span>
+    minimo<span class="t-operador">:</span> <span class="t-integrada">float</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+    maximo<span class="t-operador">:</span> <span class="t-integrada">float</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">,</span>
+<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">float</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee un número con decimales y acepta la coma como separador.&quot;&quot;&quot;</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">)</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                escrito <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>replace<span class="t-operador">(</span><span class="t-texto">&quot;,&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;.&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        numero <span class="t-operador">=</span> <span class="t-integrada">float</span><span class="t-operador">(</span>escrito<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> ValueError<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  &#x27;<span class="t-operador">{</span>escrito<span class="t-operador">}</span>&#x27; no es un número.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">if</span> minimo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span> <span class="t-palabra">and</span> numero <span class="t-operador">&lt;</span> minimo<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Tiene que ser <span class="t-operador">{</span>minimo<span class="t-operador">}</span> o más.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">if</span> maximo <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span> <span class="t-palabra">and</span> numero <span class="t-operador">&gt;</span> maximo<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Tiene que ser <span class="t-operador">{</span>maximo<span class="t-operador">}</span> o menos.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">return</span> numero
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">pedir_fecha</span><span class="t-operador">(</span>etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> por_defecto<span class="t-operador">:</span> date <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> date<span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee una fecha escrita como AAAA-MM-DD.&quot;&quot;&quot;</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> <span class="t-texto">&quot;AAAA-MM-DD&quot;</span><span class="t-operador">,</span> por_defecto<span class="t-operador">)</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                escrito <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> escrito <span class="t-palabra">and</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> por_defecto
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> date<span class="t-operador">.</span>fromisoformat<span class="t-operador">(</span>escrito<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> ValueError <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Fecha no válida: <span class="t-operador">{</span>error<span class="t-operador">}</span>.&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">pedir_confirmacion</span><span class="t-operador">(</span>etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> por_defecto<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">|</span> <span class="t-palabra">None</span> <span class="t-operador">=</span> <span class="t-palabra">None</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">bool</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee un sí o un no. Con por_defecto, Intro ya vale como respuesta.&quot;&quot;&quot;</span>
+    <span class="t-palabra">if</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> <span class="t-texto">&quot;S/n&quot;</span>
+    <span class="t-palabra">elif</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">False</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> <span class="t-texto">&quot;s/N&quot;</span>
+    <span class="t-palabra">else</span><span class="t-operador">:</span>
+                pista <span class="t-operador">=</span> <span class="t-texto">&quot;s/n&quot;</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> pista<span class="t-operador">)</span>
+
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                respuesta <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>lower<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> respuesta <span class="t-palabra">and</span> por_defecto <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> por_defecto
+        <span class="t-palabra">if</span> respuesta <span class="t-palabra">in</span> AFIRMATIVAS<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-palabra">True</span>
+        <span class="t-palabra">if</span> respuesta <span class="t-palabra">in</span> NEGATIVAS<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;  Responde s o n.&quot;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">pedir_opcion</span><span class="t-operador">(</span>etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span><span class="t-operador">,</span> validas<span class="t-operador">:</span> <span class="t-integrada">list</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee una de las opciones dadas, sin distinguir mayúsculas.&quot;&quot;&quot;</span>
+    permitidas <span class="t-operador">=</span> <span class="t-operador">{</span>opcion<span class="t-operador">.</span>lower<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span> opcion <span class="t-palabra">for</span> opcion <span class="t-palabra">in</span> validas<span class="t-operador">}</span>
+    mensaje <span class="t-operador">=</span> _pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> <span class="t-texto">&quot;/&quot;</span><span class="t-operador">.</span>join<span class="t-operador">(</span>validas<span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                respuesta <span class="t-operador">=</span> <span class="t-integrada">input</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>lower<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> respuesta <span class="t-palabra">in</span> permitidas<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> permitidas<span class="t-operador">[</span>respuesta<span class="t-operador">]</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Elige una de estas: <span class="t-operador">{</span><span class="t-texto">&#x27;, &#x27;</span><span class="t-operador">.</span>join<span class="t-operador">(</span>validas<span class="t-operador">)</span><span class="t-operador">}</span>.&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">pedir_contrasena</span><span class="t-operador">(</span>etiqueta<span class="t-operador">:</span> <span class="t-integrada">str</span> <span class="t-operador">=</span> <span class="t-texto">&quot;Contraseña&quot;</span><span class="t-operador">,</span> minimo<span class="t-operador">:</span> <span class="t-integrada">int</span> <span class="t-operador">=</span> <span class="t-numero">8</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-integrada">str</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Lee una contraseña sin mostrarla y la pide dos veces.&quot;&quot;&quot;</span>
+    <span class="t-palabra">while</span> <span class="t-palabra">True</span><span class="t-operador">:</span>
+                primera <span class="t-operador">=</span> getpass<span class="t-operador">(</span>_pregunta<span class="t-operador">(</span>etiqueta<span class="t-operador">,</span> f&quot;<span class="t-operador">{</span>minimo<span class="t-operador">}</span> caracteres o más&quot;<span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-integrada">len</span><span class="t-operador">(</span>primera<span class="t-operador">)</span> <span class="t-operador">&lt;</span> minimo<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;  Demasiado corta: <span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>primera<span class="t-operador">)</span><span class="t-operador">}</span> caracteres.&quot;<span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        segunda <span class="t-operador">=</span> getpass<span class="t-operador">(</span>_pregunta<span class="t-operador">(</span><span class="t-texto">&quot;Repítela&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> primera <span class="t-operador">!=</span> segunda<span class="t-operador">:</span>
+                        <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;  No coinciden. Otra vez.&quot;</span><span class="t-operador">)</span>
+            <span class="t-palabra">continue</span>
+        <span class="t-palabra">return</span> primera</code></pre></div>
+<p>Y así se usa, con el módulo al lado del programa:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">alta.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> datetime <span class="t-palabra">import</span> date
+
+<span class="t-palabra">from</span> entradas <span class="t-palabra">import</span> <span class="t-operador">(</span>
+    pedir_confirmacion<span class="t-operador">,</span>
+    pedir_entero<span class="t-operador">,</span>
+    pedir_fecha<span class="t-operador">,</span>
+    pedir_texto<span class="t-operador">,</span>
+<span class="t-operador">)</span>
+
+nombre <span class="t-operador">=</span> pedir_texto<span class="t-operador">(</span><span class="t-texto">&quot;Nombre&quot;</span><span class="t-operador">)</span>
+ciudad <span class="t-operador">=</span> pedir_texto<span class="t-operador">(</span><span class="t-texto">&quot;Ciudad&quot;</span><span class="t-operador">,</span> por_defecto<span class="t-operador">=</span><span class="t-texto">&quot;Madrid&quot;</span><span class="t-operador">)</span>
+cantidad <span class="t-operador">=</span> pedir_entero<span class="t-operador">(</span><span class="t-texto">&quot;Unidades&quot;</span><span class="t-operador">,</span> minimo<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">,</span> maximo<span class="t-operador">=</span><span class="t-numero">10</span><span class="t-operador">)</span>
+vence <span class="t-operador">=</span> pedir_fecha<span class="t-operador">(</span><span class="t-texto">&quot;Vence el&quot;</span><span class="t-operador">,</span> por_defecto<span class="t-operador">=</span>date<span class="t-operador">(</span><span class="t-numero">2026</span><span class="t-operador">,</span> <span class="t-numero">12</span><span class="t-operador">,</span> <span class="t-numero">31</span><span class="t-operador">)</span><span class="t-operador">)</span>
+urgente <span class="t-operador">=</span> pedir_confirmacion<span class="t-operador">(</span><span class="t-texto">&quot;¿Es urgente?&quot;</span><span class="t-operador">,</span> por_defecto<span class="t-operador">=</span><span class="t-palabra">False</span><span class="t-operador">)</span>
+
+<span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>nombre<span class="t-operador">=</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>ciudad<span class="t-operador">=</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>cantidad<span class="t-operador">=</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>vence<span class="t-operador">=</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>urgente<span class="t-operador">=</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span></code></pre></div>
+<p>Una sesión con todos los despistes posibles:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Nombre: 
+  No puede quedar en blanco.
+Nombre:   Erwin
+Ciudad [Madrid]: 
+Unidades (1-10): abc
+  &#x27;abc&#x27; no es un número entero.
+Unidades (1-10): 0
+  Tiene que ser 1 o más.
+Unidades (1-10): 3
+Vence el (AAAA-MM-DD) [2026-12-31]: 19/09/2026
+  Fecha no válida: Invalid isoformat string: &#x27;19/09/2026&#x27;.
+Vence el (AAAA-MM-DD) [2026-12-31]: 2026-13-01
+  Fecha no válida: month must be in 1..12, not 13.
+Vence el (AAAA-MM-DD) [2026-12-31]: 
+¿Es urgente? (s/N): SÍ
+
+nombre=&#x27;Erwin&#x27;
+ciudad=&#x27;Madrid&#x27;
+cantidad=3
+vence=datetime.date(2026, 12, 31)
+urgente=True</code></pre></div>
+<p>Veintiuna líneas de programa, ni un <code>try</code> a la vista y nada de lo que se ha escrito lo ha tumbado. Los espacios de <code>Erwin</code> han desaparecido, la ciudad ha salido del valor por defecto, la fecha con barras se ha rechazado con una explicación y el <code>SÍ</code> en mayúsculas con acento se ha entendido.</p>
+<aside class="aviso aviso-error"><p class="titulo-aviso">ValueError: invalid literal for int() with base 10: &#x27;&#x27;</p><p>La cadena vacía no se puede convertir a número. Sale al pulsar Intro sin escribir nada delante de un <code>int(input(...))</code>. Con <code>pedir_entero</code> está resuelto, pero si lo ves en tu código significa que se te ha escapado un <code>int(input(...))</code> suelto.</p></aside>
+<aside class="aviso aviso-error"><p class="titulo-aviso">ValueError: invalid literal for int() with base 10: &#x27;3.0&#x27;</p><p><code>int()</code> no acepta la representación de un decimal, ni siquiera cuando la parte decimal es cero. Si quieres tragarte <code>3.0</code> como 3, convierte primero a <code>float</code> y luego a <code>int</code>, a sabiendas de que eso trunca: <code>int(float(&quot;3.9&quot;))</code> da 3, no 4.</p></aside>
+<aside class="aviso aviso-error"><p class="titulo-aviso">EOFError: EOF when reading a line</p><p>Se ha terminado la entrada y <code>input()</code> no tiene nada que leer. Las dos causas normales son que alguien haya pulsado <kbd>Ctrl</kbd> + <kbd>D</kbd> o que el programa se esté ejecutando con la entrada redirigida desde un fichero que ya se ha acabado. Captúralo en el <code>main</code> y termina con un mensaje.</p></aside>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>Convertir directamente lo que devuelve <code>input()</code> es una fuente garantizada de tracebacks. El patrón que lo resuelve son tres piezas: un <code>while True</code>, un <code>try</code> con el <code>return</code> dentro y un <code>except</code> que explica el problema y deja que el bucle reintente. Sobre ese patrón se construyen <code>pedir_texto</code>, <code>pedir_entero</code>, <code>pedir_decimal</code>, <code>pedir_fecha</code>, <code>pedir_confirmacion</code> y <code>pedir_opcion</code>, todas con <code>.strip()</code>, con validación de rango resuelta con <code>continue</code> y con un valor por defecto que se acepta al pulsar Intro. Las contraseñas se leen con <code>getpass</code>, que no muestra nada. Y <kbd>Ctrl</kbd> + <kbd>D</kbd> y <kbd>Ctrl</kbd> + <kbd>C</kbd> lanzan <code>EOFError</code> y <code>KeyboardInterrupt</code>, que se capturan una sola vez en el <code>main</code> para salir limpiamente. Todo junto en un <code>entradas.py</code> que se reutiliza en cada programa nuevo.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><p>Crea el módulo <code>entradas.py</code> con las funciones de la lección y un fichero <code>03-pruebas.py</code> que las use:</p>
+<ol><li>Añade a <code>entradas.py</code> una función <code>pedir_hora(etiqueta)</code> que lea una hora en formato <code>HH:MM</code> y devuelva un objeto <code>time</code>. Mira <code>datetime.time.fromisoformat</code> y captura su <code>ValueError</code>.</li><li>Añade <code>pedir_lista(etiqueta, separador=&quot;,&quot;)</code>, que lea varios valores en una línea y devuelva una lista de cadenas ya limpias de espacios y sin elementos vacíos.</li><li>Añade a <code>pedir_texto</code> un parámetro <code>maximo</code> con el número de caracteres permitidos, y rechaza con un mensaje lo que se pase.</li><li>Añade <code>pedir_entero_o_nada(etiqueta)</code>, que devuelva un <code>int</code> o <code>None</code> si la persona pulsa Intro sin escribir. Piensa en qué caso de un menú te haría falta.</li><li>Escribe en <code>03-pruebas.py</code> un formulario de alta de un producto que use al menos cinco de las funciones y que imprima al final una ficha alineada con lo recogido. Envuélvelo en un <code>try</code> que capture <kbd>Ctrl</kbd> + <kbd>C</kbd> y despida con &quot;Alta cancelada&quot;.</li><li>Vuelve al <code>gestor.py</code> del proyecto del módulo 1 y sustituye su <code>pedir_entero</code>, que devolvía <code>None</code>, por el de <code>entradas.py</code>. Fíjate en qué cambia la experiencia de uso y decide cuál prefieres para un menú.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#lo-que-pasa-hoy">Lo que pasa hoy</a></li><li class="nivel-2"><a href="#el-patron-de-las-tres-piezas">El patrón de las tres piezas</a></li><li class="nivel-2"><a href="#un-texto-de-la-pregunta-consistente">Un texto de la pregunta consistente</a></li><li class="nivel-2"><a href="#pedir-texto">pedir_texto</a></li><li class="nivel-2"><a href="#pedir-entero-con-minimo-y-maximo">pedir_entero, con mínimo y máximo</a></li><li class="nivel-2"><a href="#pedir-decimal-y-la-coma-espanola">pedir_decimal y la coma española</a></li><li class="nivel-2"><a href="#pedir-fecha">pedir_fecha</a></li><li class="nivel-2"><a href="#pedir-confirmacion">pedir_confirmacion</a></li><li class="nivel-2"><a href="#pedir-opcion">pedir_opcion</a></li><li class="nivel-2"><a href="#contrasenas-sin-eco">Contraseñas sin eco</a></li><li class="nivel-2"><a href="#ctrl-d-y-ctrl-c">Ctrl+D y Ctrl+C</a></li><li class="nivel-2"><a href="#el-modulo-completo">El módulo completo</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../terminal/salida-en-pantalla.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">Controlar la salida en pantalla</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../terminal/menus-interactivos.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">Menús interactivos</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

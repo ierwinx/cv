@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rich: tablas y progreso · Curso de Python</title>
+<meta name="description" content="Tablas que se ajustan solas, barras de progreso, pantallas que se refrescan y preguntas con validación, todo resuelto.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="terminal/rich-tablas-y-progreso">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../terminal/index.html">Aplicaciones de terminal</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 2 &middot; Lección 25 de 28</p>
+    <h1>rich: tablas y progreso</h1>
+    <p class="resumen-leccion">Tablas que se ajustan solas, barras de progreso, pantallas que se refrescan y preguntas con validación, todo resuelto.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 29 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>La lección anterior era el calentamiento. Esta es la parte de <code>rich</code> por la que la instala casi todo el mundo: tablas que calculan sus anchos, barras de progreso con tiempo restante, pantallas que se actualizan en vivo y preguntas que validan lo que escribes.</p>
+<p>Todo esto lo montaste a mano en las lecciones anteriores del módulo, así que sabes cuánto cuesta. Una tabla con columnas que se ajustan al contenido y textos que saltan de línea dentro de su celda no es un ejercicio de tarde. Aquí son cinco líneas.</p>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">Las capturas van sin color, pero con su dibujo</p><p>Igual que en la lección anterior, las salidas se han tomado redirigiendo a un fichero, así que <code>rich</code> ha omitido los colores y ha conservado los bordes y el ajuste. Las de las barras de progreso y las pantallas en vivo son fotogramas reales capturados a mitad de la ejecución.</p></aside>
+<h2 id="tablas">Tablas<a class="ancla" href="#tablas" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Una tabla se construye en tres pasos: crearla, añadir las columnas y añadir las filas.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> rich<span class="t-operador">.</span>console <span class="t-palabra">import</span> Console
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>table <span class="t-palabra">import</span> Table
+
+consola <span class="t-operador">=</span> Console<span class="t-operador">(</span>width<span class="t-operador">=</span><span class="t-numero">70</span><span class="t-operador">)</span>
+
+tabla <span class="t-operador">=</span> Table<span class="t-operador">(</span>title<span class="t-operador">=</span><span class="t-texto">&quot;Gastos de septiembre&quot;</span><span class="t-operador">)</span>
+
+tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Fecha&quot;</span><span class="t-operador">,</span> style<span class="t-operador">=</span><span class="t-texto">&quot;dim&quot;</span><span class="t-operador">)</span>
+tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Concepto&quot;</span><span class="t-operador">)</span>
+tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Importe&quot;</span><span class="t-operador">,</span> justify<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">,</span> style<span class="t-operador">=</span><span class="t-texto">&quot;bold green&quot;</span><span class="t-operador">)</span>
+tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Categoría&quot;</span><span class="t-operador">,</span> justify<span class="t-operador">=</span><span class="t-texto">&quot;center&quot;</span><span class="t-operador">)</span>
+
+tabla<span class="t-operador">.</span>add_row<span class="t-operador">(</span><span class="t-texto">&quot;2026-09-02&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Café con leche&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;1.60 €&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">)</span>
+tabla<span class="t-operador">.</span>add_row<span class="t-operador">(</span><span class="t-texto">&quot;2026-09-05&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Billete de metro&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;2.40 €&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;transporte&quot;</span><span class="t-operador">)</span>
+tabla<span class="t-operador">.</span>add_row<span class="t-operador">(</span><span class="t-texto">&quot;2026-09-11&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Compra semanal&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;54.20 €&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">)</span>
+tabla<span class="t-operador">.</span>add_row<span class="t-operador">(</span><span class="t-texto">&quot;2026-09-18&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Entradas de cine&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;18.00 €&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;ocio&quot;</span><span class="t-operador">)</span>
+
+consola<span class="t-operador">.</span><span class="t-integrada">print</span><span class="t-operador">(</span>tabla<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>                  Gastos de septiembre                  
+┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━┓
+┃ Fecha      ┃ Concepto         ┃ Importe ┃ Categoría  ┃
+┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━┩
+│ 2026-09-02 │ Café con leche   │  1.60 € │   comida   │
+│ 2026-09-05 │ Billete de metro │  2.40 € │ transporte │
+│ 2026-09-11 │ Compra semanal   │ 54.20 € │   comida   │
+│ 2026-09-18 │ Entradas de cine │ 18.00 € │    ocio    │
+└────────────┴──────────────────┴─────────┴────────────┘</code></pre></div>
+<p>Fíjate en lo que no has tenido que hacer. No has medido el texto más largo de cada columna, no has contado caracteres para los bordes, no has centrado el título y no te has peleado con la eñe ni con la tilde de &quot;Categoría&quot;. La tabla ha salido del ancho justo del contenido, y si añades una fila con un concepto más largo, todas las columnas se recolocan.</p>
+<p>Los parámetros de <code>add_column</code>:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Parámetro</th><th>Qué hace</th></tr></thead><tbody><tr><td><code>justify</code></td><td><code>&quot;left&quot;</code>, <code>&quot;center&quot;</code>, <code>&quot;right&quot;</code> o <code>&quot;full&quot;</code></td></tr><tr><td><code>style</code></td><td>Estilo de las celdas de esa columna</td></tr><tr><td><code>header_style</code></td><td>Estilo de la cabecera de esa columna</td></tr><tr><td><code>no_wrap=True</code></td><td>No parte el texto en varias líneas</td></tr><tr><td><code>width</code></td><td>Ancho fijo en caracteres</td></tr><tr><td><code>min_width</code> y <code>max_width</code></td><td>Límites, dejando que se ajuste entre ellos</td></tr><tr><td><code>ratio</code></td><td>Reparto proporcional del espacio sobrante</td></tr></tbody></table></div>
+<p>Las filas se añaden con <code>add_row</code> y tantos argumentos como columnas haya. Si le pasas menos, las que falten quedan vacías; si le pasas más, dará error. Y los valores tienen que ser cadenas o objetos de <code>rich</code>, así que los números hay que formatearlos antes, que es donde siguen entrando las f-strings de siempre.</p>
+<h3 id="cambiar-el-borde-con-box">Cambiar el borde con <code>box</code><a class="ancla" href="#cambiar-el-borde-con-box" aria-label="Enlace a esta seccion">#</a></h3>
+<p>El dibujo del recuadro se elige con el parámetro <code>box</code>, y las opciones están en el módulo <code>rich.box</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> rich <span class="t-palabra">import</span> box
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>console <span class="t-palabra">import</span> Console
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>table <span class="t-palabra">import</span> Table
+
+consola <span class="t-operador">=</span> Console<span class="t-operador">(</span>width<span class="t-operador">=</span><span class="t-numero">70</span><span class="t-operador">)</span>
+
+filas <span class="t-operador">=</span> <span class="t-operador">[</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;comida&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;55.80 €&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;2&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;ocio&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;18.00 €&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;1&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;transporte&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;2.40 €&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;1&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+<span class="t-operador">]</span>
+
+<span class="t-palabra">for</span> nombre<span class="t-operador">,</span> borde <span class="t-palabra">in</span> <span class="t-operador">[</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;box.SIMPLE&quot;</span><span class="t-operador">,</span> box<span class="t-operador">.</span>SIMPLE<span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;box.MINIMAL&quot;</span><span class="t-operador">,</span> box<span class="t-operador">.</span>MINIMAL<span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;box.ROUNDED&quot;</span><span class="t-operador">,</span> box<span class="t-operador">.</span>ROUNDED<span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;box.HEAVY_HEAD&quot;</span><span class="t-operador">,</span> box<span class="t-operador">.</span>HEAVY_HEAD<span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;box.ASCII&quot;</span><span class="t-operador">,</span> box<span class="t-operador">.</span>ASCII<span class="t-operador">)</span><span class="t-operador">,</span>
+<span class="t-operador">]</span><span class="t-operador">:</span>
+        tabla <span class="t-operador">=</span> Table<span class="t-operador">(</span>title<span class="t-operador">=</span>nombre<span class="t-operador">,</span> box<span class="t-operador">=</span>borde<span class="t-operador">)</span>
+    tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Categoría&quot;</span><span class="t-operador">)</span>
+    tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Total&quot;</span><span class="t-operador">,</span> justify<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">)</span>
+    tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Nº&quot;</span><span class="t-operador">,</span> justify<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">for</span> fila <span class="t-palabra">in</span> filas<span class="t-operador">:</span>
+                tabla<span class="t-operador">.</span>add_row<span class="t-operador">(</span><span class="t-operador">*</span>fila<span class="t-operador">)</span>
+    consola<span class="t-operador">.</span><span class="t-integrada">print</span><span class="t-operador">(</span>tabla<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>         box.SIMPLE          
+                             
+  Categoría      Total   Nº  
+ ─────────────────────────── 
+  comida       55.80 €    2  
+  ocio         18.00 €    1  
+  transporte    2.40 €    1  
+                             
+         box.MINIMAL         
+             ╷         ╷     
+  Categoría  │   Total │ Nº  
+╶────────────┼─────────┼────╴
+  comida     │ 55.80 € │  2  
+  ocio       │ 18.00 € │  1  
+  transporte │  2.40 € │  1  
+             ╵         ╵     
+         box.ROUNDED         
+╭────────────┬─────────┬────╮
+│ Categoría  │   Total │ Nº │
+├────────────┼─────────┼────┤
+│ comida     │ 55.80 € │  2 │
+│ ocio       │ 18.00 € │  1 │
+│ transporte │  2.40 € │  1 │
+╰────────────┴─────────┴────╯
+       box.HEAVY_HEAD        
+┏━━━━━━━━━━━━┳━━━━━━━━━┳━━━━┓
+┃ Categoría  ┃   Total ┃ Nº ┃
+┡━━━━━━━━━━━━╇━━━━━━━━━╇━━━━┩
+│ comida     │ 55.80 € │  2 │
+│ ocio       │ 18.00 € │  1 │
+│ transporte │  2.40 € │  1 │
+└────────────┴─────────┴────┘
+          box.ASCII          
++---------------------------+
+| Categoría  |   Total | Nº |
+|------------+---------+----|
+| comida     | 55.80 € |  2 |
+| ocio       | 18.00 € |  1 |
+| transporte |  2.40 € |  1 |
++---------------------------+</code></pre></div>
+<p><code>HEAVY_HEAD</code> es el que viene por defecto. <code>SIMPLE</code> y <code>MINIMAL</code> quedan mejor cuando hay muchas tablas seguidas y el marco distrae. Y <strong><code>ASCII</code> merece una mención aparte</strong>: solo usa caracteres de los de toda la vida, así que es el que funciona en cualquier terminal por vieja que sea y el único seguro si vas a guardar la salida en un fichero que abrirá otro programa.</p>
+<h3 id="columnas-que-se-ajustan-solas">Columnas que se ajustan solas<a class="ancla" href="#columnas-que-se-ajustan-solas" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Cuando el contenido no cabe, <code>rich</code> reparte el espacio. El parámetro <code>ratio</code> dice en qué proporción, y <code>no_wrap</code> protege a una columna de que le partan el texto:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> rich<span class="t-operador">.</span>console <span class="t-palabra">import</span> Console
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>panel <span class="t-palabra">import</span> Panel
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>table <span class="t-palabra">import</span> Table
+
+consola <span class="t-operador">=</span> Console<span class="t-operador">(</span>width<span class="t-operador">=</span><span class="t-numero">60</span><span class="t-operador">)</span>
+
+tabla <span class="t-operador">=</span> Table<span class="t-operador">(</span>show_header<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> header_style<span class="t-operador">=</span><span class="t-texto">&quot;bold magenta&quot;</span><span class="t-operador">)</span>
+tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Concepto&quot;</span><span class="t-operador">,</span> ratio<span class="t-operador">=</span><span class="t-numero">2</span><span class="t-operador">)</span>
+tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Nota&quot;</span><span class="t-operador">,</span> ratio<span class="t-operador">=</span><span class="t-numero">3</span><span class="t-operador">)</span>
+tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Importe&quot;</span><span class="t-operador">,</span> justify<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">,</span> no_wrap<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+tabla<span class="t-operador">.</span>add_row<span class="t-operador">(</span>
+    <span class="t-texto">&quot;Compra semanal&quot;</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;Supermercado del barrio, incluye la fruta de toda la semana&quot;</span><span class="t-operador">,</span>
+    <span class="t-texto">&quot;54.20 €&quot;</span><span class="t-operador">,</span>
+<span class="t-operador">)</span>
+tabla<span class="t-operador">.</span>add_row<span class="t-operador">(</span><span class="t-texto">&quot;Café con leche&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Con el equipo, después de la reunión&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;1.60 €&quot;</span><span class="t-operador">)</span>
+
+tabla<span class="t-operador">.</span>expand <span class="t-operador">=</span> <span class="t-palabra">True</span>
+consola<span class="t-operador">.</span><span class="t-integrada">print</span><span class="t-operador">(</span>tabla<span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
+┃ Concepto          ┃ Nota                       ┃ Importe ┃
+┡━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
+│ Compra semanal    │ Supermercado del barrio,   │ 54.20 € │
+│                   │ incluye la fruta de toda   │         │
+│                   │ la semana                  │         │
+│ Café con leche    │ Con el equipo, después de  │  1.60 € │
+│                   │ la reunión                 │         │
+└───────────────────┴────────────────────────────┴─────────┘</code></pre></div>
+<p>Esa nota larga se ha repartido en tres líneas dentro de su celda, y la fila entera ha crecido con ella sin que las demás columnas se muevan. Eso es lo que hacía inviable escribir tablas a mano en cuanto el contenido no cabía.</p>
+<p><code>expand = True</code> hace que la tabla ocupe todo el ancho disponible en vez de solo el que necesita, y es lo que da sentido a los <code>ratio</code>: el espacio sobrante se reparte entre las columnas que lo declaran, dos partes para una y tres para la otra.</p>
+<h3 id="tablas-dentro-de-paneles">Tablas dentro de paneles<a class="ancla" href="#tablas-dentro-de-paneles" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Como una tabla es un objeto de <code>rich</code>, se le puede pasar a un <code>Panel</code>. Y hay una variante sin bordes, <code>Table.grid</code>, pensada justo para eso: alinear cosas en columnas sin que parezca una tabla.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">resumen <span class="t-operador">=</span> Table<span class="t-operador">.</span>grid<span class="t-operador">(</span>padding<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">2</span><span class="t-operador">)</span><span class="t-operador">)</span>
+resumen<span class="t-operador">.</span>add_column<span class="t-operador">(</span>justify<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">,</span> style<span class="t-operador">=</span><span class="t-texto">&quot;bold&quot;</span><span class="t-operador">)</span>
+resumen<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-operador">)</span>
+resumen<span class="t-operador">.</span>add_row<span class="t-operador">(</span><span class="t-texto">&quot;Total:&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;76.20 €&quot;</span><span class="t-operador">)</span>
+resumen<span class="t-operador">.</span>add_row<span class="t-operador">(</span><span class="t-texto">&quot;Media:&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;19.05 €&quot;</span><span class="t-operador">)</span>
+resumen<span class="t-operador">.</span>add_row<span class="t-operador">(</span><span class="t-texto">&quot;Mayor:&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Compra semanal&quot;</span><span class="t-operador">)</span>
+
+consola<span class="t-operador">.</span><span class="t-integrada">print</span><span class="t-operador">(</span>Panel<span class="t-operador">(</span>resumen<span class="t-operador">,</span> title<span class="t-operador">=</span><span class="t-texto">&quot;Resumen&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">False</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>╭─────── Resumen ────────╮
+│ Total:  76.20 €        │
+│ Media:  19.05 €        │
+│ Mayor:  Compra semanal │
+╰────────────────────────╯</code></pre></div>
+<p><code>Table.grid</code> es la herramienta para maquetar: sin bordes, sin cabecera y sin relleno salvo el que pidas. Es lo que usarías para una ficha de datos, una cabecera con el logo a un lado y la versión al otro, o cualquier cosa que tenga que quedar alineada en columnas.</p>
+<h2 id="barras-de-progreso">Barras de progreso<a class="ancla" href="#barras-de-progreso" aria-label="Enlace a esta seccion">#</a></h2>
+<h3 id="el-caso-sencillo-track">El caso sencillo: <code>track</code><a class="ancla" href="#el-caso-sencillo-track" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Si lo único que quieres es recorrer una secuencia con una barra, hay una función que lo hace en una línea. Envuelve el objeto por el que ibas a iterar y ya está:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> time
+
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>progress <span class="t-palabra">import</span> track
+
+gastos <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-texto">&quot;Café&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Metro&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Compra&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Cine&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Farmacia&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Gasolina&quot;</span><span class="t-operador">]</span>
+
+<span class="t-palabra">for</span> gasto <span class="t-palabra">in</span> track<span class="t-operador">(</span>gastos<span class="t-operador">,</span> description<span class="t-operador">=</span><span class="t-texto">&quot;Importando gastos...&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        time<span class="t-operador">.</span>sleep<span class="t-operador">(</span><span class="t-numero">0.3</span><span class="t-operador">)</span>
+
+<span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;Importados&quot;</span><span class="t-operador">,</span> <span class="t-integrada">len</span><span class="t-operador">(</span>gastos<span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;gastos&quot;</span><span class="t-operador">)</span></code></pre></div>
+<p>A mitad de la ejecución, la terminal enseña esto:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Importando gastos... ━━━━━━━━━━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━  33% 0:00:02</code></pre></div>
+<p>Y al terminar, la barra se queda completa y el programa sigue:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Importando gastos... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:01
+Importados 6 gastos</code></pre></div>
+<p><code>track</code> saca el total de la longitud de la secuencia, así que funciona con listas, tuplas y cualquier cosa que tenga <code>len</code>. Con un generador, que no la tiene, hay que pasarle <code>total=</code> a mano.</p>
+<h3 id="la-barra-completa-progress">La barra completa: <code>Progress</code><a class="ancla" href="#la-barra-completa-progress" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Cuando quieres controlar qué columnas aparecen, o avanzar la barra desde varios sitios, se usa <code>Progress</code> con un <code>with</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> time
+
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>progress <span class="t-palabra">import</span> <span class="t-operador">(</span>
+    BarColumn<span class="t-operador">,</span>
+    MofNCompleteColumn<span class="t-operador">,</span>
+    Progress<span class="t-operador">,</span>
+    SpinnerColumn<span class="t-operador">,</span>
+    TextColumn<span class="t-operador">,</span>
+    TimeElapsedColumn<span class="t-operador">,</span>
+    TimeRemainingColumn<span class="t-operador">,</span>
+<span class="t-operador">)</span>
+
+ficheros <span class="t-operador">=</span> <span class="t-operador">[</span>f&quot;extracto-2026-<span class="t-operador">{</span>mes<span class="t-operador">:</span>02d<span class="t-operador">}</span>.csv&quot; <span class="t-palabra">for</span> mes <span class="t-palabra">in</span> <span class="t-integrada">range</span><span class="t-operador">(</span><span class="t-numero">1</span><span class="t-operador">,</span> <span class="t-numero">13</span><span class="t-operador">)</span><span class="t-operador">]</span>
+
+<span class="t-palabra">with</span> Progress<span class="t-operador">(</span>
+    SpinnerColumn<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    TextColumn<span class="t-operador">(</span><span class="t-texto">&quot;[bold blue]{task.description}&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    BarColumn<span class="t-operador">(</span>bar_width<span class="t-operador">=</span><span class="t-numero">20</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    TextColumn<span class="t-operador">(</span><span class="t-texto">&quot;[progress.percentage]{task.percentage:&gt;3.0f}%&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    MofNCompleteColumn<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    TimeElapsedColumn<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    TimeRemainingColumn<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span>
+<span class="t-operador">)</span> <span class="t-palabra">as</span> progreso<span class="t-operador">:</span>
+        tarea <span class="t-operador">=</span> progreso<span class="t-operador">.</span>add_task<span class="t-operador">(</span><span class="t-texto">&quot;Leyendo extractos&quot;</span><span class="t-operador">,</span> total<span class="t-operador">=</span><span class="t-integrada">len</span><span class="t-operador">(</span>ficheros<span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">for</span> fichero <span class="t-palabra">in</span> ficheros<span class="t-operador">:</span>
+                time<span class="t-operador">.</span>sleep<span class="t-operador">(</span><span class="t-numero">0.25</span><span class="t-operador">)</span>
+        progreso<span class="t-operador">.</span>advance<span class="t-operador">(</span>tarea<span class="t-operador">)</span></code></pre></div>
+<p>Un fotograma a mitad:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>⠹ Leyendo extractos ━━━━━━━━━━━╸━━━━━━━━  58%  7/12 0:00:02 0:00:02</code></pre></div>
+<p>Y el último, con el giro ya parado:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>  Leyendo extractos ━━━━━━━━━━━━━━━━━━━━ 100% 12/12 0:00:03 0:00:00</code></pre></div>
+<p>Las piezas del patrón:</p>
+<ul><li><strong>Los argumentos de <code>Progress</code> son las columnas</strong>, en el orden en que quieres verlas. Sin argumentos, trae un juego razonable por defecto.</li><li><strong><code>with</code></strong> se encarga de arrancar el dibujo y, sobre todo, de apagarlo al salir, incluso si hay una excepción. Sin él, un fallo en mitad del bucle te dejaría la terminal sin cursor.</li><li><strong><code>add_task</code></strong> crea una barra y devuelve un identificador. El <code>total</code> es el número de pasos.</li><li><strong><code>advance(tarea)</code></strong> suma uno. Con <code>advance(tarea, 10)</code> suma diez, y con <code>progreso.update(tarea, completed=50)</code> se fija el valor absoluto.</li></ul>
+<p>Las columnas que más se usan:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Columna</th><th>Qué enseña</th></tr></thead><tbody><tr><td><code>TextColumn(&quot;...&quot;)</code></td><td>Texto con marcado y campos como <code>{task.description}</code></td></tr><tr><td><code>BarColumn()</code></td><td>La barra. Con <code>bar_width=None</code> ocupa lo que sobre</td></tr><tr><td><code>TaskProgressColumn()</code></td><td>El porcentaje</td></tr><tr><td><code>MofNCompleteColumn()</code></td><td>Cuántos de cuántos, <code>7/12</code></td></tr><tr><td><code>TimeElapsedColumn()</code></td><td>Tiempo transcurrido</td></tr><tr><td><code>TimeRemainingColumn()</code></td><td>Tiempo restante estimado</td></tr><tr><td><code>SpinnerColumn()</code></td><td>Un indicador que gira mientras haya actividad</td></tr><tr><td><code>DownloadColumn()</code></td><td>Bytes descargados sobre el total</td></tr><tr><td><code>TransferSpeedColumn()</code></td><td>Velocidad de transferencia</td></tr></tbody></table></div>
+<p>El tiempo restante es una estimación a partir de lo que ha tardado lo anterior, y por eso al principio sale como <code>-:--:--</code>: hasta que no hay un par de pasos hechos no hay con qué calcular.</p>
+<h3 id="varias-barras-a-la-vez">Varias barras a la vez<a class="ancla" href="#varias-barras-a-la-vez" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Un mismo <code>Progress</code> admite todas las tareas que quieras, y las dibuja una debajo de otra:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> time
+
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>progress <span class="t-palabra">import</span> Progress
+
+<span class="t-palabra">with</span> Progress<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">as</span> progreso<span class="t-operador">:</span>
+        leer <span class="t-operador">=</span> progreso<span class="t-operador">.</span>add_task<span class="t-operador">(</span><span class="t-texto">&quot;[cyan]Leyendo el CSV&quot;</span><span class="t-operador">,</span> total<span class="t-operador">=</span><span class="t-numero">120</span><span class="t-operador">)</span>
+    validar <span class="t-operador">=</span> progreso<span class="t-operador">.</span>add_task<span class="t-operador">(</span><span class="t-texto">&quot;[magenta]Validando importes&quot;</span><span class="t-operador">,</span> total<span class="t-operador">=</span><span class="t-numero">120</span><span class="t-operador">)</span>
+    guardar <span class="t-operador">=</span> progreso<span class="t-operador">.</span>add_task<span class="t-operador">(</span><span class="t-texto">&quot;[green]Guardando en JSON&quot;</span><span class="t-operador">,</span> total<span class="t-operador">=</span><span class="t-numero">120</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">while</span> <span class="t-palabra">not</span> progreso<span class="t-operador">.</span>finished<span class="t-operador">:</span>
+                progreso<span class="t-operador">.</span>advance<span class="t-operador">(</span>leer<span class="t-operador">,</span> <span class="t-numero">3</span><span class="t-operador">)</span>
+        progreso<span class="t-operador">.</span>advance<span class="t-operador">(</span>validar<span class="t-operador">,</span> <span class="t-numero">2</span><span class="t-operador">)</span>
+        progreso<span class="t-operador">.</span>advance<span class="t-operador">(</span>guardar<span class="t-operador">,</span> <span class="t-numero">1</span><span class="t-operador">)</span>
+        time<span class="t-operador">.</span>sleep<span class="t-operador">(</span><span class="t-numero">0.05</span><span class="t-operador">)</span></code></pre></div>
+<p>A mitad de camino:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Leyendo el CSV     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╺━━━━  88% 0:00:01
+Validando importes ━━━━━━━━━━━━━━━━━━━━━━╺━━━━━━━━━━━━━━━  58% 0:00:02
+Guardando en JSON  ━━━━━━━━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━  29% 0:00:05</code></pre></div>
+<p>Y al final:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Leyendo el CSV     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Validando importes ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00
+Guardando en JSON  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00</code></pre></div>
+<p><code>progreso.finished</code> vale <code>True</code> cuando todas las tareas han llegado a su total, y es lo que permite ese <code>while</code> sin llevar la cuenta a mano. Las descripciones se han alineado solas, porque <code>rich</code> mide la más larga antes de empezar.</p>
+<h2 id="status-cuando-no-sabes-cuanto-falta"><code>Status</code>: cuando no sabes cuánto falta<a class="ancla" href="#status-cuando-no-sabes-cuanto-falta" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Una barra de progreso necesita saber el total. Para lo que tarda un rato indeterminado (una consulta a un servidor, una espera) hay un indicador que solo gira:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> time
+
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>console <span class="t-palabra">import</span> Console
+
+consola <span class="t-operador">=</span> Console<span class="t-operador">(</span>width<span class="t-operador">=</span><span class="t-numero">70</span><span class="t-operador">)</span>
+
+<span class="t-palabra">with</span> consola<span class="t-operador">.</span>status<span class="t-operador">(</span><span class="t-texto">&quot;Conectando con el banco...&quot;</span><span class="t-operador">)</span> <span class="t-palabra">as</span> estado<span class="t-operador">:</span>
+        time<span class="t-operador">.</span>sleep<span class="t-operador">(</span><span class="t-numero">1</span><span class="t-operador">)</span>
+    estado<span class="t-operador">.</span>update<span class="t-operador">(</span><span class="t-texto">&quot;Descargando los movimientos...&quot;</span><span class="t-operador">)</span>
+    time<span class="t-operador">.</span>sleep<span class="t-operador">(</span><span class="t-numero">1</span><span class="t-operador">)</span>
+    estado<span class="t-operador">.</span>update<span class="t-operador">(</span><span class="t-texto">&quot;[bold green]Guardando en gastos.json...&quot;</span><span class="t-operador">)</span>
+    time<span class="t-operador">.</span>sleep<span class="t-operador">(</span><span class="t-numero">1</span><span class="t-operador">)</span>
+
+consola<span class="t-operador">.</span><span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;Listo: 37 movimientos descargados.&quot;</span><span class="t-operador">)</span></code></pre></div>
+<p>Mientras corre, la terminal enseña una sola línea que va cambiando:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>⠸ Conectando con el banco...</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>⠼ Guardando en gastos.json...</code></pre></div>
+<p>Y al salir del <code>with</code>, la línea desaparece y queda solo lo que imprimas después:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Listo: 37 movimientos descargados.</code></pre></div>
+<p>El <code>estado.update()</code> cambia el texto sin parar el giro. Y como el <code>with</code> limpia la línea al salir, el registro de la sesión queda limpio: no se acumulan diez mensajes de &quot;conectando&quot;, solo queda el resultado.</p>
+<h2 id="live-actualizar-una-tabla-en-tiempo-real"><code>Live</code>: actualizar una tabla en tiempo real<a class="ancla" href="#live-actualizar-una-tabla-en-tiempo-real" aria-label="Enlace a esta seccion">#</a></h2>
+<p><code>Progress</code> y <code>Status</code> son casos particulares de algo más general: un objeto <code>Live</code> puede redibujar <strong>cualquier</strong> cosa de <code>rich</code> mientras el programa trabaja.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> random
+<span class="t-palabra">import</span> time
+
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>live <span class="t-palabra">import</span> Live
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>table <span class="t-palabra">import</span> Table
+
+CATEGORIAS <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-texto">&quot;comida&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;transporte&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;ocio&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;casa&quot;</span><span class="t-operador">]</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">construir_tabla</span><span class="t-operador">(</span>totales<span class="t-operador">:</span> <span class="t-integrada">dict</span><span class="t-operador">[</span><span class="t-integrada">str</span><span class="t-operador">,</span> <span class="t-integrada">float</span><span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">-&gt;</span> Table<span class="t-operador">:</span>
+        tabla <span class="t-operador">=</span> Table<span class="t-operador">(</span>title<span class="t-operador">=</span><span class="t-texto">&quot;Gastos en directo&quot;</span><span class="t-operador">)</span>
+    tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Categoría&quot;</span><span class="t-operador">)</span>
+    tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Total&quot;</span><span class="t-operador">,</span> justify<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">)</span>
+    tabla<span class="t-operador">.</span>add_column<span class="t-operador">(</span><span class="t-texto">&quot;Barra&quot;</span><span class="t-operador">)</span>
+    mayor <span class="t-operador">=</span> <span class="t-integrada">max</span><span class="t-operador">(</span>totales<span class="t-operador">.</span>values<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> default<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">)</span> <span class="t-palabra">or</span> <span class="t-numero">1</span>
+    <span class="t-palabra">for</span> categoria<span class="t-operador">,</span> total <span class="t-palabra">in</span> <span class="t-integrada">sorted</span><span class="t-operador">(</span>totales<span class="t-operador">.</span>items<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> key<span class="t-operador">=</span><span class="t-palabra">lambda</span> par<span class="t-operador">:</span> <span class="t-operador">-</span>par<span class="t-operador">[</span><span class="t-numero">1</span><span class="t-operador">]</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                ancho <span class="t-operador">=</span> <span class="t-integrada">int</span><span class="t-operador">(</span>total <span class="t-operador">/</span> mayor <span class="t-operador">*</span> <span class="t-numero">20</span><span class="t-operador">)</span>
+        tabla<span class="t-operador">.</span>add_row<span class="t-operador">(</span>categoria<span class="t-operador">,</span> f&quot;<span class="t-operador">{</span>total<span class="t-operador">:</span>.2f<span class="t-operador">}</span> €&quot;<span class="t-operador">,</span> <span class="t-texto">&quot;█&quot;</span> <span class="t-operador">*</span> ancho<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> tabla
+
+
+random<span class="t-operador">.</span>seed<span class="t-operador">(</span><span class="t-numero">7</span><span class="t-operador">)</span>
+totales <span class="t-operador">=</span> <span class="t-integrada">dict</span><span class="t-operador">.</span>fromkeys<span class="t-operador">(</span>CATEGORIAS<span class="t-operador">,</span> <span class="t-numero">0.0</span><span class="t-operador">)</span>
+
+<span class="t-palabra">with</span> Live<span class="t-operador">(</span>construir_tabla<span class="t-operador">(</span>totales<span class="t-operador">)</span><span class="t-operador">,</span> refresh_per_second<span class="t-operador">=</span><span class="t-numero">4</span><span class="t-operador">)</span> <span class="t-palabra">as</span> directo<span class="t-operador">:</span>
+        <span class="t-palabra">for</span> <span class="t-palabra">_</span> <span class="t-palabra">in</span> <span class="t-integrada">range</span><span class="t-operador">(</span><span class="t-numero">20</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                time<span class="t-operador">.</span>sleep<span class="t-operador">(</span><span class="t-numero">0.15</span><span class="t-operador">)</span>
+        categoria <span class="t-operador">=</span> random<span class="t-operador">.</span>choice<span class="t-operador">(</span>CATEGORIAS<span class="t-operador">)</span>
+        totales<span class="t-operador">[</span>categoria<span class="t-operador">]</span> <span class="t-operador">+=</span> <span class="t-integrada">round</span><span class="t-operador">(</span>random<span class="t-operador">.</span>uniform<span class="t-operador">(</span><span class="t-numero">1</span><span class="t-operador">,</span> <span class="t-numero">25</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-numero">2</span><span class="t-operador">)</span>
+        directo<span class="t-operador">.</span>update<span class="t-operador">(</span>construir_tabla<span class="t-operador">(</span>totales<span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<p>Un fotograma a mitad:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>               Gastos en directo
+┏━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Categoría  ┃   Total ┃ Barra                ┃
+┡━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩
+│ comida     │ 91.91 € │ ████████████████████ │
+│ transporte │ 42.54 € │ █████████            │
+│ ocio       │ 38.20 € │ ████████             │
+│ casa       │ 32.27 € │ ███████              │
+└────────────┴─────────┴──────────────────────┘</code></pre></div>
+<p>Y el final, con la tabla ya quieta en pantalla:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>               Gastos en directo
+┏━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Categoría  ┃    Total ┃ Barra                ┃
+┡━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩
+│ comida     │ 106.45 € │ ████████████████████ │
+│ transporte │  55.45 € │ ██████████           │
+│ ocio       │  38.20 € │ ███████              │
+│ casa       │  32.27 € │ ██████               │
+└────────────┴──────────┴──────────────────────┘</code></pre></div>
+<p>Fíjate en que la columna del total ha crecido una posición entre los dos fotogramas, porque el número pasó de dos a tres cifras. <code>Live</code> no parchea la pantalla: en cada refresco vuelve a dibujar el objeto entero, y por eso la función <code>construir_tabla</code> crea una tabla nueva cada vez en lugar de modificar la anterior.</p>
+<p>Dos cosas que hay que saber:</p>
+<ul><li><strong><code>refresh_per_second</code></strong> limita los redibujados. Ponerlo alto no mejora nada y hace parpadear.</li><li><strong>No imprimas con <code>print</code> dentro de un <code>Live</code>.</strong> El dibujo y tu texto se pisarían. Si necesitas contar algo, usa <code>directo.console.print(...)</code>, que lo coloca encima de la zona viva.</li></ul>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">Todo esto necesita una terminal de verdad</p><p><code>Progress</code>, <code>Status</code> y <code>Live</code> funcionan moviendo el cursor y reescribiendo líneas. Si la salida va a un fichero o a una tubería, <code>rich</code> lo detecta y se comporta: no escribe la animación, solo el estado final. Es lo correcto, y es lo que hace que tu herramienta siga siendo utilizable dentro de un <code>|</code> sin llenar el resultado de basura. Pero conviene saberlo, porque explica por qué al redirigir la salida no ves la barra moverse.</p></aside>
+<h2 id="preguntar-con-validacion">Preguntar con validación<a class="ancla" href="#preguntar-con-validacion" aria-label="Enlace a esta seccion">#</a></h2>
+<p>En la lección 3 del módulo escribiste a mano las funciones que piden datos y no se rinden hasta recibir algo válido: el bucle, el <code>try</code>/<code>except</code> del <code>int()</code>, la comprobación de que la respuesta está en la lista de opciones y el mensaje de error. <code>rich</code> trae todo eso hecho.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> rich<span class="t-operador">.</span>prompt <span class="t-palabra">import</span> Confirm<span class="t-operador">,</span> FloatPrompt<span class="t-operador">,</span> Prompt
+
+CATEGORIAS <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-texto">&quot;comida&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;transporte&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;ocio&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;casa&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;otros&quot;</span><span class="t-operador">]</span>
+
+concepto <span class="t-operador">=</span> Prompt<span class="t-operador">.</span>ask<span class="t-operador">(</span><span class="t-texto">&quot;Concepto del gasto&quot;</span><span class="t-operador">)</span>
+importe <span class="t-operador">=</span> FloatPrompt<span class="t-operador">.</span>ask<span class="t-operador">(</span><span class="t-texto">&quot;Importe en euros&quot;</span><span class="t-operador">)</span>
+categoria <span class="t-operador">=</span> Prompt<span class="t-operador">.</span>ask<span class="t-operador">(</span><span class="t-texto">&quot;Categoría&quot;</span><span class="t-operador">,</span> choices<span class="t-operador">=</span>CATEGORIAS<span class="t-operador">,</span> default<span class="t-operador">=</span><span class="t-texto">&quot;otros&quot;</span><span class="t-operador">)</span>
+
+<span class="t-palabra">if</span> Confirm<span class="t-operador">.</span>ask<span class="t-operador">(</span>f&quot;¿Apunto [bold]<span class="t-operador">{</span>concepto<span class="t-operador">}</span>[/bold] por <span class="t-operador">{</span>importe<span class="t-operador">:</span>.2f<span class="t-operador">}</span> €?&quot;<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span>f&quot;Apuntado: <span class="t-operador">{</span>concepto<span class="t-operador">}</span> (<span class="t-operador">{</span>importe<span class="t-operador">:</span>.2f<span class="t-operador">}</span> €, <span class="t-operador">{</span>categoria<span class="t-operador">}</span>)&quot;<span class="t-operador">)</span>
+<span class="t-palabra">else</span><span class="t-operador">:</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;No he apuntado nada.&quot;</span><span class="t-operador">)</span></code></pre></div>
+<p>Una sesión contestando bien a todo:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Concepto del gasto: Compra semanal
+Importe en euros: 54.20
+Categoría [comida/transporte/ocio/casa/otros] (otros): comida
+¿Apunto Compra semanal por 54.20 €? [y/n]: y
+Apuntado: Compra semanal (54.20 €, comida)</code></pre></div>
+<p>Y otra metiendo la pata a propósito:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Concepto del gasto: Compra semanal
+Importe en euros: cincuenta euros
+Please enter a number
+Importe en euros: 54.20
+Categoría [comida/transporte/ocio/casa/otros] (otros): deporte
+Please select one of the available options
+Categoría [comida/transporte/ocio/casa/otros] (otros): comida
+¿Apunto Compra semanal por 54.20 €? [y/n]: n
+No he apuntado nada.</code></pre></div>
+<p>Vuelve a preguntar, enseña las opciones disponibles entre corchetes y el valor por defecto entre paréntesis, y convierte el texto al tipo que toca. Eso es exactamente lo que escribiste a mano, en cuatro líneas.</p>
+<p>Las clases disponibles:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Clase</th><th>Qué devuelve</th></tr></thead><tbody><tr><td><code>Prompt</code></td><td>Una cadena</td></tr><tr><td><code>IntPrompt</code></td><td>Un entero</td></tr><tr><td><code>FloatPrompt</code></td><td>Un número con decimales</td></tr><tr><td><code>Confirm</code></td><td><code>True</code> o <code>False</code></td></tr></tbody></table></div>
+<p>Y los parámetros de <code>ask</code>:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Parámetro</th><th>Qué hace</th></tr></thead><tbody><tr><td><code>default</code></td><td>Valor si se pulsa <kbd>Intro</kbd> sin escribir nada</td></tr><tr><td><code>choices</code></td><td>Lista de respuestas admitidas</td></tr><tr><td><code>case_sensitive=False</code></td><td>Acepta las opciones sin distinguir mayúsculas</td></tr><tr><td><code>show_default=False</code></td><td>No enseña el valor por defecto</td></tr><tr><td><code>show_choices=False</code></td><td>No enseña las opciones</td></tr><tr><td><code>password=True</code></td><td>No muestra lo que se escribe</td></tr></tbody></table></div>
+<h3 id="los-mensajes-estan-en-ingles">Los mensajes están en inglés<a class="ancla" href="#los-mensajes-estan-en-ingles" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Ese <code>Please enter a number</code> desentona en un programa en español. Los textos son atributos de clase, así que se cambian heredando:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> rich<span class="t-operador">.</span>prompt <span class="t-palabra">import</span> Confirm
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">Confirmar</span><span class="t-operador">(</span>Confirm<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Como Confirm, pero responde a «s» y «n» y avisa en español.&quot;&quot;&quot;</span>
+
+    choices <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-texto">&quot;s&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;n&quot;</span><span class="t-operador">]</span>
+    validate_error_message <span class="t-operador">=</span> <span class="t-texto">&quot;[prompt.invalid]Responde s o n&quot;</span>
+
+
+<span class="t-palabra">if</span> Confirmar<span class="t-operador">.</span>ask<span class="t-operador">(</span><span class="t-texto">&quot;¿Borro todos los gastos?&quot;</span><span class="t-operador">,</span> default<span class="t-operador">=</span><span class="t-palabra">False</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;Borrados.&quot;</span><span class="t-operador">)</span>
+<span class="t-palabra">else</span><span class="t-operador">:</span>
+        <span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;No he tocado nada.&quot;</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>¿Borro todos los gastos? [s/n] (n): vale
+Responde s o n
+¿Borro todos los gastos? [s/n] (n): n
+No he tocado nada.</code></pre></div>
+<p>Con dos atributos, la confirmación responde a la tecla que espera quien lee en español. Lo mismo vale para los demás: <code>Prompt</code> tiene <code>illegal_choice_message</code> y los numéricos tienen <code>validate_error_message</code>.</p>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Las preguntas van en la capa de terminal</p><p><code>Prompt</code> y <code>Confirm</code> llaman a <code>input()</code> por dentro. Eso significa que son de <code>cli.py</code>, nunca del núcleo, por lo que viste en la lección 20. Un módulo que pregunta no se puede probar sin simular un teclado, y no sirve detrás de una ventana ni de una web.</p>
+<p>Y un aviso práctico: en las pruebas, cualquier cosa que llame a <code>Prompt.ask</code> se quedará esperando para siempre. Una razón más para que la frontera esté clara.</p></aside>
+<h2 id="markdown-y-codigo-con-formato">Markdown y código con formato<a class="ancla" href="#markdown-y-codigo-con-formato" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Dos objetos más, útiles para la ayuda y la documentación dentro del propio programa.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> rich<span class="t-operador">.</span>console <span class="t-palabra">import</span> Console
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>markdown <span class="t-palabra">import</span> Markdown
+<span class="t-palabra">from</span> rich<span class="t-operador">.</span>syntax <span class="t-palabra">import</span> Syntax
+
+consola <span class="t-operador">=</span> Console<span class="t-operador">(</span>width<span class="t-operador">=</span><span class="t-numero">70</span><span class="t-operador">)</span>
+
+ayuda <span class="t-operador">=</span> <span class="t-texto">&quot;&quot;&quot;
+# misgastos
+
+Apunta tus gastos desde la terminal.
+
+## Órdenes
+
+- `misgastos anadir CONCEPTO IMPORTE` apunta un gasto
+- `misgastos listar` muestra lo apuntado
+- `misgastos resumen` suma por categoría
+
+&gt; Los datos se guardan en `gastos.json`, en la carpeta actual.
+&quot;&quot;&quot;</span>
+
+consola<span class="t-operador">.</span><span class="t-integrada">print</span><span class="t-operador">(</span>Markdown<span class="t-operador">(</span>ayuda<span class="t-operador">)</span><span class="t-operador">)</span>
+
+codigo <span class="t-operador">=</span> <span class="t-texto">&#x27;&#x27;&#x27;def total(gastos):
+    &quot;&quot;&quot;Suma los importes de todos los gastos.&quot;&quot;&quot;
+    return sum(gasto.importe for gasto in gastos)
+&#x27;&#x27;&#x27;</span>
+
+consola<span class="t-operador">.</span><span class="t-integrada">print</span><span class="t-operador">(</span>Syntax<span class="t-operador">(</span>codigo<span class="t-operador">,</span> <span class="t-texto">&quot;python&quot;</span><span class="t-operador">,</span> theme<span class="t-operador">=</span><span class="t-texto">&quot;monokai&quot;</span><span class="t-operador">,</span> line_numbers<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>                              misgastos                               
+
+Apunta tus gastos desde la terminal.                                  
+
+Órdenes                                                               
+
+ • misgastos anadir CONCEPTO IMPORTE apunta un gasto                  
+ • misgastos listar muestra lo apuntado                               
+ • misgastos resumen suma por categoría                               
+
+▌ Los datos se guardan en gastos.json, en la carpeta actual.          
+  1 def total(gastos):                                                
+  2     &quot;&quot;&quot;Suma los importes de todos los gastos.&quot;&quot;&quot;                  
+  3     return sum(gasto.importe for gasto in gastos)                 </code></pre></div>
+<p><code>Markdown</code> interpreta títulos, listas, citas, negritas, enlaces y bloques de código. Es la forma cómoda de tener un subcomando <code>misgastos ayuda</code> que enseñe un texto bien maquetado sin escribir el formato a mano; en color, los títulos salen destacados y el <code>gastos.json</code> de la cita en otro tono.</p>
+<p><code>Syntax</code> colorea código con <code>pygments</code>, que se instaló como dependencia de <code>rich</code>. Entiende decenas de lenguajes por su nombre, tiene varios temas (<code>monokai</code>, <code>dracula</code>, <code>github-dark</code>) y admite <code>line_numbers=True</code> para numerar. Sirve para enseñar un ejemplo de configuración, para volcar un fragmento de un fichero al informar de un error o para una herramienta que muestre código.</p>
+<aside class="aviso aviso-nota"><p class="titulo-aviso"><code>Syntax.from_path</code> lee directamente de un fichero</p><p><code>Syntax.from_path(&quot;config.json&quot;)</code> carga el fichero y deduce el lenguaje por la extensión, sin que tengas que leerlo tú ni decirle de qué lenguaje se trata. Es de una línea y es lo que usarías en un subcomando que enseñe la configuración actual.</p></aside>
+<h2 id="referencia-de-los-componentes">Referencia de los componentes<a class="ancla" href="#referencia-de-los-componentes" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Todo lo que has visto en las dos lecciones, junto:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Componente</th><th>Se importa de</th><th>Para qué sirve</th></tr></thead><tbody><tr><td><code>Console</code></td><td><code>rich.console</code></td><td>El objeto central: imprime, mide la terminal y aplica los estilos</td></tr><tr><td><code>print</code></td><td><code>rich</code></td><td>Sustituto directo del <code>print</code> normal</td></tr><tr><td><code>inspect</code></td><td><code>rich</code></td><td>Enseña los atributos y métodos de un objeto</td></tr><tr><td><code>Panel</code></td><td><code>rich.panel</code></td><td>Un recuadro con título alrededor de cualquier contenido</td></tr><tr><td><code>Table</code></td><td><code>rich.table</code></td><td>Tablas con anchos automáticos y celdas que ajustan el texto</td></tr><tr><td><code>Table.grid</code></td><td><code>rich.table</code></td><td>Alinear cosas en columnas sin bordes ni cabecera</td></tr><tr><td><code>box</code></td><td><code>rich</code></td><td>Los estilos de borde de tablas y paneles</td></tr><tr><td><code>track</code></td><td><code>rich.progress</code></td><td>Barra de progreso al recorrer una secuencia, en una línea</td></tr><tr><td><code>Progress</code></td><td><code>rich.progress</code></td><td>Barras con columnas a medida y varias tareas a la vez</td></tr><tr><td><code>Console.status</code></td><td><code>rich.console</code></td><td>Indicador giratorio para esperas de duración desconocida</td></tr><tr><td><code>Live</code></td><td><code>rich.live</code></td><td>Redibuja cualquier objeto mientras el programa trabaja</td></tr><tr><td><code>Prompt</code>, <code>IntPrompt</code>, <code>FloatPrompt</code></td><td><code>rich.prompt</code></td><td>Preguntas con conversión de tipo, opciones y valor por defecto</td></tr><tr><td><code>Confirm</code></td><td><code>rich.prompt</code></td><td>Pregunta de sí o no</td></tr><tr><td><code>Markdown</code></td><td><code>rich.markdown</code></td><td>Renderiza texto en Markdown en la terminal</td></tr><tr><td><code>Syntax</code></td><td><code>rich.syntax</code></td><td>Código coloreado, con tema y números de línea</td></tr><tr><td><code>escape</code></td><td><code>rich.markup</code></td><td>Protege los corchetes del texto que viene de fuera</td></tr><tr><td><code>traceback.install</code></td><td><code>rich.traceback</code></td><td>Sustituye el traceback de Python por uno legible</td></tr><tr><td><code>Columns</code></td><td><code>rich.columns</code></td><td>Coloca varios elementos en columnas que se reparten el ancho</td></tr><tr><td><code>Tree</code></td><td><code>rich.tree</code></td><td>Dibuja jerarquías con las guías de un árbol de carpetas</td></tr><tr><td><code>Align</code></td><td><code>rich.align</code></td><td>Centra o alinea cualquier objeto dentro del ancho</td></tr><tr><td><code>Layout</code></td><td><code>rich.layout</code></td><td>Divide la pantalla en regiones, para interfaces completas</td></tr></tbody></table></div>
+<p>Para ver casi todo esto funcionando de golpe, <code>rich</code> trae una demostración:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python</span> <span class="t-palabra">-m</span> rich</code></pre></div>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Elige un componente y no los mezcles todos</p><p>Con esta caja de herramientas es tentador poner paneles dentro de tablas dentro de barras de progreso. Una herramienta con una tabla clara y un mensaje de confirmación se usa mejor que una con seis colores, cuatro marcos y emojis en cada fila. La regla de siempre: el formato está para que la información se lea, no para que se note el formato.</p></aside>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p><code>Table</code> construye tablas en tres pasos, creándola, añadiendo columnas con su justificación y su estilo y añadiendo filas, y calcula sola los anchos, parte el texto largo dentro de la celda y reparte el espacio sobrante entre las columnas que declaran un <code>ratio</code>. El dibujo del borde se elige con <code>box</code>, donde <code>ASCII</code> es el seguro para terminales viejas y ficheros, y <code>Table.grid</code> da una variante sin bordes para maquetar. Para el progreso hay dos niveles: <code>track()</code> envuelve una secuencia en una línea, y <code>Progress</code> con un <code>with</code> permite elegir las columnas de porcentaje, tiempo transcurrido y tiempo restante y llevar varias barras a la vez, comprobando con <code>finished</code> si han terminado todas. <code>Status</code> cubre las esperas de duración desconocida y <code>Live</code> generaliza la idea a cualquier objeto, redibujándolo entero en cada refresco. <code>Prompt</code> y <code>Confirm</code> hacen lo que escribiste a mano en la lección 3: preguntan, validan, convierten al tipo pedido y vuelven a preguntar, y sus mensajes en inglés se traducen heredando y cambiando un par de atributos. Y <code>Markdown</code> y <code>Syntax</code> muestran texto y código con formato dentro de la propia terminal.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><p>Trabaja sobre <code>misgastos</code> o sobre tu herramienta <code>misnotas</code>, con <code>rich</code> instalado y declarado en <code>dependencies</code>.</p>
+<ol><li>Sustituye el bucle de <code>print</code> del subcomando <code>listar</code> por una <code>Table</code> de verdad, con la fecha atenuada, el importe a la derecha y la categoría centrada. Añade una fila final con el total en negrita.</li><li>Prueba la misma tabla con cuatro valores distintos de <code>box</code> y quédate con el que mejor se lea. Comprueba cómo queda <code>box.ASCII</code> al redirigir la salida a un fichero.</li><li>Añade a <code>resumen</code> un <code>Panel</code> con un <code>Table.grid</code> dentro que muestre el total, la media y la categoría con más gasto.</li><li>Escribe un subcomando <code>importar</code> que lea un CSV con veinte filas y las vaya apuntando, envuelto en un <code>track()</code>. Después conviértelo a un <code>Progress</code> con columnas a medida, incluyendo <code>MofNCompleteColumn</code> y el tiempo restante.</li><li>Añade un <code>Confirm</code> en español antes de borrar un gasto, heredando de <code>Confirm</code> para que acepte «s» y «n» y avise en castellano. Compruébalo respondiendo primero algo que no valga.</li><li>Escribe un subcomando <code>ayuda</code> que muestre un texto en <code>Markdown</code> con las órdenes del programa, y otro que enseñe el fichero <code>gastos.json</code> con <code>Syntax.from_path</code>.</li><li>Monta con <code>Live</code> un panel que muestre durante cinco segundos un contador de gastos que va subiendo. Después comprueba qué pasa si pones un <code>print</code> normal dentro del <code>with</code>.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#tablas">Tablas</a></li><li class="nivel-3"><a href="#cambiar-el-borde-con-box">Cambiar el borde con box</a></li><li class="nivel-3"><a href="#columnas-que-se-ajustan-solas">Columnas que se ajustan solas</a></li><li class="nivel-3"><a href="#tablas-dentro-de-paneles">Tablas dentro de paneles</a></li><li class="nivel-2"><a href="#barras-de-progreso">Barras de progreso</a></li><li class="nivel-3"><a href="#el-caso-sencillo-track">El caso sencillo: track</a></li><li class="nivel-3"><a href="#la-barra-completa-progress">La barra completa: Progress</a></li><li class="nivel-3"><a href="#varias-barras-a-la-vez">Varias barras a la vez</a></li><li class="nivel-2"><a href="#status-cuando-no-sabes-cuanto-falta">Status: cuando no sabes cuánto falta</a></li><li class="nivel-2"><a href="#live-actualizar-una-tabla-en-tiempo-real">Live: actualizar una tabla en tiempo real</a></li><li class="nivel-2"><a href="#preguntar-con-validacion">Preguntar con validación</a></li><li class="nivel-3"><a href="#los-mensajes-estan-en-ingles">Los mensajes están en inglés</a></li><li class="nivel-2"><a href="#markdown-y-codigo-con-formato">Markdown y código con formato</a></li><li class="nivel-2"><a href="#referencia-de-los-componentes">Referencia de los componentes</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../terminal/rich-salida-con-estilo.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">rich: salida con estilo</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../terminal/proyecto-organizador-de-ficheros.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">Proyecto: organizador de ficheros</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

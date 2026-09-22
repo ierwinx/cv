@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La lista: Listbox · Curso de Python</title>
+<meta name="description" content="Ver varias opciones a la vez y elegir una o muchas: los cuatro modos de selección, los índices que devuelve en vez de valores, y el descuido que hace que dos listas se desmarquen entre sí.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="tkinter/la-lista-listbox">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../tkinter/index.html">Aplicaciones con Tkinter</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 3 &middot; Lección 20 de 50</p>
+    <h1>La lista: Listbox</h1>
+    <p class="resumen-leccion">Ver varias opciones a la vez y elegir una o muchas: los cuatro modos de selección, los índices que devuelve en vez de valores, y el descuido que hace que dos listas se desmarquen entre sí.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 23 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>El <code>Listbox</code> es la tercera forma de elegir, y la que se usa cuando hace falta <strong>ver varias opciones a la vez</strong>. Un desplegable esconde su lista y un grupo de botones de radio no aguanta más de cinco; una lista muestra ocho o diez opciones en el sitio de tres, se desplaza para el resto, y admite elegir varias.</p>
+<p>También es el tercer widget del módulo sin versión temática:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> hasattr(ttk, <span class="t-texto">&quot;Listbox&quot;</span>)
+False</code></pre></div>
+<p>Así que es <code>tk.Listbox</code> sin discusión, con las consecuencias de siempre: su aspecto no lo pone el tema y hay que cuidar que no cante al lado de los widgets temáticos. A cambio, tiene una cosa que ningún widget de <code>ttk</code> da: <strong>cada fila se puede pintar por separado</strong>, y eso lo convierte en la opción práctica para listas donde el color significa algo.</p>
+<p>Si dudas entre este widget, el desplegable y los botones de radio, la tabla comparativa está en la lección 18.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Crear listas, rellenarlas y leer lo seleccionado sabiendo que lo que devuelve son índices y no valores; elegir entre los cuatro modos de selección; pintar filas sueltas para dar información con el color; reordenar elementos; y conocer el descuido de <code>exportselection</code> que hace que dos listas de la misma ventana se peleen.</p></aside>
+<h2 id="rellenar-y-leer">Rellenar y leer<a class="ancla" href="#rellenar-y-leer" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Los elementos se meten con <code>insert</code>, y como acepta varios de golpe, una lista entera cabe en una línea:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> CIUDADES = [<span class="t-texto">&quot;Madrid&quot;</span>, <span class="t-texto">&quot;Barcelona&quot;</span>, <span class="t-texto">&quot;Valencia&quot;</span>, <span class="t-texto">&quot;Sevilla&quot;</span>, <span class="t-texto">&quot;Bilbao&quot;</span>, <span class="t-texto">&quot;Zaragoza&quot;</span>]
+<span class="t-operador">&gt;&gt;&gt;</span> lista = tk.Listbox(ventana, height=<span class="t-numero">6</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> lista.insert(<span class="t-texto">&quot;end&quot;</span>, *CIUDADES)
+<span class="t-operador">&gt;&gt;&gt;</span> lista.size()
+<span class="t-numero">6</span></code></pre></div>
+<p>Ese <code>height=6</code> va en filas, y como en el <code>Text</code>, conviene ponerlo siempre: el valor por defecto es diez y una lista sin <code>height</code> se lleva por delante el diseño.</p>
+<p>Para leer, <code>get</code> acepta una posición o un tramo, y el tramo <strong>incluye el final</strong>, al contrario que el rebanado de Python:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lista.get(<span class="t-numero">0</span>)
+<span class="t-texto">&#x27;Madrid&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> lista.get(<span class="t-numero">0</span>, <span class="t-numero">2</span>)
+(<span class="t-texto">&#x27;Madrid&#x27;</span>, <span class="t-texto">&#x27;Barcelona&#x27;</span>, <span class="t-texto">&#x27;Valencia&#x27;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> lista.get(<span class="t-numero">0</span>, <span class="t-texto">&quot;end&quot;</span>)
+(<span class="t-texto">&#x27;Madrid&#x27;</span>, <span class="t-texto">&#x27;Barcelona&#x27;</span>, <span class="t-texto">&#x27;Valencia&#x27;</span>, <span class="t-texto">&#x27;Sevilla&#x27;</span>, <span class="t-texto">&#x27;Bilbao&#x27;</span>, <span class="t-texto">&#x27;Zaragoza&#x27;</span>)</code></pre></div>
+<p><code>get(0, 2)</code> devuelve tres elementos, no dos. Es uno de esos detalles que solo se notan cuando el último elemento aparece repetido o falta, y como el widget es de los años noventa, no va a cambiar.</p>
+<p>Borrar sigue la misma lógica, con el tramo inclusivo y el <code>&quot;end&quot;</code> de siempre:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lista.delete(<span class="t-numero">0</span>)              <span class="t-comentario"># una fila</span>
+<span class="t-operador">&gt;&gt;&gt;</span> lista.delete(<span class="t-numero">0</span>, <span class="t-numero">1</span>)           <span class="t-comentario"># dos filas</span>
+<span class="t-operador">&gt;&gt;&gt;</span> lista.delete(<span class="t-numero">0</span>, <span class="t-texto">&quot;end&quot;</span>)       <span class="t-comentario"># todas</span>
+<span class="t-operador">&gt;&gt;&gt;</span> lista.size()
+<span class="t-numero">0</span></code></pre></div>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">Un <code>Listbox</code> deshabilitado también te ignora</p><p>Como el <code>Entry</code> y el <code>Text</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lista.configure(state=<span class="t-texto">&quot;disabled&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> lista.insert(<span class="t-texto">&quot;end&quot;</span>, <span class="t-texto">&quot;no entra&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> lista.get(<span class="t-numero">0</span>, <span class="t-texto">&quot;end&quot;</span>)
+()</code></pre></div>
+<p>Sin error. Es el mismo patrón y la misma solución: abrir, escribir y cerrar. A estas alturas del bloque conviene tomarlo como una regla general de Tk y no como una rareza de cada widget: <strong>el estado bloquea el widget, no solo a quien lo usa.</strong></p></aside>
+<h2 id="lo-que-devuelve-no-son-los-valores">Lo que devuelve no son los valores<a class="ancla" href="#lo-que-devuelve-no-son-los-valores" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Esta es la particularidad que hay que interiorizar. Para saber qué está seleccionado se llama a <code>curselection()</code>, y lo que devuelve es una tupla de <strong>posiciones</strong>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lista.selection_set(<span class="t-numero">1</span>, <span class="t-numero">2</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> lista.curselection()
+(<span class="t-numero">1</span>, <span class="t-numero">2</span>)</code></pre></div>
+<p>Números, no ciudades. Para tener los valores hay que dar el paso extra:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> [lista.get(i) for i in lista.curselection()]
+[<span class="t-texto">&#x27;Barcelona&#x27;</span>, <span class="t-texto">&#x27;Valencia&#x27;</span>]</code></pre></div>
+<p>Ese salto de índices a valores es el que da forma a casi todo el código que usa este widget, y tiene dos consecuencias.</p>
+<p>La primera es que <strong>hay que comprobar siempre que hay algo seleccionado</strong>, porque con nada seleccionado la tupla está vacía y el <code>[0]</code> de la costumbre falla:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">seleccion <span class="t-operador">=</span> lista<span class="t-operador">.</span>curselection<span class="t-operador">(</span><span class="t-operador">)</span>
+<span class="t-palabra">if</span> <span class="t-palabra">not</span> seleccion<span class="t-operador">:</span>
+        <span class="t-palabra">return</span>
+elegida <span class="t-operador">=</span> lista<span class="t-operador">.</span>get<span class="t-operador">(</span>seleccion<span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span><span class="t-operador">)</span></code></pre></div>
+<p>La segunda es más de fondo. Si los elementos de la lista son objetos de tu programa (contactos, ficheros, tareas) y no cadenas, lo que la lista guarda son las cadenas con las que se dibujan, no los objetos. El patrón que resuelve eso es mantener <strong>una lista paralela de Python</strong> en el mismo orden y usar el índice para ir de una a otra:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">contactos <span class="t-operador">=</span> cargar_contactos<span class="t-operador">(</span><span class="t-operador">)</span>
+<span class="t-palabra">for</span> contacto <span class="t-palabra">in</span> contactos<span class="t-operador">:</span>
+        lista<span class="t-operador">.</span>insert<span class="t-operador">(</span><span class="t-texto">&quot;end&quot;</span><span class="t-operador">,</span> f&quot;<span class="t-operador">{</span>contacto<span class="t-operador">.</span>nombre<span class="t-operador">}</span> · <span class="t-operador">{</span>contacto<span class="t-operador">.</span>telefono<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+<span class="t-operador">...</span>
+elegido <span class="t-operador">=</span> contactos<span class="t-operador">[</span>lista<span class="t-operador">.</span>curselection<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span><span class="t-operador">]</span></code></pre></div>
+<p>Funciona bien, con la condición de que las dos listas se modifiquen siempre juntas. En cuanto se borra de una y no de la otra, los índices dejan de corresponder y el programa empieza a enseñar el contacto de al lado. Cuando esa disciplina se vuelve pesada, la señal es que lo que quieres es un <code>Treeview</code>, que sí puede llevar un identificador propio por fila y tiene su lección más adelante.</p>
+<h2 id="los-cuatro-modos-de-seleccion">Los cuatro modos de selección<a class="ancla" href="#los-cuatro-modos-de-seleccion" aria-label="Enlace a esta seccion">#</a></h2>
+<p><code>selectmode</code> decide cuántos elementos se pueden elegir y cómo:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Modo</th><th>Qué permite</th></tr></thead><tbody><tr><td><code>browse</code></td><td>Uno solo, y se puede arrastrar el ratón para ir cambiando. Es el valor por defecto</td></tr><tr><td><code>single</code></td><td>Uno solo, sin arrastrar</td></tr><tr><td><code>multiple</code></td><td>Varios, cada clic marca o desmarca uno</td></tr><tr><td><code>extended</code></td><td>Varios, con <kbd>Mayús</kbd> para un tramo y <kbd>Cmd</kbd> o <kbd>Ctrl</kbd> para sueltos</td></tr></tbody></table></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> tk.Listbox(ventana).cget(<span class="t-texto">&quot;selectmode&quot;</span>)
+<span class="t-texto">&#x27;browse&#x27;</span></code></pre></div>
+<p>El criterio es corto. Para elegir uno, <code>browse</code>, que es lo que ya viene puesto. Para elegir varios, <strong><code>extended</code> casi siempre</strong>, porque es el comportamiento que quien usa un ordenador ya conoce de su explorador de ficheros. <code>multiple</code> solo si los elementos se marcan de uno en uno como si fueran casillas, y <code>single</code> casi nunca.</p>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">El modo solo limita el ratón, no tu código</p><p>Parece que <code>selectmode=&quot;browse&quot;</code> garantice que nunca haya más de uno seleccionado. No lo garantiza. Desde el código puedes seleccionar tantos como quieras en cualquiera de los cuatro modos:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>browse     tras dos selection_set -&gt; (0, 2)
+single     tras dos selection_set -&gt; (0, 2)
+multiple   tras dos selection_set -&gt; (0, 2)
+extended   tras dos selection_set -&gt; (0, 2)</code></pre></div>
+<p>Los cuatro modos han aceptado dos selecciones. Así que si tu programa selecciona filas por su cuenta y quiere mantener una sola, tiene que llamar a <code>selection_clear(0, &quot;end&quot;)</code> antes de cada <code>selection_set</code>. El widget no lo hace por ti.</p></aside>
+<h2 id="la-trampa-de-las-dos-listas">La trampa de las dos listas<a class="ancla" href="#la-trampa-de-las-dos-listas" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Esta merece apartado propio porque el síntoma es incomprensible si no conoces la causa. Dos listas en la misma ventana, seleccionas en una y <strong>se pierde la selección de la otra</strong>:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>con exportselection por defecto -&gt; a: ()     b: (1,)
+con exportselection=False       -&gt; a: (0,)   b: (1,)</code></pre></div>
+<p>En la primera línea, la lista <code>a</code> tenía su fila cero seleccionada y se ha quedado sin nada solo porque después se seleccionó algo en <code>b</code>.</p>
+<p>La causa es <code>exportselection</code>, que está a <code>1</code> por defecto: la selección del widget <strong>se publica como la selección del sistema</strong>, la misma que usa el portapapeles. Y como el sistema solo puede tener una selección a la vez, cada widget que selecciona algo se la quita al anterior.</p>
+<p>En un widget suelto eso está bien, porque permite copiar lo seleccionado con el atajo de siempre. En cuanto hay dos listas que deben mostrar su selección al mismo tiempo, es un error. La solución es una opción:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">tk<span class="t-operador">.</span>Listbox<span class="t-operador">(</span>contenedor<span class="t-operador">,</span> exportselection<span class="t-operador">=</span><span class="t-palabra">False</span><span class="t-operador">)</span></code></pre></div>
+<p>Ponlo en las dos, y las dos mantienen su selección. Es imprescindible en el patrón de las dos listas con botones de pasar elementos de una a otra, que es justo el ejemplo del final de la lección. Lo mismo vale, con el mismo remedio, para dos <code>Entry</code> o dos <code>Text</code>.</p>
+<h2 id="pintar-las-filas">Pintar las filas<a class="ancla" href="#pintar-las-filas" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Aquí está lo que el <code>Listbox</code> tiene y los widgets temáticos no. <code>itemconfigure</code> da color a una fila concreta:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lista.itemconfigure(<span class="t-numero">1</span>, background=<span class="t-texto">&quot;#FFE58F&quot;</span>, foreground=<span class="t-texto">&quot;#B02A37&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> lista.itemcget(<span class="t-numero">1</span>, <span class="t-texto">&quot;background&quot;</span>)
+<span class="t-texto">&#x27;#FFE58F&#x27;</span></code></pre></div>
+<p>Las opciones por fila son solo seis, y con eso sobra:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> sorted(lista.itemconfigure(<span class="t-numero">0</span>).keys())
+[<span class="t-texto">&#x27;background&#x27;</span>, <span class="t-texto">&#x27;bg&#x27;</span>, <span class="t-texto">&#x27;fg&#x27;</span>, <span class="t-texto">&#x27;foreground&#x27;</span>, <span class="t-texto">&#x27;selectbackground&#x27;</span>, <span class="t-texto">&#x27;selectforeground&#x27;</span>]</code></pre></div>
+<p>Con eso se hacen las cosas que de verdad ayudan a leer una lista: marcar en rojo las entradas con error, en gris las inactivas, o alternar el fondo de las filas pares para seguir la línea con la vista.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">for</span> i <span class="t-palabra">in</span> <span class="t-integrada">range</span><span class="t-operador">(</span>lista<span class="t-operador">.</span>size<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">if</span> i <span class="t-operador">%</span> <span class="t-numero">2</span><span class="t-operador">:</span>
+                lista<span class="t-operador">.</span>itemconfigure<span class="t-operador">(</span>i<span class="t-operador">,</span> background<span class="t-operador">=</span><span class="t-texto">&quot;#F5F5F7&quot;</span><span class="t-operador">)</span></code></pre></div>
+<p>Con la advertencia de que el color se aplica a la <strong>posición</strong>, no al elemento: si insertas o borras una fila por encima, los colores se quedan donde estaban y hay que volver a aplicarlos. Conviene tener una función que repinte la lista entera y llamarla después de cada cambio.</p>
+<h2 id="moverse-y-reordenar">Moverse y reordenar<a class="ancla" href="#moverse-y-reordenar" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Tres métodos que resuelven lo que falta:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Método</th><th>Para qué</th></tr></thead><tbody><tr><td><code>see(i)</code></td><td>Desplaza la vista para que esa fila se vea</td></tr><tr><td><code>activate(i)</code></td><td>Marca esa fila como la activa, la del recuadro punteado</td></tr><tr><td><code>index(&quot;end&quot;)</code>, <code>size()</code></td><td>Cuántos elementos hay</td></tr><tr><td><code>selection_includes(i)</code></td><td>Si esa fila está seleccionada</td></tr><tr><td><code>selection_clear(a, b)</code></td><td>Quita la selección de un tramo</td></tr></tbody></table></div>
+<p><code>see</code> es el que se olvida, igual que en el <code>Text</code>: si seleccionas por código una fila que está fuera de la vista, no se ve nada hasta que alguien se desplaza a mano.</p>
+<p>Y reordenar, que es una de las razones para usar este widget, no tiene método propio: se hace borrando e insertando en otro sitio. El patrón completo, con la selección siguiendo al elemento:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">subir</span><span class="t-operador">(</span>lista<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Sube una posición el elemento seleccionado.&quot;&quot;&quot;</span>
+    seleccion <span class="t-operador">=</span> lista<span class="t-operador">.</span>curselection<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> seleccion <span class="t-palabra">or</span> seleccion<span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span> <span class="t-operador">==</span> <span class="t-numero">0</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span>
+    i <span class="t-operador">=</span> seleccion<span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span>
+    valor <span class="t-operador">=</span> lista<span class="t-operador">.</span>get<span class="t-operador">(</span>i<span class="t-operador">)</span>
+    lista<span class="t-operador">.</span>delete<span class="t-operador">(</span>i<span class="t-operador">)</span>
+    lista<span class="t-operador">.</span>insert<span class="t-operador">(</span>i <span class="t-operador">-</span> <span class="t-numero">1</span><span class="t-operador">,</span> valor<span class="t-operador">)</span>
+    lista<span class="t-operador">.</span>selection_set<span class="t-operador">(</span>i <span class="t-operador">-</span> <span class="t-numero">1</span><span class="t-operador">)</span>
+    lista<span class="t-operador">.</span>activate<span class="t-operador">(</span>i <span class="t-operador">-</span> <span class="t-numero">1</span><span class="t-operador">)</span></code></pre></div>
+<p>Probado sobre cuatro elementos con el tercero seleccionado:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>antes:      (&#x27;uno&#x27;, &#x27;dos&#x27;, &#x27;tres&#x27;, &#x27;cuatro&#x27;)   sel: (2,)
+tras subir: (&#x27;uno&#x27;, &#x27;tres&#x27;, &#x27;dos&#x27;, &#x27;cuatro&#x27;)   sel: (1,)</code></pre></div>
+<p>Las dos últimas líneas son las que distinguen un botón de subir que funciona de uno que parece roto: sin ellas, el elemento se mueve pero la selección se queda en la posición antigua, y el segundo clic sube otro elemento distinto. Y acuérdate de mover también el elemento en la lista paralela de Python, si la tienes.</p>
+<h2 id="listvariable-y-por-que-usarla-poco"><code>listvariable</code> y por qué usarla poco<a class="ancla" href="#listvariable-y-por-que-usarla-poco" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Un <code>Listbox</code> puede atarse a una variable de control, y entonces el contenido se cambia de golpe:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> contenido = tk.StringVar()
+<span class="t-operador">&gt;&gt;&gt;</span> lista = tk.Listbox(ventana, listvariable=contenido)
+<span class="t-operador">&gt;&gt;&gt;</span> contenido.set([<span class="t-texto">&quot;x&quot;</span>, <span class="t-texto">&quot;y z&quot;</span>, <span class="t-texto">&quot;w&quot;</span>])
+<span class="t-operador">&gt;&gt;&gt;</span> lista.get(<span class="t-numero">0</span>, <span class="t-texto">&quot;end&quot;</span>)
+(<span class="t-texto">&#x27;x&#x27;</span>, <span class="t-texto">&#x27;y z&#x27;</span>, <span class="t-texto">&#x27;w&#x27;</span>)</code></pre></div>
+<p>Para <strong>escribir</strong> está muy bien: reemplazar la lista entera es una línea, sin <code>delete</code> ni bucle, y los elementos con espacios se manejan solos. Para <strong>leer</strong>, en cambio, es una trampa:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> contenido.get()
+<span class="t-texto">&quot;(&#x27;x&#x27;, &#x27;y z&#x27;, &#x27;w&#x27;)&quot;</span></code></pre></div>
+<p>Eso es un <code>str</code>, la representación de la tupla, no la tupla. Para recuperar los elementos tendrías que analizar esa cadena, que es exactamente lo que no quieres hacer. Así que el criterio es: <strong><code>listvariable</code> para poner el contenido, <code>get(0, &quot;end&quot;)</code> para leerlo.</strong> Mezclarlos no compensa.</p>
+<h2 id="reaccionar-a-la-seleccion">Reaccionar a la selección<a class="ancla" href="#reaccionar-a-la-seleccion" aria-label="Enlace a esta seccion">#</a></h2>
+<p>El evento es <code>&lt;&lt;ListboxSelect&gt;&gt;</code> y se ata con <code>bind</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">lista<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;&lt;ListboxSelect&gt;&gt;&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> evento<span class="t-operador">:</span> mostrar_detalle<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<p>Con la misma limitación que el desplegable, medida igual:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> lista.selection_set(<span class="t-numero">1</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> registro
+[]</code></pre></div>
+<p>Lo dispara la persona, no el código. Ya es la tercera vez que aparece el mismo reparto en el bloque, así que conviene enunciarlo como regla: <strong>en Tk, los eventos son de la interacción y las variables son de los datos.</strong> Cuando quieras que algo pase pase lo que pase, vigila el dato.</p>
+<p>El otro <code>bind</code> que este widget pide casi siempre es el del doble clic, porque en una lista el doble clic significa &quot;esta y adelante&quot;:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">lista<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Double-Button-1&gt;&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> evento<span class="t-operador">:</span> aceptar<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<p>Los dos son del bloque D, pero un <code>Listbox</code> sin doble clic se siente incompleto, así que quedan anotados.</p>
+<h2 id="dos-listas-para-pasar-elementos">Dos listas para pasar elementos<a class="ancla" href="#dos-listas-para-pasar-elementos" aria-label="Enlace a esta seccion">#</a></h2>
+<p>El patrón clásico: lo disponible a la izquierda, lo elegido a la derecha, botones en medio y la posibilidad de reordenar lo elegido.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">listas.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;Listbox: dos listas con traspaso, reordenación y filas de color.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">import</span> tkinter <span class="t-palabra">as</span> tk
+<span class="t-palabra">from</span> tkinter <span class="t-palabra">import</span> ttk
+
+MARGEN <span class="t-operador">=</span> <span class="t-numero">12</span>
+AIRE <span class="t-operador">=</span> <span class="t-numero">4</span>
+
+DISPONIBLES <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-texto">&quot;Backend&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;iOS&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Android&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Diseño&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;DevOps&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;QA&quot;</span><span class="t-operador">,</span>
+               <span class="t-texto">&quot;Datos&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Soporte&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Ventas&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Marketing&quot;</span><span class="t-operador">]</span>
+
+<span class="t-comentario"># Las áreas que requieren aprobación se marcan en la lista.</span>
+ESPECIALES <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-texto">&quot;DevOps&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Datos&quot;</span><span class="t-operador">}</span>
+
+MAXIMO <span class="t-operador">=</span> <span class="t-numero">4</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">centrar</span><span class="t-operador">(</span>ventana<span class="t-operador">:</span> tk<span class="t-operador">.</span>Misc<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Coloca la ventana en el centro de la pantalla.&quot;&quot;&quot;</span>
+    ventana<span class="t-operador">.</span>update_idletasks<span class="t-operador">(</span><span class="t-operador">)</span>
+    ancho <span class="t-operador">=</span> ventana<span class="t-operador">.</span>winfo_width<span class="t-operador">(</span><span class="t-operador">)</span>
+    alto <span class="t-operador">=</span> ventana<span class="t-operador">.</span>winfo_height<span class="t-operador">(</span><span class="t-operador">)</span>
+    x <span class="t-operador">=</span> <span class="t-operador">(</span>ventana<span class="t-operador">.</span>winfo_screenwidth<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> ancho<span class="t-operador">)</span> <span class="t-operador">//</span> <span class="t-numero">2</span>
+    y <span class="t-operador">=</span> <span class="t-operador">(</span>ventana<span class="t-operador">.</span>winfo_screenheight<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> alto<span class="t-operador">)</span> <span class="t-operador">//</span> <span class="t-numero">2</span>
+    ventana<span class="t-operador">.</span>geometry<span class="t-operador">(</span>f&quot;+<span class="t-operador">{</span>x<span class="t-operador">}</span>+<span class="t-operador">{</span>y<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">crear_lista</span><span class="t-operador">(</span>contenedor<span class="t-operador">,</span> titulo<span class="t-operador">,</span> modo<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Una lista con su título y su barra de desplazamiento.&quot;&quot;&quot;</span>
+    caja <span class="t-operador">=</span> ttk<span class="t-operador">.</span>LabelFrame<span class="t-operador">(</span>contenedor<span class="t-operador">,</span> text<span class="t-operador">=</span>titulo<span class="t-operador">,</span> padding<span class="t-operador">=</span>AIRE<span class="t-operador">)</span>
+
+    <span class="t-comentario"># exportselection=False: sin esto, seleccionar aquí borra la selección</span>
+    <span class="t-comentario"># de la otra lista y los botones de traspaso dejan de funcionar.</span>
+    lista <span class="t-operador">=</span> tk<span class="t-operador">.</span>Listbox<span class="t-operador">(</span>caja<span class="t-operador">,</span> height<span class="t-operador">=</span><span class="t-numero">10</span><span class="t-operador">,</span> selectmode<span class="t-operador">=</span>modo<span class="t-operador">,</span> exportselection<span class="t-operador">=</span><span class="t-palabra">False</span><span class="t-operador">,</span>
+                       relief<span class="t-operador">=</span><span class="t-texto">&quot;flat&quot;</span><span class="t-operador">,</span> highlightthickness<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">,</span>
+                       highlightbackground<span class="t-operador">=</span><span class="t-texto">&quot;#D1D1D6&quot;</span><span class="t-operador">,</span> activestyle<span class="t-operador">=</span><span class="t-texto">&quot;none&quot;</span><span class="t-operador">)</span>
+    barra <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Scrollbar<span class="t-operador">(</span>caja<span class="t-operador">,</span> orient<span class="t-operador">=</span><span class="t-texto">&quot;vertical&quot;</span><span class="t-operador">,</span> command<span class="t-operador">=</span>lista<span class="t-operador">.</span>yview<span class="t-operador">)</span>
+    lista<span class="t-operador">.</span>configure<span class="t-operador">(</span>yscrollcommand<span class="t-operador">=</span>barra<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">)</span>
+
+    lista<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+    barra<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> caja<span class="t-operador">,</span> lista
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">pintar</span><span class="t-operador">(</span>lista<span class="t-operador">,</span> elementos<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Repinta la lista entera. Los colores van por posición, no por elemento.&quot;&quot;&quot;</span>
+    lista<span class="t-operador">.</span>delete<span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-texto">&quot;end&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">for</span> i<span class="t-operador">,</span> elemento <span class="t-palabra">in</span> <span class="t-integrada">enumerate</span><span class="t-operador">(</span>elementos<span class="t-operador">)</span><span class="t-operador">:</span>
+                lista<span class="t-operador">.</span>insert<span class="t-operador">(</span><span class="t-texto">&quot;end&quot;</span><span class="t-operador">,</span> elemento<span class="t-operador">)</span>
+        <span class="t-palabra">if</span> elemento <span class="t-palabra">in</span> ESPECIALES<span class="t-operador">:</span>
+                        lista<span class="t-operador">.</span>itemconfigure<span class="t-operador">(</span>i<span class="t-operador">,</span> foreground<span class="t-operador">=</span><span class="t-texto">&quot;#B02A37&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">elif</span> i <span class="t-operador">%</span> <span class="t-numero">2</span><span class="t-operador">:</span>
+                        lista<span class="t-operador">.</span>itemconfigure<span class="t-operador">(</span>i<span class="t-operador">,</span> background<span class="t-operador">=</span><span class="t-texto">&quot;#F5F5F7&quot;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">seleccionados</span><span class="t-operador">(</span>lista<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Los valores, no los índices, comprobando que haya selección.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> <span class="t-operador">[</span>lista<span class="t-operador">.</span>get<span class="t-operador">(</span>i<span class="t-operador">)</span> <span class="t-palabra">for</span> i <span class="t-palabra">in</span> lista<span class="t-operador">.</span>curselection<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">]</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">anadir</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        elegidos <span class="t-operador">=</span> seleccionados<span class="t-operador">(</span>lista_libres<span class="t-operador">)</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> elegidos<span class="t-operador">:</span>
+                aviso<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-texto">&quot;Elige algo en la lista de la izquierda&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span>
+    hueco <span class="t-operador">=</span> MAXIMO <span class="t-operador">-</span> <span class="t-integrada">len</span><span class="t-operador">(</span>elegidas<span class="t-operador">)</span>
+    <span class="t-palabra">if</span> hueco <span class="t-operador">&lt;=</span> <span class="t-numero">0</span><span class="t-operador">:</span>
+                aviso<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;Como máximo <span class="t-operador">{</span>MAXIMO<span class="t-operador">}</span> áreas&quot;<span class="t-operador">)</span>
+        <span class="t-palabra">return</span>
+    <span class="t-palabra">for</span> area <span class="t-palabra">in</span> elegidos<span class="t-operador">[</span><span class="t-operador">:</span>hueco<span class="t-operador">]</span><span class="t-operador">:</span>
+                libres<span class="t-operador">.</span>remove<span class="t-operador">(</span>area<span class="t-operador">)</span>
+        elegidas<span class="t-operador">.</span>append<span class="t-operador">(</span>area<span class="t-operador">)</span>
+    <span class="t-palabra">if</span> <span class="t-integrada">len</span><span class="t-operador">(</span>elegidos<span class="t-operador">)</span> <span class="t-operador">&gt;</span> hueco<span class="t-operador">:</span>
+                aviso<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;Solo caben <span class="t-operador">{</span>hueco<span class="t-operador">}</span> más, el resto se ha quedado fuera&quot;<span class="t-operador">)</span>
+    <span class="t-palabra">else</span><span class="t-operador">:</span>
+                aviso<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-texto">&quot;&quot;</span><span class="t-operador">)</span>
+    refrescar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">quitar</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        elegidos <span class="t-operador">=</span> seleccionados<span class="t-operador">(</span>lista_elegidas<span class="t-operador">)</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> elegidos<span class="t-operador">:</span>
+                aviso<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-texto">&quot;Elige algo en la lista de la derecha&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span>
+    <span class="t-palabra">for</span> area <span class="t-palabra">in</span> elegidos<span class="t-operador">:</span>
+                elegidas<span class="t-operador">.</span>remove<span class="t-operador">(</span>area<span class="t-operador">)</span>
+        libres<span class="t-operador">.</span>append<span class="t-operador">(</span>area<span class="t-operador">)</span>
+    libres<span class="t-operador">.</span>sort<span class="t-operador">(</span>key<span class="t-operador">=</span>DISPONIBLES<span class="t-operador">.</span>index<span class="t-operador">)</span>
+    aviso<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-texto">&quot;&quot;</span><span class="t-operador">)</span>
+    refrescar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">mover</span><span class="t-operador">(</span>paso<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Sube o baja el elemento elegido, arrastrando la selección con él.&quot;&quot;&quot;</span>
+    seleccion <span class="t-operador">=</span> lista_elegidas<span class="t-operador">.</span>curselection<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> seleccion<span class="t-operador">:</span>
+                aviso<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-texto">&quot;Elige algo en la lista de la derecha&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span>
+    i <span class="t-operador">=</span> seleccion<span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span>
+    destino <span class="t-operador">=</span> i <span class="t-operador">+</span> paso
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> <span class="t-numero">0</span> <span class="t-operador">&lt;=</span> destino <span class="t-operador">&lt;</span> <span class="t-integrada">len</span><span class="t-operador">(</span>elegidas<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span>
+    elegidas<span class="t-operador">[</span>i<span class="t-operador">]</span><span class="t-operador">,</span> elegidas<span class="t-operador">[</span>destino<span class="t-operador">]</span> <span class="t-operador">=</span> elegidas<span class="t-operador">[</span>destino<span class="t-operador">]</span><span class="t-operador">,</span> elegidas<span class="t-operador">[</span>i<span class="t-operador">]</span>
+    refrescar<span class="t-operador">(</span><span class="t-operador">)</span>
+    lista_elegidas<span class="t-operador">.</span>selection_set<span class="t-operador">(</span>destino<span class="t-operador">)</span>
+    lista_elegidas<span class="t-operador">.</span>activate<span class="t-operador">(</span>destino<span class="t-operador">)</span>
+    lista_elegidas<span class="t-operador">.</span>see<span class="t-operador">(</span>destino<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">refrescar</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Redibuja las dos listas y el resumen desde las listas de Python.&quot;&quot;&quot;</span>
+    pintar<span class="t-operador">(</span>lista_libres<span class="t-operador">,</span> libres<span class="t-operador">)</span>
+    pintar<span class="t-operador">(</span>lista_elegidas<span class="t-operador">,</span> elegidas<span class="t-operador">)</span>
+    resumen<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>elegidas<span class="t-operador">)</span><span class="t-operador">}</span> de <span class="t-operador">{</span>MAXIMO<span class="t-operador">}</span> elegidas&quot;
+                <span class="t-operador">+</span> <span class="t-operador">(</span>f&quot;: <span class="t-operador">{</span><span class="t-texto">&#x27;, &#x27;</span><span class="t-operador">.</span>join<span class="t-operador">(</span>elegidas<span class="t-operador">)</span><span class="t-operador">}</span>&quot; <span class="t-palabra">if</span> elegidas <span class="t-palabra">else</span> <span class="t-texto">&quot;&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">crear_botones</span><span class="t-operador">(</span>contenedor<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;La columna de botones de en medio.&quot;&quot;&quot;</span>
+    columna <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>contenedor<span class="t-operador">)</span>
+    ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>columna<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Añadir  ▸&quot;</span><span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">11</span><span class="t-operador">,</span> command<span class="t-operador">=</span>anadir<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>
+        pady<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> AIRE<span class="t-operador">)</span><span class="t-operador">)</span>
+    ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>columna<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;◂  Quitar&quot;</span><span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">11</span><span class="t-operador">,</span> command<span class="t-operador">=</span>quitar<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>
+        pady<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> MARGEN<span class="t-operador">)</span><span class="t-operador">)</span>
+    ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>columna<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Subir&quot;</span><span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">11</span><span class="t-operador">,</span>
+               command<span class="t-operador">=</span><span class="t-palabra">lambda</span><span class="t-operador">:</span> mover<span class="t-operador">(</span><span class="t-operador">-</span><span class="t-numero">1</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>pady<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> AIRE<span class="t-operador">)</span><span class="t-operador">)</span>
+    ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>columna<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Bajar&quot;</span><span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">11</span><span class="t-operador">,</span>
+               command<span class="t-operador">=</span><span class="t-palabra">lambda</span><span class="t-operador">:</span> mover<span class="t-operador">(</span><span class="t-numero">1</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> columna
+
+
+ventana <span class="t-operador">=</span> tk<span class="t-operador">.</span>Tk<span class="t-operador">(</span><span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>title<span class="t-operador">(</span><span class="t-texto">&quot;Áreas del puesto&quot;</span><span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>minsize<span class="t-operador">(</span><span class="t-numero">620</span><span class="t-operador">,</span> <span class="t-numero">380</span><span class="t-operador">)</span>
+
+<span class="t-comentario"># Las dos listas de Python son la fuente de verdad; los widgets solo las muestran.</span>
+libres <span class="t-operador">=</span> <span class="t-integrada">list</span><span class="t-operador">(</span>DISPONIBLES<span class="t-operador">)</span>
+elegidas <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+resumen <span class="t-operador">=</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span><span class="t-operador">)</span>
+aviso <span class="t-operador">=</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+cuerpo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>ventana<span class="t-operador">,</span> padding<span class="t-operador">=</span>MARGEN<span class="t-operador">)</span>
+cuerpo<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+fila <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>cuerpo<span class="t-operador">)</span>
+fila<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+caja_libres<span class="t-operador">,</span> lista_libres <span class="t-operador">=</span> crear_lista<span class="t-operador">(</span>fila<span class="t-operador">,</span> <span class="t-texto">&quot;Disponibles&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;extended&quot;</span><span class="t-operador">)</span>
+caja_libres<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+crear_botones<span class="t-operador">(</span>fila<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">,</span> padx<span class="t-operador">=</span>MARGEN<span class="t-operador">)</span>
+
+caja_elegidas<span class="t-operador">,</span> lista_elegidas <span class="t-operador">=</span> crear_lista<span class="t-operador">(</span>fila<span class="t-operador">,</span> <span class="t-texto">&quot;Elegidas&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;browse&quot;</span><span class="t-operador">)</span>
+caja_elegidas<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+ttk<span class="t-operador">.</span>Separator<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> orient<span class="t-operador">=</span><span class="t-texto">&quot;horizontal&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span>MARGEN<span class="t-operador">)</span>
+ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> textvariable<span class="t-operador">=</span>resumen<span class="t-operador">,</span> wraplength<span class="t-operador">=</span><span class="t-numero">560</span><span class="t-operador">,</span> justify<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>
+    anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">)</span>
+ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> textvariable<span class="t-operador">=</span>aviso<span class="t-operador">,</span> foreground<span class="t-operador">=</span><span class="t-texto">&quot;#B02A37&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>
+    anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span>AIRE<span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+lista_libres<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Double-Button-1&gt;&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> evento<span class="t-operador">:</span> anadir<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+lista_elegidas<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Double-Button-1&gt;&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> evento<span class="t-operador">:</span> quitar<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+refrescar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+centrar<span class="t-operador">(</span>ventana<span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>mainloop<span class="t-operador">(</span><span class="t-operador">)</span></code></pre></div>
+<p>La decisión que hace que ese programa sea manejable está en dos líneas del final: <code>libres</code> y <code>elegidas</code> son listas de Python y son <strong>la fuente de verdad</strong>. Los widgets no guardan el estado, solo lo muestran, y <code>refrescar()</code> los redibuja enteros desde las listas. Así no hay que sincronizar índices ni acordarse de qué fila corresponde a qué, que es de donde vienen casi todos los fallos de este widget. Cuesta un redibujado completo en cada cambio, y con listas de este tamaño eso no se nota.</p>
+<p>Lo otro que hay que mirar es el <code>exportselection=False</code> de <code>crear_lista</code>. Quítalo, ejecuta, selecciona algo en la izquierda y luego algo en la derecha: verás que la primera se queda sin selección y que el botón de añadir empieza a decir que no has elegido nada.</p>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Una lista sin doble clic y sin teclado está a medias</p><p>Un <code>Listbox</code> en el que solo se puede seleccionar con el ratón y pulsar botones funciona, pero se siente tosco. Las tres cosas que lo arreglan, todas del bloque D, valen la pena en cuanto la lista es importante en tu programa:</p>
+<ul><li><strong>Doble clic</strong> con <code>&lt;Double-Button-1&gt;</code> para la acción principal, que es lo que la gente prueba primero.</li><li><strong><kbd>Intro</kbd></strong> para lo mismo desde el teclado, y <kbd>Supr</kbd> para quitar.</li><li><strong>Escribir para buscar</strong>, saltando a la primera entrada que empiece por esas letras, que en una lista de cincuenta elementos cambia por completo la sensación.</li></ul></aside>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>El <code>Listbox</code> es la forma de elegir cuando hay que ver varias opciones a la vez, y el tercer widget del bloque sin versión temática, lo que le da la ventaja de poder pintar cada fila por separado con <code>itemconfigure</code>, algo que ningún widget de <code>ttk</code> permite. Se rellena con <code>insert</code>, que acepta varios elementos de golpe, y se lee con <code>get</code>, cuyo tramo incluye el final al contrario que el rebanado de Python; <code>height</code> va en filas y conviene ponerlo siempre. Lo fundamental es que <code>curselection()</code> devuelve posiciones y no valores, de modo que hay que dar el paso extra de traducir y comprobar antes que la tupla no esté vacía; y si los elementos son objetos de tu programa, el patrón es una lista paralela de Python con el índice como puente, que hay que mantener sincronizada. De los cuatro modos de selección, <code>browse</code> es el de fábrica para elegir uno y <code>extended</code> el que quieres para elegir varios, teniendo en cuenta que el modo solo limita el ratón y que desde el código se puede seleccionar de más en cualquiera de ellos. El descuido que más cuesta encontrar es <code>exportselection</code>, que está activado por defecto y hace que la selección de una lista borre la de la otra, y que hay que poner a <code>False</code> siempre que dos listas deban mostrar su selección a la vez. Reordenar no tiene método propio y se hace borrando e insertando, acordándose de mover también la selección con <code>selection_set</code> y <code>activate</code>, o el botón de subir parecerá roto. <code>listvariable</code> sirve para poner el contenido de golpe pero no para leerlo, porque lo que devuelve es la representación en texto de la tupla. Y su evento <code>&lt;&lt;ListboxSelect&gt;&gt;</code>, como los de la casilla y el desplegable, solo lo dispara la interacción y no el código.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><p>Trabaja en un fichero <code>20-listas.py</code> salvo donde se indique otra cosa:</p>
+<ol><li>Crea una lista con diez elementos y un botón que muestre en una etiqueta lo seleccionado. Pulsa el botón sin haber seleccionado nada y arregla lo que pase.</li><li>Pon dos listas en la misma ventana sin <code>exportselection=False</code>, selecciona en una y luego en la otra, y anota el síntoma. Después añade la opción a las dos y comprueba la diferencia.</li><li>Prueba los cuatro modos de selección con el ratón y describe con tus palabras la diferencia entre <code>browse</code> y <code>single</code>, y entre <code>multiple</code> y <code>extended</code>.</li><li>Escribe en <code>20-colores.py</code> una lista de veinte números donde los pares salgan con fondo gris y los múltiplos de cinco en rojo. Añade un botón que inserte un elemento al principio y comprueba qué les pasa a los colores.</li><li>Monta una lista con botones de subir y bajar. Pruébalos primero sin volver a seleccionar el elemento movido y anota por qué el segundo clic hace algo raro.</li><li>Haz una lista de diccionarios con nombre y teléfono, muéstrala como cadenas formateadas y, al seleccionar una fila, enseña el teléfono en una etiqueta usando la lista paralela. Después borra un elemento solo del widget y comprueba cómo se descuadra todo.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#rellenar-y-leer">Rellenar y leer</a></li><li class="nivel-2"><a href="#lo-que-devuelve-no-son-los-valores">Lo que devuelve no son los valores</a></li><li class="nivel-2"><a href="#los-cuatro-modos-de-seleccion">Los cuatro modos de selección</a></li><li class="nivel-2"><a href="#la-trampa-de-las-dos-listas">La trampa de las dos listas</a></li><li class="nivel-2"><a href="#pintar-las-filas">Pintar las filas</a></li><li class="nivel-2"><a href="#moverse-y-reordenar">Moverse y reordenar</a></li><li class="nivel-2"><a href="#listvariable-y-por-que-usarla-poco">listvariable y por qué usarla poco</a></li><li class="nivel-2"><a href="#reaccionar-a-la-seleccion">Reaccionar a la selección</a></li><li class="nivel-2"><a href="#dos-listas-para-pasar-elementos">Dos listas para pasar elementos</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../tkinter/el-desplegable-combobox.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">El desplegable: Combobox</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../tkinter/el-selector-numerico-spinbox.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">El selector numérico: Spinbox</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

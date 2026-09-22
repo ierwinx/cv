@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Probar una CLI · Curso de Python</title>
+<meta name="description" content="Pruebas automáticas con pytest para el núcleo, el análisis de argumentos, la salida por pantalla y los códigos de salida.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="terminal/probar-una-cli">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../terminal/index.html">Aplicaciones de terminal</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 2 &middot; Lección 23 de 28</p>
+    <h1>Probar una CLI</h1>
+    <p class="resumen-leccion">Pruebas automáticas con pytest para el núcleo, el análisis de argumentos, la salida por pantalla y los códigos de salida.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 26 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>Mientras un programa es tuyo y de hoy, probarlo consiste en ejecutarlo y mirar. Funciona porque solo hay una persona afectada por los fallos y porque te acuerdas de todo lo que hace.</p>
+<p>En cuanto alguien instala tu herramienta, eso se acaba. Un cambio en la validación del importe puede romper el subcomando <code>resumen</code> sin que te enteres, porque hace tres semanas que no lo ejecutas. Y la persona que se lo encuentre roto no va a mandarte un informe detallado: va a desinstalarlo.</p>
+<p>Las pruebas automáticas son la respuesta. No son un ejercicio de pulcritud: son la única forma de cambiar código con la certeza de que lo demás sigue en pie.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Al terminar sabrás escribir pruebas con <code>pytest</code> para el núcleo de tu herramienta, para el análisis de argumentos sin tocar <code>sys.argv</code>, para lo que se imprime en pantalla y para el código de salida, además de ejecutar el programa entero como un proceso.</p></aside>
+<h2 id="del-assert-a-pytest">Del <code>assert</code> a <code>pytest</code><a class="ancla" href="#del-assert-a-pytest" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Ya conoces <code>assert</code>. Es una instrucción de Python que comprueba una condición y lanza <code>AssertionError</code> si no se cumple:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">assert_suelto.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">calcular_iva</span><span class="t-operador">(</span>precio<span class="t-operador">,</span> tipo<span class="t-operador">=</span><span class="t-numero">0.21</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">return</span> precio <span class="t-operador">+</span> tipo
+
+
+<span class="t-palabra">assert</span> calcular_iva<span class="t-operador">(</span><span class="t-numero">100</span><span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-numero">121.0</span><span class="t-operador">,</span> <span class="t-texto">&quot;El IVA general de 100 debería dar 121&quot;</span>
+<span class="t-integrada">print</span><span class="t-operador">(</span><span class="t-texto">&quot;Todo correcto&quot;</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python3</span> assert_suelto.py</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>Traceback (most recent call last):
+  File &quot;/Users/erwin/pruebas/assert_suelto.py&quot;, line 5, in &lt;module&gt;
+    assert calcular_iva(100) == 121.0, &quot;El IVA general de 100 debería dar 121&quot;
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: El IVA general de 100 debería dar 121</code></pre></div>
+<p>Sirve para comprobar una cosa, pero tiene dos límites evidentes: el programa se para en el primer fallo, así que no llegas a saber si el segundo <code>assert</code> también fallaba, y no hay ningún informe de conjunto.</p>
+<h3 id="unittest-el-de-la-biblioteca-estandar"><code>unittest</code>, el de la biblioteca estándar<a class="ancla" href="#unittest-el-de-la-biblioteca-estandar" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Python trae desde siempre un marco de pruebas llamado <code>unittest</code>. Las pruebas son métodos de una clase que hereda de <code>unittest.TestCase</code>, y las comprobaciones se hacen con métodos con nombre propio:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">test_con_unittest.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> unittest
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">calcular_iva</span><span class="t-operador">(</span>precio<span class="t-operador">,</span> tipo<span class="t-operador">=</span><span class="t-numero">0.21</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">return</span> precio <span class="t-operador">*</span> <span class="t-operador">(</span><span class="t-numero">1</span> <span class="t-operador">+</span> tipo<span class="t-operador">)</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">PruebasDelIva</span><span class="t-operador">(</span>unittest<span class="t-operador">.</span>TestCase<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">def</span> <span class="t-definicion">test_iva_general</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>assertEqual<span class="t-operador">(</span>calcular_iva<span class="t-operador">(</span><span class="t-numero">100</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-numero">121.0</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">test_iva_reducido</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>assertAlmostEqual<span class="t-operador">(</span>calcular_iva<span class="t-operador">(</span><span class="t-numero">100</span><span class="t-operador">,</span> <span class="t-numero">0.10</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-numero">110.0</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">test_precio_negativo</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>assertLess<span class="t-operador">(</span>calcular_iva<span class="t-operador">(</span><span class="t-operador">-</span><span class="t-numero">100</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">if</span> __name__ <span class="t-operador">==</span> <span class="t-texto">&quot;__main__&quot;</span><span class="t-operador">:</span>
+        unittest<span class="t-operador">.</span>main<span class="t-operador">(</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">python3</span> test_con_unittest.py</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>...
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK</code></pre></div>
+<p>Cada punto es una prueba que ha pasado. Funciona, no hay que instalar nada, y si algún día heredas un proyecto con pruebas así sabrás leerlas. Pero tiene una pega de forma: obliga a una clase para cada grupo de pruebas y a recordar los nombres de treinta métodos distintos (<code>assertEqual</code>, <code>assertIn</code>, <code>assertRaises</code>, <code>assertAlmostEqual</code>) para hacer comparaciones que en Python normal se escriben con <code>==</code>, <code>in</code> y poco más.</p>
+<h3 id="pytest"><code>pytest</code><a class="ancla" href="#pytest" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Es una biblioteca externa, se instala con pip y es lo que usa prácticamente todo el mundo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">pip</span> install pytest</code></pre></div>
+<p>Sus reglas caben en tres líneas:</p>
+<ul><li>Las pruebas son <strong>funciones</strong> cuyo nombre empieza por <code>test_</code>, en ficheros cuyo nombre empieza por <code>test_</code>.</li><li>Las comprobaciones se hacen con <code>assert</code> a secas.</li><li>Se ejecuta escribiendo <code>pytest</code>, sin argumentos, y él busca los ficheros solo.</li></ul>
+<p>Las mismas tres pruebas de antes:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">test_iva.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">calcular_iva</span><span class="t-operador">(</span>precio<span class="t-operador">,</span> tipo<span class="t-operador">=</span><span class="t-numero">0.21</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Devuelve el precio con el IVA incluido.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> precio <span class="t-operador">*</span> <span class="t-operador">(</span><span class="t-numero">1</span> <span class="t-operador">+</span> tipo<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_iva_general</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">assert</span> calcular_iva<span class="t-operador">(</span><span class="t-numero">100</span><span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-numero">121.0</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_iva_reducido</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">assert</span> calcular_iva<span class="t-operador">(</span><span class="t-numero">100</span><span class="t-operador">,</span> <span class="t-numero">0.10</span><span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-numero">110.0</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_iva_de_cero_no_cambia_el_precio</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">assert</span> calcular_iva<span class="t-operador">(</span><span class="t-numero">100</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-numero">100</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pytest</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/erwin/pruebas
+collected 3 items
+
+test_iva.py .F.                                                          [100%]
+
+=================================== FAILURES ===================================
+______________________________ test_iva_reducido _______________________________
+
+    def test_iva_reducido():
+&gt;       assert calcular_iva(100, 0.10) == 110.0
+E       assert 110.00000000000001 == 110.0
+E        +  where 110.00000000000001 = calcular_iva(100, 0.1)
+
+test_iva.py:11: AssertionError
+=========================== short test summary info ============================
+FAILED test_iva_reducido - assert 110.00000000000001 == 110.0
+========================= 1 failed, 2 passed in 0.01s ==========================</code></pre></div>
+<p>Mira lo que ha hecho con el fallo. Ha ejecutado las tres pruebas aunque una fallara, ha marcado con <code>&gt;</code> la línea exacta del <code>assert</code>, y en las líneas que empiezan por <code>E</code> ha <strong>desmontado la expresión</strong>: te dice que el lado izquierdo valía <code>110.00000000000001</code>, y de dónde salía ese número. No has tenido que escribir <code>assertAlmostEqual</code> ni un mensaje explicativo: <code>pytest</code> reescribe los <code>assert</code> por dentro para poder contarte esto.</p>
+<p>Y el fallo es real, no un despiste: es el mismo problema de los decimales en coma flotante que viste en el módulo 1. Para comparar números con decimales, <code>pytest</code> trae una función que admite un margen:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">test_iva.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> pytest
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_iva_reducido</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">assert</span> calcular_iva<span class="t-operador">(</span><span class="t-numero">100</span><span class="t-operador">,</span> <span class="t-numero">0.10</span><span class="t-operador">)</span> <span class="t-operador">==</span> pytest<span class="t-operador">.</span>approx<span class="t-operador">(</span><span class="t-numero">110.0</span><span class="t-operador">)</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pytest <span class="t-palabra">-q</span></code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>...                                                                      [100%]
+3 passed in 0.00s</code></pre></div>
+<p>Las opciones que más vas a usar:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Orden</th><th>Qué hace</th></tr></thead><tbody><tr><td><code>pytest</code></td><td>Ejecuta todas las pruebas</td></tr><tr><td><code>pytest -q</code></td><td>Modo breve, solo el resumen</td></tr><tr><td><code>pytest -v</code></td><td>Modo detallado, una línea por prueba con su nombre</td></tr><tr><td><code>pytest tests/test_cli.py</code></td><td>Solo ese fichero</td></tr><tr><td><code>pytest -k categoria</code></td><td>Solo las pruebas cuyo nombre contenga ese texto</td></tr><tr><td><code>pytest -x</code></td><td>Se para en el primer fallo</td></tr><tr><td><code>pytest --lf</code></td><td>Solo las que fallaron la última vez</td></tr></tbody></table></div>
+<h2 id="probar-el-nucleo">Probar el núcleo<a class="ancla" href="#probar-el-nucleo" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Volvemos a <code>misgastos</code>. Aquí se cobra el trabajo de la lección 20: como <code>modelo.py</code> no imprime ni pregunta nada, probarlo es llamar a una función y comparar el resultado. No hay que simular una terminal, ni capturar nada, ni preparar ficheros.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">tests/test_modelo.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;Pruebas del núcleo: no hace falta ni terminal ni ficheros.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">from</span> decimal <span class="t-palabra">import</span> Decimal
+
+<span class="t-palabra">import</span> pytest
+
+<span class="t-palabra">from</span> misgastos<span class="t-operador">.</span>modelo <span class="t-palabra">import</span> Gasto<span class="t-operador">,</span> filtrar<span class="t-operador">,</span> total<span class="t-operador">,</span> total_por_categoria
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_un_gasto_valido_se_crea</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        gasto <span class="t-operador">=</span> Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Café&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> gasto<span class="t-operador">.</span>concepto <span class="t-operador">==</span> <span class="t-texto">&quot;Café&quot;</span>
+    <span class="t-palabra">assert</span> gasto<span class="t-operador">.</span>importe <span class="t-operador">==</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> gasto<span class="t-operador">.</span>categoria <span class="t-operador">==</span> <span class="t-texto">&quot;comida&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_el_concepto_se_limpia_de_espacios</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">assert</span> Gasto<span class="t-operador">(</span><span class="t-texto">&quot;  Café  &quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">.</span>concepto <span class="t-operador">==</span> <span class="t-texto">&quot;Café&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_el_concepto_vacio_se_rechaza</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">with</span> pytest<span class="t-operador">.</span>raises<span class="t-operador">(</span>ValueError<span class="t-operador">)</span><span class="t-operador">:</span>
+                Gasto<span class="t-operador">(</span><span class="t-texto">&quot;   &quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_el_importe_negativo_se_rechaza</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">with</span> pytest<span class="t-operador">.</span>raises<span class="t-operador">(</span>ValueError<span class="t-operador">,</span> <span class="t-palabra">match</span><span class="t-operador">=</span><span class="t-texto">&quot;debe ser positivo&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Devolución&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;-3.00&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_la_categoria_desconocida_se_rechaza</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">with</span> pytest<span class="t-operador">.</span>raises<span class="t-operador">(</span>ValueError<span class="t-operador">,</span> <span class="t-palabra">match</span><span class="t-operador">=</span><span class="t-texto">&quot;Categoría desconocida&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Cuota del gimnasio&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;30.00&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;deporte&quot;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_total_de_una_lista_vacia_es_cero</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">assert</span> total<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-operador">]</span><span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-numero">0</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_total_suma_los_importes</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        gastos <span class="t-operador">=</span> <span class="t-operador">[</span>Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Café&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">,</span> Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Metro&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;2.40&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">]</span>
+    <span class="t-palabra">assert</span> total<span class="t-operador">(</span>gastos<span class="t-operador">)</span> <span class="t-operador">==</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;4.00&quot;</span><span class="t-operador">)</span>     <span class="t-comentario"># exacto, por ser Decimal</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_total_por_categoria_agrupa_y_ordena</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        gastos <span class="t-operador">=</span> <span class="t-operador">[</span>
+        Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Café&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+        Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Metro&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;2.40&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;transporte&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+        Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Compra&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;54.20&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-operador">]</span>
+    resultado <span class="t-operador">=</span> total_por_categoria<span class="t-operador">(</span>gastos<span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> <span class="t-integrada">list</span><span class="t-operador">(</span>resultado<span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-operador">[</span><span class="t-texto">&quot;comida&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;transporte&quot;</span><span class="t-operador">]</span>
+    <span class="t-palabra">assert</span> resultado<span class="t-operador">[</span><span class="t-texto">&quot;comida&quot;</span><span class="t-operador">]</span> <span class="t-operador">==</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;55.80&quot;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_filtrar_sin_categoria_devuelve_todo</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        gastos <span class="t-operador">=</span> <span class="t-operador">[</span>Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Café&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+              Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Metro&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;2.40&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;transporte&quot;</span><span class="t-operador">)</span><span class="t-operador">]</span>
+    <span class="t-palabra">assert</span> filtrar<span class="t-operador">(</span>gastos<span class="t-operador">)</span> <span class="t-operador">==</span> gastos
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_filtrar_por_categoria</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        gastos <span class="t-operador">=</span> <span class="t-operador">[</span>Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Café&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+              Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Metro&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;2.40&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;transporte&quot;</span><span class="t-operador">)</span><span class="t-operador">]</span>
+    <span class="t-palabra">assert</span> <span class="t-operador">[</span>gasto<span class="t-operador">.</span>concepto <span class="t-palabra">for</span> gasto <span class="t-palabra">in</span> filtrar<span class="t-operador">(</span>gastos<span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">)</span><span class="t-operador">]</span> <span class="t-operador">==</span> <span class="t-operador">[</span><span class="t-texto">&quot;Café&quot;</span><span class="t-operador">]</span></code></pre></div>
+<p>Tres cosas que aparecen aquí y conviene fijar:</p>
+<ul><li><strong><code>pytest.raises</code> comprueba que algo lanza una excepción.</strong> Dentro del <code>with</code> va el código que debería fallar; si no falla, la prueba falla. Es el equivalente en pruebas del <code>try</code>/<code>except</code> que ya conoces.</li><li><strong><code>match</code> compara el mensaje de la excepción</strong> con una expresión regular, y basta con que aparezca en algún sitio del texto. Sin él, cualquier <code>ValueError</code> valdría, incluso uno lanzado por un motivo distinto del que quieres comprobar.</li><li><strong>Los nombres de las pruebas son frases.</strong> No <code>test_gasto_1</code> sino <code>test_el_importe_negativo_se_rechaza</code>, porque cuando una falle vas a leer ese nombre en el informe y quieres entenderlo sin abrir el fichero.</li></ul>
+<h2 id="probar-el-analisis-de-argumentos">Probar el análisis de argumentos<a class="ancla" href="#probar-el-analisis-de-argumentos" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Un analizador de <code>argparse</code> lee de <code>sys.argv</code>, que es la lista de argumentos con los que se lanzó el programa. Podrías modificar <code>sys.argv</code> desde la prueba, pero es una variable global y toquetearla trae problemas.</p>
+<p>No hace falta. <code>parse_args</code> acepta una lista, y si se la pasas, ignora <code>sys.argv</code> por completo:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">tests/test_cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> decimal <span class="t-palabra">import</span> Decimal
+
+<span class="t-palabra">from</span> misgastos<span class="t-operador">.</span>cli <span class="t-palabra">import</span> crear_analizador
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_el_analizador_lee_un_subcomando_con_sus_valores</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        argumentos <span class="t-operador">=</span> crear_analizador<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>parse_args<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-texto">&quot;anadir&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Café&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;-c&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> argumentos<span class="t-operador">.</span>comando <span class="t-operador">==</span> <span class="t-texto">&quot;anadir&quot;</span>
+    <span class="t-palabra">assert</span> argumentos<span class="t-operador">.</span>concepto <span class="t-operador">==</span> <span class="t-texto">&quot;Café&quot;</span>
+    <span class="t-palabra">assert</span> argumentos<span class="t-operador">.</span>importe <span class="t-operador">==</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> argumentos<span class="t-operador">.</span>categoria <span class="t-operador">==</span> <span class="t-texto">&quot;comida&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_el_importe_llega_convertido_a_decimal</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        argumentos <span class="t-operador">=</span> crear_analizador<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>parse_args<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-texto">&quot;anadir&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Metro&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;2.40&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> <span class="t-integrada">isinstance</span><span class="t-operador">(</span>argumentos<span class="t-operador">.</span>importe<span class="t-operador">,</span> Decimal<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_la_categoria_por_defecto_es_otros</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        argumentos <span class="t-operador">=</span> crear_analizador<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>parse_args<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-texto">&quot;anadir&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Metro&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;2.40&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> argumentos<span class="t-operador">.</span>categoria <span class="t-operador">==</span> <span class="t-texto">&quot;otros&quot;</span></code></pre></div>
+<p>Cada elemento de la lista es un argumento tal como lo separaría la terminal. Por eso <code>&quot;Café&quot;</code> va suelto pero un concepto con espacios iría también en un solo elemento: la lista es lo que llega <strong>después</strong> de que la terminal haya interpretado las comillas.</p>
+<p>Esto prueba cosas que a mano se comprueban mal: que <code>type=Decimal</code> está puesto y convierte, que el valor por defecto es el que crees y que el nombre del atributo es el que esperas. Y ahora se ve por qué en la lección 20 <code>crear_analizador</code> era una función aparte: si el analizador se construyera dentro de <code>main</code>, no habría forma de llegar hasta él.</p>
+<h2 id="comprobar-el-codigo-de-salida">Comprobar el código de salida<a class="ancla" href="#comprobar-el-codigo-de-salida" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Cuando <code>argparse</code> encuentra un argumento inválido, escribe el error y llama a <code>sys.exit(2)</code>. Eso lanza la excepción <code>SystemExit</code>, que se captura igual que cualquier otra:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">tests/test_cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> pytest
+
+<span class="t-palabra">from</span> misgastos<span class="t-operador">.</span>cli <span class="t-palabra">import</span> crear_analizador
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_una_categoria_invalida_aborta_con_codigo_2</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">with</span> pytest<span class="t-operador">.</span>raises<span class="t-operador">(</span>SystemExit<span class="t-operador">)</span> <span class="t-palabra">as</span> salida<span class="t-operador">:</span>
+                crear_analizador<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>parse_args<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-texto">&quot;anadir&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Gimnasio&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;30&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;-c&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;deporte&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> salida<span class="t-operador">.</span>value<span class="t-operador">.</span>code <span class="t-operador">==</span> <span class="t-numero">2</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_sin_subcomando_aborta_con_codigo_2</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">with</span> pytest<span class="t-operador">.</span>raises<span class="t-operador">(</span>SystemExit<span class="t-operador">)</span> <span class="t-palabra">as</span> salida<span class="t-operador">:</span>
+                crear_analizador<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>parse_args<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> salida<span class="t-operador">.</span>value<span class="t-operador">.</span>code <span class="t-operador">==</span> <span class="t-numero">2</span></code></pre></div>
+<p>El <code>as salida</code> guarda información sobre la excepción capturada, y <code>salida.value</code> es el objeto <code>SystemExit</code> en sí, con su atributo <code>code</code>. Ese <code>2</code> es el código que <code>argparse</code> usa siempre para &quot;me has dado mal los argumentos&quot;, frente al <code>1</code> que tu programa devuelve para &quot;los argumentos estaban bien pero algo ha fallado&quot;.</p>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">Por qué <code>SystemExit</code> no es un error del programa</p><p><code>SystemExit</code> hereda de <code>BaseException</code> y no de <code>Exception</code>, precisamente para que un <code>except Exception:</code> puesto por ahí no la capture por accidente e impida que el programa termine. En las pruebas eso da igual, porque <code>pytest.raises</code> la atrapa sin problema.</p></aside>
+<h2 id="comprobar-lo-que-se-imprime-con-capsys">Comprobar lo que se imprime con <code>capsys</code><a class="ancla" href="#comprobar-lo-que-se-imprime-con-capsys" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Falta la mitad interesante de una herramienta de terminal: lo que sale por pantalla. <code>pytest</code> lo resuelve con <code>capsys</code>, que se pide escribiéndolo como parámetro de la función de prueba.</p>
+<p>Eso de pedir algo poniéndolo como parámetro se llama <strong>fixture</strong> y es la idea central de <code>pytest</code>: hay una lista de recursos disponibles, y una prueba recibe los que nombra en su firma. No hay que importarlos ni crearlos.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">tests/test_cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">from</span> misgastos<span class="t-operador">.</span>cli <span class="t-palabra">import</span> main
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_anadir_escribe_el_fichero_y_avisa</span><span class="t-operador">(</span>tmp_path<span class="t-operador">,</span> capsys<span class="t-operador">)</span><span class="t-operador">:</span>
+        ruta <span class="t-operador">=</span> tmp_path <span class="t-operador">/</span> <span class="t-texto">&quot;gastos.json&quot;</span>
+
+    codigo <span class="t-operador">=</span> main<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-texto">&quot;-f&quot;</span><span class="t-operador">,</span> <span class="t-integrada">str</span><span class="t-operador">(</span>ruta<span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;anadir&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Café&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;-c&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">assert</span> codigo <span class="t-operador">==</span> <span class="t-numero">0</span>
+    <span class="t-palabra">assert</span> ruta<span class="t-operador">.</span>exists<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> capsys<span class="t-operador">.</span>readouterr<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>out <span class="t-operador">==</span> <span class="t-texto">&quot;Apuntado: Café (1.60 €, comida)\n&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_listar_sin_datos_lo_dice</span><span class="t-operador">(</span>tmp_path<span class="t-operador">,</span> capsys<span class="t-operador">)</span><span class="t-operador">:</span>
+        codigo <span class="t-operador">=</span> main<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-texto">&quot;-f&quot;</span><span class="t-operador">,</span> <span class="t-integrada">str</span><span class="t-operador">(</span>tmp_path <span class="t-operador">/</span> <span class="t-texto">&quot;gastos.json&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;listar&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">assert</span> codigo <span class="t-operador">==</span> <span class="t-numero">0</span>
+    <span class="t-palabra">assert</span> capsys<span class="t-operador">.</span>readouterr<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>out <span class="t-operador">==</span> <span class="t-texto">&quot;No hay gastos apuntados.\n&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_un_importe_negativo_devuelve_1_y_escribe_en_stderr</span><span class="t-operador">(</span>tmp_path<span class="t-operador">,</span> capsys<span class="t-operador">)</span><span class="t-operador">:</span>
+        codigo <span class="t-operador">=</span> main<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-texto">&quot;-f&quot;</span><span class="t-operador">,</span> <span class="t-integrada">str</span><span class="t-operador">(</span>tmp_path <span class="t-operador">/</span> <span class="t-texto">&quot;gastos.json&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;anadir&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Devolución&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;-3&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+
+    capturado <span class="t-operador">=</span> capsys<span class="t-operador">.</span>readouterr<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> codigo <span class="t-operador">==</span> <span class="t-numero">1</span>
+    <span class="t-palabra">assert</span> capturado<span class="t-operador">.</span>out <span class="t-operador">==</span> <span class="t-texto">&quot;&quot;</span>
+    <span class="t-palabra">assert</span> <span class="t-texto">&quot;debe ser positivo&quot;</span> <span class="t-palabra">in</span> capturado<span class="t-operador">.</span>err</code></pre></div>
+<p><code>capsys.readouterr()</code> devuelve un objeto con dos atributos, <code>out</code> y <code>err</code>, que son todo lo que se ha escrito en la salida estándar y en la de error desde la última vez que lo llamaste. Esa última parte importa: <strong>leer vacía el búfer</strong>, así que si llamas dos veces, la segunda solo trae lo nuevo.</p>
+<p>Fíjate en la última prueba, que comprueba tres cosas a la vez: el código devuelto es 1, no se ha escrito nada en la salida normal y el mensaje está en la de error. Es exactamente el contrato que hace que tu herramienta se pueda usar dentro de una tubería, y no hay forma razonable de comprobarlo a ojo.</p>
+<p>Y fíjate también en que estas pruebas llaman a <code>main</code> con una lista, que es lo mismo que hacía <code>parse_args</code>. Por eso <code>main</code> se escribió con <code>argv=None</code> como parámetro.</p>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Compara el texto exacto cuando puedas</p><p><code>assert capturado.out == &quot;Apuntado: Café (1.60 €, comida)\n&quot;</code> es mejor prueba que <code>assert &quot;Apuntado&quot; in capturado.out</code>, porque detecta que se ha colado un espacio de más o que el importe ha dejado de salir con dos decimales. Deja el <code>in</code> para cuando el texto sea largo o contenga algo variable, como una ruta o una fecha.</p></aside>
+<h2 id="ficheros-temporales-con-tmp-path">Ficheros temporales con <code>tmp_path</code><a class="ancla" href="#ficheros-temporales-con-tmp-path" aria-label="Enlace a esta seccion">#</a></h2>
+<p>En las pruebas anteriores ya estaba: <code>tmp_path</code> es otra fixture, y es una carpeta vacía y nueva para cada prueba, que <code>pytest</code> crea y limpia sola. Es un objeto <code>Path</code>, así que se usa con el operador <code>/</code> que ya conoces de <code>pathlib</code>.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">tests/test_almacen.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;Pruebas de la persistencia, con ficheros temporales.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">from</span> decimal <span class="t-palabra">import</span> Decimal
+
+<span class="t-palabra">from</span> misgastos<span class="t-operador">.</span>almacen <span class="t-palabra">import</span> cargar<span class="t-operador">,</span> guardar
+<span class="t-palabra">from</span> misgastos<span class="t-operador">.</span>modelo <span class="t-palabra">import</span> Gasto
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_cargar_un_fichero_que_no_existe_da_lista_vacia</span><span class="t-operador">(</span>tmp_path<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">assert</span> cargar<span class="t-operador">(</span>tmp_path <span class="t-operador">/</span> <span class="t-texto">&quot;no-existe.json&quot;</span><span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_el_viaje_de_ida_y_vuelta_no_pierde_nada</span><span class="t-operador">(</span>tmp_path<span class="t-operador">)</span><span class="t-operador">:</span>
+        ruta <span class="t-operador">=</span> tmp_path <span class="t-operador">/</span> <span class="t-texto">&quot;gastos.json&quot;</span>
+    originales <span class="t-operador">=</span> <span class="t-operador">[</span>Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Café&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+                  Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Metro&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;2.40&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;transporte&quot;</span><span class="t-operador">)</span><span class="t-operador">]</span>
+
+    guardar<span class="t-operador">(</span>ruta<span class="t-operador">,</span> originales<span class="t-operador">)</span>
+    recuperados <span class="t-operador">=</span> cargar<span class="t-operador">(</span>ruta<span class="t-operador">)</span>
+
+    <span class="t-palabra">assert</span> recuperados <span class="t-operador">==</span> originales
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_guardar_crea_las_carpetas_que_falten</span><span class="t-operador">(</span>tmp_path<span class="t-operador">)</span><span class="t-operador">:</span>
+        ruta <span class="t-operador">=</span> tmp_path <span class="t-operador">/</span> <span class="t-texto">&quot;datos&quot;</span> <span class="t-operador">/</span> <span class="t-texto">&quot;2026&quot;</span> <span class="t-operador">/</span> <span class="t-texto">&quot;gastos.json&quot;</span>
+
+    guardar<span class="t-operador">(</span>ruta<span class="t-operador">,</span> <span class="t-operador">[</span>Gasto<span class="t-operador">(</span><span class="t-texto">&quot;Café&quot;</span><span class="t-operador">,</span> Decimal<span class="t-operador">(</span><span class="t-texto">&quot;1.60&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;comida&quot;</span><span class="t-operador">)</span><span class="t-operador">]</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">assert</span> ruta<span class="t-operador">.</span>exists<span class="t-operador">(</span><span class="t-operador">)</span>
+    <span class="t-palabra">assert</span> <span class="t-texto">&quot;Café&quot;</span> <span class="t-palabra">in</span> ruta<span class="t-operador">.</span>read_text<span class="t-operador">(</span>encoding<span class="t-operador">=</span><span class="t-texto">&quot;utf-8&quot;</span><span class="t-operador">)</span></code></pre></div>
+<p>La ventaja frente a crear un <code>prueba.json</code> a mano es doble. Cada prueba tiene su carpeta, así que no pueden pisarse entre ellas ni depender del orden en que se ejecuten. Y no se acumula basura en tu proyecto: <code>pytest</code> guarda las últimas ejecuciones en una carpeta temporal del sistema y va borrando las viejas.</p>
+<p>La comparación de la segunda prueba, <code>recuperados == originales</code>, funciona porque <code>Gasto</code> es una dataclass y las dataclasses comparan campo a campo. Es una sola línea y comprueba el ciclo entero de escritura y lectura.</p>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">Nunca escribas en rutas fijas dentro de una prueba</p><p>Una prueba que hace <code>guardar(Path(&quot;gastos.json&quot;), ...)</code> escribe en la carpeta desde la que hayas lanzado <code>pytest</code>, machaca tus datos reales si resulta que estabas ahí, y falla de forma distinta según quién la ejecute. <code>tmp_path</code> cuesta una palabra y elimina el problema entero.</p></aside>
+<h2 id="ejecutar-el-programa-entero-como-un-proceso">Ejecutar el programa entero como un proceso<a class="ancla" href="#ejecutar-el-programa-entero-como-un-proceso" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Todo lo anterior llama a funciones de Python. Queda una cosa por comprobar: que el programa <strong>arranca</strong>. Si el punto de entrada está mal escrito o falta una importación en <code>__main__.py</code>, ninguna de las pruebas anteriores se entera, porque todas importan los módulos directamente.</p>
+<p>Para eso se lanza el programa de verdad, como un proceso aparte, con <code>subprocess.run</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">tests/test_cli.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">import</span> subprocess
+<span class="t-palabra">import</span> sys
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_el_programa_entero_funciona_como_proceso</span><span class="t-operador">(</span>tmp_path<span class="t-operador">)</span><span class="t-operador">:</span>
+        proceso <span class="t-operador">=</span> subprocess<span class="t-operador">.</span>run<span class="t-operador">(</span>
+        <span class="t-operador">[</span>sys<span class="t-operador">.</span>executable<span class="t-operador">,</span> <span class="t-texto">&quot;-m&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;misgastos&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;-f&quot;</span><span class="t-operador">,</span> <span class="t-integrada">str</span><span class="t-operador">(</span>tmp_path <span class="t-operador">/</span> <span class="t-texto">&quot;gastos.json&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-texto">&quot;listar&quot;</span><span class="t-operador">]</span><span class="t-operador">,</span>
+        capture_output<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span>
+        text<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span>
+    <span class="t-operador">)</span>
+
+    <span class="t-palabra">assert</span> proceso<span class="t-operador">.</span>returncode <span class="t-operador">==</span> <span class="t-numero">0</span>
+    <span class="t-palabra">assert</span> proceso<span class="t-operador">.</span>stdout <span class="t-operador">==</span> <span class="t-texto">&quot;No hay gastos apuntados.\n&quot;</span>
+    <span class="t-palabra">assert</span> proceso<span class="t-operador">.</span>stderr <span class="t-operador">==</span> <span class="t-texto">&quot;&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">test_el_comando_instalado_responde_a_version</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        proceso <span class="t-operador">=</span> subprocess<span class="t-operador">.</span>run<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-texto">&quot;misgastos&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;--version&quot;</span><span class="t-operador">]</span><span class="t-operador">,</span> capture_output<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">assert</span> proceso<span class="t-operador">.</span>returncode <span class="t-operador">==</span> <span class="t-numero">0</span>
+    <span class="t-palabra">assert</span> proceso<span class="t-operador">.</span>stdout<span class="t-operador">.</span>startswith<span class="t-operador">(</span><span class="t-texto">&quot;misgastos &quot;</span><span class="t-operador">)</span></code></pre></div>
+<p>Los detalles que hay que conocer de <code>subprocess.run</code>:</p>
+<ul><li><strong>El primer argumento es una lista</strong>, no una cadena. Cada elemento es un argumento, igual que en <code>parse_args</code>, y así no hay que preocuparse de comillas ni de espacios en las rutas.</li><li><strong><code>sys.executable</code></strong> es la ruta del intérprete que está ejecutando las pruebas. Escribir <code>&quot;python&quot;</code> a secas sería confiar en que el <code>PATH</code> apunte al del entorno, y eso falla en cuanto haya dos entornos por medio.</li><li><strong><code>capture_output=True</code></strong> guarda la salida en vez de dejarla escapar a la pantalla. Sin él, <code>proceso.stdout</code> sería <code>None</code>.</li><li><strong><code>text=True</code></strong> hace que la salida llegue como cadenas en vez de como bytes.</li><li><strong><code>proceso.returncode</code></strong> es el código de salida, que es lo que ves con <code>echo $?</code> en la terminal.</li></ul>
+<p>Estas dos pruebas son lentas comparadas con las demás, porque cada una arranca un intérprete entero. Por eso se escriben pocas: una o dos que comprueben que el programa arranca y responde, y todo lo demás llamando a las funciones.</p>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">La segunda prueba depende de que el paquete esté instalado</p><p><code>test_el_comando_instalado_responde_a_version</code> busca el ejecutable <code>misgastos</code> en el <code>PATH</code>, así que solo pasa si has hecho <code>pip install -e .</code> en el entorno activo. Eso es deliberado: comprueba que el punto de entrada del <code>pyproject.toml</code> es correcto, que es justo lo que no comprueba ninguna otra prueba.</p></aside>
+<h2 id="organizar-la-carpeta-tests">Organizar la carpeta <code>tests/</code><a class="ancla" href="#organizar-la-carpeta-tests" aria-label="Enlace a esta seccion">#</a></h2>
+<p>La convención es un fichero de pruebas por módulo, con el mismo nombre y el prefijo <code>test_</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">text</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-text">misgastos/
+├── src/
+│   └── misgastos/
+│       ├── __init__.py
+│       ├── __main__.py
+│       ├── almacen.py
+│       ├── cli.py
+│       └── modelo.py
+├── tests/
+│   ├── test_almacen.py
+│   ├── test_cli.py
+│   └── test_modelo.py
+└── pyproject.toml</code></pre></div>
+<p>La carpeta <code>tests/</code> va fuera de <code>src/</code>, como hermana del paquete, por lo que viste en la lección 20: las pruebas no se instalan. Y <strong>no lleva <code>__init__.py</code></strong>: no es un paquete, es una carpeta de ficheros sueltos que <code>pytest</code> encuentra por el nombre.</p>
+<p>Se le puede decir a <code>pytest</code> dónde buscar añadiendo una tabla al <code>pyproject.toml</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">pyproject.toml</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-text">[tool.pytest.ini_options]
+testpaths = [&quot;tests&quot;]</code></pre></div>
+<p>Con eso, <code>pytest</code> a secas ya no recorre el proyecto entero buscando ficheros que empiecen por <code>test_</code>, sino que va directo a esa carpeta. En un proyecto pequeño ahorra poco tiempo, pero evita que un fichero suelto de pruebas que dejaste en otro sitio se ejecute sin que lo esperes.</p>
+<h2 id="la-ejecucion-completa">La ejecución completa<a class="ancla" href="#la-ejecucion-completa" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Con las tres carpetas en su sitio y el paquete instalado con <code>pip install -e .</code>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pytest</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/erwin/proyectos/misgastos
+configfile: pyproject.toml
+testpaths: tests
+collected 24 items
+
+tests/test_almacen.py ...                                                [ 12%]
+tests/test_cli.py ...........                                            [ 58%]
+tests/test_modelo.py ..........                                          [100%]
+
+============================== 24 passed in 0.20s ==============================</code></pre></div>
+<p>Veinticuatro pruebas en dos décimas de segundo. Eso es lo que puedes ejecutar después de cada cambio sin que te dé pereza, y esa es la única característica de un conjunto de pruebas que de verdad importa: si tarda dos minutos, dejarás de lanzarlo.</p>
+<p>En modo detallado se ven los nombres, que por eso se escribieron como frases:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pytest <span class="t-palabra">-v</span> tests/test_cli.py</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0 -- /Users/erwin/proyectos/misgastos/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/erwin/proyectos/misgastos
+configfile: pyproject.toml
+collecting ... collected 11 items
+
+tests/test_cli.py::test_el_analizador_lee_un_subcomando_con_sus_valores PASSED [  9%]
+tests/test_cli.py::test_el_importe_llega_convertido_a_decimal PASSED     [ 18%]
+tests/test_cli.py::test_la_categoria_por_defecto_es_otros PASSED         [ 27%]
+tests/test_cli.py::test_una_categoria_invalida_aborta_con_codigo_2 PASSED [ 36%]
+tests/test_cli.py::test_sin_subcomando_aborta_con_codigo_2 PASSED        [ 45%]
+tests/test_cli.py::test_anadir_escribe_el_fichero_y_avisa PASSED         [ 54%]
+tests/test_cli.py::test_listar_sin_datos_lo_dice PASSED                  [ 63%]
+tests/test_cli.py::test_resumen_agrupa_por_categoria PASSED              [ 72%]
+tests/test_cli.py::test_un_importe_negativo_devuelve_1_y_escribe_en_stderr PASSED [ 81%]
+tests/test_cli.py::test_el_programa_entero_funciona_como_proceso PASSED  [ 90%]
+tests/test_cli.py::test_el_comando_instalado_responde_a_version PASSED   [100%]
+
+============================== 11 passed in 0.11s ==============================</code></pre></div>
+<p>Y se puede filtrar por nombre para ejecutar solo lo que estás tocando:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">pytest <span class="t-palabra">-k</span> categoria</code></pre></div>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/erwin/proyectos/misgastos
+configfile: pyproject.toml
+testpaths: tests
+collected 24 items / 17 deselected / 7 selected
+
+tests/test_cli.py ...                                                    [ 42%]
+tests/test_modelo.py ....                                                [100%]
+
+======================= 7 passed, 17 deselected in 0.02s =======================</code></pre></div>
+<aside class="aviso aviso-error"><p class="titulo-aviso">ModuleNotFoundError: No module named &#x27;misgastos&#x27;</p><p>El error más habitual al empezar con pruebas en un proyecto con disposición <code>src/</code>:</p>
+<div class="bloque-salida"><span class="etiqueta-salida">Salida en pantalla</span><pre><code>tests/test_modelo.py:5: in &lt;module&gt;
+    from misgastos.modelo import Gasto, filtrar, total, total_por_categoria
+E   ModuleNotFoundError: No module named &#x27;misgastos&#x27;
+=========================== short test summary info ============================
+ERROR tests/test_almacen.py
+ERROR tests/test_cli.py
+ERROR tests/test_modelo.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!</code></pre></div>
+<p>No has instalado el paquete en el entorno. Las pruebas están en <code>tests/</code>, el código en <code>src/</code>, y no hay ninguna relación entre las dos carpetas salvo la instalación. La solución es <code>pip install -e .</code> con el entorno activado.</p>
+<p>Fíjate en que falla en la fase de recolección, antes de ejecutar nada: <code>pytest</code> ni siquiera ha llegado a la primera prueba. Y fíjate también en que este error es la disposición <code>src/</code> haciendo su trabajo, no un fallo: si el paquete estuviera en la raíz, las pruebas pasarían sin que el paquete estuviera instalado y no te enterarías de que el empaquetado está roto.</p></aside>
+<aside class="aviso aviso-error"><p class="titulo-aviso">assert 110.00000000000001 == 110.0</p><p>Una comparación exacta entre números con decimales. No es cosa de <code>pytest</code>, sino de cómo guarda el ordenador los números con coma, que viste en el módulo 1. Usa <code>pytest.approx</code> en el lado derecho:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">assert</span> calcular_iva<span class="t-operador">(</span><span class="t-numero">100</span><span class="t-operador">,</span> <span class="t-numero">0.10</span><span class="t-operador">)</span> <span class="t-operador">==</span> pytest<span class="t-operador">.</span>approx<span class="t-operador">(</span><span class="t-numero">110.0</span><span class="t-operador">)</span></code></pre></div>
+<p>Admite un margen propio si el que trae por defecto no te vale: <code>pytest.approx(110.0, abs=0.01)</code> para céntimos.</p></aside>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Escribe la prueba cuando encuentres el fallo</p><p>La costumbre más rentable no es probarlo todo, es esta: cada vez que alguien te avise de un fallo, antes de arreglarlo escribe una prueba que lo reproduzca y compruébala en rojo. Después arregla y mírala en verde. Con eso te aseguras de dos cosas a la vez: de que has entendido el fallo y de que no va a volver.</p></aside>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>Probar una herramienta que otros instalan deja de ser opcional, porque los fallos los descubre quien la usa. <code>pytest</code> se instala con pip y sus reglas son tres: funciones que empiezan por <code>test_</code> en ficheros que empiezan por <code>test_</code>, comprobaciones con <code>assert</code> a secas y ejecución escribiendo <code>pytest</code>. Cuando algo falla, desmonta la expresión y te enseña los valores de cada lado. El núcleo se prueba llamando a sus funciones, y es fácil precisamente porque no imprime ni pregunta nada. El análisis de argumentos se prueba pasándole una lista a <code>parse_args</code> en lugar de tocar <code>sys.argv</code>, y el código de salida capturando <code>SystemExit</code> con <code>pytest.raises</code>. Lo que se imprime se comprueba con <code>capsys</code>, que devuelve la salida normal y la de error por separado, y los ficheros se manejan con <code>tmp_path</code>, una carpeta nueva y limpia para cada prueba. Una o dos pruebas más lanzan el programa entero con <code>subprocess.run</code> para verificar que arranca y que el punto de entrada funciona. Todo eso vive en una carpeta <code>tests/</code> hermana de <code>src/</code>, sin <code>__init__.py</code>, y exige que el paquete esté instalado con <code>pip install -e .</code>.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><p>Añade pruebas a <code>misnotas</code>. Necesitarás <code>pytest</code> instalado y el proyecto instalado en modo editable.</p>
+<ol><li>Crea <code>tests/test_modelo.py</code> y escribe al menos seis pruebas del núcleo: las que comprueban que un dato válido se acepta y las que comprueban con <code>pytest.raises</code> que los inválidos se rechazan, usando <code>match</code> para verificar el mensaje.</li><li>Crea <code>tests/test_almacen.py</code> con <code>tmp_path</code> y prueba el viaje de ida y vuelta: guardar una lista, cargarla y comprobar que sale igual. Prueba también el fichero que no existe.</li><li>Crea <code>tests/test_cli.py</code> y prueba tu analizador con <code>parse_args([...])</code>: un subcomando con todos sus valores, un valor por defecto y una conversión de tipo.</li><li>Añade dos pruebas que capturen <code>SystemExit</code> con <code>pytest.raises</code>: una para un argumento inválido y otra para <code>--help</code>, y comprueba qué código devuelve cada una. Uno de los dos te va a sorprender.</li><li>Usa <code>capsys</code> para comprobar el texto exacto de dos mensajes de tu programa, uno en la salida normal y otro en la de error, junto con el código que devuelve <code>main</code>.</li><li>Añade una prueba con <code>subprocess.run</code> que ejecute <code>python -m misnotas --version</code> y compruebe el código de salida y la salida.</li><li>Rompe una función del núcleo a propósito, ejecuta <code>pytest</code> y lee el informe entero. Anota cuántas pruebas se han enterado del cambio: si es solo una, probablemente te falten pruebas.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#del-assert-a-pytest">Del assert a pytest</a></li><li class="nivel-3"><a href="#unittest-el-de-la-biblioteca-estandar">unittest, el de la biblioteca estándar</a></li><li class="nivel-3"><a href="#pytest">pytest</a></li><li class="nivel-2"><a href="#probar-el-nucleo">Probar el núcleo</a></li><li class="nivel-2"><a href="#probar-el-analisis-de-argumentos">Probar el análisis de argumentos</a></li><li class="nivel-2"><a href="#comprobar-el-codigo-de-salida">Comprobar el código de salida</a></li><li class="nivel-2"><a href="#comprobar-lo-que-se-imprime-con-capsys">Comprobar lo que se imprime con capsys</a></li><li class="nivel-2"><a href="#ficheros-temporales-con-tmp-path">Ficheros temporales con tmp_path</a></li><li class="nivel-2"><a href="#ejecutar-el-programa-entero-como-un-proceso">Ejecutar el programa entero como un proceso</a></li><li class="nivel-2"><a href="#organizar-la-carpeta-tests">Organizar la carpeta tests/</a></li><li class="nivel-2"><a href="#la-ejecucion-completa">La ejecución completa</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../terminal/distribuir-tu-herramienta.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">Distribuir tu herramienta</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../terminal/rich-salida-con-estilo.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">rich: salida con estilo</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notificaciones del sistema, el badge y la bandeja · Curso de Python</title>
+<meta name="description" content="Avisar al usuario cuando la ventana no está delante: la bandeja que siempre funciona, el globo rojo con la cuenta, y cómo saber cuál de los avisos ha pulsado.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="tkinter/notificaciones-del-sistema">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../tkinter/index.html">Aplicaciones con Tkinter</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 3 &middot; Lección 49 de 50</p>
+    <h1>Notificaciones del sistema, el badge y la bandeja</h1>
+    <p class="resumen-leccion">Avisar al usuario cuando la ventana no está delante: la bandeja que siempre funciona, el globo rojo con la cuenta, y cómo saber cuál de los avisos ha pulsado.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 40 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>Hasta aquí, cuando el programa tenía algo que decir lo decía en la barra de estado o en un <code>messagebox</code>. Las dos cosas exigen que el usuario esté mirando la ventana, y hay un caso donde eso no se cumple: <strong>el trabajo largo de la lección 42</strong>. Lanzas el análisis, te vas a otra aplicación, y cuando termina nadie se entera.</p>
+<p>Eso es lo que resuelve una notificación: un aviso que aparece <strong>aunque tu ventana no esté delante</strong>, con un contador que dice cuántos hay sin leer y, si el sistema colabora, la posibilidad de saber cuál ha pulsado el usuario para llevarlo justo a esa parte del programa.</p>
+<p>Conviene aclarar el nombre. Lo que en el móvil se llama <em>push</em> es otra cosa: un servidor que empuja un mensaje hacia un dispositivo que no ha pedido nada. Eso necesita un servicio de Apple o de Google y una cuenta de desarrollador, y no es de lo que va esta lección. Aquí el que avisa es <strong>tu propio programa</strong>, a la máquina donde está corriendo. Mecánicamente es idéntico desde el punto de vista del usuario, y es lo que necesita una aplicación de escritorio.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Montar un sistema de avisos completo en tres capas: <strong>la bandeja dentro de la ventana</strong> con su contador y sus avisos flotantes, que funciona en los tres sistemas; <strong>el aviso del sistema operativo</strong> por el camino que no necesita instalar nada; y <strong>el Centro de Notificaciones de macOS</strong>, que es el único que sabe decirte qué aviso ha pulsado el usuario. Y saber exactamente qué exige cada capa, porque la tercera tiene un requisito que sorprende.</p></aside>
+<h2 id="tres-caminos-y-lo-que-cuesta-cada-uno">Tres caminos, y lo que cuesta cada uno<a class="ancla" href="#tres-caminos-y-lo-que-cuesta-cada-uno" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Esta es la tabla que hay que tener clara antes de escribir una línea, porque la elección no es de gusto: cada camino puede hacer unas cosas y no otras.</p>
+<div class="envoltura-tabla"><table><thead><tr><th></th><th>Bandeja en la ventana</th><th><code>osascript</code></th><th>Centro de Notificaciones</th></tr></thead><tbody><tr><td>Dónde funciona</td><td>Los tres sistemas</td><td>Solo macOS</td><td>Solo macOS</td></tr><tr><td>Qué hay que instalar</td><td>Nada</td><td>Nada</td><td><code>pyobjc-framework-UserNotifications</code></td></tr><tr><td>Se ve con la ventana detrás</td><td>No</td><td>Sí</td><td>Sí</td></tr><tr><td>¿Sabes si lo pulsó?</td><td>Sí</td><td><strong>No</strong></td><td>Sí, con el identificador</td></tr><tr><td>Botones en el aviso</td><td>Los que dibujes</td><td>No</td><td>Sí</td></tr><tr><td>Requisito incómodo</td><td>—</td><td>—</td><td><strong>Tiene que ser un <code>.app</code> empaquetado</strong></td></tr></tbody></table></div>
+<p>De ahí sale el diseño del programa de esta lección: <strong>la bandeja es la base y no una alternativa</strong>. Se construye primero, funciona en todas partes, y el aviso del sistema es una capa encima que puede estar o no estar. Es el mismo criterio de la dependencia opcional de la lección 44 con Pillow, pero aplicado a algo más gordo: aquí lo opcional es el sistema operativo entero.</p>
+<h2 id="la-capa-que-siempre-funciona-la-bandeja">La capa que siempre funciona: la bandeja<a class="ancla" href="#la-capa-que-siempre-funciona-la-bandeja" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Tres piezas: la lista de lo que ha llegado, el contador de lo que falta por leer, y el aviso flotante que aparece un momento en una esquina.</p>
+<h3 id="el-contador-no-puede-cambiar-de-tamano">El contador no puede cambiar de tamaño<a class="ancla" href="#el-contador-no-puede-cambiar-de-tamano" aria-label="Enlace a esta seccion">#</a></h3>
+<p>La forma obvia de mostrar la cuenta es ponerla en el texto de un botón, y es la forma equivocada. Medido, con el mismo botón:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola">  <span class="t-numero">0</span> sin leer -&gt; <span class="t-texto">&#x27;Avisos&#x27;</span>       | ancho  <span class="t-numero">80</span> px
+  <span class="t-numero">1</span> sin leer -&gt; <span class="t-texto">&#x27;Avisos (1)&#x27;</span>   | ancho <span class="t-numero">100</span> px
+  <span class="t-numero">9</span> sin leer -&gt; <span class="t-texto">&#x27;Avisos (9)&#x27;</span>   | ancho <span class="t-numero">102</span> px
+ <span class="t-numero">12</span> sin leer -&gt; <span class="t-texto">&#x27;Avisos (12)&#x27;</span>  | ancho <span class="t-numero">107</span> px
+<span class="t-numero">105</span> sin leer -&gt; <span class="t-texto">&#x27;Avisos (105)&#x27;</span> | ancho <span class="t-numero">116</span> px</code></pre></div>
+<p>El botón crece con el número, y al crecer <strong>empuja a todo lo que tenga al lado</strong>: la barra de herramientas se mueve sola mientras el usuario intenta pulsar algo. Por eso el contador de este programa es un <code>Canvas</code> de 24×24 con un círculo y un número dentro, que es el mismo truco que usa cualquier móvil:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola">  <span class="t-numero">0</span> -&gt; <span class="t-numero">0</span> items []      | mide 24x24
+  <span class="t-numero">1</span> -&gt; <span class="t-numero">2</span> items [<span class="t-texto">&#x27;1&#x27;</span>]   | mide 24x24
+ <span class="t-numero">27</span> -&gt; <span class="t-numero">2</span> items [<span class="t-texto">&#x27;27&#x27;</span>]  | mide 24x24
+<span class="t-numero">142</span> -&gt; <span class="t-numero">2</span> items [<span class="t-texto">&#x27;99+&#x27;</span>] | mide 24x24</code></pre></div>
+<p>El tamaño no cambia nunca, y pasado el 99 se enseña <code>99+</code>, porque a partir de ahí el número exacto no le importa a nadie y sí importa que la pastilla no se deforme. Con cero avisos se dibuja <strong>nada</strong>, no un cero: un globo con un cero es ruido.</p>
+<h3 id="el-aviso-flotante-es-una-ventana-sin-barra-de-titulo">El aviso flotante es una ventana sin barra de título<a class="ancla" href="#el-aviso-flotante-es-una-ventana-sin-barra-de-titulo" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Un aviso que aparece en la esquina es un <code>Toplevel</code> al que se le quita el marco:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> aviso.overrideredirect()
+None                      <span class="t-comentario"># antes de tocarlo</span>
+<span class="t-operador">&gt;&gt;&gt;</span> aviso.overrideredirect(True)
+<span class="t-operador">&gt;&gt;&gt;</span> aviso.overrideredirect()
+True</code></pre></div>
+<p>Fíjate en el detalle: <strong>antes de fijarlo devuelve <code>None</code> y después un <code>bool</code></strong>, así que <code>if aviso.overrideredirect():</code> funciona por casualidad en los dos casos pero no es lo mismo preguntar antes que después.</p>
+<p>Quitar el marco tiene una consecuencia que hay que asumir entera: <strong>ya no hay nada que cierre la ventana</strong>. No hay botón, no hay <code>WM_DELETE_WINDOW</code> que valga, no se puede arrastrar. Todo eso lo tienes que poner tú: colocarla a mano, cerrarla con un <code>after</code> y hacer que el clic haga algo.</p>
+<p>Lo bueno es que el clic es más fácil de lo que parece, porque <strong>el evento sube por la jerarquía</strong>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> aviso.bind(<span class="t-texto">&quot;&lt;Button-1&gt;&quot;</span>, manejador)     <span class="t-comentario"># solo en el Toplevel</span>
+<span class="t-operador">&gt;&gt;&gt;</span> etiqueta.event_generate(<span class="t-texto">&quot;&lt;Button-1&gt;&quot;</span>)   <span class="t-comentario"># se pulsa un hijo</span>
+[<span class="t-texto">&#x27;Toplevel&lt;-TLabel&#x27;</span>]                        <span class="t-comentario"># y el manejador se ejecuta</span></code></pre></div>
+<p>Basta atarlo al <code>Toplevel</code> y el <code>evento.widget</code> dice en qué hijo se pulsó de verdad. Lo que <strong>no</strong> se hereda es el cursor: si quieres que el puntero cambie a una mano para que se vea que es pulsable, hay que ponerlo widget a widget, porque una etiqueta nueva nace con el cursor vacío.</p>
+<p>El temporizador de cierre va sobre la propia ventana del aviso y no sobre la principal. Comprobado que es el hallazgo del bloque E otra vez:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> otro.after(<span class="t-numero">40</span>, marcar)
+<span class="t-operador">&gt;&gt;&gt;</span> otro.destroy()
+<span class="t-comentario"># el after no se ejecuta: muere con el widget</span></code></pre></div>
+<p>Si se programara en la ventana principal, cerrar el aviso a mano dejaría un temporizador vivo que intentaría cerrar algo que ya no existe, y eso es un <code>TclError</code> en la consola.</p>
+<aside class="aviso aviso-consejo"><p class="titulo-aviso">Consejo</p><p>Apilar avisos necesita un tope. Cada uno ocupa su altura más un hueco, así que <strong>a partir del cuarto se salen por arriba de la ventana</strong>; y si las posiciones se recortan con un <code>max(y, 0)</code>, lo que pasa es peor, porque se amontonan todos encima del primero. El programa guarda un máximo de tres: al llegar el cuarto, cierra el más viejo y <strong>recoloca los que quedan</strong> para que no se vea el hueco. El aviso no se pierde, porque la bandeja los tiene todos.</p></aside>
+<h2 id="el-camino-sin-dependencias-osascript">El camino sin dependencias: <code>osascript</code><a class="ancla" href="#el-camino-sin-dependencias-osascript" aria-label="Enlace a esta seccion">#</a></h2>
+<p>macOS trae un intérprete de AppleScript en <code>/usr/bin/osascript</code>, y con una línea se manda una notificación de verdad, sin instalar nada:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash">osascript <span class="t-palabra">-e</span> <span class="t-texto">&#x27;display notification &quot;el cuerpo&quot; with title &quot;el título&quot;&#x27;</span></code></pre></div>
+<p>Medido: tarda unos 120 ms y devuelve enseguida. Y ahí está su límite, que no es pequeño: <strong>devuelve enseguida</strong>. El proceso termina en cuanto el aviso se ha entregado, así que no hay nadie escuchando cuando el usuario lo pulsa. Con este camino puedes avisar, y nada más.</p>
+<h3 id="la-trampa-de-las-comillas-que-es-un-agujero-de-verdad">La trampa de las comillas, que es un agujero de verdad<a class="ancla" href="#la-trampa-de-las-comillas-que-es-un-agujero-de-verdad" aria-label="Enlace a esta seccion">#</a></h3>
+<p>La forma natural de construir ese comando es meter el texto dentro de la cadena, y se rompe con el primer usuario que escriba una comilla doble:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> texto = <span class="t-texto">&#x27;Dijo &quot;hola&quot; y se fue&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> subprocess.run([<span class="t-texto">&quot;osascript&quot;</span>, <span class="t-texto">&quot;-e&quot;</span>,
+...                 f<span class="t-texto">&#x27;display notification &quot;{texto}&quot; with title &quot;t&quot;&#x27;</span>])
+codigo: <span class="t-numero">1</span>
+stderr: <span class="t-numero">27</span>:<span class="t-numero">32</span>: syntax error: Un identificador no puede ir detrás de un “&quot;”. (-<span class="t-numero">2740</span>)</code></pre></div>
+<p>No es solo que falle: es que el texto del usuario <strong>se está interpretando como código</strong>, que es la misma familia de problemas que la inyección de SQL de la lección anterior. La solución es la misma de siempre, no construir la orden con el dato dentro, sino pasarlo como argumento:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">GUION <span class="t-operador">=</span> <span class="t-texto">&quot;&quot;&quot;
+on run argv
+    display notification (item 1 of argv) with title (item 2 of argv)
+end run
+&quot;&quot;&quot;</span>
+
+subprocess<span class="t-operador">.</span>run<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-texto">&quot;osascript&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;-e&quot;</span><span class="t-operador">,</span> GUION<span class="t-operador">,</span> cuerpo<span class="t-operador">,</span> titulo<span class="t-operador">]</span><span class="t-operador">,</span>
+               capture_output<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> timeout<span class="t-operador">=</span><span class="t-numero">10</span><span class="t-operador">)</span></code></pre></div>
+<p>Comprobado con el mismo texto de antes: código de salida 0 y el aviso sale con sus comillas. El <code>timeout</code> está porque <code>osascript</code> es un proceso externo y todo proceso externo puede quedarse colgado.</p>
+<h2 id="el-camino-completo-el-centro-de-notificaciones">El camino completo: el Centro de Notificaciones<a class="ancla" href="#el-camino-completo-el-centro-de-notificaciones" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Este es el que hace lo que pediste: el aviso queda guardado en el Centro de Notificaciones, puede llevar botones, y cuando el usuario lo pulsa <strong>tu programa se entera y recibe el identificador</strong> del aviso que se pulsó. Necesita PyObjC, que es el puente entre Python y las bibliotecas de macOS:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">bash</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-bash"><span class="t-integrada">pip</span> install pyobjc-framework-UserNotifications</code></pre></div>
+<p>Un dato útil que salió midiendo: <strong>el Python que trae macOS ya incluye PyObjC</strong> (la versión 11 en el sistema de esta máquina), con <code>AppKit</code> y <code>Foundation</code> listos, aunque no con el envoltorio de <code>UserNotifications</code>, que sí hay que instalar.</p>
+<h3 id="el-requisito-que-sorprende-tiene-que-ser-un-app">El requisito que sorprende: tiene que ser un <code>.app</code><a class="ancla" href="#el-requisito-que-sorprende-tiene-que-ser-un-app" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Esto es lo más importante de la lección y lo que hace perder una tarde si no lo sabes. Desde un guion normal, el Centro de Notificaciones <strong>lo rechaza todo</strong>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> centro = UNUserNotificationCenter.currentNotificationCenter()
+&lt;UNUserNotificationCenter: 0x7cbcc082d0&gt;          <span class="t-comentario"># parece que va bien</span>
+<span class="t-operador">&gt;&gt;&gt;</span> <span class="t-comentario"># y al pedir permiso:</span>
+{<span class="t-texto">&#x27;concedido&#x27;</span>: False,
+ <span class="t-texto">&#x27;error&#x27;</span>: &#x27;Error Domain=UNErrorDomain Code=<span class="t-numero">1</span> &quot;Notifications are not allowed
+           for this application&quot;&#x27;}</code></pre></div>
+<p>Ojo a la primera línea: <strong>el objeto se crea sin protestar</strong>, así que la comprobación ingenua de «¿hay centro?» dice que sí. El rechazo llega al pedir permiso, y con él <code>UNErrorDomain Code=1</code>, que significa que el sistema no reconoce a quien pregunta. La razón es que macOS identifica a las aplicaciones por su <strong>identificador de paquete</strong>, y un guion suelto no tiene ninguno.</p>
+<p>Empaquetado con PyInstaller y movido a una carpeta de aplicaciones, el resultado cambia por completo. Con la misma sonda:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola">bundle identifier: com.curso.sondaavisos
+permiso: (el diálogo del sistema aparece y espera respuesta)
+ajustes: {<span class="t-texto">&#x27;alertas&#x27;</span>: <span class="t-numero">2</span>, <span class="t-texto">&#x27;badge&#x27;</span>: <span class="t-numero">2</span>, <span class="t-texto">&#x27;sonido&#x27;</span>: <span class="t-numero">2</span>}      <span class="t-comentario"># 2 = Enabled</span>
+envio sonda-<span class="t-numero">1</span>: {<span class="t-texto">&#x27;error&#x27;</span>: None}
+envio sonda-<span class="t-numero">2</span>: {<span class="t-texto">&#x27;error&#x27;</span>: None}
+entregados: {<span class="t-texto">&#x27;cuantos&#x27;</span>: <span class="t-numero">2</span>, <span class="t-texto">&#x27;ids&#x27;</span>: [<span class="t-texto">&#x27;sonda-1&#x27;</span>, <span class="t-texto">&#x27;sonda-2&#x27;</span>]}</code></pre></div>
+<p>Los dos avisos salen sin error y <code>getDeliveredNotifications</code> los devuelve con sus identificadores. Así que <strong>esta capa depende de la lección 45</strong>: es una función que solo existe en el programa empaquetado, y en desarrollo hay que trabajar con la de <code>osascript</code>. De ahí la comprobación del programa, que mira si el ejecutable está dentro de un paquete antes de intentarlo siquiera:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">EMPAQUETADA <span class="t-operador">=</span> <span class="t-texto">&quot;.app/Contents/MacOS/&quot;</span> <span class="t-palabra">in</span> sys<span class="t-operador">.</span>executable</code></pre></div>
+<aside class="aviso aviso-aviso"><p class="titulo-aviso">Atención</p><p>El permiso es más frágil de lo que parece. Medido en esta misma máquina: una vez que el usuario dice «no permitir», la denegación <strong>se queda pegada</strong> y activarla después en Ajustes del Sistema no siempre la revive; y como PyInstaller firma la aplicación <em>ad hoc</em>, cada reconstrucción puede parecerle al sistema una aplicación distinta. Para depurar esto existe <code>tccutil reset All tu.identificador.de.paquete</code>, que borra la decisión guardada y hace que el sistema vuelva a preguntar. Y el peor detalle: <strong>con el permiso denegado, enviar sigue devolviendo <code>error=None</code></strong> y el aviso aparece como entregado. El programa cree que ha avisado y el usuario no ve nada, así que el estado del permiso hay que consultarlo y contárselo, que es lo que hace el diagnóstico del ejemplo.</p></aside>
+<h3 id="el-delegado-y-la-referencia-que-hay-que-guardar">El delegado, y la referencia que hay que guardar<a class="ancla" href="#el-delegado-y-la-referencia-que-hay-que-guardar" aria-label="Enlace a esta seccion">#</a></h3>
+<p>Para enterarte de la pulsación hay que darle al sistema un objeto con dos métodos de nombre larguísimo. Son nombres de Objective-C traducidos a Python, y no se pueden cambiar:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">class</span> <span class="t-definicion">_Delegado</span><span class="t-operador">(</span>NSObject<span class="t-operador">)</span><span class="t-operador">:</span>
+
+        <span class="t-palabra">def</span> <span class="t-definicion">userNotificationCenter_willPresentNotification_withCompletionHandler_</span><span class="t-operador">(</span>
+            <span class="t-constante">self</span><span class="t-operador">,</span> centro<span class="t-operador">,</span> aviso<span class="t-operador">,</span> terminar<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-comentario"># Sin esto, macOS esconde el banner cuando tu app está al frente.</span>
+                terminar<span class="t-operador">(</span>UNNotificationPresentationOptionBanner
+                 <span class="t-operador">|</span> UNNotificationPresentationOptionList<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">userNotificationCenter_didReceiveNotificationResponse_withCompletionHandler_</span><span class="t-operador">(</span>
+            <span class="t-constante">self</span><span class="t-operador">,</span> centro<span class="t-operador">,</span> respuesta<span class="t-operador">,</span> terminar<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>avisar<span class="t-operador">(</span>respuesta<span class="t-operador">.</span>notification<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>request<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>identifier<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        terminar<span class="t-operador">(</span><span class="t-operador">)</span>      <span class="t-comentario"># obligatorio: si no se llama, el sistema se queja</span></code></pre></div>
+<p>El segundo es el que importa: <code>respuesta.notification().request().identifier()</code> es <strong>el mismo identificador que le pusiste al enviarlo</strong>, y esa es toda la magia. Si al enviar usas el identificador del aviso en tu bandeja, al volver lo buscas ahí y sabes exactamente qué pulsó el usuario, sin ninguna tabla de traducción.</p>
+<p>Dos trampas en esas pocas líneas. La primera es <strong>la referencia</strong>: el sistema no retiene al delegado, así que si lo creas en una variable local, Python lo recoge y las pulsaciones dejan de llegar sin ningún error. Es la trampa de la referencia del hallazgo de las variables de control y de las imágenes, por tercera vez y en otro disfraz:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-constante">self</span><span class="t-operador">.</span>delegado <span class="t-operador">=</span> _Delegado<span class="t-operador">.</span>alloc<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>init<span class="t-operador">(</span><span class="t-operador">)</span>    <span class="t-comentario"># guardado en un atributo</span>
+<span class="t-constante">self</span><span class="t-operador">.</span>centro<span class="t-operador">.</span>setDelegate_<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>delegado<span class="t-operador">)</span></code></pre></div>
+<p>La segunda es <strong>desde qué hilo se te llama</strong>. Estos dos métodos los ejecuta macOS en el hilo principal, que es donde corre el <code>mainloop</code> de Tk, así que se puede tocar la interfaz directamente. Pero el de la respuesta al permiso <strong>no</strong>: llega desde una cola de fondo, y ahí solo se pueden guardar datos. Es exactamente la regla de la lección 42, y en este ejemplo los dos casos están a diez líneas uno del otro:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">_respuesta_permiso</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> concedido<span class="t-operador">,</span> error<span class="t-operador">)</span><span class="t-operador">:</span>
+    <span class="t-comentario"># Cola de fondo: solo datos, ni un widget.</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>permiso <span class="t-operador">=</span> <span class="t-integrada">bool</span><span class="t-operador">(</span>concedido<span class="t-operador">)</span></code></pre></div>
+<h3 id="el-badge-del-dock-no-necesita-permiso">El badge del Dock no necesita permiso<a class="ancla" href="#el-badge-del-dock-no-necesita-permiso" aria-label="Enlace a esta seccion">#</a></h3>
+<p>El globo rojo sobre el icono es otra API, y es la más agradable de las tres:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> baldosa = NSApplication.sharedApplication().dockTile()
+<span class="t-operador">&gt;&gt;&gt;</span> baldosa.setBadgeLabel_(<span class="t-texto">&quot;7&quot;</span>)
+<span class="t-operador">&gt;&gt;&gt;</span> baldosa.badgeLabel()
+<span class="t-texto">&#x27;7&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> baldosa.setBadgeLabel_(None)      <span class="t-comentario"># con None se quita</span>
+<span class="t-operador">&gt;&gt;&gt;</span> baldosa.setBadgeLabel_(<span class="t-texto">&quot;texto&quot;</span>)   <span class="t-comentario"># acepta cualquier cadena, no solo números</span>
+<span class="t-texto">&#x27;texto&#x27;</span></code></pre></div>
+<p>Funciona <strong>aunque el permiso de notificaciones esté denegado</strong>, porque no es una notificación: es una propiedad del icono. Con <code>None</code> se borra, y acepta cualquier texto. Una cosa que se olvida siempre: <strong>hay que ponerlo a cero al cerrar</strong>, porque si no el globo se queda en el Dock con el número de la última sesión.</p>
+<aside class="aviso aviso-nota"><p class="titulo-aviso">Qué está verificado y qué no</p><p>Todo lo que hay en esta lección con un número o un mensaje de error delante está medido en macOS 27 con Python 3.14 y Tk 9.0.4: los tiempos de <code>osascript</code>, el error de las comillas, los anchos del botón, el comportamiento de <code>overrideredirect</code>, la subida del clic, el rechazo del Centro de Notificaciones sin empaquetar y su funcionamiento empaquetado, y el badge del Dock.</p>
+<p>Lo que <strong>no</strong> se ha podido verificar en la máquina donde se escribió esto es la llegada de la pulsación al delegado, porque el permiso quedó denegado y sin permiso no hay banner que pulsar. El código del delegado viene de una aplicación que sí funciona y que es el proyecto de referencia del módulo, pero conviene que lo compruebes tú con el ejercicio 12 antes de fiarte.</p></aside>
+<h2 id="el-programa">El programa<a class="ancla" href="#el-programa" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Dos ficheros. En <code>avisos.py</code> está la bandeja y también el puente con el sistema, y puede chocar que lo segundo no sea «interfaz»: no lo es, porque hablar con el sistema operativo no es dibujar. La prueba es la de siempre, que el módulo no importa <code>tkinter</code>, y la consecuencia práctica es que el mismo <code>Emisor</code> serviría para un programa de terminal del módulo 2.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">avisos.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;La lógica de los avisos: la bandeja y el puente con el sistema.
+
+Ni una línea de tkinter. El puente vive aquí porque hablar con el sistema
+operativo no es dibujar: la interfaz solo pide «manda esto» y pinta lo que
+la bandeja diga.
+&quot;&quot;&quot;</span>
+
+<span class="t-palabra">import</span> dataclasses
+<span class="t-palabra">import</span> itertools
+<span class="t-palabra">import</span> os
+<span class="t-palabra">import</span> platform
+<span class="t-palabra">import</span> shutil
+<span class="t-palabra">import</span> subprocess
+<span class="t-palabra">import</span> sys
+<span class="t-palabra">import</span> time
+
+<span class="t-comentario"># --- Detección de lo que hay en esta máquina, una sola vez al importar.</span>
+
+ES_MACOS <span class="t-operador">=</span> sys<span class="t-operador">.</span>platform <span class="t-operador">==</span> <span class="t-texto">&quot;darwin&quot;</span>
+
+<span class="t-palabra">try</span><span class="t-operador">:</span>                                    <span class="t-comentario"># el badge del Dock y NSApplication</span>
+        <span class="t-palabra">from</span> AppKit <span class="t-palabra">import</span> NSApplication
+    HAY_APPKIT <span class="t-operador">=</span> <span class="t-palabra">True</span>
+<span class="t-palabra">except</span> ImportError<span class="t-operador">:</span>
+        HAY_APPKIT <span class="t-operador">=</span> <span class="t-palabra">False</span>
+
+<span class="t-palabra">try</span><span class="t-operador">:</span>                                    <span class="t-comentario"># el Centro de Notificaciones de verdad</span>
+        <span class="t-palabra">from</span> Foundation <span class="t-palabra">import</span> NSObject
+    <span class="t-palabra">from</span> UserNotifications <span class="t-palabra">import</span> <span class="t-operador">(</span>UNAuthorizationOptionAlert<span class="t-operador">,</span>
+                                   UNAuthorizationOptionBadge<span class="t-operador">,</span>
+                                   UNAuthorizationOptionSound<span class="t-operador">,</span>
+                                   UNMutableNotificationContent<span class="t-operador">,</span>
+                                   UNNotificationPresentationOptionBanner<span class="t-operador">,</span>
+                                   UNNotificationPresentationOptionList<span class="t-operador">,</span>
+                                   UNNotificationRequest<span class="t-operador">,</span>
+                                   UNUserNotificationCenter<span class="t-operador">)</span>
+    HAY_CENTRO <span class="t-operador">=</span> <span class="t-palabra">True</span>
+<span class="t-palabra">except</span> ImportError<span class="t-operador">:</span>
+        HAY_CENTRO <span class="t-operador">=</span> <span class="t-palabra">False</span>
+
+<span class="t-comentario"># Un .app empaquetado tiene su ejecutable dentro de Contents/MacOS. Sin eso,</span>
+<span class="t-comentario"># el Centro de Notificaciones rechaza todo, así que ni se intenta.</span>
+EMPAQUETADA <span class="t-operador">=</span> <span class="t-texto">&quot;.app/Contents/MacOS/&quot;</span> <span class="t-palabra">in</span> sys<span class="t-operador">.</span>executable
+HAY_OSASCRIPT <span class="t-operador">=</span> ES_MACOS <span class="t-palabra">and</span> shutil<span class="t-operador">.</span>which<span class="t-operador">(</span><span class="t-texto">&quot;osascript&quot;</span><span class="t-operador">)</span> <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span>
+
+<span class="t-comentario"># Pasar el texto como argumento y no incrustado: un usuario que escriba</span>
+<span class="t-comentario"># comillas dobles rompe el AppleScript y no se envía nada.</span>
+GUION <span class="t-operador">=</span> <span class="t-texto">&quot;&quot;&quot;
+on run argv
+    display notification (item 1 of argv) with title (item 2 of argv)
+end run
+&quot;&quot;&quot;</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">ErrorDeAviso</span><span class="t-operador">(</span>Exception<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;No se ha podido mandar al sistema. La bandeja sigue funcionando.&quot;&quot;&quot;</span>
+
+
+<span class="t-operador">@</span>dataclasses<span class="t-operador">.</span>dataclass
+<span class="t-palabra">class</span> <span class="t-definicion">Aviso</span><span class="t-operador">:</span>
+        identificador<span class="t-operador">:</span> <span class="t-integrada">str</span>
+    titulo<span class="t-operador">:</span> <span class="t-integrada">str</span>
+    cuerpo<span class="t-operador">:</span> <span class="t-integrada">str</span>
+    momento<span class="t-operador">:</span> <span class="t-integrada">float</span> <span class="t-operador">=</span> dataclasses<span class="t-operador">.</span>field<span class="t-operador">(</span>default_factory<span class="t-operador">=</span>time<span class="t-operador">.</span>time<span class="t-operador">)</span>
+    leido<span class="t-operador">:</span> <span class="t-integrada">bool</span> <span class="t-operador">=</span> <span class="t-palabra">False</span>
+    canal<span class="t-operador">:</span> <span class="t-integrada">str</span> <span class="t-operador">=</span> <span class="t-texto">&quot;bandeja&quot;</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">Bandeja</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Los avisos de esta sesión. Es la fuente de verdad del contador.&quot;&quot;&quot;</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">__init__</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> maximo<span class="t-operador">=</span><span class="t-numero">200</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>maximo <span class="t-operador">=</span> maximo
+        <span class="t-constante">self</span><span class="t-operador">.</span>avisos <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>_numeros <span class="t-operador">=</span> itertools<span class="t-operador">.</span>count<span class="t-operador">(</span><span class="t-numero">1</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">anadir</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> titulo<span class="t-operador">,</span> cuerpo<span class="t-operador">,</span> canal<span class="t-operador">=</span><span class="t-texto">&quot;bandeja&quot;</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                titulo <span class="t-operador">=</span> <span class="t-operador">(</span>titulo <span class="t-palabra">or</span> <span class="t-texto">&quot;&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">or</span> <span class="t-texto">&quot;Aviso&quot;</span>
+        aviso <span class="t-operador">=</span> Aviso<span class="t-operador">(</span>f&quot;aviso-<span class="t-operador">{</span><span class="t-integrada">next</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>_numeros<span class="t-operador">)</span><span class="t-operador">}</span>&quot;<span class="t-operador">,</span> titulo<span class="t-operador">,</span>
+                      <span class="t-operador">(</span>cuerpo <span class="t-palabra">or</span> <span class="t-texto">&quot;&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> canal<span class="t-operador">=</span>canal<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>avisos<span class="t-operador">.</span>append<span class="t-operador">(</span>aviso<span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-integrada">len</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>avisos<span class="t-operador">)</span> <span class="t-operador">&gt;</span> <span class="t-constante">self</span><span class="t-operador">.</span>maximo<span class="t-operador">:</span>
+                        <span class="t-palabra">del</span> <span class="t-constante">self</span><span class="t-operador">.</span>avisos<span class="t-operador">[</span><span class="t-operador">:</span><span class="t-operador">-</span><span class="t-constante">self</span><span class="t-operador">.</span>maximo<span class="t-operador">]</span>
+        <span class="t-palabra">return</span> aviso
+
+    <span class="t-palabra">def</span> <span class="t-definicion">por_id</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> identificador<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">for</span> aviso <span class="t-palabra">in</span> <span class="t-constante">self</span><span class="t-operador">.</span>avisos<span class="t-operador">:</span>
+                        <span class="t-palabra">if</span> aviso<span class="t-operador">.</span>identificador <span class="t-operador">==</span> identificador<span class="t-operador">:</span>
+                                <span class="t-palabra">return</span> aviso
+        <span class="t-palabra">return</span> <span class="t-palabra">None</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">marcar_leido</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> identificador<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;Devuelve True solo si ha cambiado algo, para no repintar de más.&quot;&quot;&quot;</span>
+        aviso <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>por_id<span class="t-operador">(</span>identificador<span class="t-operador">)</span>
+        <span class="t-palabra">if</span> aviso <span class="t-palabra">is</span> <span class="t-palabra">None</span> <span class="t-palabra">or</span> aviso<span class="t-operador">.</span>leido<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+        aviso<span class="t-operador">.</span>leido <span class="t-operador">=</span> <span class="t-palabra">True</span>
+        <span class="t-palabra">return</span> <span class="t-palabra">True</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">marcar_todos</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                cambiados <span class="t-operador">=</span> <span class="t-numero">0</span>
+        <span class="t-palabra">for</span> aviso <span class="t-palabra">in</span> <span class="t-constante">self</span><span class="t-operador">.</span>avisos<span class="t-operador">:</span>
+                        <span class="t-palabra">if</span> <span class="t-palabra">not</span> aviso<span class="t-operador">.</span>leido<span class="t-operador">:</span>
+                                aviso<span class="t-operador">.</span>leido <span class="t-operador">=</span> <span class="t-palabra">True</span>
+                cambiados <span class="t-operador">+=</span> <span class="t-numero">1</span>
+        <span class="t-palabra">return</span> cambiados
+
+    <span class="t-palabra">def</span> <span class="t-definicion">borrar_leidos</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                antes <span class="t-operador">=</span> <span class="t-integrada">len</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>avisos<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>avisos <span class="t-operador">=</span> <span class="t-operador">[</span>a <span class="t-palabra">for</span> a <span class="t-palabra">in</span> <span class="t-constante">self</span><span class="t-operador">.</span>avisos <span class="t-palabra">if</span> <span class="t-palabra">not</span> a<span class="t-operador">.</span>leido<span class="t-operador">]</span>
+        <span class="t-palabra">return</span> antes <span class="t-operador">-</span> <span class="t-integrada">len</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>avisos<span class="t-operador">)</span>
+
+    <span class="t-operador">@</span>property
+    <span class="t-palabra">def</span> <span class="t-definicion">sin_leer</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-integrada">sum</span><span class="t-operador">(</span><span class="t-numero">1</span> <span class="t-palabra">for</span> aviso <span class="t-palabra">in</span> <span class="t-constante">self</span><span class="t-operador">.</span>avisos <span class="t-palabra">if</span> <span class="t-palabra">not</span> aviso<span class="t-operador">.</span>leido<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">__len__</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-integrada">len</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>avisos<span class="t-operador">)</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">Emisor</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Manda avisos al sistema por el mejor camino disponible.
+
+    Tres canales, de más a menos capaz:
+
+    centro     PyObjC y UNUserNotificationCenter. Es el único que sabe
+               decirte cuál pulsó el usuario, y exige un .app de verdad.
+    osascript  No necesita instalar nada, funciona siempre en macOS, y no
+               devuelve ninguna información de la pulsación.
+    ninguno    Fuera de macOS. La bandeja de la ventana sigue igual.
+    &quot;&quot;&quot;</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">__init__</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> al_pulsar<span class="t-operador">=</span><span class="t-palabra">None</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>al_pulsar <span class="t-operador">=</span> al_pulsar
+        <span class="t-constante">self</span><span class="t-operador">.</span>permiso <span class="t-operador">=</span> <span class="t-palabra">None</span>            <span class="t-comentario"># None = sin respuesta todavía</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>ultimo_error <span class="t-operador">=</span> <span class="t-palabra">None</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>centro <span class="t-operador">=</span> <span class="t-palabra">None</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>delegado <span class="t-operador">=</span> <span class="t-palabra">None</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>canal <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>_elegir_canal<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>canal <span class="t-operador">==</span> <span class="t-texto">&quot;centro&quot;</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>_arrancar_centro<span class="t-operador">(</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">_elegir_canal</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">if</span> HAY_CENTRO <span class="t-palabra">and</span> EMPAQUETADA<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-texto">&quot;centro&quot;</span>
+        <span class="t-palabra">if</span> HAY_OSASCRIPT<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-texto">&quot;osascript&quot;</span>
+        <span class="t-palabra">return</span> <span class="t-texto">&quot;ninguno&quot;</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">_arrancar_centro</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>centro <span class="t-operador">=</span> UNUserNotificationCenter<span class="t-operador">.</span>currentNotificationCenter<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-comentario"># El sistema NO retiene al delegado: si no se guarda en un atributo,</span>
+        <span class="t-comentario"># Python lo recoge y las pulsaciones dejan de llegar sin más aviso.</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>delegado <span class="t-operador">=</span> _Delegado<span class="t-operador">.</span>alloc<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>init<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>delegado<span class="t-operador">.</span>avisar <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>_recibir_pulsacion
+        <span class="t-constante">self</span><span class="t-operador">.</span>centro<span class="t-operador">.</span>setDelegate_<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>delegado<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>centro<span class="t-operador">.</span>requestAuthorizationWithOptions_completionHandler_<span class="t-operador">(</span>
+            UNAuthorizationOptionAlert <span class="t-operador">|</span> UNAuthorizationOptionBadge
+            <span class="t-operador">|</span> UNAuthorizationOptionSound<span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>_respuesta_permiso<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">_respuesta_permiso</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> concedido<span class="t-operador">,</span> error<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-comentario"># Llega desde una cola de fondo: aquí solo se guardan datos, nunca</span>
+        <span class="t-comentario"># se toca la interfaz.</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>permiso <span class="t-operador">=</span> <span class="t-integrada">bool</span><span class="t-operador">(</span>concedido<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>ultimo_error <span class="t-operador">=</span> <span class="t-integrada">str</span><span class="t-operador">(</span>error<span class="t-operador">)</span> <span class="t-palabra">if</span> error <span class="t-palabra">else</span> <span class="t-palabra">None</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">_recibir_pulsacion</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> identificador<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>al_pulsar <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>al_pulsar<span class="t-operador">(</span>identificador<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">enviar</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> aviso<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;Manda el aviso y devuelve el canal por el que salió.&quot;&quot;&quot;</span>
+        <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>canal <span class="t-operador">==</span> <span class="t-texto">&quot;centro&quot;</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>_enviar_al_centro<span class="t-operador">(</span>aviso<span class="t-operador">)</span>
+        <span class="t-palabra">elif</span> <span class="t-constante">self</span><span class="t-operador">.</span>canal <span class="t-operador">==</span> <span class="t-texto">&quot;osascript&quot;</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>_enviar_con_osascript<span class="t-operador">(</span>aviso<span class="t-operador">)</span>
+        <span class="t-palabra">else</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-texto">&quot;ninguno&quot;</span>
+        <span class="t-palabra">return</span> <span class="t-constante">self</span><span class="t-operador">.</span>canal
+
+    <span class="t-palabra">def</span> <span class="t-definicion">_enviar_al_centro</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> aviso<span class="t-operador">)</span><span class="t-operador">:</span>
+                contenido <span class="t-operador">=</span> UNMutableNotificationContent<span class="t-operador">.</span>alloc<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>init<span class="t-operador">(</span><span class="t-operador">)</span>
+        contenido<span class="t-operador">.</span>setTitle_<span class="t-operador">(</span>aviso<span class="t-operador">.</span>titulo<span class="t-operador">)</span>
+        contenido<span class="t-operador">.</span>setBody_<span class="t-operador">(</span>aviso<span class="t-operador">.</span>cuerpo<span class="t-operador">)</span>
+        <span class="t-comentario"># El identificador es la pieza clave: es lo que vuelve cuando el</span>
+        <span class="t-comentario"># usuario pulsa, y es el mismo que usa la bandeja.</span>
+        pedido <span class="t-operador">=</span> UNNotificationRequest<span class="t-operador">.</span>requestWithIdentifier_content_trigger_<span class="t-operador">(</span>
+            aviso<span class="t-operador">.</span>identificador<span class="t-operador">,</span> contenido<span class="t-operador">,</span> <span class="t-palabra">None</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>centro<span class="t-operador">.</span>addNotificationRequest_withCompletionHandler_<span class="t-operador">(</span>
+            pedido<span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>_resultado_envio<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">_resultado_envio</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> error<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>ultimo_error <span class="t-operador">=</span> <span class="t-integrada">str</span><span class="t-operador">(</span>error<span class="t-operador">)</span> <span class="t-palabra">if</span> error <span class="t-palabra">else</span> <span class="t-palabra">None</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">_enviar_con_osascript</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> aviso<span class="t-operador">)</span><span class="t-operador">:</span>
+                completado <span class="t-operador">=</span> subprocess<span class="t-operador">.</span>run<span class="t-operador">(</span>
+            <span class="t-operador">[</span><span class="t-texto">&quot;osascript&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;-e&quot;</span><span class="t-operador">,</span> GUION<span class="t-operador">,</span> aviso<span class="t-operador">.</span>cuerpo <span class="t-palabra">or</span> <span class="t-texto">&quot; &quot;</span><span class="t-operador">,</span> aviso<span class="t-operador">.</span>titulo<span class="t-operador">]</span><span class="t-operador">,</span>
+            capture_output<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">,</span> timeout<span class="t-operador">=</span><span class="t-numero">10</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> completado<span class="t-operador">.</span>returncode<span class="t-operador">:</span>
+                        <span class="t-palabra">raise</span> ErrorDeAviso<span class="t-operador">(</span>completado<span class="t-operador">.</span>stderr<span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>splitlines<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">[</span><span class="t-numero">0</span><span class="t-operador">]</span>
+                               <span class="t-palabra">if</span> completado<span class="t-operador">.</span>stderr<span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span>
+                               <span class="t-palabra">else</span> <span class="t-texto">&quot;osascript falló sin explicar por qué&quot;</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">poner_badge</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> cuenta<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;El globo rojo del Dock. No necesita permiso de notificaciones.&quot;&quot;&quot;</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> HAY_APPKIT<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+        NSApplication<span class="t-operador">.</span>sharedApplication<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>dockTile<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>setBadgeLabel_<span class="t-operador">(</span>
+            <span class="t-integrada">str</span><span class="t-operador">(</span>cuenta<span class="t-operador">)</span> <span class="t-palabra">if</span> cuenta <span class="t-palabra">else</span> <span class="t-palabra">None</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-palabra">True</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">abrir_ajustes</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;El panel de Notificaciones de Ajustes del Sistema.&quot;&quot;&quot;</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> ES_MACOS<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+        subprocess<span class="t-operador">.</span>run<span class="t-operador">(</span>
+            <span class="t-operador">[</span><span class="t-texto">&quot;open&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;x-apple.systempreferences:&quot;</span>
+                     <span class="t-texto">&quot;com.apple.Notifications-Settings.extension&quot;</span><span class="t-operador">]</span><span class="t-operador">,</span>
+            check<span class="t-operador">=</span><span class="t-palabra">False</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-palabra">True</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">diagnostico</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;Por qué se está usando este canal y no otro. Para la interfaz.&quot;&quot;&quot;</span>
+        <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>canal <span class="t-operador">==</span> <span class="t-texto">&quot;centro&quot;</span><span class="t-operador">:</span>
+                        <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>permiso <span class="t-palabra">is</span> <span class="t-palabra">False</span><span class="t-operador">:</span>
+                                <span class="t-palabra">return</span> <span class="t-operador">(</span><span class="t-texto">&quot;Sin permiso: los avisos se entregan pero no se ven. &quot;</span>
+                        <span class="t-texto">&quot;Actívalos en Ajustes del Sistema.&quot;</span><span class="t-operador">)</span>
+            <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>permiso <span class="t-palabra">is</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                                <span class="t-palabra">return</span> <span class="t-texto">&quot;Esperando la respuesta al permiso del sistema.&quot;</span>
+            <span class="t-palabra">return</span> <span class="t-texto">&quot;Centro de Notificaciones activo. Las pulsaciones llegan.&quot;</span>
+        <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>canal <span class="t-operador">==</span> <span class="t-texto">&quot;osascript&quot;</span><span class="t-operador">:</span>
+                        <span class="t-palabra">if</span> HAY_CENTRO <span class="t-palabra">and</span> <span class="t-palabra">not</span> EMPAQUETADA<span class="t-operador">:</span>
+                                <span class="t-palabra">return</span> <span class="t-operador">(</span><span class="t-texto">&quot;Sin empaquetar: se usa osascript. El Centro de &quot;</span>
+                        <span class="t-texto">&quot;Notificaciones exige un .app (lección 45).&quot;</span><span class="t-operador">)</span>
+            <span class="t-palabra">return</span> <span class="t-operador">(</span><span class="t-texto">&quot;Se usa osascript. No hay forma de saber si el usuario &quot;</span>
+                    <span class="t-texto">&quot;pulsa el aviso del sistema.&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span> f&quot;<span class="t-operador">{</span>platform<span class="t-operador">.</span>system<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">}</span> no tiene un canal aquí: solo la bandeja.&quot;
+
+
+<span class="t-palabra">if</span> HAY_CENTRO<span class="t-operador">:</span>
+
+        <span class="t-palabra">class</span> <span class="t-definicion">_Delegado</span><span class="t-operador">(</span>NSObject<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;El puente que macOS llama cuando pasa algo con un aviso.
+
+        Los dos métodos se ejecutan en el hilo principal, que es donde corre
+        el mainloop de Tk, así que se puede tocar la interfaz directamente.
+        &quot;&quot;&quot;</span>
+
+        <span class="t-palabra">def</span> <span class="t-definicion">userNotificationCenter_willPresentNotification_withCompletionHandler_</span><span class="t-operador">(</span>
+                <span class="t-constante">self</span><span class="t-operador">,</span> centro<span class="t-operador">,</span> aviso<span class="t-operador">,</span> terminar<span class="t-operador">)</span><span class="t-operador">:</span>
+            <span class="t-comentario"># Sin esto, macOS esconde el banner cuando la app está al frente.</span>
+                        terminar<span class="t-operador">(</span>UNNotificationPresentationOptionBanner
+                     <span class="t-operador">|</span> UNNotificationPresentationOptionList<span class="t-operador">)</span>
+
+        <span class="t-palabra">def</span> <span class="t-definicion">userNotificationCenter_didReceiveNotificationResponse_withCompletionHandler_</span><span class="t-operador">(</span>
+                <span class="t-constante">self</span><span class="t-operador">,</span> centro<span class="t-operador">,</span> respuesta<span class="t-operador">,</span> terminar<span class="t-operador">)</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>avisar<span class="t-operador">(</span>respuesta<span class="t-operador">.</span>notification<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>request<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>identifier<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+            terminar<span class="t-operador">(</span><span class="t-operador">)</span>      <span class="t-comentario"># obligatorio: si no se llama, el sistema se queja</span></code></pre></div>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">panel_avisos.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;La interfaz: bandeja, contador y avisos flotantes dentro de la ventana.
+
+Lo que se ve aquí funciona en los tres sistemas. Lo del sistema operativo
+lo resuelve avisos.py y esta capa solo pregunta por qué canal ha salido.
+&quot;&quot;&quot;</span>
+
+<span class="t-palabra">import</span> time
+<span class="t-palabra">import</span> tkinter <span class="t-palabra">as</span> tk
+<span class="t-palabra">from</span> tkinter <span class="t-palabra">import</span> ttk
+
+<span class="t-palabra">import</span> avisos
+
+AZUL<span class="t-operador">,</span> VERDE<span class="t-operador">,</span> ROJO<span class="t-operador">,</span> GRIS <span class="t-operador">=</span> <span class="t-texto">&quot;#1565C0&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;#2E7D32&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;#C62828&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;#777777&quot;</span>
+SEGUNDOS_VISIBLE <span class="t-operador">=</span> <span class="t-numero">5000</span>
+ANCHO_AVISO<span class="t-operador">,</span> ALTO_AVISO <span class="t-operador">=</span> <span class="t-numero">320</span><span class="t-operador">,</span> <span class="t-numero">96</span>
+<span class="t-comentario"># Más de tres apilados se salen de la ventana por arriba.</span>
+MAXIMO_FLOTANTES <span class="t-operador">=</span> <span class="t-numero">3</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">Contador</span><span class="t-operador">(</span>tk<span class="t-operador">.</span>Canvas<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;El globo rojo con el número. Un Canvas y no una etiqueta porque así
+    el tamaño no cambia nunca: con una etiqueta, pasar de 9 a 10 mueve todo
+    lo que tenga al lado.&quot;&quot;&quot;</span>
+
+    LADO <span class="t-operador">=</span> <span class="t-numero">24</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">__init__</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> padre<span class="t-operador">,</span> <span class="t-operador">**</span>opciones<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-integrada">super</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>__init__<span class="t-operador">(</span>padre<span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>LADO<span class="t-operador">,</span> height<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>LADO<span class="t-operador">,</span>
+                         highlightthickness<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-operador">**</span>opciones<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">poner</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> cuenta<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>delete<span class="t-operador">(</span><span class="t-texto">&quot;all&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> cuenta<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span>
+        margen <span class="t-operador">=</span> <span class="t-numero">2</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>create_oval<span class="t-operador">(</span>margen<span class="t-operador">,</span> margen<span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>LADO <span class="t-operador">-</span> margen<span class="t-operador">,</span>
+                         <span class="t-constante">self</span><span class="t-operador">.</span>LADO <span class="t-operador">-</span> margen<span class="t-operador">,</span> fill<span class="t-operador">=</span>ROJO<span class="t-operador">,</span> outline<span class="t-operador">=</span><span class="t-texto">&quot;&quot;</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>create_text<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>LADO <span class="t-operador">/</span> <span class="t-numero">2</span><span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>LADO <span class="t-operador">/</span> <span class="t-numero">2</span><span class="t-operador">,</span>
+                         text<span class="t-operador">=</span><span class="t-integrada">str</span><span class="t-operador">(</span>cuenta<span class="t-operador">)</span> <span class="t-palabra">if</span> cuenta <span class="t-operador">&lt;</span> <span class="t-numero">100</span> <span class="t-palabra">else</span> <span class="t-texto">&quot;99+&quot;</span><span class="t-operador">,</span>
+                         fill<span class="t-operador">=</span><span class="t-texto">&quot;white&quot;</span><span class="t-operador">,</span> font<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;Helvetica&quot;</span><span class="t-operador">,</span> <span class="t-numero">9</span><span class="t-operador">,</span> <span class="t-texto">&quot;bold&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">AvisoFlotante</span><span class="t-operador">(</span>tk<span class="t-operador">.</span>Toplevel<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;El aviso que aparece en una esquina y se va solo.
+
+    Es una ventana sin barra de título, así que hay que colocarla a mano y
+    cerrarla a mano: el usuario no tiene ningún botón para hacerlo.
+    &quot;&quot;&quot;</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">__init__</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> padre<span class="t-operador">,</span> aviso<span class="t-operador">,</span> al_pulsar<span class="t-operador">,</span> hueco<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-integrada">super</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>__init__<span class="t-operador">(</span>padre<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>aviso <span class="t-operador">=</span> aviso
+        <span class="t-constante">self</span><span class="t-operador">.</span>al_pulsar <span class="t-operador">=</span> al_pulsar
+        <span class="t-constante">self</span><span class="t-operador">.</span>cierre <span class="t-operador">=</span> <span class="t-palabra">None</span>
+
+        <span class="t-constante">self</span><span class="t-operador">.</span>overrideredirect<span class="t-operador">(</span><span class="t-palabra">True</span><span class="t-operador">)</span>      <span class="t-comentario"># sin barra de título ni marco</span>
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>attributes<span class="t-operador">(</span><span class="t-texto">&quot;-topmost&quot;</span><span class="t-operador">,</span> <span class="t-palabra">True</span><span class="t-operador">)</span>
+        <span class="t-palabra">except</span> tk<span class="t-operador">.</span>TclError<span class="t-operador">:</span>
+                        <span class="t-palabra">pass</span>                         <span class="t-comentario"># algún gestor de ventanas no lo deja</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>colocar<span class="t-operador">(</span>hueco<span class="t-operador">)</span>
+
+        marco <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> padding<span class="t-operador">=</span><span class="t-numero">12</span><span class="t-operador">,</span> relief<span class="t-operador">=</span><span class="t-texto">&quot;solid&quot;</span><span class="t-operador">,</span> borderwidth<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">)</span>
+        marco<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+        ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>marco<span class="t-operador">,</span> text<span class="t-operador">=</span>aviso<span class="t-operador">.</span>titulo<span class="t-operador">,</span>
+                  font<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;Helvetica&quot;</span><span class="t-operador">,</span> <span class="t-numero">12</span><span class="t-operador">,</span> <span class="t-texto">&quot;bold&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">)</span>
+        ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>marco<span class="t-operador">,</span> text<span class="t-operador">=</span>aviso<span class="t-operador">.</span>cuerpo <span class="t-palabra">or</span> <span class="t-texto">&quot;Sin detalle&quot;</span><span class="t-operador">,</span>
+                  wraplength<span class="t-operador">=</span>ANCHO_AVISO <span class="t-operador">-</span> <span class="t-numero">40</span><span class="t-operador">,</span>
+                  foreground<span class="t-operador">=</span>GRIS<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">2</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+        <span class="t-comentario"># Basta atar el clic a la ventana: el evento sube desde los hijos.</span>
+        <span class="t-comentario"># Lo que no se hereda es el cursor, y eso hay que ponerlo uno a uno.</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;Button-1&gt;&quot;</span><span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>pulsado<span class="t-operador">)</span>
+        <span class="t-palabra">for</span> hijo <span class="t-palabra">in</span> <span class="t-operador">(</span>marco<span class="t-operador">,</span> <span class="t-operador">*</span>marco<span class="t-operador">.</span>winfo_children<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        hijo<span class="t-operador">.</span>configure<span class="t-operador">(</span>cursor<span class="t-operador">=</span><span class="t-texto">&quot;hand2&quot;</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>configure<span class="t-operador">(</span>cursor<span class="t-operador">=</span><span class="t-texto">&quot;hand2&quot;</span><span class="t-operador">)</span>
+
+        <span class="t-comentario"># El temporizador va sobre self: así muere con la ventana y no</span>
+        <span class="t-comentario"># intenta cerrar algo que ya no existe.</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>cierre <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>after<span class="t-operador">(</span>SEGUNDOS_VISIBLE<span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>cerrar<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">colocar</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> hueco<span class="t-operador">)</span><span class="t-operador">:</span>
+                padre <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>master
+        padre<span class="t-operador">.</span>update_idletasks<span class="t-operador">(</span><span class="t-operador">)</span>
+        x <span class="t-operador">=</span> padre<span class="t-operador">.</span>winfo_rootx<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">+</span> padre<span class="t-operador">.</span>winfo_width<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> ANCHO_AVISO <span class="t-operador">-</span> <span class="t-numero">18</span>
+        y <span class="t-operador">=</span> <span class="t-operador">(</span>padre<span class="t-operador">.</span>winfo_rooty<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">+</span> padre<span class="t-operador">.</span>winfo_height<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> ALTO_AVISO <span class="t-operador">-</span> <span class="t-numero">18</span>
+             <span class="t-operador">-</span> hueco <span class="t-operador">*</span> <span class="t-operador">(</span>ALTO_AVISO <span class="t-operador">+</span> <span class="t-numero">8</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>geometry<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>ANCHO_AVISO<span class="t-operador">}</span>x<span class="t-operador">{</span>ALTO_AVISO<span class="t-operador">}</span>+<span class="t-operador">{</span><span class="t-integrada">max</span><span class="t-operador">(</span>x<span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">}</span>+<span class="t-operador">{</span><span class="t-integrada">max</span><span class="t-operador">(</span>y<span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">pulsado</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> evento<span class="t-operador">=</span><span class="t-palabra">None</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>al_pulsar<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>aviso<span class="t-operador">.</span>identificador<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>cerrar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">cerrar</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>cierre <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>after_cancel<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>cierre<span class="t-operador">)</span>
+            <span class="t-constante">self</span><span class="t-operador">.</span>cierre <span class="t-operador">=</span> <span class="t-palabra">None</span>
+        <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>winfo_exists<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>destroy<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">class</span> <span class="t-definicion">Aplicacion</span><span class="t-operador">(</span>tk<span class="t-operador">.</span>Tk<span class="t-operador">)</span><span class="t-operador">:</span>
+
+        <span class="t-palabra">def</span> <span class="t-definicion">__init__</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> bandeja<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-integrada">super</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">.</span>__init__<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>bandeja <span class="t-operador">=</span> bandeja
+        <span class="t-comentario"># El emisor recibe la función que hay que llamar cuando el usuario</span>
+        <span class="t-comentario"># pulsa un aviso del sistema. Así la lógica no sabe que hay ventana.</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>emisor <span class="t-operador">=</span> avisos<span class="t-operador">.</span>Emisor<span class="t-operador">(</span>al_pulsar<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>pulsado_en_el_sistema<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>flotantes <span class="t-operador">=</span> <span class="t-operador">[</span><span class="t-operador">]</span>
+
+        <span class="t-constante">self</span><span class="t-operador">.</span>title<span class="t-operador">(</span><span class="t-texto">&quot;Avisos&quot;</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>geometry<span class="t-operador">(</span><span class="t-texto">&quot;860x520&quot;</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>minsize<span class="t-operador">(</span><span class="t-numero">720</span><span class="t-operador">,</span> <span class="t-numero">420</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>estado <span class="t-operador">=</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span>value<span class="t-operador">=</span><span class="t-texto">&quot;Listo&quot;</span><span class="t-operador">)</span>
+
+        <span class="t-constante">self</span><span class="t-operador">.</span>crear_barra<span class="t-operador">(</span><span class="t-operador">)</span>
+        cuerpo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> padding<span class="t-operador">=</span><span class="t-numero">12</span><span class="t-operador">)</span>
+        cuerpo<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>crear_formulario<span class="t-operador">(</span>cuerpo<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>crear_bandeja<span class="t-operador">(</span>cuerpo<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>pie <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> textvariable<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>estado<span class="t-operador">,</span> foreground<span class="t-operador">=</span>GRIS<span class="t-operador">,</span>
+                             anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">,</span> padding<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">12</span><span class="t-operador">,</span> <span class="t-numero">6</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>pie<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">)</span>
+
+        <span class="t-constante">self</span><span class="t-operador">.</span>protocol<span class="t-operador">(</span><span class="t-texto">&quot;WM_DELETE_WINDOW&quot;</span><span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>al_cerrar<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>refrescar<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-comentario"># El permiso del sistema llega por otro hilo y tarda: se vuelve a</span>
+        <span class="t-comentario"># mirar más tarde en vez de bloquear el arranque esperándolo.</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>after<span class="t-operador">(</span><span class="t-numero">2500</span><span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>refrescar<span class="t-operador">)</span>
+
+    <span class="t-comentario"># --- construcción</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">crear_barra</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                barra <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> padding<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">12</span><span class="t-operador">,</span> <span class="t-numero">10</span><span class="t-operador">,</span> <span class="t-numero">12</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        barra<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">)</span>
+        izquierda <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>barra<span class="t-operador">)</span>
+        izquierda<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">)</span>
+        ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>izquierda<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Sin leer:&quot;</span><span class="t-operador">,</span>
+                  font<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;Helvetica&quot;</span><span class="t-operador">,</span> <span class="t-numero">12</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> padx<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">6</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>contador <span class="t-operador">=</span> Contador<span class="t-operador">(</span>izquierda<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>contador<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">)</span>
+        ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>barra<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Borrar leídos&quot;</span><span class="t-operador">,</span>
+                   command<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>borrar_leidos<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">)</span>
+        ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>barra<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Marcar todos&quot;</span><span class="t-operador">,</span>
+                   command<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>marcar_todos<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">,</span> padx<span class="t-operador">=</span><span class="t-numero">8</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">crear_formulario</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> padre<span class="t-operador">)</span><span class="t-operador">:</span>
+                marco <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Labelframe<span class="t-operador">(</span>padre<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Nuevo aviso&quot;</span><span class="t-operador">,</span> padding<span class="t-operador">=</span><span class="t-numero">12</span><span class="t-operador">)</span>
+        marco<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">,</span> padx<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-numero">12</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+        <span class="t-constante">self</span><span class="t-operador">.</span>titulo <span class="t-operador">=</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span>value<span class="t-operador">=</span><span class="t-texto">&quot;Informe listo&quot;</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>mensaje <span class="t-operador">=</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span>value<span class="t-operador">=</span><span class="t-texto">&quot;Ya puedes revisar las ventas&quot;</span><span class="t-operador">)</span>
+        <span class="t-palabra">for</span> fila<span class="t-operador">,</span> <span class="t-operador">(</span>texto<span class="t-operador">,</span> variable<span class="t-operador">)</span> <span class="t-palabra">in</span> <span class="t-integrada">enumerate</span><span class="t-operador">(</span><span class="t-operador">(</span><span class="t-operador">(</span><span class="t-texto">&quot;Título:&quot;</span><span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>titulo<span class="t-operador">)</span><span class="t-operador">,</span>
+                                                  <span class="t-operador">(</span><span class="t-texto">&quot;Mensaje:&quot;</span><span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>mensaje<span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>marco<span class="t-operador">,</span> text<span class="t-operador">=</span>texto<span class="t-operador">)</span><span class="t-operador">.</span>grid<span class="t-operador">(</span>row<span class="t-operador">=</span>fila<span class="t-operador">,</span> column<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">,</span> sticky<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">,</span>
+                                              pady<span class="t-operador">=</span><span class="t-numero">4</span><span class="t-operador">)</span>
+            ttk<span class="t-operador">.</span>Entry<span class="t-operador">(</span>marco<span class="t-operador">,</span> textvariable<span class="t-operador">=</span>variable<span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">30</span><span class="t-operador">)</span><span class="t-operador">.</span>grid<span class="t-operador">(</span>
+                row<span class="t-operador">=</span>fila<span class="t-operador">,</span> column<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">,</span> sticky<span class="t-operador">=</span><span class="t-texto">&quot;ew&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-numero">4</span><span class="t-operador">)</span>
+
+        ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>marco<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Enviar&quot;</span><span class="t-operador">,</span> command<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>enviar<span class="t-operador">)</span><span class="t-operador">.</span>grid<span class="t-operador">(</span>
+            row<span class="t-operador">=</span><span class="t-numero">2</span><span class="t-operador">,</span> column<span class="t-operador">=</span><span class="t-numero">1</span><span class="t-operador">,</span> sticky<span class="t-operador">=</span><span class="t-texto">&quot;e&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">10</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        ttk<span class="t-operador">.</span>Separator<span class="t-operador">(</span>marco<span class="t-operador">,</span> orient<span class="t-operador">=</span><span class="t-texto">&quot;horizontal&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>grid<span class="t-operador">(</span>
+            row<span class="t-operador">=</span><span class="t-numero">3</span><span class="t-operador">,</span> column<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">,</span> columnspan<span class="t-operador">=</span><span class="t-numero">2</span><span class="t-operador">,</span> sticky<span class="t-operador">=</span><span class="t-texto">&quot;ew&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-numero">12</span><span class="t-operador">)</span>
+
+        <span class="t-constante">self</span><span class="t-operador">.</span>canal <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>marco<span class="t-operador">,</span> font<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;Helvetica&quot;</span><span class="t-operador">,</span> <span class="t-numero">11</span><span class="t-operador">,</span> <span class="t-texto">&quot;bold&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>canal<span class="t-operador">.</span>grid<span class="t-operador">(</span>row<span class="t-operador">=</span><span class="t-numero">4</span><span class="t-operador">,</span> column<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">,</span> columnspan<span class="t-operador">=</span><span class="t-numero">2</span><span class="t-operador">,</span> sticky<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>ayuda <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>marco<span class="t-operador">,</span> wraplength<span class="t-operador">=</span><span class="t-numero">250</span><span class="t-operador">,</span> justify<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span>
+                               foreground<span class="t-operador">=</span>GRIS<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>ayuda<span class="t-operador">.</span>grid<span class="t-operador">(</span>row<span class="t-operador">=</span><span class="t-numero">5</span><span class="t-operador">,</span> column<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">,</span> columnspan<span class="t-operador">=</span><span class="t-numero">2</span><span class="t-operador">,</span> sticky<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">4</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>ajustes <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>marco<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Abrir Ajustes del Sistema&quot;</span><span class="t-operador">,</span>
+                                  command<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>emisor<span class="t-operador">.</span>abrir_ajustes<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>ajustes<span class="t-operador">.</span>grid<span class="t-operador">(</span>row<span class="t-operador">=</span><span class="t-numero">6</span><span class="t-operador">,</span> column<span class="t-operador">=</span><span class="t-numero">0</span><span class="t-operador">,</span> columnspan<span class="t-operador">=</span><span class="t-numero">2</span><span class="t-operador">,</span> sticky<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">,</span>
+                          pady<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">10</span><span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>ajustes<span class="t-operador">.</span>grid_remove<span class="t-operador">(</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">crear_bandeja</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> padre<span class="t-operador">)</span><span class="t-operador">:</span>
+                marco <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Labelframe<span class="t-operador">(</span>padre<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Bandeja&quot;</span><span class="t-operador">,</span> padding<span class="t-operador">=</span><span class="t-numero">12</span><span class="t-operador">)</span>
+        marco<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+        columnas <span class="t-operador">=</span> <span class="t-operador">(</span><span class="t-texto">&quot;estado&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;hora&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;titulo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;cuerpo&quot;</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>arbol <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Treeview<span class="t-operador">(</span>marco<span class="t-operador">,</span> columns<span class="t-operador">=</span>columnas<span class="t-operador">,</span> show<span class="t-operador">=</span><span class="t-texto">&quot;headings&quot;</span><span class="t-operador">,</span>
+                                  height<span class="t-operador">=</span><span class="t-numero">12</span><span class="t-operador">)</span>
+        <span class="t-palabra">for</span> columna<span class="t-operador">,</span> titulo<span class="t-operador">,</span> ancho <span class="t-palabra">in</span> <span class="t-operador">(</span><span class="t-operador">(</span><span class="t-texto">&quot;estado&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;&quot;</span><span class="t-operador">,</span> <span class="t-numero">26</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-operador">(</span><span class="t-texto">&quot;hora&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Hora&quot;</span><span class="t-operador">,</span> <span class="t-numero">70</span><span class="t-operador">)</span><span class="t-operador">,</span>
+                                       <span class="t-operador">(</span><span class="t-texto">&quot;titulo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Título&quot;</span><span class="t-operador">,</span> <span class="t-numero">150</span><span class="t-operador">)</span><span class="t-operador">,</span>
+                                       <span class="t-operador">(</span><span class="t-texto">&quot;cuerpo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Mensaje&quot;</span><span class="t-operador">,</span> <span class="t-numero">240</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>heading<span class="t-operador">(</span>columna<span class="t-operador">,</span> text<span class="t-operador">=</span>titulo<span class="t-operador">,</span> anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">)</span>
+            <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>column<span class="t-operador">(</span>columna<span class="t-operador">,</span> width<span class="t-operador">=</span>ancho<span class="t-operador">,</span> anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">,</span>
+                              stretch<span class="t-operador">=</span>columna <span class="t-operador">==</span> <span class="t-texto">&quot;cuerpo&quot;</span><span class="t-operador">)</span>
+        <span class="t-comentario"># La fila sin leer en negrita: es el equivalente del punto azul.</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>tag_configure<span class="t-operador">(</span><span class="t-texto">&quot;sin_leer&quot;</span><span class="t-operador">,</span> font<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;Helvetica&quot;</span><span class="t-operador">,</span> <span class="t-numero">12</span><span class="t-operador">,</span> <span class="t-texto">&quot;bold&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>tag_configure<span class="t-operador">(</span><span class="t-texto">&quot;leido&quot;</span><span class="t-operador">,</span> foreground<span class="t-operador">=</span>GRIS<span class="t-operador">)</span>
+        barra <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Scrollbar<span class="t-operador">(</span>marco<span class="t-operador">,</span> orient<span class="t-operador">=</span><span class="t-texto">&quot;vertical&quot;</span><span class="t-operador">,</span>
+                              command<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>yview<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>configure<span class="t-operador">(</span>yscrollcommand<span class="t-operador">=</span>barra<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+        barra<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;y&quot;</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>bind<span class="t-operador">(</span><span class="t-texto">&quot;&lt;&lt;TreeviewSelect&gt;&gt;&quot;</span><span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>seleccionado<span class="t-operador">)</span>
+
+    <span class="t-comentario"># --- acciones</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">enviar</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                aviso <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>bandeja<span class="t-operador">.</span>anadir<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>titulo<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>mensaje<span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        canal <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>emisor<span class="t-operador">.</span>enviar<span class="t-operador">(</span>aviso<span class="t-operador">)</span>
+        <span class="t-palabra">except</span> avisos<span class="t-operador">.</span>ErrorDeAviso <span class="t-palabra">as</span> error<span class="t-operador">:</span>
+                        canal <span class="t-operador">=</span> <span class="t-texto">&quot;bandeja&quot;</span>
+            <span class="t-constante">self</span><span class="t-operador">.</span>decir<span class="t-operador">(</span>f&quot;No ha salido al sistema: <span class="t-operador">{</span>error<span class="t-operador">}</span>&quot;<span class="t-operador">,</span> ROJO<span class="t-operador">)</span>
+        <span class="t-palabra">else</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>decir<span class="t-operador">(</span>f&quot;Aviso enviado por «<span class="t-operador">{</span>canal<span class="t-operador">}</span>»&quot;<span class="t-operador">,</span> VERDE<span class="t-operador">)</span>
+        aviso<span class="t-operador">.</span>canal <span class="t-operador">=</span> canal
+        <span class="t-constante">self</span><span class="t-operador">.</span>mostrar_flotante<span class="t-operador">(</span>aviso<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>refrescar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">mostrar_flotante</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> aviso<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>flotantes <span class="t-operador">=</span> <span class="t-operador">[</span>f <span class="t-palabra">for</span> f <span class="t-palabra">in</span> <span class="t-constante">self</span><span class="t-operador">.</span>flotantes <span class="t-palabra">if</span> f<span class="t-operador">.</span>winfo_exists<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">]</span>
+        <span class="t-palabra">while</span> <span class="t-integrada">len</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>flotantes<span class="t-operador">)</span> <span class="t-operador">&gt;=</span> MAXIMO_FLOTANTES<span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>flotantes<span class="t-operador">.</span>pop<span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">.</span>cerrar<span class="t-operador">(</span><span class="t-operador">)</span>      <span class="t-comentario"># se va el más viejo</span>
+            <span class="t-constante">self</span><span class="t-operador">.</span>recolocar<span class="t-operador">(</span><span class="t-operador">)</span>
+        flotante <span class="t-operador">=</span> AvisoFlotante<span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> aviso<span class="t-operador">,</span> <span class="t-constante">self</span><span class="t-operador">.</span>pulsado_en_la_ventana<span class="t-operador">,</span>
+                                 hueco<span class="t-operador">=</span><span class="t-integrada">len</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>flotantes<span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>flotantes<span class="t-operador">.</span>append<span class="t-operador">(</span>flotante<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">recolocar</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;Al cerrarse uno del medio, los de encima bajan a su sitio.&quot;&quot;&quot;</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>flotantes <span class="t-operador">=</span> <span class="t-operador">[</span>f <span class="t-palabra">for</span> f <span class="t-palabra">in</span> <span class="t-constante">self</span><span class="t-operador">.</span>flotantes <span class="t-palabra">if</span> f<span class="t-operador">.</span>winfo_exists<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">]</span>
+        <span class="t-palabra">for</span> hueco<span class="t-operador">,</span> flotante <span class="t-palabra">in</span> <span class="t-integrada">enumerate</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>flotantes<span class="t-operador">)</span><span class="t-operador">:</span>
+                        flotante<span class="t-operador">.</span>colocar<span class="t-operador">(</span>hueco<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">pulsado_en_la_ventana</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> identificador<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;Alguien ha pulsado el aviso flotante de dentro de la aplicación.&quot;&quot;&quot;</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>abrir<span class="t-operador">(</span>identificador<span class="t-operador">,</span> <span class="t-texto">&quot;en la ventana&quot;</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">pulsado_en_el_sistema</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> identificador<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-texto">&quot;&quot;&quot;La llama el delegado de macOS. Corre en el hilo principal, así que
+        se puede tocar la interfaz; el `after(0)` está para que el trabajo se
+        haga en el turno siguiente del bucle y no dentro del callback.&quot;&quot;&quot;</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>after<span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span><span class="t-operador">:</span> <span class="t-constante">self</span><span class="t-operador">.</span>abrir<span class="t-operador">(</span>identificador<span class="t-operador">,</span>
+                                         <span class="t-texto">&quot;desde el Centro de Notificaciones&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">abrir</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> identificador<span class="t-operador">,</span> desde<span class="t-operador">)</span><span class="t-operador">:</span>
+                aviso <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>bandeja<span class="t-operador">.</span>por_id<span class="t-operador">(</span>identificador<span class="t-operador">)</span>
+        <span class="t-palabra">if</span> aviso <span class="t-palabra">is</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>decir<span class="t-operador">(</span>f&quot;Ese aviso ya no está en la bandeja (<span class="t-operador">{</span>desde<span class="t-operador">}</span>)&quot;<span class="t-operador">)</span>
+            <span class="t-constante">self</span><span class="t-operador">.</span>refrescar<span class="t-operador">(</span><span class="t-operador">)</span>
+            <span class="t-palabra">return</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>bandeja<span class="t-operador">.</span>marcar_leido<span class="t-operador">(</span>identificador<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>refrescar<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>exists<span class="t-operador">(</span>identificador<span class="t-operador">)</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>selection_set<span class="t-operador">(</span>identificador<span class="t-operador">)</span>
+            <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>see<span class="t-operador">(</span>identificador<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>decir<span class="t-operador">(</span>f&quot;«<span class="t-operador">{</span>aviso<span class="t-operador">.</span>titulo<span class="t-operador">}</span>» abierto <span class="t-operador">{</span>desde<span class="t-operador">}</span>&quot;<span class="t-operador">,</span> AZUL<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">seleccionado</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> evento<span class="t-operador">=</span><span class="t-palabra">None</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">for</span> identificador <span class="t-palabra">in</span> <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>selection<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                        <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>bandeja<span class="t-operador">.</span>marcar_leido<span class="t-operador">(</span>identificador<span class="t-operador">)</span><span class="t-operador">:</span>
+                                <span class="t-constante">self</span><span class="t-operador">.</span>refrescar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">marcar_todos</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                cambiados <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>bandeja<span class="t-operador">.</span>marcar_todos<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>refrescar<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>decir<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>cambiados<span class="t-operador">}</span> marcados como leídos&quot; <span class="t-palabra">if</span> cambiados
+                   <span class="t-palabra">else</span> <span class="t-texto">&quot;No había ninguno sin leer&quot;</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">borrar_leidos</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                borrados <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>bandeja<span class="t-operador">.</span>borrar_leidos<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>refrescar<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>decir<span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>borrados<span class="t-operador">}</span> borrados&quot; <span class="t-palabra">if</span> borrados
+                   <span class="t-palabra">else</span> <span class="t-texto">&quot;No hay ninguno leído&quot;</span><span class="t-operador">)</span>
+
+    <span class="t-comentario"># --- pintado</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">refrescar</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                seleccion <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>selection<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>delete<span class="t-operador">(</span><span class="t-operador">*</span><span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>get_children<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">for</span> aviso <span class="t-palabra">in</span> <span class="t-integrada">reversed</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">.</span>bandeja<span class="t-operador">.</span>avisos<span class="t-operador">)</span><span class="t-operador">:</span>      <span class="t-comentario"># el último arriba</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>insert<span class="t-operador">(</span>
+                <span class="t-texto">&quot;&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;end&quot;</span><span class="t-operador">,</span> iid<span class="t-operador">=</span>aviso<span class="t-operador">.</span>identificador<span class="t-operador">,</span>
+                values<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;&quot;</span> <span class="t-palabra">if</span> aviso<span class="t-operador">.</span>leido <span class="t-palabra">else</span> <span class="t-texto">&quot;●&quot;</span><span class="t-operador">,</span>
+                        time<span class="t-operador">.</span>strftime<span class="t-operador">(</span><span class="t-texto">&quot;%H:%M:%S&quot;</span><span class="t-operador">,</span> time<span class="t-operador">.</span>localtime<span class="t-operador">(</span>aviso<span class="t-operador">.</span>momento<span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">,</span>
+                        aviso<span class="t-operador">.</span>titulo<span class="t-operador">,</span> aviso<span class="t-operador">.</span>cuerpo<span class="t-operador">)</span><span class="t-operador">,</span>
+                tags<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;leido&quot;</span> <span class="t-palabra">if</span> aviso<span class="t-operador">.</span>leido <span class="t-palabra">else</span> <span class="t-texto">&quot;sin_leer&quot;</span><span class="t-operador">,</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">for</span> identificador <span class="t-palabra">in</span> seleccion<span class="t-operador">:</span>
+                        <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>exists<span class="t-operador">(</span>identificador<span class="t-operador">)</span><span class="t-operador">:</span>
+                                <span class="t-constante">self</span><span class="t-operador">.</span>arbol<span class="t-operador">.</span>selection_set<span class="t-operador">(</span>identificador<span class="t-operador">)</span>
+
+        sin_leer <span class="t-operador">=</span> <span class="t-constante">self</span><span class="t-operador">.</span>bandeja<span class="t-operador">.</span>sin_leer
+        <span class="t-constante">self</span><span class="t-operador">.</span>contador<span class="t-operador">.</span>poner<span class="t-operador">(</span>sin_leer<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>emisor<span class="t-operador">.</span>poner_badge<span class="t-operador">(</span>sin_leer<span class="t-operador">)</span>       <span class="t-comentario"># el globo del Dock, si se puede</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>canal<span class="t-operador">.</span>configure<span class="t-operador">(</span>text<span class="t-operador">=</span>f&quot;Canal: <span class="t-operador">{</span><span class="t-constante">self</span><span class="t-operador">.</span>emisor<span class="t-operador">.</span>canal<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>ayuda<span class="t-operador">.</span>configure<span class="t-operador">(</span>text<span class="t-operador">=</span><span class="t-constante">self</span><span class="t-operador">.</span>emisor<span class="t-operador">.</span>diagnostico<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> <span class="t-constante">self</span><span class="t-operador">.</span>emisor<span class="t-operador">.</span>canal <span class="t-operador">==</span> <span class="t-texto">&quot;centro&quot;</span> <span class="t-palabra">and</span> <span class="t-constante">self</span><span class="t-operador">.</span>emisor<span class="t-operador">.</span>permiso <span class="t-palabra">is</span> <span class="t-palabra">False</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>ajustes<span class="t-operador">.</span>grid<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">else</span><span class="t-operador">:</span>
+                        <span class="t-constante">self</span><span class="t-operador">.</span>ajustes<span class="t-operador">.</span>grid_remove<span class="t-operador">(</span><span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">decir</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">,</span> mensaje<span class="t-operador">,</span> color<span class="t-operador">=</span>GRIS<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-constante">self</span><span class="t-operador">.</span>estado<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>mensaje<span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>pie<span class="t-operador">.</span>configure<span class="t-operador">(</span>foreground<span class="t-operador">=</span>color<span class="t-operador">)</span>
+
+    <span class="t-palabra">def</span> <span class="t-definicion">al_cerrar</span><span class="t-operador">(</span><span class="t-constante">self</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">for</span> flotante <span class="t-palabra">in</span> <span class="t-constante">self</span><span class="t-operador">.</span>flotantes<span class="t-operador">:</span>
+                        flotante<span class="t-operador">.</span>cerrar<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>emisor<span class="t-operador">.</span>poner_badge<span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">)</span>      <span class="t-comentario"># si no, el globo se queda en el Dock</span>
+        <span class="t-constante">self</span><span class="t-operador">.</span>destroy<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">main</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        Aplicacion<span class="t-operador">(</span>avisos<span class="t-operador">.</span>Bandeja<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">.</span>mainloop<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">if</span> __name__ <span class="t-operador">==</span> <span class="t-texto">&quot;__main__&quot;</span><span class="t-operador">:</span>
+        main<span class="t-operador">(</span><span class="t-operador">)</span></code></pre></div>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>Avisar cuando la ventana no está delante tiene <strong>tres caminos y hay que elegir sabiendo qué puede cada uno</strong>. La bandeja dentro de la ventana funciona en los tres sistemas y no necesita nada, pero no se ve si la ventana está detrás; <code>osascript</code> sale en el sistema sin instalar nada y en unos 120 ms, pero <strong>no hay forma de saber si el usuario la pulsó</strong>, porque el proceso termina al entregarla; y el Centro de Notificaciones con PyObjC es el único que devuelve el identificador de lo pulsado y admite botones, a cambio de un requisito que sorprende. Ese requisito es el centro de la lección: <strong>desde un guion suelto todo se rechaza</strong> con <code>UNErrorDomain Code=1 &quot;Notifications are not allowed for this application&quot;</code>, y encima el objeto del centro <strong>se crea sin protestar</strong>, así que la comprobación ingenua dice que hay centro; hace falta un <code>.app</code> con su identificador de paquete, lo que ata esta función a la lección 45, y en desarrollo se trabaja con <code>osascript</code> (de ahí el <code>&quot;.app/Contents/MacOS/&quot; in sys.executable</code>). Empaquetado y verificado: los envíos vuelven con <code>error=None</code> y <code>getDeliveredNotifications</code> los lista con sus identificadores. El permiso es frágil: una denegación <strong>se queda pegada</strong>, cada reconstrucción con PyInstaller puede parecer otra aplicación por la firma <em>ad hoc</em>, <code>tccutil reset All tu.identificador</code> es lo que lo desatasca, y lo peor, <strong>con el permiso denegado enviar sigue devolviendo <code>error=None</code></strong>, así que hay que consultar el estado y contárselo al usuario en vez de suponer que se ha avisado. Del delegado, tres cosas: el identificador que vuelve en <code>respuesta.notification().request().identifier()</code> <strong>es el mismo que pusiste al enviar</strong>, y por eso se usa el de la bandeja y no hace falta ninguna traducción; hay que <strong>guardar el delegado en un atributo</strong> porque el sistema no lo retiene y si no las pulsaciones dejan de llegar sin ningún error (la trampa de la referencia por tercera vez); y los dos métodos del delegado corren en el hilo principal, pero <strong>la respuesta al permiso llega de una cola de fondo</strong> y ahí no se toca ni un widget. De la parte de Tkinter, lo medido: el contador <strong>no puede ir en el texto de un botón</strong>, porque el ancho pasa de 80 a 116 píxeles según el número y empuja la barra entera, así que va en un <code>Canvas</code> de lado fijo con <code>99+</code> como tope y nada dibujado con cero; el aviso flotante es un <code>Toplevel</code> con <code>overrideredirect(True)</code> (que devuelve <code>None</code> antes de fijarlo y <code>bool</code> después) y quitarle el marco significa que <strong>no hay nada que lo cierre</strong>, así que la posición, el cierre por tiempo y el clic los pones tú; el clic <strong>sube por la jerarquía</strong>, de modo que basta atarlo al <code>Toplevel</code> y leer <code>evento.widget</code>, mientras que <strong>el cursor no se hereda</strong> y hay que ponerlo widget a widget; el temporizador de cierre va sobre el propio aviso para que muera con él; y apilarlos necesita un tope, porque del cuarto en adelante se salen por arriba. El badge del Dock, por su parte, <strong>no necesita permiso</strong> porque es una propiedad del icono, acepta cualquier cadena, se quita con <code>None</code>, y hay que <strong>ponerlo a cero al cerrar</strong> o se queda con el número de la última sesión.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><ol><li>Escribe los dos ficheros y ejecútalo. Manda tres avisos y mira el contador, los flotantes y la bandeja.</li><li>Mira qué dice el canal en el panel izquierdo y explica por qué es ese y no otro en tu máquina.</li><li>Manda un aviso con comillas dobles en el mensaje y comprueba que sale bien. Después cambia <code>_enviar_con_osascript</code> para incrustar el texto en la cadena y repite.</li><li>Cambia el contador para que use el texto de un botón, <code>Avisos (N)</code>, y ve subiendo la cuenta de 9 a 10 y de 99 a 100 mirando lo que se mueve al lado.</li><li>Quita el <code>99+</code> y manda ciento veinte avisos con un bucle. Mira qué le pasa al globo.</li><li>Manda cinco avisos seguidos y comprueba que solo se apilan tres. Sube <code>MAXIMO_FLOTANTES</code> a seis y repite.</li><li>Quita la llamada a <code>recolocar()</code> y cierra el aviso del medio con un clic. Describe el hueco que queda.</li><li>Cambia el <code>after</code> del cierre para que se programe en la ventana principal (<code>self.master.after</code>), cierra un aviso con un clic y espera cinco segundos. Copia el error de la consola.</li><li>Quita el <code>cursor=&quot;hand2&quot;</code> de los hijos y pasa el ratón por encima del aviso. Después quítalo solo del <code>Toplevel</code>.</li><li>Ata el clic únicamente a la etiqueta del título y comprueba que pulsar el resto del aviso ya no hace nada.</li><li>Haz que el aviso flotante se coloque en la esquina superior derecha en vez de la inferior, y decide qué pasa con el apilado.</li><li>Instala <code>pyobjc-framework-UserNotifications</code>, empaqueta el programa con <code>pyinstaller --windowed --osx-bundle-identifier com.tunombre.avisos</code>, muévelo a <code>~/Applications</code> y ejecútalo. Concede el permiso, manda un aviso, cámbiate a otra aplicación y púlsalo. Comprueba que la barra de estado dice «abierto desde el Centro de Notificaciones».</li><li>Con el programa empaquetado, deniega el permiso a propósito y manda un aviso. Comprueba que el envío no da error y que el diagnóstico sí te lo cuenta.</li><li>Usa <code>tccutil reset All com.tunombre.avisos</code> y vuelve a ejecutarlo. Comprueba que el sistema pregunta otra vez.</li><li>Añade al aviso del sistema una categoría con dos botones usando <code>UNNotificationAction</code> y <code>UNNotificationCategory</code>, y lee <code>respuesta.actionIdentifier()</code> en el delegado para saber cuál se pulsó.</li><li>Conecta esto con la lección 42: haz que la búsqueda de duplicados del panel de control mande un aviso al terminar, con el número de grupos encontrados.</li><li>Quita el <code>self.delegado =</code> y deja el delegado en una variable local. Empaqueta, pulsa un aviso y comprueba que no pasa nada en absoluto.</li><li>Haz que la bandeja se guarde entre sesiones con lo de la lección 43, y que al arrancar el badge del Dock ya lleve la cuenta de lo que quedó sin leer.</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#tres-caminos-y-lo-que-cuesta-cada-uno">Tres caminos, y lo que cuesta cada uno</a></li><li class="nivel-2"><a href="#la-capa-que-siempre-funciona-la-bandeja">La capa que siempre funciona: la bandeja</a></li><li class="nivel-3"><a href="#el-contador-no-puede-cambiar-de-tamano">El contador no puede cambiar de tamaño</a></li><li class="nivel-3"><a href="#el-aviso-flotante-es-una-ventana-sin-barra-de-titulo">El aviso flotante es una ventana sin barra de título</a></li><li class="nivel-2"><a href="#el-camino-sin-dependencias-osascript">El camino sin dependencias: osascript</a></li><li class="nivel-3"><a href="#la-trampa-de-las-comillas-que-es-un-agujero-de-verdad">La trampa de las comillas, que es un agujero de verdad</a></li><li class="nivel-2"><a href="#el-camino-completo-el-centro-de-notificaciones">El camino completo: el Centro de Notificaciones</a></li><li class="nivel-3"><a href="#el-requisito-que-sorprende-tiene-que-ser-un-app">El requisito que sorprende: tiene que ser un .app</a></li><li class="nivel-3"><a href="#el-delegado-y-la-referencia-que-hay-que-guardar">El delegado, y la referencia que hay que guardar</a></li><li class="nivel-3"><a href="#el-badge-del-dock-no-necesita-permiso">El badge del Dock no necesita permiso</a></li><li class="nivel-2"><a href="#el-programa">El programa</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../tkinter/proyecto-panel-de-control.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">Proyecto: un panel de control</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../tkinter/modo-claro-y-modo-oscuro.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">Modo claro y modo oscuro</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>

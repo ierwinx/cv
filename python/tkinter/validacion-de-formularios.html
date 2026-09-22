@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Validación de formularios · Curso de Python</title>
+<meta name="description" content="El validador que se olvida del return y apaga la validación para siempre, el error que habla de un booleano en vez de tu fallo, y el estado invalid que Tk gestiona solo y casi nadie aprovecha.">
+<link rel="stylesheet" href="../estatico/estilos.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128013;</text></svg>">
+<script>
+  // Aplicamos el tema guardado antes de pintar para evitar el destello blanco.
+  try {
+    var temaGuardado = localStorage.getItem('curso-tema');
+    if (!temaGuardado) {
+      temaGuardado = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    }
+    document.documentElement.dataset.tema = temaGuardado;
+  } catch (e) {}
+</script>
+</head>
+<body class="pagina-leccion" data-raiz="../">
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <button class="boton-icono boton-menu" type="button" aria-label="Abrir el menú de lecciones" aria-expanded="false">
+    <span class="hamburguesa"></span>
+  </button>
+  <a class="marca" href="../index.html">
+    <span class="marca-icono">&#128013;</span>
+    <span class="marca-texto">Curso de Python</span>
+  </a>
+  <div class="caja-busqueda">
+    <input type="search" id="campo-busqueda" placeholder="Buscar en el curso..." autocomplete="off"
+           aria-label="Buscar en el curso" aria-controls="resultados-busqueda">
+    <kbd class="atajo-busqueda">/</kbd>
+    <div id="resultados-busqueda" class="resultados-busqueda" hidden></div>
+  </div>
+  <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+    <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+  </button>
+</header>
+
+<div class="velo" hidden></div>
+
+<div class="disposicion">
+  <nav class="lateral" aria-label="Índice del curso">
+    <div class="progreso-global">
+      <div class="progreso-texto"><span id="progreso-hechas">0</span> de 220 lecciones</div>
+      <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+      <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+    </div>
+    <div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">0</span><span>Primeros pasos</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../primeros-pasos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../primeros-pasos/que-es-python.html" data-leccion="primeros-pasos/que-es-python"><span>Qué es Python y para qué sirve</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/instalar-python.html" data-leccion="primeros-pasos/instalar-python"><span>Instalar Python</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/la-terminal.html" data-leccion="primeros-pasos/la-terminal"><span>La terminal: lo mínimo imprescindible</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-editor-de-codigo.html" data-leccion="primeros-pasos/el-editor-de-codigo"><span>Elegir y configurar el editor</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/tu-primer-programa.html" data-leccion="primeros-pasos/tu-primer-programa"><span>Tu primer programa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/el-interprete-interactivo.html" data-leccion="primeros-pasos/el-interprete-interactivo"><span>El intérprete interactivo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/entender-los-errores.html" data-leccion="primeros-pasos/entender-los-errores"><span>Entender los errores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../primeros-pasos/como-estudiar-este-curso.html" data-leccion="primeros-pasos/como-estudiar-este-curso"><span>Cómo estudiar este curso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">1</span><span>Fundamentos de Python</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../fundamentos/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../fundamentos/variables.html" data-leccion="fundamentos/variables"><span>Variables: guardar datos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/numeros.html" data-leccion="fundamentos/numeros"><span>Números y operaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-de-texto.html" data-leccion="fundamentos/cadenas-de-texto"><span>Cadenas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-de-cadenas.html" data-leccion="fundamentos/metodos-de-cadenas"><span>Métodos de cadenas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/cadenas-formateadas.html" data-leccion="fundamentos/cadenas-formateadas"><span>Cadenas formateadas (f-strings)</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entrada-del-usuario.html" data-leccion="fundamentos/entrada-del-usuario"><span>Pedir datos al usuario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-y-conversiones.html" data-leccion="fundamentos/tipos-y-conversiones"><span>Tipos de datos y conversiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/comentarios-y-estilo.html" data-leccion="fundamentos/comentarios-y-estilo"><span>Comentarios y estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/booleanos-y-comparaciones.html" data-leccion="fundamentos/booleanos-y-comparaciones"><span>Booleanos y comparaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-instruccion-if.html" data-leccion="fundamentos/la-instruccion-if"><span>La instrucción if</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/else-y-elif.html" data-leccion="fundamentos/else-y-elif"><span>else y elif</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/operadores-logicos.html" data-leccion="fundamentos/operadores-logicos"><span>Operadores lógicos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/condiciones-anidadas.html" data-leccion="fundamentos/condiciones-anidadas"><span>Condiciones anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/match-case.html" data-leccion="fundamentos/match-case"><span>La instrucción match</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-while.html" data-leccion="fundamentos/el-bucle-while"><span>El bucle while</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/break-y-continue.html" data-leccion="fundamentos/break-y-continue"><span>break y continue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-bucle-for.html" data-leccion="fundamentos/el-bucle-for"><span>El bucle for</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-funcion-range.html" data-leccion="fundamentos/la-funcion-range"><span>La función range</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/bucles-anidados.html" data-leccion="fundamentos/bucles-anidados"><span>Bucles anidados</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas.html" data-leccion="fundamentos/listas"><span>Listas: guardar muchos valores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-listas.html" data-leccion="fundamentos/modificar-listas"><span>Modificar listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-listas.html" data-leccion="fundamentos/recorrer-listas"><span>Recorrer listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rebanado-y-copias.html" data-leccion="fundamentos/rebanado-y-copias"><span>Rebanado y copias de listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ordenar-y-buscar.html" data-leccion="fundamentos/ordenar-y-buscar"><span>Ordenar y buscar en listas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/listas-por-comprension.html" data-leccion="fundamentos/listas-por-comprension"><span>Listas por comprensión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tuplas.html" data-leccion="fundamentos/tuplas"><span>Tuplas: listas que no cambian</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/conjuntos.html" data-leccion="fundamentos/conjuntos"><span>Conjuntos: valores sin repetir</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/diccionarios.html" data-leccion="fundamentos/diccionarios"><span>Diccionarios: buscar por nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/modificar-diccionarios.html" data-leccion="fundamentos/modificar-diccionarios"><span>Modificar diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/recorrer-diccionarios.html" data-leccion="fundamentos/recorrer-diccionarios"><span>Recorrer diccionarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/estructuras-anidadas.html" data-leccion="fundamentos/estructuras-anidadas"><span>Estructuras anidadas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/definir-funciones.html" data-leccion="fundamentos/definir-funciones"><span>Definir tus propias funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/parametros-y-argumentos.html" data-leccion="fundamentos/parametros-y-argumentos"><span>Parámetros y argumentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/el-valor-de-retorno.html" data-leccion="fundamentos/el-valor-de-retorno"><span>El valor de retorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-por-defecto.html" data-leccion="fundamentos/argumentos-por-defecto"><span>Argumentos por defecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/argumentos-variables.html" data-leccion="fundamentos/argumentos-variables"><span>Argumentos variables: *args y **kwargs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ambito-de-las-variables.html" data-leccion="fundamentos/ambito-de-las-variables"><span>El ámbito de las variables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/docstrings-y-anotaciones.html" data-leccion="fundamentos/docstrings-y-anotaciones"><span>Docstrings y anotaciones de tipo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/funciones-lambda.html" data-leccion="fundamentos/funciones-lambda"><span>Funciones lambda</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/importar-modulos.html" data-leccion="fundamentos/importar-modulos"><span>Importar módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/crear-tus-modulos.html" data-leccion="fundamentos/crear-tus-modulos"><span>Crear tus propios módulos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/la-biblioteca-estandar.html" data-leccion="fundamentos/la-biblioteca-estandar"><span>La biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/entornos-virtuales-y-pip.html" data-leccion="fundamentos/entornos-virtuales-y-pip"><span>Entornos virtuales y pip</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/leer-ficheros.html" data-leccion="fundamentos/leer-ficheros"><span>Leer ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/escribir-ficheros.html" data-leccion="fundamentos/escribir-ficheros"><span>Escribir ficheros de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/rutas-con-pathlib.html" data-leccion="fundamentos/rutas-con-pathlib"><span>Rutas de ficheros con pathlib</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-csv.html" data-leccion="fundamentos/ficheros-csv"><span>Ficheros CSV</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/ficheros-json.html" data-leccion="fundamentos/ficheros-json"><span>Ficheros JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/manejar-errores.html" data-leccion="fundamentos/manejar-errores"><span>Manejar errores con try y except</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/tipos-de-excepcion.html" data-leccion="fundamentos/tipos-de-excepcion"><span>Tipos de excepción, else y finally</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/lanzar-excepciones.html" data-leccion="fundamentos/lanzar-excepciones"><span>Lanzar tus propias excepciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/clases-y-objetos.html" data-leccion="fundamentos/clases-y-objetos"><span>Clases y objetos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/atributos-y-init.html" data-leccion="fundamentos/atributos-y-init"><span>Atributos, __init__ y self</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos.html" data-leccion="fundamentos/metodos"><span>Métodos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/encapsulacion-y-propiedades.html" data-leccion="fundamentos/encapsulacion-y-propiedades"><span>Encapsulación y propiedades</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/herencia.html" data-leccion="fundamentos/herencia"><span>Herencia</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/metodos-especiales.html" data-leccion="fundamentos/metodos-especiales"><span>Métodos especiales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/dataclasses.html" data-leccion="fundamentos/dataclasses"><span>Dataclasses</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../fundamentos/proyecto-gestor-de-tareas.html" data-leccion="fundamentos/proyecto-gestor-de-tareas"><span>Proyecto: gestor de tareas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">2</span><span>Aplicaciones de terminal</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../terminal/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../terminal/que-es-una-app-de-terminal.html" data-leccion="terminal/que-es-una-app-de-terminal"><span>Qué es una aplicación de terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/salida-en-pantalla.html" data-leccion="terminal/salida-en-pantalla"><span>Controlar la salida en pantalla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/entrada-robusta.html" data-leccion="terminal/entrada-robusta"><span>Entrada robusta por teclado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/menus-interactivos.html" data-leccion="terminal/menus-interactivos"><span>Menús interactivos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/colores-y-estilos.html" data-leccion="terminal/colores-y-estilos"><span>Colores y estilos en la terminal</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tablas-y-cajas.html" data-leccion="terminal/tablas-y-cajas"><span>Tablas y cajas de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/barras-de-progreso.html" data-leccion="terminal/barras-de-progreso"><span>Spinners y barras de progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/argumentos-con-sys-argv.html" data-leccion="terminal/argumentos-con-sys-argv"><span>Argumentos con sys.argv</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/primeros-pasos-con-argparse.html" data-leccion="terminal/primeros-pasos-con-argparse"><span>Primeros pasos con argparse</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/opciones-y-banderas.html" data-leccion="terminal/opciones-y-banderas"><span>Opciones y banderas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tipos-y-validacion.html" data-leccion="terminal/tipos-y-validacion"><span>Tipos y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/subcomandos.html" data-leccion="terminal/subcomandos"><span>Subcomandos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ayuda-y-documentacion.html" data-leccion="terminal/ayuda-y-documentacion"><span>Ayuda y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/codigos-de-salida-y-stderr.html" data-leccion="terminal/codigos-de-salida-y-stderr"><span>Códigos de salida y stderr</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/tuberias-y-entrada-estandar.html" data-leccion="terminal/tuberias-y-entrada-estandar"><span>Tuberías y entrada estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/variables-de-entorno.html" data-leccion="terminal/variables-de-entorno"><span>Variables de entorno</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/ficheros-de-configuracion.html" data-leccion="terminal/ficheros-de-configuracion"><span>Ficheros de configuración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/registro-con-logging.html" data-leccion="terminal/registro-con-logging"><span>Registro con logging</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/interrupciones-y-limpieza.html" data-leccion="terminal/interrupciones-y-limpieza"><span>Interrupciones y limpieza</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/estructura-de-un-proyecto.html" data-leccion="terminal/estructura-de-un-proyecto"><span>Estructura de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/comandos-instalables.html" data-leccion="terminal/comandos-instalables"><span>Comandos instalables</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/distribuir-tu-herramienta.html" data-leccion="terminal/distribuir-tu-herramienta"><span>Distribuir tu herramienta</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/probar-una-cli.html" data-leccion="terminal/probar-una-cli"><span>Probar una CLI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-salida-con-estilo.html" data-leccion="terminal/rich-salida-con-estilo"><span>rich: salida con estilo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/rich-tablas-y-progreso.html" data-leccion="terminal/rich-tablas-y-progreso"><span>rich: tablas y progreso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-organizador-de-ficheros.html" data-leccion="terminal/proyecto-organizador-de-ficheros"><span>Proyecto: organizador de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-gestor-de-gastos.html" data-leccion="terminal/proyecto-gestor-de-gastos"><span>Proyecto: gestor de gastos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../terminal/proyecto-buscador-de-texto.html" data-leccion="terminal/proyecto-buscador-de-texto"><span>Proyecto: buscador de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="si">
+<button class="titulo-grupo" type="button" aria-expanded="true"><span class="numero-grupo">3</span><span>Aplicaciones con Tkinter</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../tkinter/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../tkinter/que-es-una-interfaz-grafica.html" data-leccion="tkinter/que-es-una-interfaz-grafica"><span>Qué es una interfaz gráfica</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tu-primera-ventana.html" data-leccion="tkinter/tu-primera-ventana"><span>Tu primera ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-bucle-de-eventos.html" data-leccion="tkinter/el-bucle-de-eventos"><span>El bucle de eventos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/propiedades-de-la-ventana.html" data-leccion="tkinter/propiedades-de-la-ventana"><span>Propiedades de la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-sistema-de-widgets.html" data-leccion="tkinter/el-sistema-de-widgets"><span>El sistema de widgets</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tk-frente-a-ttk.html" data-leccion="tkinter/tk-frente-a-ttk"><span>Tk frente a ttk</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/colores-fuentes-y-medidas.html" data-leccion="tkinter/colores-fuentes-y-medidas"><span>Colores, fuentes y medidas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-pack.html" data-leccion="tkinter/el-gestor-pack"><span>El gestor pack</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-grid.html" data-leccion="tkinter/el-gestor-grid"><span>El gestor grid</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-gestor-place.html" data-leccion="tkinter/el-gestor-place"><span>El gestor place</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/marcos-y-anidamiento.html" data-leccion="tkinter/marcos-y-anidamiento"><span>Marcos y anidamiento</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/disenos-que-se-adaptan.html" data-leccion="tkinter/disenos-que-se-adaptan"><span>Diseños que se adaptan</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-etiqueta-label.html" data-leccion="tkinter/la-etiqueta-label"><span>La etiqueta: Label</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-boton-button.html" data-leccion="tkinter/el-boton-button"><span>El botón: Button</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-campo-de-texto-entry.html" data-leccion="tkinter/el-campo-de-texto-entry"><span>El campo de texto: Entry</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-area-de-texto-text.html" data-leccion="tkinter/el-area-de-texto-text"><span>El área de texto: Text</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-casilla-checkbutton.html" data-leccion="tkinter/la-casilla-checkbutton"><span>La casilla de verificación: Checkbutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/los-botones-de-radio-radiobutton.html" data-leccion="tkinter/los-botones-de-radio-radiobutton"><span>Los botones de radio: Radiobutton</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-desplegable-combobox.html" data-leccion="tkinter/el-desplegable-combobox"><span>El desplegable: Combobox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-lista-listbox.html" data-leccion="tkinter/la-lista-listbox"><span>La lista: Listbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-selector-numerico-spinbox.html" data-leccion="tkinter/el-selector-numerico-spinbox"><span>El selector numérico: Spinbox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-deslizador-scale.html" data-leccion="tkinter/el-deslizador-scale"><span>El deslizador: Scale</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-progreso-progressbar.html" data-leccion="tkinter/la-barra-de-progreso-progressbar"><span>La barra de progreso: Progressbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-desplazamiento-scrollbar.html" data-leccion="tkinter/la-barra-de-desplazamiento-scrollbar"><span>La barra de desplazamiento: Scrollbar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-canvas.html" data-leccion="tkinter/el-lienzo-canvas"><span>El lienzo: Canvas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-lienzo-interactivo.html" data-leccion="tkinter/el-lienzo-interactivo"><span>El lienzo interactivo: eventos, imágenes y animación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-tabla-treeview.html" data-leccion="tkinter/la-tabla-treeview"><span>La tabla: Treeview</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-pestanas-notebook.html" data-leccion="tkinter/las-pestanas-notebook"><span>Las pestañas: Notebook</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/paneles-y-separadores.html" data-leccion="tkinter/paneles-y-separadores"><span>Paneles y separadores: PanedWindow y Separator</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/el-marco-con-titulo-labelframe.html" data-leccion="tkinter/el-marco-con-titulo-labelframe"><span>El marco con título: LabelFrame</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/la-barra-de-menus.html" data-leccion="tkinter/la-barra-de-menus"><span>La barra de menús</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/menus-contextuales-y-barras-de-herramientas.html" data-leccion="tkinter/menus-contextuales-y-barras-de-herramientas"><span>Menús contextuales y barras de herramientas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/las-variables-de-control.html" data-leccion="tkinter/las-variables-de-control"><span>Las variables de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/eventos-y-bind.html" data-leccion="tkinter/eventos-y-bind"><span>Eventos y bind</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/teclado-y-raton.html" data-leccion="tkinter/teclado-y-raton"><span>Teclado y ratón en detalle</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-con-messagebox.html" data-leccion="tkinter/dialogos-con-messagebox"><span>Diálogos estándar con messagebox</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/dialogos-de-ficheros-y-color.html" data-leccion="tkinter/dialogos-de-ficheros-y-color"><span>Diálogos de ficheros y de color</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/ventanas-secundarias-y-modales.html" data-leccion="tkinter/ventanas-secundarias-y-modales"><span>Ventanas secundarias y modales</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion actual" href="../tkinter/validacion-de-formularios.html" data-leccion="tkinter/validacion-de-formularios"><span>Validación de formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/organizar-una-aplicacion-en-clases.html" data-leccion="tkinter/organizar-una-aplicacion-en-clases"><span>Organizar una aplicación en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/separar-la-logica-de-la-interfaz.html" data-leccion="tkinter/separar-la-logica-de-la-interfaz"><span>Separar la lógica de la interfaz</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/tareas-largas-sin-congelar-la-ventana.html" data-leccion="tkinter/tareas-largas-sin-congelar-la-ventana"><span>Tareas largas sin congelar la ventana</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/preferencias-que-se-recuerdan.html" data-leccion="tkinter/preferencias-que-se-recuerdan"><span>Preferencias que se recuerdan entre sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/imagenes-con-photoimage-y-pillow.html" data-leccion="tkinter/imagenes-con-photoimage-y-pillow"><span>Imágenes con PhotoImage y Pillow</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/empaquetar-como-ejecutable-con-pyinstaller.html" data-leccion="tkinter/empaquetar-como-ejecutable-con-pyinstaller"><span>Empaquetar como ejecutable con PyInstaller</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-editor-de-texto.html" data-leccion="tkinter/proyecto-editor-de-texto"><span>Proyecto: un editor de texto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-gestor-de-contactos.html" data-leccion="tkinter/proyecto-gestor-de-contactos"><span>Proyecto: un gestor de contactos con Treeview y SQLite</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/proyecto-panel-de-control.html" data-leccion="tkinter/proyecto-panel-de-control"><span>Proyecto: un panel de control</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/notificaciones-del-sistema.html" data-leccion="tkinter/notificaciones-del-sistema"><span>Notificaciones del sistema, el badge y la bandeja</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../tkinter/modo-claro-y-modo-oscuro.html" data-leccion="tkinter/modo-claro-y-modo-oscuro"><span>Modo claro y modo oscuro</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">4</span><span>Webs con Django</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../django/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../django/que-es-django-y-como-funciona-la-web.html" data-leccion="django/que-es-django-y-como-funciona-la-web"><span>Qué es Django y cómo funciona la web</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/http-peticiones-y-respuestas.html" data-leccion="django/http-peticiones-y-respuestas"><span>HTTP: peticiones, respuestas, métodos y códigos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/instalacion-entorno-virtual-y-primer-proyecto.html" data-leccion="django/instalacion-entorno-virtual-y-primer-proyecto"><span>Instalación: el entorno virtual y el primer proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/la-estructura-de-ficheros.html" data-leccion="django/la-estructura-de-ficheros"><span>La estructura de ficheros de un proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-servidor-de-desarrollo-y-los-ajustes.html" data-leccion="django/el-servidor-de-desarrollo-y-los-ajustes"><span>El servidor de desarrollo y los ajustes</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tu-primera-vista-y-su-url.html" data-leccion="django/tu-primera-vista-y-su-url"><span>Tu primera vista y su URL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/las-aplicaciones-dentro-del-proyecto.html" data-leccion="django/las-aplicaciones-dentro-del-proyecto"><span>Las aplicaciones dentro del proyecto</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelos-la-primera-tabla.html" data-leccion="django/modelos-la-primera-tabla"><span>Modelos: la primera tabla</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/tipos-de-campo-y-sus-opciones.html" data-leccion="django/tipos-de-campo-y-sus-opciones"><span>Tipos de campo y sus opciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/migraciones.html" data-leccion="django/migraciones"><span>Migraciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-interprete-de-django-y-el-orm.html" data-leccion="django/el-interprete-de-django-y-el-orm"><span>El intérprete de Django y el ORM</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-consultas.html" data-leccion="django/filtros-y-consultas"><span>Filtros y consultas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/relaciones-con-foreignkey.html" data-leccion="django/relaciones-con-foreignkey"><span>Relaciones con ForeignKey</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/manytomany-y-onetoone.html" data-leccion="django/manytomany-y-onetoone"><span>ManyToMany y OneToOne</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/metodos-del-modelo-meta-y-str.html" data-leccion="django/metodos-del-modelo-meta-y-str"><span>Métodos del modelo, Meta y __str__</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-funciones.html" data-leccion="django/vistas-basadas-en-funciones"><span>Vistas basadas en funciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-lenguaje-de-plantillas.html" data-leccion="django/el-lenguaje-de-plantillas"><span>El lenguaje de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/herencia-de-plantillas.html" data-leccion="django/herencia-de-plantillas"><span>Herencia de plantillas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/filtros-y-etiquetas.html" data-leccion="django/filtros-y-etiquetas"><span>Filtros y etiquetas propias</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/ficheros-estaticos.html" data-leccion="django/ficheros-estaticos"><span>Ficheros estáticos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/urls-con-parametros-y-con-nombre.html" data-leccion="django/urls-con-parametros-y-con-nombre"><span>URLs con parámetros y con nombre</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/vistas-basadas-en-clases.html" data-leccion="django/vistas-basadas-en-clases"><span>Vistas basadas en clases</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/listview-y-detailview.html" data-leccion="django/listview-y-detailview"><span>ListView y DetailView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/createview-updateview-y-deleteview.html" data-leccion="django/createview-updateview-y-deleteview"><span>CreateView, UpdateView y DeleteView</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/formularios.html" data-leccion="django/formularios"><span>Formularios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelform.html" data-leccion="django/modelform"><span>ModelForm</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/validacion.html" data-leccion="django/validacion"><span>Validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/widgets-y-como-se-dibuja-un-formulario.html" data-leccion="django/widgets-y-como-se-dibuja-un-formulario"><span>Widgets y cómo se dibuja un formulario</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/subida-de-ficheros.html" data-leccion="django/subida-de-ficheros"><span>Subida de ficheros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/el-panel-de-administracion.html" data-leccion="django/el-panel-de-administracion"><span>El panel de administración</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/personalizar-el-panel.html" data-leccion="django/personalizar-el-panel"><span>Personalizar el panel</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/registro-inicio-y-cierre-de-sesion.html" data-leccion="django/registro-inicio-y-cierre-de-sesion"><span>Registro, inicio y cierre de sesión</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/permisos-y-decoradores.html" data-leccion="django/permisos-y-decoradores"><span>Permisos y decoradores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/modelo-de-usuario-personalizado.html" data-leccion="django/modelo-de-usuario-personalizado"><span>Modelo de usuario personalizado</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/mensajes-y-sesiones.html" data-leccion="django/mensajes-y-sesiones"><span>Mensajes y sesiones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/paginacion.html" data-leccion="django/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/busqueda-y-filtros.html" data-leccion="django/busqueda-y-filtros"><span>Búsqueda y filtros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/envio-de-correo.html" data-leccion="django/envio-de-correo"><span>Envío de correo</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/pruebas.html" data-leccion="django/pruebas"><span>Pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/configuracion-por-entornos.html" data-leccion="django/configuracion-por-entornos"><span>Configuración por entornos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/de-sqlite-a-postgresql.html" data-leccion="django/de-sqlite-a-postgresql"><span>De SQLite a PostgreSQL</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/seguridad.html" data-leccion="django/seguridad"><span>Seguridad</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/despliegue.html" data-leccion="django/despliegue"><span>Despliegue</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-una-bitacora.html" data-leccion="django/proyecto-una-bitacora"><span>Proyecto: una bitácora con comentarios</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../django/proyecto-un-tablero-de-incidencias.html" data-leccion="django/proyecto-un-tablero-de-incidencias"><span>Proyecto: un tablero de incidencias listo para producción</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+<div class="grupo-modulo" data-abierto="no">
+<button class="titulo-grupo" type="button" aria-expanded="false"><span class="numero-grupo">5</span><span>APIs REST</span><span class="flecha" aria-hidden="true">&#9654;</span></button>
+<a class="enlace-indice-modulo" href="../apis/index.html">Presentación del módulo</a>
+<ul class="lista-lecciones">
+<li><a class="enlace-leccion" href="../apis/que-es-una-api-rest.html" data-leccion="apis/que-es-una-api-rest"><span>Qué es una API REST</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/http-para-apis.html" data-leccion="apis/http-para-apis"><span>HTTP para APIs</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/json.html" data-leccion="apis/json"><span>JSON</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/consumir-con-urllib.html" data-leccion="apis/consumir-con-urllib"><span>Consumir APIs con la biblioteca estándar</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/requests.html" data-leccion="apis/requests"><span>requests desde cero</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/parametros-cabeceras-y-cuerpos.html" data-leccion="apis/parametros-cabeceras-y-cuerpos"><span>Parámetros, cabeceras y cuerpos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion.html" data-leccion="apis/autenticacion"><span>Autenticación: claves, tokens y OAuth</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/errores-y-reintentos.html" data-leccion="apis/errores-y-reintentos"><span>Errores y reintentos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion-y-limites.html" data-leccion="apis/paginacion-y-limites"><span>Paginación y límites de uso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-un-cliente-de-api.html" data-leccion="apis/proyecto-un-cliente-de-api"><span>Proyecto: un cliente de una API pública</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/disenar-los-recursos-y-las-rutas.html" data-leccion="apis/disenar-los-recursos-y-las-rutas"><span>Diseñar los recursos y las rutas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/instalacion-y-primer-punto-de-acceso.html" data-leccion="apis/instalacion-y-primer-punto-de-acceso"><span>Instalación y primer punto de acceso</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/serializadores.html" data-leccion="apis/serializadores"><span>Serializadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/modelserializer-y-relaciones.html" data-leccion="apis/modelserializer-y-relaciones"><span>ModelSerializer y relaciones</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/vistas-de-api-y-genericas.html" data-leccion="apis/vistas-de-api-y-genericas"><span>Vistas de API y genéricas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/viewset-y-enrutadores.html" data-leccion="apis/viewset-y-enrutadores"><span>ViewSet y enrutadores</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-con-tokens-y-jwt.html" data-leccion="apis/autenticacion-con-tokens-y-jwt"><span>Autenticación con tokens y JWT</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/permisos.html" data-leccion="apis/permisos"><span>Permisos</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/filtros-busqueda-y-ordenacion.html" data-leccion="apis/filtros-busqueda-y-ordenacion"><span>Filtros, búsqueda y ordenación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/paginacion.html" data-leccion="apis/paginacion"><span>Paginación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/documentar-con-openapi.html" data-leccion="apis/documentar-con-openapi"><span>Documentar con OpenAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/versionado-y-pruebas.html" data-leccion="apis/versionado-y-pruebas"><span>Versionado y pruebas</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/introduccion-a-fastapi.html" data-leccion="apis/introduccion-a-fastapi"><span>Introducción a FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/rutas-y-parametros.html" data-leccion="apis/rutas-y-parametros"><span>Rutas y parámetros</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pydantic-y-validacion.html" data-leccion="apis/pydantic-y-validacion"><span>Pydantic y validación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/base-de-datos-y-asincronia.html" data-leccion="apis/base-de-datos-y-asincronia"><span>Base de datos y asincronía</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/autenticacion-en-fastapi.html" data-leccion="apis/autenticacion-en-fastapi"><span>Autenticación en FastAPI</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/pruebas-y-documentacion.html" data-leccion="apis/pruebas-y-documentacion"><span>Pruebas y documentación</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/desplegar-una-api.html" data-leccion="apis/desplegar-una-api"><span>Desplegar una API</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+<li><a class="enlace-leccion" href="../apis/proyecto-final-api-completa.html" data-leccion="apis/proyecto-final-api-completa"><span>Proyecto final: una API completa</span><span class="marca-hecha" aria-hidden="true">&#10003;</span></a></li>
+</ul></div>
+  </nav>
+  <main id="contenido" class="contenido">
+<article class="leccion" data-leccion="tkinter/validacion-de-formularios">
+  <nav class="migas" aria-label="Ruta de navegación">
+    <a href="../index.html">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <a href="../tkinter/index.html">Aplicaciones con Tkinter</a>
+  </nav>
+
+  <header class="cabecera-leccion">
+    <p class="etiqueta-modulo">Módulo 3 &middot; Lección 39 de 50</p>
+    <h1>Validación de formularios</h1>
+    <p class="resumen-leccion">El validador que se olvida del return y apaga la validación para siempre, el error que habla de un booleano en vez de tu fallo, y el estado invalid que Tk gestiona solo y casi nadie aprovecha.</p>
+    <div class="datos-leccion">
+      <span class="dato">&#9201; 24 min de lectura</span>
+      <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+    </div>
+  </header>
+
+  <div class="columnas-leccion">
+    <div class="cuerpo-leccion">
+<p>Esta lección cierra el bloque D y usa todo lo anterior: variables de control para los datos, eventos para el foco, el estado <code>invalid</code> de <code>ttk</code>, y el criterio de la lección 36 de que un formulario no se valida con diálogos. Es también la lección donde está el fallo más silencioso de todo el módulo: <strong>un validador al que se le olvida el <code>return</code> apaga la validación para siempre</strong>, y el error que aparece habla de un valor booleano y no tiene nada que ver con tu código.</p>
+<aside class="aviso aviso-objetivo"><p class="titulo-aviso">Qué vas a aprender</p><p>Distinguir los dos trabajos que se confunden siempre, restringir mientras se escribe y verificar al enviar, que necesitan reglas distintas; montar un validador sin caer en el <code>return</code> olvidado; aprovechar el estado <code>invalid</code> que Tk mantiene solo; y dar el aviso donde se arregla el problema, que es junto al campo y no en una ventana.</p></aside>
+<h2 id="dos-trabajos-que-no-son-el-mismo">Dos trabajos que no son el mismo<a class="ancla" href="#dos-trabajos-que-no-son-el-mismo" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Casi todos los formularios mal validados confunden estas dos cosas:</p>
+<div class="envoltura-tabla"><table><thead><tr><th></th><th>Mientras se escribe</th><th>Al enviar</th></tr></thead><tbody><tr><td>Pregunta</td><td>¿Puede este carácter estar aquí?</td><td>¿Está el dato completo y correcto?</td></tr><tr><td>Herramienta</td><td><code>validate=&quot;key&quot;</code></td><td>una función que se llama a mano</td></tr><tr><td>Qué hace si no</td><td>Rechaza la pulsación</td><td>Marca el campo y no envía</td></tr><tr><td>Con el campo vacío</td><td><strong>Lo permite</strong></td><td>Lo rechaza</td></tr></tbody></table></div>
+<p>La columna de la derecha es donde va la lógica de verdad. Y la clave está en la última fila:</p>
+<aside class="aviso aviso-error"><p class="titulo-aviso">El validador de teclado no puede juzgar si el dato está completo</p><p>Este código parece razonable y hace el campo inservible:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">validar_telefono</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">return</span> <span class="t-integrada">len</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-numero">9</span> <span class="t-palabra">and</span> nuevo<span class="t-operador">.</span>isdigit<span class="t-operador">(</span><span class="t-operador">)</span>      <span class="t-comentario"># NO</span></code></pre></div>
+<p>Con eso no se puede escribir nada, porque para llegar a nueve dígitos hay que pasar por uno, dos y tres, y los tres se rechazan. El campo queda mudo y el motivo no se ve.</p>
+<p>Mientras alguien escribe, <strong>el contenido pasa por estados incompletos que son perfectamente legítimos</strong>: el campo vacío lo es (hay que poder borrar todo para empezar de nuevo), <code>&quot;1&quot;</code> lo es camino de <code>&quot;1234&quot;</code>, y en un campo decimal <code>&quot;1.&quot;</code> y hasta <code>&quot;-&quot;</code> lo son camino de <code>&quot;-1.5&quot;</code>.</p>
+<p>Así que el validador de teclado solo puede decidir sobre <strong>el alfabeto</strong>: qué caracteres caben y cuántos como máximo. Nada más.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">validar_telefono</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Solo el alfabeto: dígitos y como mucho nueve.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> nuevo <span class="t-operador">==</span> <span class="t-texto">&quot;&quot;</span> <span class="t-palabra">or</span> <span class="t-operador">(</span>nuevo<span class="t-operador">.</span>isdigit<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">and</span> <span class="t-integrada">len</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span> <span class="t-operador">&lt;=</span> <span class="t-numero">9</span><span class="t-operador">)</span></code></pre></div>
+<p>Lo de «son exactamente nueve» es trabajo del envío, y allí sí se puede exigir.</p></aside>
+<h2 id="la-mecanica">La mecánica<a class="ancla" href="#la-mecanica" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Un validador no se pasa como función suelta: hay que registrarlo para que Tcl pueda llamarlo.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">orden <span class="t-operador">=</span> ventana<span class="t-operador">.</span>register<span class="t-operador">(</span>validar_telefono<span class="t-operador">)</span>
+campo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Entry<span class="t-operador">(</span>ventana<span class="t-operador">,</span> validate<span class="t-operador">=</span><span class="t-texto">&quot;key&quot;</span><span class="t-operador">,</span> validatecommand<span class="t-operador">=</span><span class="t-operador">(</span>orden<span class="t-operador">,</span> <span class="t-texto">&quot;%P&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<p><code>register</code> devuelve el nombre de una orden de Tcl, y el <code>validatecommand</code> es una tupla con ese nombre y los datos que quieres recibir, escritos con códigos de porcentaje. Los modos son seis y Tk los enumera:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> campo.configure(validate=<span class="t-texto">&quot;inventado&quot;</span>)
+_tkinter.TclError: bad validate <span class="t-texto">&quot;inventado&quot;</span>: must be all, key, focus,
+focusin, focusout, or none</code></pre></div>
+<p>De los seis, se usan dos: <strong><code>key</code></strong>, que valida en cada pulsación, y <strong><code>focusout</code></strong>, que valida al salir del campo. <code>all</code> hace las dos cosas, y los demás son variantes de poco uso.</p>
+<p>Los códigos son ocho, y medidos escribiendo <code>abc</code> y luego borrando la <code>b</code> del medio:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> <span class="t-comentario"># insert(0, &quot;abc&quot;)  →  (&#x27;1&#x27;, &#x27;0&#x27;, &#x27;abc&#x27;, &#x27;&#x27;,    &#x27;abc&#x27;, &#x27;key&#x27;, &#x27;key&#x27;, &#x27;.!entry2&#x27;)</span>
+<span class="t-operador">&gt;&gt;&gt;</span> <span class="t-comentario"># delete(1, 2)      →  (&#x27;0&#x27;, &#x27;1&#x27;, &#x27;ac&#x27;,  &#x27;abc&#x27;, &#x27;b&#x27;,   &#x27;key&#x27;, &#x27;key&#x27;, &#x27;.!entry2&#x27;)</span>
+<span class="t-operador">&gt;&gt;&gt;</span> <span class="t-comentario">#                        %d   %i   %P     %s     %S     %v     %V     %W</span></code></pre></div>
+<div class="envoltura-tabla"><table><thead><tr><th>Código</th><th>Qué es</th></tr></thead><tbody><tr><td><code>%P</code></td><td><strong>El valor que tendría el campo si se permite.</strong> El que se usa.</td></tr><tr><td><code>%s</code></td><td>El valor que tiene ahora, antes del cambio.</td></tr><tr><td><code>%S</code></td><td>El texto que se inserta o se borra.</td></tr><tr><td><code>%d</code></td><td><code>1</code> si se inserta, <code>0</code> si se borra, <code>-1</code> si la validación es forzada.</td></tr><tr><td><code>%i</code></td><td>El índice donde ocurre.</td></tr><tr><td><code>%V</code></td><td>Qué la ha disparado (<code>key</code>, <code>focusin</code>, <code>focusout</code>, <code>forced</code>).</td></tr><tr><td><code>%v</code></td><td>El valor actual de la opción <code>validate</code>.</td></tr><tr><td><code>%W</code></td><td>El nombre del widget.</td></tr></tbody></table></div>
+<p>En la práctica, <code>%P</code> resuelve casi todo: es el estado futuro del campo, así que devolver <code>True</code> o <code>False</code> sobre él es exactamente la pregunta «¿permito esto?».</p>
+<h2 id="el-fallo-del-return-olvidado">El fallo del <code>return</code> olvidado<a class="ancla" href="#el-fallo-del-return-olvidado" aria-label="Enlace a esta seccion">#</a></h2>
+<aside class="aviso aviso-error"><p class="titulo-aviso">Un validador que no devuelve un booleano rompe el campo y apaga la validación</p><p>Esto es lo peor de la lección, y es un descuido de una línea:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">validar</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">if</span> nuevo<span class="t-operador">.</span>isdigit<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-palabra">True</span>
+    <span class="t-comentario"># y aquí, sin else, se devuelve None</span></code></pre></div>
+<p>Lo que pasa al escribir un carácter no válido:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> campo.insert(<span class="t-numero">0</span>, <span class="t-texto">&quot;abc&quot;</span>)
+_tkinter.TclError: expected boolean value but got <span class="t-texto">&quot;None&quot;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> campo.get()
+<span class="t-texto">&#x27;&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> str(campo.cget(<span class="t-texto">&quot;validate&quot;</span>))
+<span class="t-texto">&#x27;none&#x27;</span></code></pre></div>
+<p>Tres desgracias de golpe. <strong>El <code>insert()</code> lanza excepción</strong>, y el mensaje habla de un valor booleano, así que no apunta a tu función. El error de verdad, si tu validador tenía un fallo propio, sale <strong>aparte por la salida de errores</strong>, donde probablemente no estés mirando. Y lo definitivo: <strong><code>validate</code> queda en <code>&#x27;none&#x27;</code></strong>, o sea que Tk desactiva la validación de ese campo para siempre, y a partir de ese momento entra cualquier cosa sin que nadie diga nada.</p>
+<p>El síntoma que se ve al usar el programa es desconcertante: el campo valida bien un rato y de repente deja de validar del todo. Y como el <code>insert</code> que falló fue el que provocó el apagón, el carácter que lo rompió tampoco entró, con lo que parece que funcionó.</p>
+<p>La lista de lo que Tk acepta como respuesta es la de los booleanos de Tcl, medida:</p>
+<div class="envoltura-tabla"><table><thead><tr><th>Devuelve</th><th>Resultado</th></tr></thead><tbody><tr><td><code>True</code>, <code>1</code>, <code>&quot;1&quot;</code>, <code>&quot;true&quot;</code></td><td>permitido</td></tr><tr><td><code>False</code>, <code>0</code>, <code>&quot;0&quot;</code>, <code>&quot;no&quot;</code></td><td>rechazado</td></tr><tr><td><strong><code>None</code></strong> (el <code>return</code> olvidado)</td><td><code>TclError</code> y validación apagada</td></tr><tr><td><code>&quot;&quot;</code>, <code>&quot;si&quot;</code>, <code>[]</code></td><td><code>TclError</code> y validación apagada</td></tr></tbody></table></div>
+<p>Fíjate en que <code>&quot;si&quot;</code> falla: los booleanos son los de Tcl y están en inglés. Y <code>&quot;&quot;</code>, que es lo que devolvería un validador que hace <code>return &quot;&quot;</code> para decir «sin error», también.</p>
+<p>Las dos defensas, y conviene poner las dos:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-palabra">def</span> <span class="t-definicion">validar_telefono</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Un solo return, con una expresión booleana. No hay camino sin respuesta.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> nuevo <span class="t-operador">==</span> <span class="t-texto">&quot;&quot;</span> <span class="t-palabra">or</span> <span class="t-operador">(</span>nuevo<span class="t-operador">.</span>isdigit<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">and</span> <span class="t-integrada">len</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span> <span class="t-operador">&lt;=</span> <span class="t-numero">9</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">protegido</span><span class="t-operador">(</span>regla<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Envuelve un validador para que nunca pueda apagar la validación.&quot;&quot;&quot;</span>
+    <span class="t-palabra">def</span> <span class="t-definicion">envuelto</span><span class="t-operador">(</span><span class="t-operador">*</span>argumentos<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-integrada">bool</span><span class="t-operador">(</span>regla<span class="t-operador">(</span><span class="t-operador">*</span>argumentos<span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">except</span> Exception<span class="t-operador">:</span>      <span class="t-comentario"># cualquier fallo se trata como «no permitido»</span>
+                        <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+    <span class="t-palabra">return</span> envuelto</code></pre></div>
+<p>El <code>bool()</code> convierte lo que sea, y el <code>try</code> recoge el fallo propio. Es la misma precaución que las trazas de la lección 33 y los manejadores de la 34, pero aquí es más necesaria, porque en los otros dos casos el programa seguía y aquí se queda tuerto.</p></aside>
+<h2 id="el-estado-invalid-que-tk-mantiene-solo">El estado <code>invalid</code>, que Tk mantiene solo<a class="ancla" href="#el-estado-invalid-que-tk-mantiene-solo" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Esta es la parte agradable, y es poco conocida. Además de llamar a tu función, <code>ttk</code> <strong>apunta el resultado en el estado del widget</strong>:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> campo.state()
+()
+<span class="t-operador">&gt;&gt;&gt;</span> campo.validate()
+False
+<span class="t-operador">&gt;&gt;&gt;</span> campo.state()
+(<span class="t-texto">&#x27;invalid&#x27;</span>,)
+<span class="t-operador">&gt;&gt;&gt;</span> <span class="t-comentario"># se corrige el contenido…</span>
+<span class="t-operador">&gt;&gt;&gt;</span> campo.validate()
+True
+<span class="t-operador">&gt;&gt;&gt;</span> campo.state()
+()</code></pre></div>
+<p>Tk lo pone y lo quita por su cuenta. Y como es un estado de <code>ttk</code>, se puede pintar con un estilo, que es la lección 5 aplicada a algo útil:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">estilo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Style<span class="t-operador">(</span><span class="t-operador">)</span>
+estilo<span class="t-operador">.</span><span class="t-integrada">map</span><span class="t-operador">(</span><span class="t-texto">&quot;Formulario.TEntry&quot;</span><span class="t-operador">,</span>
+           fieldbackground<span class="t-operador">=</span><span class="t-operador">[</span><span class="t-operador">(</span><span class="t-texto">&quot;invalid&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;#FFEBEE&quot;</span><span class="t-operador">)</span><span class="t-operador">]</span><span class="t-operador">,</span>
+           foreground<span class="t-operador">=</span><span class="t-operador">[</span><span class="t-operador">(</span><span class="t-texto">&quot;invalid&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;#C2185B&quot;</span><span class="t-operador">)</span><span class="t-operador">]</span><span class="t-operador">)</span></code></pre></div>
+<p>Con esas tres líneas, <strong>todos los campos del formulario se pintan de rosa cuando su contenido no vale, sin una sola línea de código en cada campo</strong>. Y se comprueba que el estilo ha quedado bien mirándolo con el estado puesto:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> estilo.lookup(<span class="t-texto">&quot;Formulario.TEntry&quot;</span>, <span class="t-texto">&quot;fieldbackground&quot;</span>, state=[<span class="t-texto">&quot;invalid&quot;</span>])
+<span class="t-texto">&#x27;#FFEBEE&#x27;</span>
+<span class="t-operador">&gt;&gt;&gt;</span> estilo.lookup(<span class="t-texto">&quot;Formulario.TEntry&quot;</span>, <span class="t-texto">&quot;fieldbackground&quot;</span>)
+<span class="t-texto">&#x27;&#x27;</span></code></pre></div>
+<p>La pieza que lo une todo es <code>validate()</code>, el método:</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">consola</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-consola"><span class="t-operador">&gt;&gt;&gt;</span> campo.validate()
+False</code></pre></div>
+<p><strong>Fuerza la validación sin esperar a que nadie toque nada</strong>, devuelve el resultado, actualiza el estado <code>invalid</code> y llama al <code>invalidcommand</code> si hay. O sea que la función que valida el formulario entero al enviar es un bucle sobre los campos llamando a <code>validate()</code>.</p>
+<p>Y el <code>invalidcommand</code> es el complemento: se llama cuando el validador dice que no.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">python</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python">campo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Entry<span class="t-operador">(</span>ventana<span class="t-operador">,</span> validate<span class="t-operador">=</span><span class="t-texto">&quot;focusout&quot;</span><span class="t-operador">,</span>
+                  validatecommand<span class="t-operador">=</span><span class="t-operador">(</span>orden<span class="t-operador">,</span> <span class="t-texto">&quot;%P&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+                  invalidcommand<span class="t-operador">=</span>ventana<span class="t-operador">.</span>register<span class="t-operador">(</span>avisar<span class="t-operador">)</span><span class="t-operador">)</span></code></pre></div>
+<p>Es donde va el mensaje de error, y tiene la ventaja de que se dispara tanto al salir del campo como al forzar la validación, así que el aviso aparece solo en los dos casos.</p>
+<h2 id="donde-va-el-aviso">Dónde va el aviso<a class="ancla" href="#donde-va-el-aviso" aria-label="Enlace a esta seccion">#</a></h2>
+<p>La lección 36 ya adelantó la regla y aquí toca aplicarla: <strong>el aviso va junto al campo que hay que arreglar</strong>, nunca en un diálogo.</p>
+<p>Un diálogo que dice «el correo no es válido» obliga a leerlo, cerrarlo, recordar qué campo era, buscarlo y arreglarlo. Y si hay tres campos mal, hay tres diálogos seguidos. El patrón que funciona es el que usan todos los formularios bien hechos:</p>
+<ol><li><strong>Un rótulo de error debajo de cada campo</strong>, vacío mientras no haya problema. Ocupa sitio siempre, para que el formulario no salte cuando aparece el mensaje.</li><li><strong>El campo pintado</strong> con el estado <code>invalid</code>, que es gratis con el estilo.</li><li><strong>Al enviar, el foco al primer campo que falla</strong>, para que la corrección empiece sola.</li><li><strong>Un resumen en el botón o al lado</strong>, del estilo «2 campos por corregir», que dice cuánto queda.</li></ol>
+<p>Y una decisión de criterio: <strong>el aviso aparece al salir del campo, no mientras se escribe</strong>. Un formulario que dice «el correo no es válido» en cuanto has escrito la primera letra es hostil, porque te regaña por algo que ibas a arreglar. <code>focusout</code> es el momento correcto: has terminado con ese campo y te vas.</p>
+<h2 id="el-ejemplo">El ejemplo<a class="ancla" href="#el-ejemplo" aria-label="Enlace a esta seccion">#</a></h2>
+<p>Un formulario de alta con cinco campos, cada uno con su regla de alfabeto y su regla de completitud, el pintado automático y el foco al primer fallo.</p>
+<div class="bloque-codigo"><div class="barra-codigo"><span class="nombre-codigo">formulario.py</span><button class="boton-copiar" type="button">Copiar</button></div><pre><code class="lenguaje-python"><span class="t-texto">&quot;&quot;&quot;Validación en dos niveles: el alfabeto al escribir y el dato al enviar.&quot;&quot;&quot;</span>
+
+<span class="t-palabra">import</span> re
+<span class="t-palabra">import</span> tkinter <span class="t-palabra">as</span> tk
+<span class="t-palabra">from</span> tkinter <span class="t-palabra">import</span> ttk
+
+MARGEN <span class="t-operador">=</span> <span class="t-numero">12</span>
+AIRE <span class="t-operador">=</span> <span class="t-numero">4</span>
+
+GRIS <span class="t-operador">=</span> <span class="t-texto">&quot;#8E8E93&quot;</span>
+ROSA <span class="t-operador">=</span> <span class="t-texto">&quot;#C2185B&quot;</span>
+VERDE <span class="t-operador">=</span> <span class="t-texto">&quot;#2E7D32&quot;</span>
+ROSA_CLARO <span class="t-operador">=</span> <span class="t-texto">&quot;#FFEBEE&quot;</span>
+
+MAX_NOMBRE <span class="t-operador">=</span> <span class="t-numero">40</span>
+LARGO_TELEFONO <span class="t-operador">=</span> <span class="t-numero">9</span>
+
+CORREO <span class="t-operador">=</span> re<span class="t-operador">.</span>compile<span class="t-operador">(</span><span class="t-texto">r&quot;^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$&quot;</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">centrar</span><span class="t-operador">(</span>ventana<span class="t-operador">:</span> tk<span class="t-operador">.</span>Misc<span class="t-operador">)</span> <span class="t-operador">-&gt;</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Coloca la ventana en el centro de la pantalla.&quot;&quot;&quot;</span>
+    ventana<span class="t-operador">.</span>update_idletasks<span class="t-operador">(</span><span class="t-operador">)</span>
+    ancho <span class="t-operador">=</span> ventana<span class="t-operador">.</span>winfo_width<span class="t-operador">(</span><span class="t-operador">)</span>
+    alto <span class="t-operador">=</span> ventana<span class="t-operador">.</span>winfo_height<span class="t-operador">(</span><span class="t-operador">)</span>
+    x <span class="t-operador">=</span> <span class="t-operador">(</span>ventana<span class="t-operador">.</span>winfo_screenwidth<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> ancho<span class="t-operador">)</span> <span class="t-operador">//</span> <span class="t-numero">2</span>
+    y <span class="t-operador">=</span> <span class="t-operador">(</span>ventana<span class="t-operador">.</span>winfo_screenheight<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">-</span> alto<span class="t-operador">)</span> <span class="t-operador">//</span> <span class="t-numero">2</span>
+    ventana<span class="t-operador">.</span>geometry<span class="t-operador">(</span>f&quot;+<span class="t-operador">{</span>x<span class="t-operador">}</span>+<span class="t-operador">{</span>y<span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">protegido</span><span class="t-operador">(</span>regla<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Ningún validador puede devolver None ni lanzar excepción.
+
+    Sin esto, un return olvidado lanza TclError y deja validate en &#x27;none&#x27;,
+    o sea que el campo deja de validarse para siempre y en silencio.
+    &quot;&quot;&quot;</span>
+    <span class="t-palabra">def</span> <span class="t-definicion">envuelto</span><span class="t-operador">(</span><span class="t-operador">*</span>argumentos<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">try</span><span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-integrada">bool</span><span class="t-operador">(</span>regla<span class="t-operador">(</span><span class="t-operador">*</span>argumentos<span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">except</span> Exception<span class="t-operador">:</span>
+                        <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+    <span class="t-palabra">return</span> envuelto
+
+
+<span class="t-comentario"># --- Nivel 1: el alfabeto. Mientras se escribe, lo incompleto es legítimo.</span>
+
+<span class="t-palabra">def</span> <span class="t-definicion">alfabeto_nombre</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">return</span> <span class="t-integrada">len</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span> <span class="t-operador">&lt;=</span> MAX_NOMBRE
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">alfabeto_telefono</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;El campo vacío y un solo dígito son estados legítimos de camino.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> nuevo <span class="t-operador">==</span> <span class="t-texto">&quot;&quot;</span> <span class="t-palabra">or</span> <span class="t-operador">(</span>nuevo<span class="t-operador">.</span>isdigit<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">and</span> <span class="t-integrada">len</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span> <span class="t-operador">&lt;=</span> LARGO_TELEFONO<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">alfabeto_correo</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Aquí no se comprueba la forma: eso es del envío.&quot;&quot;&quot;</span>
+    <span class="t-palabra">return</span> <span class="t-texto">&quot; &quot;</span> <span class="t-palabra">not</span> <span class="t-palabra">in</span> nuevo <span class="t-palabra">and</span> nuevo<span class="t-operador">.</span>count<span class="t-operador">(</span><span class="t-texto">&quot;@&quot;</span><span class="t-operador">)</span> <span class="t-operador">&lt;=</span> <span class="t-numero">1</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">alfabeto_edad</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">return</span> nuevo <span class="t-operador">==</span> <span class="t-texto">&quot;&quot;</span> <span class="t-palabra">or</span> <span class="t-operador">(</span>nuevo<span class="t-operador">.</span>isdigit<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">and</span> <span class="t-integrada">len</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span> <span class="t-operador">&lt;=</span> <span class="t-numero">3</span><span class="t-operador">)</span>
+
+
+<span class="t-comentario"># --- Nivel 2: el dato completo. Devuelve el motivo, o &quot;&quot; si está bien.</span>
+
+<span class="t-palabra">def</span> <span class="t-definicion">dato_nombre</span><span class="t-operador">(</span>valor<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> valor<span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-texto">&quot;El nombre es obligatorio.&quot;</span>
+    <span class="t-palabra">if</span> <span class="t-integrada">len</span><span class="t-operador">(</span>valor<span class="t-operador">.</span>strip<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span> <span class="t-operador">&lt;</span> <span class="t-numero">3</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-texto">&quot;Al menos tres caracteres.&quot;</span>
+    <span class="t-palabra">return</span> <span class="t-texto">&quot;&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">dato_telefono</span><span class="t-operador">(</span>valor<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> valor<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-texto">&quot;El teléfono es obligatorio.&quot;</span>
+    <span class="t-palabra">if</span> <span class="t-integrada">len</span><span class="t-operador">(</span>valor<span class="t-operador">)</span> <span class="t-operador">!=</span> LARGO_TELEFONO<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> f&quot;Son <span class="t-operador">{</span>LARGO_TELEFONO<span class="t-operador">}</span> dígitos, has escrito <span class="t-operador">{</span><span class="t-integrada">len</span><span class="t-operador">(</span>valor<span class="t-operador">)</span><span class="t-operador">}</span>.&quot;
+    <span class="t-palabra">return</span> <span class="t-texto">&quot;&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">dato_correo</span><span class="t-operador">(</span>valor<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> valor<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-texto">&quot;El correo es obligatorio.&quot;</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> CORREO<span class="t-operador">.</span><span class="t-palabra">match</span><span class="t-operador">(</span>valor<span class="t-operador">)</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-texto">&quot;Falta la arroba o el dominio.&quot;</span>
+    <span class="t-palabra">return</span> <span class="t-texto">&quot;&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">dato_edad</span><span class="t-operador">(</span>valor<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> valor<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-texto">&quot;&quot;</span>                   <span class="t-comentario"># opcional</span>
+    numero <span class="t-operador">=</span> <span class="t-integrada">int</span><span class="t-operador">(</span>valor<span class="t-operador">)</span>             <span class="t-comentario"># el alfabeto ya garantizó que son dígitos</span>
+    <span class="t-palabra">if</span> <span class="t-palabra">not</span> <span class="t-numero">18</span> <span class="t-operador">&lt;=</span> numero <span class="t-operador">&lt;=</span> <span class="t-numero">120</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-texto">&quot;Entre 18 y 120.&quot;</span>
+    <span class="t-palabra">return</span> <span class="t-texto">&quot;&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">dato_plan</span><span class="t-operador">(</span>valor<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">if</span> <span class="t-palabra">not</span> valor<span class="t-operador">:</span>
+                <span class="t-palabra">return</span> <span class="t-texto">&quot;Elige un plan.&quot;</span>
+    <span class="t-palabra">return</span> <span class="t-texto">&quot;&quot;</span>
+
+
+CAMPOS <span class="t-operador">=</span> <span class="t-operador">(</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;nombre&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Nombre&quot;</span><span class="t-operador">,</span> alfabeto_nombre<span class="t-operador">,</span> dato_nombre<span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;telefono&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Teléfono&quot;</span><span class="t-operador">,</span> alfabeto_telefono<span class="t-operador">,</span> dato_telefono<span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;correo&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Correo&quot;</span><span class="t-operador">,</span> alfabeto_correo<span class="t-operador">,</span> dato_correo<span class="t-operador">)</span><span class="t-operador">,</span>
+    <span class="t-operador">(</span><span class="t-texto">&quot;edad&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Edad (opcional)&quot;</span><span class="t-operador">,</span> alfabeto_edad<span class="t-operador">,</span> dato_edad<span class="t-operador">)</span><span class="t-operador">,</span>
+<span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">crear_campo</span><span class="t-operador">(</span>contenedor<span class="t-operador">,</span> clave<span class="t-operador">,</span> etiqueta<span class="t-operador">,</span> alfabeto<span class="t-operador">,</span> dato<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Un campo con su rótulo de error debajo, que ocupa sitio siempre.
+
+    Si el rótulo apareciera y desapareciera, el formulario saltaría cada
+    vez que cambia un mensaje.
+    &quot;&quot;&quot;</span>
+    fila <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>contenedor<span class="t-operador">)</span>
+    fila<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> AIRE<span class="t-operador">)</span><span class="t-operador">)</span>
+    ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>fila<span class="t-operador">,</span> text<span class="t-operador">=</span>f&quot;<span class="t-operador">{</span>etiqueta<span class="t-operador">}</span>:&quot;<span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">16</span><span class="t-operador">,</span> anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>
+        side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> anchor<span class="t-operador">=</span><span class="t-texto">&quot;n&quot;</span><span class="t-operador">)</span>
+
+    columna <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>fila<span class="t-operador">)</span>
+    columna<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+    <span class="t-comentario"># focusout y no key: regañar mientras se escribe es hostil.</span>
+    campo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Entry<span class="t-operador">(</span>columna<span class="t-operador">,</span> textvariable<span class="t-operador">=</span>VALORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">,</span>
+                      style<span class="t-operador">=</span><span class="t-texto">&quot;Formulario.TEntry&quot;</span><span class="t-operador">,</span> validate<span class="t-operador">=</span><span class="t-texto">&quot;all&quot;</span><span class="t-operador">,</span>
+                      validatecommand<span class="t-operador">=</span><span class="t-operador">(</span>ventana<span class="t-operador">.</span>register<span class="t-operador">(</span>protegido<span class="t-operador">(</span>alfabeto<span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">,</span>
+                                       <span class="t-texto">&quot;%P&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;%V&quot;</span><span class="t-operador">)</span><span class="t-operador">,</span>
+                      invalidcommand<span class="t-operador">=</span>ventana<span class="t-operador">.</span>register<span class="t-operador">(</span>
+                          <span class="t-palabra">lambda</span> c<span class="t-operador">=</span>clave<span class="t-operador">:</span> revisar<span class="t-operador">(</span>c<span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    campo<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">)</span>
+    ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>columna<span class="t-operador">,</span> textvariable<span class="t-operador">=</span>ERRORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">,</span> foreground<span class="t-operador">=</span>ROSA<span class="t-operador">,</span>
+              wraplength<span class="t-operador">=</span><span class="t-numero">300</span><span class="t-operador">,</span> justify<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">)</span>
+    <span class="t-palabra">return</span> campo
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">validar_campo</span><span class="t-operador">(</span>nuevo<span class="t-operador">,</span> cuando<span class="t-operador">,</span> clave<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;El validador de verdad, que hace las dos cosas según quién pregunte.
+
+    Con validate=&quot;all&quot; llegan las dos: &#x27;key&#x27; al escribir y &#x27;focusout&#x27; al
+    salir. La regla del alfabeto solo se aplica al escribir.
+    &quot;&quot;&quot;</span>
+    <span class="t-palabra">if</span> cuando <span class="t-operador">==</span> <span class="t-texto">&quot;key&quot;</span><span class="t-operador">:</span>
+                <span class="t-palabra">return</span> ALFABETOS<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> DATOS<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">(</span>nuevo<span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-texto">&quot;&quot;</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">revisar</span><span class="t-operador">(</span>clave<span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;El invalidcommand: aquí va el mensaje, y solo cuando ya hay dato.&quot;&quot;&quot;</span>
+    valor <span class="t-operador">=</span> VALORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span>
+    ERRORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>DATOS<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">(</span>valor<span class="t-operador">)</span><span class="t-operador">)</span>
+    contar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">limpiar_error</span><span class="t-operador">(</span>clave<span class="t-operador">)</span><span class="t-operador">:</span>
+        ERRORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-texto">&quot;&quot;</span><span class="t-operador">)</span>
+    contar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">contar</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;El resumen de cuánto queda, que es más útil que un «hay errores».&quot;&quot;&quot;</span>
+    malos <span class="t-operador">=</span> <span class="t-integrada">sum</span><span class="t-operador">(</span><span class="t-numero">1</span> <span class="t-palabra">for</span> clave <span class="t-palabra">in</span> TODAS <span class="t-palabra">if</span> DATOS<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">(</span>VALORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-palabra">if</span> malos <span class="t-operador">==</span> <span class="t-numero">0</span><span class="t-operador">:</span>
+                resumen<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-texto">&quot;Todo correcto&quot;</span><span class="t-operador">)</span>
+        pie<span class="t-operador">.</span>configure<span class="t-operador">(</span>foreground<span class="t-operador">=</span>VERDE<span class="t-operador">)</span>
+    <span class="t-palabra">else</span><span class="t-operador">:</span>
+                resumen<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;<span class="t-operador">{</span>malos<span class="t-operador">}</span> campo<span class="t-operador">{</span><span class="t-texto">&#x27;s&#x27;</span> <span class="t-palabra">if</span> malos <span class="t-operador">&gt;</span> <span class="t-numero">1</span> <span class="t-palabra">else</span> <span class="t-texto">&#x27;&#x27;</span><span class="t-operador">}</span> por corregir&quot;<span class="t-operador">)</span>
+        pie<span class="t-operador">.</span>configure<span class="t-operador">(</span>foreground<span class="t-operador">=</span>GRIS<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> malos
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">enviar</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-texto">&quot;&quot;&quot;Valida todos, pinta todos, y pone el foco en el primero que falla.&quot;&quot;&quot;</span>
+    primero <span class="t-operador">=</span> <span class="t-palabra">None</span>
+    <span class="t-palabra">for</span> clave <span class="t-palabra">in</span> TODAS<span class="t-operador">:</span>
+                motivo <span class="t-operador">=</span> DATOS<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">(</span>VALORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">)</span>
+        ERRORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>motivo<span class="t-operador">)</span>
+        widget <span class="t-operador">=</span> WIDGETS<span class="t-operador">[</span>clave<span class="t-operador">]</span>
+        <span class="t-comentario"># Tk mantiene el estado invalid por su cuenta cuando valida él,</span>
+        <span class="t-comentario"># pero aquí validamos nosotros, así que lo ponemos nosotros.</span>
+        widget<span class="t-operador">.</span>state<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-texto">&quot;invalid&quot;</span><span class="t-operador">]</span> <span class="t-palabra">if</span> motivo <span class="t-palabra">else</span> <span class="t-operador">[</span><span class="t-texto">&quot;!invalid&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+        <span class="t-palabra">if</span> motivo <span class="t-palabra">and</span> primero <span class="t-palabra">is</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                        primero <span class="t-operador">=</span> widget
+    <span class="t-palabra">if</span> primero <span class="t-palabra">is</span> <span class="t-palabra">not</span> <span class="t-palabra">None</span><span class="t-operador">:</span>
+                primero<span class="t-operador">.</span>focus_set<span class="t-operador">(</span><span class="t-operador">)</span>
+        contar<span class="t-operador">(</span><span class="t-operador">)</span>
+        <span class="t-palabra">return</span> <span class="t-palabra">False</span>
+    resumen<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span>f&quot;Alta creada: <span class="t-operador">{</span>VALORES<span class="t-operador">[</span><span class="t-texto">&#x27;nombre&#x27;</span><span class="t-operador">]</span><span class="t-operador">.</span>get<span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">}</span>&quot;<span class="t-operador">)</span>
+    pie<span class="t-operador">.</span>configure<span class="t-operador">(</span>foreground<span class="t-operador">=</span>VERDE<span class="t-operador">)</span>
+    <span class="t-palabra">return</span> <span class="t-palabra">True</span>
+
+
+<span class="t-palabra">def</span> <span class="t-definicion">limpiar</span><span class="t-operador">(</span><span class="t-operador">)</span><span class="t-operador">:</span>
+        <span class="t-palabra">for</span> clave <span class="t-palabra">in</span> TODAS<span class="t-operador">:</span>
+                VALORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-texto">&quot;&quot;</span><span class="t-operador">)</span>
+        ERRORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-texto">&quot;&quot;</span><span class="t-operador">)</span>
+        WIDGETS<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">.</span>state<span class="t-operador">(</span><span class="t-operador">[</span><span class="t-texto">&quot;!invalid&quot;</span><span class="t-operador">]</span><span class="t-operador">)</span>
+    plan<span class="t-operador">.</span><span class="t-integrada">set</span><span class="t-operador">(</span><span class="t-texto">&quot;&quot;</span><span class="t-operador">)</span>
+    contar<span class="t-operador">(</span><span class="t-operador">)</span>
+    WIDGETS<span class="t-operador">[</span><span class="t-texto">&quot;nombre&quot;</span><span class="t-operador">]</span><span class="t-operador">.</span>focus_set<span class="t-operador">(</span><span class="t-operador">)</span>
+
+
+ventana <span class="t-operador">=</span> tk<span class="t-operador">.</span>Tk<span class="t-operador">(</span><span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>title<span class="t-operador">(</span><span class="t-texto">&quot;Alta de cliente&quot;</span><span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>minsize<span class="t-operador">(</span><span class="t-numero">520</span><span class="t-operador">,</span> <span class="t-numero">460</span><span class="t-operador">)</span>
+
+<span class="t-comentario"># Variables sueltas y global: en el bloque E esto pasa a ser una clase.</span>
+<span class="t-comentario"># Cada campo tiene su valor, su mensaje, su alfabeto y su regla de dato.</span>
+TODAS <span class="t-operador">=</span> <span class="t-integrada">tuple</span><span class="t-operador">(</span>clave <span class="t-palabra">for</span> clave<span class="t-operador">,</span> <span class="t-operador">*</span><span class="t-palabra">_</span> <span class="t-palabra">in</span> CAMPOS<span class="t-operador">)</span> <span class="t-operador">+</span> <span class="t-operador">(</span><span class="t-texto">&quot;plan&quot;</span><span class="t-operador">,</span><span class="t-operador">)</span>
+VALORES <span class="t-operador">=</span> <span class="t-operador">{</span>clave<span class="t-operador">:</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">for</span> clave <span class="t-palabra">in</span> TODAS<span class="t-operador">}</span>
+ERRORES <span class="t-operador">=</span> <span class="t-operador">{</span>clave<span class="t-operador">:</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-palabra">for</span> clave <span class="t-palabra">in</span> TODAS<span class="t-operador">}</span>
+ALFABETOS <span class="t-operador">=</span> <span class="t-operador">{</span>clave<span class="t-operador">:</span> alfabeto <span class="t-palabra">for</span> clave<span class="t-operador">,</span> <span class="t-palabra">_</span><span class="t-operador">,</span> alfabeto<span class="t-operador">,</span> <span class="t-palabra">_</span> <span class="t-palabra">in</span> CAMPOS<span class="t-operador">}</span>
+DATOS <span class="t-operador">=</span> <span class="t-operador">{</span>clave<span class="t-operador">:</span> dato <span class="t-palabra">for</span> clave<span class="t-operador">,</span> <span class="t-palabra">_</span><span class="t-operador">,</span> <span class="t-palabra">_</span><span class="t-operador">,</span> dato <span class="t-palabra">in</span> CAMPOS<span class="t-operador">}</span>
+DATOS<span class="t-operador">[</span><span class="t-texto">&quot;plan&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> dato_plan
+ALFABETOS<span class="t-operador">[</span><span class="t-texto">&quot;plan&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> <span class="t-palabra">lambda</span> nuevo<span class="t-operador">:</span> <span class="t-palabra">True</span>
+WIDGETS <span class="t-operador">=</span> <span class="t-operador">{</span><span class="t-operador">}</span>
+plan <span class="t-operador">=</span> VALORES<span class="t-operador">[</span><span class="t-texto">&quot;plan&quot;</span><span class="t-operador">]</span>
+resumen <span class="t-operador">=</span> tk<span class="t-operador">.</span>StringVar<span class="t-operador">(</span><span class="t-operador">)</span>
+
+<span class="t-comentario"># El estilo pinta el estado invalid en todos los campos de una vez.</span>
+estilo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Style<span class="t-operador">(</span><span class="t-operador">)</span>
+estilo<span class="t-operador">.</span><span class="t-integrada">map</span><span class="t-operador">(</span><span class="t-texto">&quot;Formulario.TEntry&quot;</span><span class="t-operador">,</span>
+           fieldbackground<span class="t-operador">=</span><span class="t-operador">[</span><span class="t-operador">(</span><span class="t-texto">&quot;invalid&quot;</span><span class="t-operador">,</span> ROSA_CLARO<span class="t-operador">)</span><span class="t-operador">]</span><span class="t-operador">,</span>
+           foreground<span class="t-operador">=</span><span class="t-operador">[</span><span class="t-operador">(</span><span class="t-texto">&quot;invalid&quot;</span><span class="t-operador">,</span> ROSA<span class="t-operador">)</span><span class="t-operador">]</span><span class="t-operador">)</span>
+estilo<span class="t-operador">.</span><span class="t-integrada">map</span><span class="t-operador">(</span><span class="t-texto">&quot;Formulario.TCombobox&quot;</span><span class="t-operador">,</span>
+           fieldbackground<span class="t-operador">=</span><span class="t-operador">[</span><span class="t-operador">(</span><span class="t-texto">&quot;invalid&quot;</span><span class="t-operador">,</span> ROSA_CLARO<span class="t-operador">)</span><span class="t-operador">]</span><span class="t-operador">)</span>
+
+cuerpo <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>ventana<span class="t-operador">,</span> padding<span class="t-operador">=</span>MARGEN<span class="t-operador">)</span>
+cuerpo<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;both&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+
+ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Datos del cliente&quot;</span><span class="t-operador">,</span>
+          font<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;Helvetica&quot;</span><span class="t-operador">,</span> <span class="t-numero">15</span><span class="t-operador">,</span> <span class="t-texto">&quot;bold&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">)</span>
+ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> foreground<span class="t-operador">=</span>GRIS<span class="t-operador">,</span> wraplength<span class="t-operador">=</span><span class="t-numero">460</span><span class="t-operador">,</span> justify<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span>
+          text<span class="t-operador">=</span><span class="t-texto">&quot;Al escribir solo se restringe el alfabeto; el aviso aparece &quot;</span>
+               <span class="t-texto">&quot;al salir del campo, que es cuando ya has terminado con &quot;</span>
+               <span class="t-texto">&quot;él.&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span>AIRE<span class="t-operador">,</span> MARGEN<span class="t-operador">)</span><span class="t-operador">)</span>
+
+<span class="t-palabra">for</span> clave<span class="t-operador">,</span> etiqueta<span class="t-operador">,</span> alfabeto<span class="t-operador">,</span> dato <span class="t-palabra">in</span> CAMPOS<span class="t-operador">:</span>
+        WIDGETS<span class="t-operador">[</span>clave<span class="t-operador">]</span> <span class="t-operador">=</span> crear_campo<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> clave<span class="t-operador">,</span> etiqueta<span class="t-operador">,</span> alfabeto<span class="t-operador">,</span> dato<span class="t-operador">)</span>
+
+fila <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>cuerpo<span class="t-operador">)</span>
+fila<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> AIRE<span class="t-operador">)</span><span class="t-operador">)</span>
+ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>fila<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Plan:&quot;</span><span class="t-operador">,</span> width<span class="t-operador">=</span><span class="t-numero">16</span><span class="t-operador">,</span> anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span>
+                                                         anchor<span class="t-operador">=</span><span class="t-texto">&quot;n&quot;</span><span class="t-operador">)</span>
+columna <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>fila<span class="t-operador">)</span>
+columna<span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;left&quot;</span><span class="t-operador">,</span> fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">,</span> expand<span class="t-operador">=</span><span class="t-palabra">True</span><span class="t-operador">)</span>
+WIDGETS<span class="t-operador">[</span><span class="t-texto">&quot;plan&quot;</span><span class="t-operador">]</span> <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Combobox<span class="t-operador">(</span>columna<span class="t-operador">,</span> textvariable<span class="t-operador">=</span>plan<span class="t-operador">,</span> state<span class="t-operador">=</span><span class="t-texto">&quot;readonly&quot;</span><span class="t-operador">,</span>
+                               style<span class="t-operador">=</span><span class="t-texto">&quot;Formulario.TCombobox&quot;</span><span class="t-operador">,</span>
+                               values<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-texto">&quot;Básico&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Profesional&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;Empresa&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+WIDGETS<span class="t-operador">[</span><span class="t-texto">&quot;plan&quot;</span><span class="t-operador">]</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">)</span>
+ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>columna<span class="t-operador">,</span> textvariable<span class="t-operador">=</span>ERRORES<span class="t-operador">[</span><span class="t-texto">&quot;plan&quot;</span><span class="t-operador">]</span><span class="t-operador">,</span> foreground<span class="t-operador">=</span>ROSA<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>
+    anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">)</span>
+
+ttk<span class="t-operador">.</span>Separator<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> orient<span class="t-operador">=</span><span class="t-texto">&quot;horizontal&quot;</span><span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span>MARGEN<span class="t-operador">)</span>
+
+botones <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Frame<span class="t-operador">(</span>cuerpo<span class="t-operador">)</span>
+botones<span class="t-operador">.</span>pack<span class="t-operador">(</span>fill<span class="t-operador">=</span><span class="t-texto">&quot;x&quot;</span><span class="t-operador">)</span>
+ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>botones<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Crear alta&quot;</span><span class="t-operador">,</span> command<span class="t-operador">=</span>enviar<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">)</span>
+ttk<span class="t-operador">.</span>Button<span class="t-operador">(</span>botones<span class="t-operador">,</span> text<span class="t-operador">=</span><span class="t-texto">&quot;Limpiar&quot;</span><span class="t-operador">,</span> command<span class="t-operador">=</span>limpiar<span class="t-operador">)</span><span class="t-operador">.</span>pack<span class="t-operador">(</span>side<span class="t-operador">=</span><span class="t-texto">&quot;right&quot;</span><span class="t-operador">,</span>
+                                                          padx<span class="t-operador">=</span><span class="t-operador">(</span><span class="t-numero">0</span><span class="t-operador">,</span> AIRE<span class="t-operador">)</span><span class="t-operador">)</span>
+pie <span class="t-operador">=</span> ttk<span class="t-operador">.</span>Label<span class="t-operador">(</span>cuerpo<span class="t-operador">,</span> textvariable<span class="t-operador">=</span>resumen<span class="t-operador">)</span>
+pie<span class="t-operador">.</span>pack<span class="t-operador">(</span>anchor<span class="t-operador">=</span><span class="t-texto">&quot;w&quot;</span><span class="t-operador">,</span> pady<span class="t-operador">=</span><span class="t-operador">(</span>AIRE<span class="t-operador">,</span> <span class="t-numero">0</span><span class="t-operador">)</span><span class="t-operador">)</span>
+
+<span class="t-comentario"># El validador de verdad necesita saber de qué campo es, así que se registra</span>
+<span class="t-comentario"># uno por campo con la clave metida dentro.</span>
+<span class="t-palabra">for</span> clave <span class="t-palabra">in</span> TODAS<span class="t-operador">:</span>
+        widget <span class="t-operador">=</span> WIDGETS<span class="t-operador">[</span>clave<span class="t-operador">]</span>
+    <span class="t-palabra">if</span> widget<span class="t-operador">.</span>winfo_class<span class="t-operador">(</span><span class="t-operador">)</span> <span class="t-operador">==</span> <span class="t-texto">&quot;TCombobox&quot;</span><span class="t-operador">:</span>
+        <span class="t-comentario"># Un Combobox de solo lectura no se escribe: basta con la traza.</span>
+                VALORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">.</span>trace_add<span class="t-operador">(</span><span class="t-texto">&quot;write&quot;</span><span class="t-operador">,</span>
+                                 <span class="t-palabra">lambda</span> <span class="t-operador">*</span><span class="t-palabra">_</span><span class="t-operador">,</span> c<span class="t-operador">=</span>clave<span class="t-operador">:</span> limpiar_error<span class="t-operador">(</span>c<span class="t-operador">)</span><span class="t-operador">)</span>
+        <span class="t-palabra">continue</span>
+    orden <span class="t-operador">=</span> ventana<span class="t-operador">.</span>register<span class="t-operador">(</span>
+        protegido<span class="t-operador">(</span><span class="t-palabra">lambda</span> nuevo<span class="t-operador">,</span> cuando<span class="t-operador">,</span> c<span class="t-operador">=</span>clave<span class="t-operador">:</span> validar_campo<span class="t-operador">(</span>nuevo<span class="t-operador">,</span> cuando<span class="t-operador">,</span> c<span class="t-operador">)</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    widget<span class="t-operador">.</span>configure<span class="t-operador">(</span>validatecommand<span class="t-operador">=</span><span class="t-operador">(</span>orden<span class="t-operador">,</span> <span class="t-texto">&quot;%P&quot;</span><span class="t-operador">,</span> <span class="t-texto">&quot;%V&quot;</span><span class="t-operador">)</span><span class="t-operador">)</span>
+    <span class="t-comentario"># Al volver a escribir se borra el aviso: no se regaña mientras se corrige.</span>
+    VALORES<span class="t-operador">[</span>clave<span class="t-operador">]</span><span class="t-operador">.</span>trace_add<span class="t-operador">(</span><span class="t-texto">&quot;write&quot;</span><span class="t-operador">,</span> <span class="t-palabra">lambda</span> <span class="t-operador">*</span><span class="t-palabra">_</span><span class="t-operador">,</span> c<span class="t-operador">=</span>clave<span class="t-operador">:</span> limpiar_error<span class="t-operador">(</span>c<span class="t-operador">)</span><span class="t-operador">)</span>
+
+contar<span class="t-operador">(</span><span class="t-operador">)</span>
+WIDGETS<span class="t-operador">[</span><span class="t-texto">&quot;nombre&quot;</span><span class="t-operador">]</span><span class="t-operador">.</span>focus_set<span class="t-operador">(</span><span class="t-operador">)</span>
+centrar<span class="t-operador">(</span>ventana<span class="t-operador">)</span>
+ventana<span class="t-operador">.</span>mainloop<span class="t-operador">(</span><span class="t-operador">)</span></code></pre></div>
+<aside class="aviso aviso-resumen"><p class="titulo-aviso">En resumen</p><p>Validar un formulario son <strong>dos trabajos distintos</strong> que se confunden siempre: mientras se escribe se decide si un carácter puede estar ahí, y al enviar se decide si el dato está completo. La diferencia clave es el campo vacío: al escribir hay que permitirlo y al enviar hay que rechazarlo. De ahí el error de diseño más común: <strong>un validador de teclado no puede juzgar si el dato está completo</strong>, porque para llegar a nueve dígitos hay que pasar por uno, y si se rechaza el uno el campo queda mudo; mientras se escribe, <code>&quot;&quot;</code>, <code>&quot;1&quot;</code>, <code>&quot;1.&quot;</code> y hasta <code>&quot;-&quot;</code> son estados legítimos de camino, así que el validador de teclado solo decide sobre el <strong>alfabeto</strong>. Mecánicamente hay que registrar la función con <code>ventana.register</code>, y el <code>validatecommand</code> es una tupla con ese nombre y códigos de porcentaje, de los que <strong><code>%P</code> (el valor que tendría el campo si se permite) resuelve casi todo</strong>, con <code>%V</code> para saber quién preguntó; los modos son <code>all</code>, <code>key</code>, <code>focus</code>, <code>focusin</code>, <code>focusout</code> y <code>none</code>, y se usan <code>key</code> y <code>focusout</code>. El fallo grave de la lección: <strong>un validador que no devuelve un booleano de Tcl rompe el campo y apaga la validación</strong>; el <code>return</code> olvidado devuelve <code>None</code>, el <code>insert()</code> lanza <code>TclError: expected boolean value but got &quot;None&quot;</code> (un mensaje que habla de un booleano y no apunta a tu función), el error propio sale aparte por la salida de errores, y <strong><code>validate</code> queda en <code>&#x27;none&#x27;</code> para siempre</strong>, con lo que a partir de ahí entra cualquier cosa en silencio; también fallan <code>&quot;&quot;</code>, <code>[]</code> y <code>&quot;si&quot;</code>, porque los booleanos son los de Tcl y están en inglés. Las dos defensas son un solo <code>return</code> con una expresión booleana y un envoltorio que haga <code>bool()</code> dentro de un <code>try</code>. La parte agradable y poco conocida: <strong><code>ttk</code> mantiene el estado <code>invalid</code> por su cuenta</strong> según lo que devuelva el validador, así que con tres líneas de <code>style.map</code> (<code>fieldbackground=[(&quot;invalid&quot;, color)]</code>) se pintan todos los campos del formulario sin código en cada uno; y el método <strong><code>validate()</code> fuerza la comprobación</strong>, devuelve el resultado, actualiza el estado y llama al <code>invalidcommand</code>, así que validar el formulario al enviar es un bucle llamándolo. Del criterio, que viene de la lección 36: <strong>el aviso va junto al campo</strong>, con un rótulo debajo que ocupa sitio siempre para que el formulario no salte, el campo pintado, el foco al primer fallo al enviar, y un resumen del estilo «2 campos por corregir» que dice cuánto queda; y <strong>el aviso aparece al salir del campo, no mientras se escribe</strong>, porque regañar a alguien por algo que iba a arreglar es hostil.</p></aside>
+<aside class="aviso aviso-ejercicio"><p class="titulo-aviso">Practica</p><p>Trabaja en un fichero <code>39-formulario.py</code> salvo donde se indique otra cosa:</p>
+<ol><li>En <code>39-mudo.py</code>, escribe un validador de teclado que exija nueve dígitos exactos y comprueba que no se puede escribir nada. Arréglalo separando el alfabeto de la completitud.</li><li>Registra un validador con los ocho códigos de porcentaje e imprime lo que llega al escribir una letra, al borrar una del medio y al pegar texto.</li><li>En <code>39-olvidado.py</code>, escribe un validador con un <code>if</code> que devuelva <code>True</code> y sin <code>else</code>. Escribe un carácter no válido y copia los tres efectos: la excepción, lo que vale <code>validate</code> después y lo que entra a partir de entonces.</li><li>Prueba un validador que devuelva <code>None</code>, <code>&quot;&quot;</code>, <code>&quot;si&quot;</code>, <code>1</code>, <code>&quot;true&quot;</code> y <code>[]</code>, y anota cuáles funcionan.</li><li>Escribe el envoltorio <code>protegido</code> y comprueba que un validador que lanza excepción ya no apaga la validación.</li><li>Imprime <code>campo.state()</code> antes y después de llamar a <code>campo.validate()</code> con contenido válido y con contenido inválido.</li><li>Monta el <code>style.map</code> del estado <code>invalid</code> y comprueba con <code>lookup</code> que el color está puesto. Quita el estilo y compara qué se ve.</li><li>Añade un <code>invalidcommand</code> que escriba el motivo en un rótulo y comprueba cuándo se dispara: al salir del campo y al forzar con <code>validate()</code>.</li><li>Cambia el formulario para que el aviso salga con <code>validate=&quot;key&quot;</code> en vez de <code>focusout</code>. Rellénalo y decide cuál preferirías usar.</li><li>Sustituye los rótulos de error por un <code>messagebox</code> con todos los fallos juntos. Compáralos rellenando el formulario mal a propósito.</li><li>Haz que al enviar el foco vaya al primer campo mal. Después quítalo y cuenta cuántos clics de más hacen falta.</li><li>Añade un campo de fecha con su alfabeto (dígitos y barras, máximo diez) y su regla de dato (que sea una fecha real, con <code>datetime.strptime</code>).</li></ol></aside>
+    </div>
+    <aside class="indice-pagina" aria-label="Contenido de esta lección">
+      <p class="titulo-indice">En esta lección</p>
+      <ul><li class="nivel-2"><a href="#dos-trabajos-que-no-son-el-mismo">Dos trabajos que no son el mismo</a></li><li class="nivel-2"><a href="#la-mecanica">La mecánica</a></li><li class="nivel-2"><a href="#el-fallo-del-return-olvidado">El fallo del return olvidado</a></li><li class="nivel-2"><a href="#el-estado-invalid-que-tk-mantiene-solo">El estado invalid, que Tk mantiene solo</a></li><li class="nivel-2"><a href="#donde-va-el-aviso">Dónde va el aviso</a></li><li class="nivel-2"><a href="#el-ejemplo">El ejemplo</a></li></ul>
+    </aside>
+  </div>
+
+  <nav class="navegacion-lecciones" aria-label="Lección anterior y siguiente">
+    <a class="tarjeta-navegacion anterior" href="../tkinter/ventanas-secundarias-y-modales.html"><span class="direccion-navegacion">Anterior</span><span class="titulo-navegacion">Ventanas secundarias y modales</span></a>
+    <a class="tarjeta-navegacion siguiente" href="../tkinter/organizar-una-aplicacion-en-clases.html"><span class="direccion-navegacion">Siguiente</span><span class="titulo-navegacion">Organizar una aplicación en clases</span></a>
+  </nav>
+</article>
+
+  </main>
+</div>
+
+<footer class="pie">
+  <p>Curso de Python &middot; Erwin</p>
+  <p class="pie-nota">Sitio estático generado con Python, sin dependencias externas.</p>
+</footer>
+
+<script src="../estatico/indice-busqueda.js" defer></script>
+<script src="../estatico/curso.js" defer></script>
+</body>
+</html>
