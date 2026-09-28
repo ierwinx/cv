@@ -119,7 +119,7 @@
             period: "2022 - 2026",
             company: "Sistema De Transferencias y Pagos STP",
             roles: ["Tech Lead", "iOS Developer Sr"],
-            description: "Technical lead for mobile applications on iOS, Android, and Backend. Responsible for making architecture decisions, participating directly in development, and aligning technically with business and product teams to deliver scalable and compliant solutions, leveraging AI tools like Claude Code."
+            description: "Technical Lead for iOS and Android mobile applications and backend services, responsible for making architectural decisions while remaining actively involved in hands-on development. Worked on products such as STP Codig and PagApp, as well as the design and development of an SDK for financial services integration, enabling easier adoption and reuse across mobile applications."
           },
           {
             period: "2018 - 2022",
@@ -329,7 +329,7 @@
             period: "2022 - 2026",
             company: "Sistema De Transferencias y Pagos STP",
             roles: ["Tech Lead", "iOS Developer Sr"],
-            description: "Líder técnico para aplicaciones móviles en iOS, Android y Backend. Responsable de tomar decisiones de arquitectura, participar directamente en el desarrollo y alinearme técnicamente con los equipos de negocio y producto para entregar soluciones escalables y que cumplan con las normativas apoyándome de IA como Claude Code."
+            description: "Líder técnico para aplicaciones móviles iOS y Android, así como servicios Backend, responsable de definir decisiones de arquitectura y participar directamente en el desarrollo de soluciones. Trabajé en productos como STP Codig y PagApp, además del diseño y desarrollo de un SDK para la integración de servicios financieros, facilitando su adopción y reutilización en aplicaciones móviles."
           },
           {
             period: "2018 - 2022",
