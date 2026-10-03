@@ -47,6 +47,14 @@
             url: "https://ierwinx.com/superpets/"
           },
           {
+            name: "iRar",
+            role: "Author & macOS Developer",
+            description: "Native macOS app to open, create and edit ZIP, RAR, 7z, TAR, GZIP, BZIP2, XZ and Zstandard archives, and modify JAR and AAR packages without extracting them. AES-256 passwords, split archives, CRC32 verification of every file, and everything processed locally on your Mac.",
+            tags: ["Swift", "SwiftUI", "macOS"],
+            emoji: "🗜️",
+            url: "https://ierwinx.com/irar/"
+          },
+          {
             name: "Python Course",
             role: "Author & Developer",
             description: "Free and complete Python course in Spanish: fundamentals, terminal applications, Tkinter GUIs, web development with Django, and REST APIs. 220 lessons with search and progress tracking.",
@@ -255,6 +263,14 @@
             tags: ["Swift", "SwiftUI"],
             emoji: "🐾",
             url: "https://ierwinx.com/superpets/"
+          },
+          {
+            name: "iRar",
+            role: "Autor & Desarrollador macOS",
+            description: "App nativa para macOS que abre, crea y edita archivos ZIP, RAR, 7z, TAR, GZIP, BZIP2, XZ y Zstandard, y modifica paquetes JAR y AAR sin extraerlos. Contraseñas AES-256, archivos en partes, verificación CRC32 de cada archivo y todo procesado localmente en tu Mac.",
+            tags: ["Swift", "SwiftUI", "macOS"],
+            emoji: "🗜️",
+            url: "https://ierwinx.com/irar/"
           },
           {
             name: "Curso de Python",
