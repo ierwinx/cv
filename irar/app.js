@@ -1,7 +1,7 @@
 // iRar · página estática. JavaScript sin dependencias.
 
 // DMG de la última versión (servido junto a esta página).
-const DMG = "downloads/iRar-latest.dmg";
+const DMG = "downloads/iRar-1.0.dmg";
 
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = (selector, root = document) => root.querySelector(selector);
