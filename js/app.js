@@ -55,12 +55,12 @@
             url: "https://ierwinx.com/irar/"
           },
           {
-            name: "Python Course",
-            role: "Author & Developer",
-            description: "Free and complete Python course in Spanish: fundamentals, terminal applications, Tkinter GUIs, web development with Django, and REST APIs. 220 lessons with search and progress tracking.",
-            tags: ["Python", "Django", "Tkinter"],
-            emoji: "🐍",
-            url: "https://ierwinx.com/python/"
+            name: "iGit",
+            role: "Author & macOS Developer",
+            description: "Git client for the terminal in the style of GitHub Desktop: native to macOS and written in Swift 6 with no dependencies. Pick files and individual lines to commit, sync with GitHub, and work with mouse or keyboard — with a safety net on every destructive action.",
+            tags: ["Swift", "macOS", "Git", "CLI"],
+            emoji: "⌨️",
+            url: "https://ierwinx.com/igit/"
           },
           {
             name: "PagApp",
@@ -117,6 +117,14 @@
             tags: ["Swift", "Kotlin"],
             emoji: "💸",
             url: "https://stp.mx/app-codig/"
+          },
+          {
+            name: "Python Course",
+            role: "Author & Developer",
+            description: "Free and complete Python course in Spanish: fundamentals, terminal applications, Tkinter GUIs, web development with Django, and REST APIs. 220 lessons with search and progress tracking.",
+            tags: ["Python", "Django", "Tkinter"],
+            emoji: "🐍",
+            url: "https://ierwinx.com/python/"
           }
         ]
       },
@@ -273,12 +281,12 @@
             url: "https://ierwinx.com/irar/"
           },
           {
-            name: "Curso de Python",
-            role: "Autor & Desarrollador",
-            description: "Curso completo y gratuito de Python en español: fundamentos, aplicaciones de terminal, interfaces gráficas con Tkinter, desarrollo web con Django y APIs REST. 220 lecciones con buscador y seguimiento de progreso.",
-            tags: ["Python", "Django", "Tkinter"],
-            emoji: "🐍",
-            url: "https://ierwinx.com/python/"
+            name: "iGit",
+            role: "Autor & Desarrollador macOS",
+            description: "Cliente de Git para la terminal al estilo de GitHub Desktop: nativo de macOS y escrito en Swift 6 sin dependencias. Elige archivos y líneas para hacer commit, sincroniza con GitHub y trabaja con ratón o teclado — con red de seguridad en cada acción destructiva.",
+            tags: ["Swift", "macOS", "Git", "CLI"],
+            emoji: "⌨️",
+            url: "https://ierwinx.com/igit/"
           },
           {
             name: "PagApp",
@@ -335,6 +343,14 @@
             tags: ["Swift", "Kotlin"],
             emoji: "💸",
             url: "https://stp.mx/app-codig/"
+          },
+          {
+            name: "Curso de Python",
+            role: "Autor & Desarrollador",
+            description: "Curso completo y gratuito de Python en español: fundamentos, aplicaciones de terminal, interfaces gráficas con Tkinter, desarrollo web con Django y APIs REST. 220 lecciones con buscador y seguimiento de progreso.",
+            tags: ["Python", "Django", "Tkinter"],
+            emoji: "🐍",
+            url: "https://ierwinx.com/python/"
           }
         ]
       },
