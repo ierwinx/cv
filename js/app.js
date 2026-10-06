@@ -63,9 +63,17 @@
             url: "https://ierwinx.com/igit/"
           },
           {
+            name: "Banco Azteca",
+            role: "iOS Developer Sr",
+            description: "Core banking mobile app serving 10M+ users across Latin America. Lets customers check balances and movements, make SPEI transfers, pay bills, top up phones, manage and lock their cards, and apply for loans — all from their phone. Contributed to the development of new features for iOS, with a focus on security, performance and stability at massive scale.",
+            tags: ["Swift", "Objective-C"],
+            emoji: "💳",
+            url: "https://www.bancoazteca.com.mx/app/app-banco-azteca.html"
+          },
+          {
             name: "PagApp",
             role: "Tech Lead & iOS Developer",
-            description: "Interbank transfer platform processing millions of transactions daily. Led mobile architecture and delivery.",
+            description: "Interbank transfer platform processing millions of transactions daily. Supports SPEI transfers, DiMo® (BANXICO) to send money using just a phone number, and CODI® payments to pay and charge via QR codes or payment requests — all in real time, 24/7. Led mobile architecture and delivery on iOS and Android.",
             tags: ["Swift", "Kotlin"],
             emoji: "🏦",
             url: "https://pagapp.mx"
@@ -85,14 +93,6 @@
             tags: ["Swift"],
             emoji: "📱",
             url: "https://www.baz.app"
-          },
-          {
-            name: "Banco Azteca",
-            role: "iOS Developer Sr",
-            description: "Core banking mobile app serving 10M+ users across Latin America.",
-            tags: ["Swift", "Objective-C"],
-            emoji: "💳",
-            url: "https://www.bancoazteca.com.mx/app/app-banco-azteca.html"
           },
           {
             name: "Music Converter",
@@ -117,6 +117,14 @@
             tags: ["Swift", "Kotlin"],
             emoji: "💸",
             url: "https://stp.mx/app-codig/"
+          },
+          {
+            name: "iSpecter",
+            role: "Author & macOS Developer",
+            description: "Native macOS spectrum analyzer that reveals the truth about your music: drop in a file and find out whether that FLAC is really lossless or a disguised MP3. Metal-rendered spectrogram, automatic quality verdict with confidence level, library scanning with CSV export, 30+ formats, and a command-line tool.",
+            tags: ["Swift", "Metal", "macOS"],
+            emoji: "🎧",
+            url: "https://ierwinx.com/ispecter/"
           },
           {
             name: "Python Course",
@@ -289,9 +297,17 @@
             url: "https://ierwinx.com/igit/"
           },
           {
+            name: "Banco Azteca",
+            role: "iOS Developer Sr",
+            description: "App móvil bancaria principal atendiendo a más de 10M de usuarios en Latinoamérica. Permite consultar saldos y movimientos, hacer transferencias SPEI, pagar servicios, recargar tiempo aire, administrar y bloquear tarjetas y solicitar créditos — todo desde el celular. Participé en el desarrollo de nuevas funcionalidades para iOS, con enfoque en seguridad, rendimiento y estabilidad a escala masiva.",
+            tags: ["Swift", "Objective-C"],
+            emoji: "💳",
+            url: "https://www.bancoazteca.com.mx/app/app-banco-azteca.html"
+          },
+          {
             name: "PagApp",
             role: "Tech Lead & iOS Developer",
-            description: "Plataforma de transferencias interbancarias que procesa millones de transacciones diarias. Lideré la arquitectura móvil y entregas.",
+            description: "Plataforma de transferencias interbancarias que procesa millones de transacciones diarias. Permite hacer transferencias SPEI, enviar dinero con solo un número de celular mediante DiMo® (BANXICO) y pagar o cobrar con códigos QR o solicitudes de pago mediante CODI® — todo en tiempo real, 24/7. Lideré la arquitectura móvil y entregas en iOS y Android.",
             tags: ["Swift", "Kotlin"],
             emoji: "🏦",
             url: "https://pagapp.mx"
@@ -311,14 +327,6 @@
             tags: ["Swift"],
             emoji: "📱",
             url: "https://www.baz.app"
-          },
-          {
-            name: "Banco Azteca",
-            role: "iOS Developer Sr",
-            description: "App móvil bancaria principal atendiendo a más de 10M de usuarios en Latinoamérica.",
-            tags: ["Swift", "Objective-C"],
-            emoji: "💳",
-            url: "https://www.bancoazteca.com.mx/app/app-banco-azteca.html"
           },
           {
             name: "Conversor de Música",
@@ -343,6 +351,14 @@
             tags: ["Swift", "Kotlin"],
             emoji: "💸",
             url: "https://stp.mx/app-codig/"
+          },
+          {
+            name: "iSpecter",
+            role: "Autor & Desarrollador macOS",
+            description: "Analizador de espectro nativo para macOS que revela la verdad de tu música: arrastra un archivo y descubre si ese FLAC es realmente lossless o un MP3 disfrazado. Espectrograma renderizado en Metal, veredicto automático de calidad con nivel de confianza, análisis de bibliotecas completas con exportación a CSV, más de 30 formatos y herramienta de terminal.",
+            tags: ["Swift", "Metal", "macOS"],
+            emoji: "🎧",
+            url: "https://ierwinx.com/ispecter/"
           },
           {
             name: "Curso de Python",
