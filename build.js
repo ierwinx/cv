@@ -39,8 +39,7 @@ copyDir(__dirname, distDir);
 
 // Minify JS and CSS only when the directories exist
 const minifyDirs = [
-  { js: 'cv/js', css: 'cv/css' },
-  { js: 'assets', css: 'assets' }
+  { js: 'CV/js', css: 'CV/css' }
 ];
 
 for (const { js, css } of minifyDirs) {
