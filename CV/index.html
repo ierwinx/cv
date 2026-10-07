@@ -1,625 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Erwin-cv</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erwin De La Luz - Mobile Software Engineer</title>
+    <meta name="description" content="Software Engineer with over 10 years of experience in native mobile development, scalable architectures, and DevSecOps.">
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: 'Poppins', sans-serif;
-      background: #525659;
-    }
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Erwin De La Luz De León — Mobile Software Engineer">
+    <meta property="og:description" content="10+ years leading mobile development, scalable architectures, and DevSecOps practices.">
+    <meta property="og:image" content="https://ierwinx.com/cv/img/persona.jpg">
+    <meta property="og:url" content="https://ierwinx.com/cv/">
+    <meta property="og:site_name" content="Erwin De La Luz">
 
-    /* ── Loading screen ──────────────────────── */
-    #loader {
-      position: fixed;
-      inset: 0;
-      background: #525659;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      z-index: 100;
-    }
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Erwin De La Luz De León — Mobile Software Engineer">
+    <meta name="twitter:description" content="10+ years leading mobile development, scalable architectures, and DevSecOps practices.">
+    <meta name="twitter:image" content="https://ierwinx.com/cv/img/persona.jpg">
 
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.75s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    #loader-text {
-      color: #ccc;
-      font-size: 13px;
-      font-weight: 300;
-    }
-
-    /* ── PDF iframe ──────────────────────────── */
-    #pdf-frame {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: none;
-    }
-
-
-    /* ── CV render area (behind loader) ─────── */
-    #cv-render {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 794px; /* 210mm at 96 DPI */
-      background: #fff;
-      padding: 53px 68px 60px; /* 14mm 18mm 16mm */
-      color: #1c1c1c;
-      font-size: 9pt;
-      line-height: 1.5;
-      z-index: 1; /* loader is z-index: 100, stays on top */
-    }
-
-    /* ── Header ─────────────────────────────── */
-    #cv-render .cv-header {
-      margin-bottom: 22px;
-      padding-bottom: 18px;
-      border-bottom: 2.5px solid #1c1c1c;
-      text-align: center;
-    }
-
-    #cv-render .cv-name {
-      font-size: 28pt;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: #111;
-      line-height: 1.1;
-    }
-
-    #cv-render .cv-title {
-      font-size: 11.5pt;
-      font-weight: 300;
-      color: #555;
-      margin-top: 4px;
-      letter-spacing: 0.3px;
-    }
-
-    #cv-render .cv-contact {
-      margin-top: 12px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 4px 0;
-      font-size: 8.5pt;
-      color: #444;
-    }
-
-    #cv-render .cv-contact-item {
-      display: flex;
-      align-items: center;
-    }
-
-    #cv-render .cv-contact-item:not(:last-child)::after {
-      content: '|';
-      margin: 0 10px;
-      color: #ccc;
-    }
-
-    #cv-render .cv-contact a {
-      color: #444;
-      text-decoration: none;
-    }
-
-    /* ── Section ─────────────────────────────── */
-    #cv-render .section {
-      margin-bottom: 18px;
-    }
-
-    #cv-render .section-title {
-      font-size: 8pt;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: #111;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    #cv-render .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #ddd;
-    }
-
-    /* ── Summary ─────────────────────────────── */
-    #cv-render .summary-text {
-      font-size: 9.5pt;
-      color: #3a3a3a;
-      line-height: 1.7;
-      font-weight: 300;
-    }
-
-    /* ── Skills ──────────────────────────────── */
-    #cv-render .skills-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    #cv-render .skill-row {
-      display: flex;
-      align-items: baseline;
-      font-size: 8.5pt;
-      line-height: 1.5;
-    }
-
-    #cv-render .skill-label {
-      font-weight: 600;
-      color: #111;
-      min-width: 160px;
-      flex-shrink: 0;
-    }
-
-    #cv-render .skill-value {
-      color: #444;
-      font-weight: 300;
-    }
-
-    /* ── Experience ──────────────────────────── */
-    #cv-render .job {
-      margin-bottom: 14px;
-    }
-
-    #cv-render .job:last-child {
-      margin-bottom: 0;
-    }
-
-    #cv-render .job-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 8px;
-      margin-bottom: 1px;
-    }
-
-    #cv-render .job-company {
-      font-size: 10.5pt;
-      font-weight: 600;
-      color: #111;
-    }
-
-    #cv-render .job-period {
-      font-size: 8.5pt;
-      font-weight: 400;
-      color: #777;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    #cv-render .job-roles {
-      font-size: 9pt;
-      font-weight: 500;
-      color: #444;
-      margin-bottom: 4px;
-    }
-
-    #cv-render .job-desc {
-      font-size: 8.5pt;
-      color: #555;
-      line-height: 1.65;
-      font-weight: 300;
-    }
-
-    /* ── Education ───────────────────────────── */
-    #cv-render .edu-block {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 8px;
-    }
-
-    #cv-render .edu-degree {
-      font-size: 10.5pt;
-      font-weight: 600;
-      color: #111;
-    }
-
-    #cv-render .edu-specialty {
-      font-size: 8.5pt;
-      color: #555;
-      font-weight: 300;
-      margin-top: 1px;
-    }
-
-    #cv-render .edu-institution {
-      font-size: 9pt;
-      font-weight: 500;
-      color: #444;
-      margin-top: 2px;
-    }
-
-    #cv-render .edu-period {
-      font-size: 8.5pt;
-      color: #777;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    /* ── Courses ─────────────────────────────── */
-    #cv-render .certs-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px 20px;
-    }
-
-    #cv-render .cert-item {
-      font-size: 8.5pt;
-      color: #444;
-      font-weight: 300;
-      padding-left: 12px;
-      position: relative;
-      line-height: 1.5;
-    }
-
-    #cv-render .cert-item::before {
-      content: '–';
-      position: absolute;
-      left: 0;
-      color: #999;
-    }
-
-    /* ── Languages ───────────────────────────── */
-    #cv-render .languages-row {
-      display: flex;
-      gap: 32px;
-    }
-
-    #cv-render .language-item {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
-
-    #cv-render .lang-name {
-      font-size: 9.5pt;
-      font-weight: 600;
-      color: #111;
-    }
-
-    #cv-render .lang-level {
-      font-size: 8.5pt;
-      color: #777;
-      font-weight: 300;
-    }
-  </style>
+    <link rel="Shortcut Icon" href="img/icono.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <div class="custom-cursor" id="cursor"></div>
+    <div class="custom-cursor--trail" id="cursorTrail"></div>
+    <nav class="topbar">
+        <span class="topbar-name" id="topbarName">Erwin De La Luz De León</span>
+        <button class="topbar-btn" id="langBtn" aria-label="Change language">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span data-i18n="nav.langToggle">ES</span>
+        </button>
+        <button class="topbar-btn" id="themeBtn" aria-label="Toggle theme">
+            <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <span data-i18n="nav.themeToggle">Theme</span>
+        </button>
+    </nav>
 
-  <div id="loader">
-    <div class="spinner"></div>
-    <span id="loader-text">Loading CV...</span>
-  </div>
+    <main class="bento">
+        <!-- Hero -->
+        <section class="card card--hero">
+            <h1 class="hero-title" data-i18n="hero.name">Erwin De La Luz De León</h1>
+            <p class="hero-subtitle"><span id="typingText"></span><span class="typing-cursor">|</span></p>
+            <p class="hero-bio" data-i18n="hero.bio">Software Engineer with over 10 years of experience leading and developing software solutions in production environments. Strong focus on native mobile development, scalable architectures, and DevSecOps practices, with experience in AWS, server administration, and both relational and non-relational databases.</p>
+            <a class="download-btn" id="downloadCV" href="pdf/?lang=en" target="_blank">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span data-i18n="hero.download">View CV</span>
+            </a>
+        </section>
 
-  <div id="cv-render"></div>
-
-  <iframe id="pdf-frame"></iframe>
-
-
-  <script>
-    const yearsExp = new Date().getFullYear() - 2013;
-
-    const DATA = {
-      en: {
-        loaderText: 'Loading CV...',
-        name: "Erwin De La Luz De León",
-        title: "Mobile Software Engineer  ·  Tech Lead",
-        email: "ierwinx@duck.com",
-        phone: "+52 55 3877 6129",
-        location: "Mexico City, Mexico",
-        linkedin: "linkedin.com/in/ierwinx",
-        github: "github.com/ierwinx",
-        website: "ierwinx.com",
-        summary: {
-          heading: "Summary",
-          text: `Mobile Software Engineer and Tech Lead with ${yearsExp}+ years of experience shipping iOS and Android apps used by millions. Proven track record reducing 800+ bugs to near-zero and leading cross-functional teams of up to 16 engineers. Deep expertise in Swift, Kotlin, CI/CD pipelines, AWS cloud architecture, and AI-assisted development workflows.`
-        },
-        skills: {
-          heading: "Skills",
-          groups: [
-            { label: "Mobile",          value: "Swift, SwiftUI, UIKit, Objective-C, Kotlin, Jetpack Compose, Kotlin Multiplatform, Flutter, Dart" },
-            { label: "Architecture",    value: "MVVM, VIPER, MVC, MVP, Clean Architecture, Modularization" },
-            { label: "Backend & Cloud", value: "Python, Node.js, Java, Spring, AWS (EC2, Lambda, S3), Docker, Kubernetes, OpenShift" },
-            { label: "DevOps & CI/CD",  value: "Jenkins, GitHub Actions, Fastlane, Containerized Deployments, DevSecOps" },
-            { label: "Databases",       value: "SwiftData, CoreData, Realm, MongoDB, Oracle, SQL Server, SQLite" },
-            { label: "Tools",           value: "Git, Agile / Scrum, AI-Assisted Development (Claude Code), Pair Programming" }
-          ]
-        },
-        experience: {
-          heading: "Work Experience",
-          jobs: [
-            {
-              company: "Sistema De Transferencias y Pagos STP",
-              period: "2022 – 2026",
-              roles: "Tech Lead  ·  iOS Developer Sr",
-              description: "Technical Lead for iOS and Android mobile applications and backend services, responsible for making architectural decisions while remaining actively involved in hands-on development. Worked on products such as STP Codig and PagApp, as well as the design and development of an SDK for financial services integration, enabling easier adoption and reuse across mobile applications."
-            },
-            {
-              company: "Grupo Salinas / Banco Azteca",
-              period: "2018 – 2022",
-              roles: "Tech Lead  ·  Manager  ·  iOS Developer Sr  ·  Cloud Architect  ·  DevOps",
-              description: "Contributed to Banco Azteca’s technology evolution as its digital user base grew from 5M to 11M users, supporting weekly release cycles. Participated in the launch of Super App BAZ, from its initial development through production, integrating features such as payments, money transfers, streaming, social experiences, and marketplace capabilities. As a developer, contributed to projects including the Banco Azteca mobile app and Encuentro Católico, focusing on the development and evolution of iOS applications, backend service integrations, and architectures designed to support large-scale digital products."
-            },
-            {
-              company: "Grupo Proyectos Estrategias Empresariales",
-              period: "2015 – 2018",
-              roles: "Java Developer Sr",
-              description: "Delivered a payroll processing system handling data for multiple organizations with zero data-integrity incidents post-launch. Built a secure digital platform for psychology professionals, implementing encrypted data storage and role-based access control."
-            },
-            {
-              company: "Grupo ID Soft  /  ISC Control Inteligente",
-              period: "2014 – 2015",
-              roles: "Android Developer Jr",
-              description: "Implemented a geolocation-based attendance system for workforce management on Android, achieving 95%+ location validation accuracy by integrating GPS with network-based fallback mechanisms."
-            },
-            {
-              company: "Secretaría de Gobernación — Mexico Federal Government",
-              period: "2013 – 2014",
-              roles: "Android Developer",
-              description: "Developed a country-wide infrastructure monitoring Android app that detected link outages and triggered real-time alerts to administrators, reducing downtime response time across national networks."
-            }
-          ]
-        },
-        education: {
-          heading: "Education",
-          degree: "B.S. Computer Systems Engineering",
-          specialty: "Specialty: Web Systems Development",
-          institution: "Tecnológico de Estudios Superiores de Chalco",
-          period: "2009 – 2013"
-        },
-        certifications: {
-          heading: "Courses",
-          list: [
-            "Red Hat OpenShift Development I (2020)",
-            "Architecting on AWS — Netec (2019)",
-            "Red Hat System Administration I & II (2019)",
-            "iOS 12 & Swift 4, iOS App Development (2020)",
-            "Introduction to DevSecOps — Grupo Salinas (2019)"
-          ]
-        },
-        languages: {
-          heading: "Languages",
-          list: [
-            { name: "Spanish", level: "Native" },
-            { name: "English", level: "Intermediate (B1)" }
-          ]
-        }
-      },
-      es: {
-        loaderText: 'Cargando CV...',
-        name: "Erwin De La Luz De León",
-        title: "Ingeniero de Software Móvil  ·  Tech Lead",
-        email: "ierwinx@duck.com",
-        phone: "+52 55 3877 6129",
-        location: "Ciudad de México, México",
-        linkedin: "linkedin.com/in/ierwinx",
-        github: "github.com/ierwinx",
-        website: "ierwinx.com",
-        summary: {
-          heading: "Resumen",
-          text: `Ingeniero de Software Móvil y Tech Lead con ${yearsExp}+ años de experiencia entregando apps iOS y Android utilizadas por millones de usuarios. Historial comprobado reduciendo 800+ bugs a casi cero y liderando equipos cross-funcionales de hasta 16 ingenieros. Expertise profundo en Swift, Kotlin, pipelines CI/CD, arquitectura cloud AWS y flujos de desarrollo asistidos por IA.`
-        },
-        skills: {
-          heading: "Habilidades",
-          groups: [
-            { label: "Móvil",           value: "Swift, SwiftUI, UIKit, Objective-C, Kotlin, Jetpack Compose, Kotlin Multiplatform, Flutter, Dart" },
-            { label: "Arquitectura",    value: "MVVM, VIPER, MVC, MVP, Clean Architecture, Modularización" },
-            { label: "Backend & Cloud", value: "Python, Node.js, Java, Spring, AWS (EC2, Lambda, S3), Docker, Kubernetes, OpenShift" },
-            { label: "DevOps & CI/CD",  value: "Jenkins, GitHub Actions, Fastlane, Despliegues Containerizados, DevSecOps" },
-            { label: "Bases de Datos",  value: "SwiftData, CoreData, Realm, MongoDB, Oracle, SQL Server, SQLite" },
-            { label: "Herramientas",    value: "Git, Agile / Scrum, Desarrollo Asistido por IA (Claude Code), Pair Programming" }
-          ]
-        },
-        experience: {
-          heading: "Experiencia Laboral",
-          jobs: [
-            {
-              company: "Sistema De Transferencias y Pagos STP",
-              period: "2022 – 2026",
-              roles: "Tech Lead  ·  iOS Developer Sr",
-              description: "Líder técnico para aplicaciones móviles iOS y Android, así como servicios Backend, responsable de definir decisiones de arquitectura y participar directamente en el desarrollo de soluciones. Trabajé en productos como STCodig y PagApp, además del diseño y desarrollo de un SDK para la integración de servicios financieros, facilitando su adopción y reutilización en aplicaciones móviles."
-            },
-            {
-              company: "Grupo Salinas / Banco Azteca",
-              period: "2018 – 2022",
-              roles: "Tech Lead  ·  Manager  ·  iOS Developer Sr  ·  Arquitecto Cloud  ·  DevOps",
-              description: "Participé en la evolución tecnológica de Banco Azteca durante el crecimiento de su base digital de 5M a 11M de usuarios, manteniendo ciclos de releases semanales. Formé parte del lanzamiento de Super App BAZ desde su desarrollo inicial hasta producción, integrando funcionalidades de pagos, transferencias, streaming, social y marketplace. Como desarrollador, participé en proyectos como la app de Banco Azteca y Encuentro Católico, trabajando en el desarrollo y evolución de aplicaciones móviles para iOS, así como en la integración con servicios backend y arquitecturas orientadas a productos digitales de gran escala."
-            },
-            {
-              company: "Grupo Proyectos Estrategias Empresariales",
-              period: "2015 – 2018",
-              roles: "Java Developer Sr",
-              description: "Entregué un sistema de procesamiento de nómina para múltiples organizaciones con cero incidentes de integridad de datos post-lanzamiento. Construí una plataforma digital segura para profesionales de psicología con almacenamiento encriptado y control de acceso basado en roles."
-            },
-            {
-              company: "Grupo ID Soft  /  ISC Control Inteligente",
-              period: "2014 – 2015",
-              roles: "Android Developer Jr",
-              description: "Implementé un sistema de asistencia basado en geolocalización para gestión de fuerza laboral en Android, logrando 95%+ de precisión en validación de ubicación integrando GPS con mecanismos de fallback basados en red."
-            },
-            {
-              company: "Secretaría de Gobernación",
-              period: "2013 – 2014",
-              roles: "Android Developer",
-              description: "Desarrollé una app Android de monitoreo de infraestructura a nivel nacional que detectaba caídas de enlace y disparaba alertas en tiempo real a administradores, reduciendo los tiempos de respuesta ante incidentes en redes nacionales."
-            }
-          ]
-        },
-        education: {
-          heading: "Educación",
-          degree: "Ing. en Sistemas Computacionales",
-          specialty: "Especialidad: Desarrollo de Sistemas Web",
-          institution: "Tecnológico de Estudios Superiores de Chalco",
-          period: "2009 – 2013"
-        },
-        certifications: {
-          heading: "Cursos",
-          list: [
-            "Red Hat OpenShift Development I (2020)",
-            "Architecting on AWS — Netec (2019)",
-            "Red Hat System Administration I & II (2019)",
-            "iOS 12 & Swift 4, Desarrollo de Apps iOS (2020)",
-            "Introducción a DevSecOps — Grupo Salinas (2019)"
-          ]
-        },
-        languages: {
-          heading: "Idiomas",
-          list: [
-            { name: "Español", level: "Nativo" },
-            { name: "Inglés", level: "Intermedio (B1)" }
-          ]
-        }
-      }
-    };
-
-    const params = new URLSearchParams(window.location.search);
-    const lang = params.get('lang') === 'es' ? 'es' : 'en';
-    const d = DATA[lang];
-
-    document.documentElement.lang = lang;
-    document.title = `Erwin-cv-${lang.toUpperCase()}`;
-    document.getElementById('loader-text').textContent = d.loaderText;
-
-    // Inject CV HTML into off-screen render area
-    document.getElementById('cv-render').innerHTML = `
-      <div class="cv-header">
-        <div class="cv-name">${d.name}</div>
-        <div class="cv-title">${d.title}</div>
-        <div class="cv-contact">
-          <span class="cv-contact-item">${d.email}</span>
-          <span class="cv-contact-item">${d.phone}</span>
-          <span class="cv-contact-item">${d.location}</span>
-          <span class="cv-contact-item"><a href="https://${d.linkedin}">${d.linkedin}</a></span>
-          <span class="cv-contact-item"><a href="https://${d.github}">${d.github}</a></span>
-          <span class="cv-contact-item"><a href="https://${d.website}">${d.website}</a></span>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">${d.summary.heading}</div>
-        <p class="summary-text">${d.summary.text}</p>
-      </div>
-
-      <div class="section">
-        <div class="section-title">${d.skills.heading}</div>
-        <div class="skills-grid">
-          ${d.skills.groups.map(g => `
-            <div class="skill-row">
-              <span class="skill-label">${g.label}</span>
-              <span class="skill-value">${g.value}</span>
+        <!-- Photo -->
+        <section class="card card--photo">
+            <div class="photo-wrapper">
+                <img src="img/persona.jpg" alt="Erwin De La Luz">
+                <div class="availability-badge">
+                    <span class="availability-dot"></span>
+                    <span data-i18n="hero.available">Available for projects</span>
+                </div>
             </div>
-          `).join('')}
-        </div>
-      </div>
+        </section>
 
-      <div class="section">
-        <div class="section-title">${d.experience.heading}</div>
-        ${d.experience.jobs.map(j => `
-          <div class="job">
-            <div class="job-header">
-              <span class="job-company">${j.company}</span>
-              <span class="job-period">${j.period}</span>
+        <!-- Skills -->
+        <section class="card card--skills">
+            <h2 class="card-heading" data-i18n="skills.heading">Skills</h2>
+            <div class="skills-category">
+                <div class="skills-label" data-i18n="skills.mobile">Mobile</div>
+                <div class="chips">
+                    <span class="chip">Swift</span>
+                    <span class="chip">SwiftUI</span>
+                    <span class="chip">UIKit</span>
+                    <span class="chip">Kotlin</span>
+                    <span class="chip">Kotlin Multiplatform</span>
+                    <span class="chip">Jetpack Compose</span>
+                    <span class="chip">Flutter</span>
+                </div>
             </div>
-            <div class="job-roles">${j.roles}</div>
-            <div class="job-desc">${j.description}</div>
-          </div>
-        `).join('')}
-      </div>
-
-      <div class="section">
-        <div class="section-title">${d.education.heading}</div>
-        <div class="edu-block">
-          <div>
-            <div class="edu-degree">${d.education.degree}</div>
-            <div class="edu-specialty">${d.education.specialty}</div>
-            <div class="edu-institution">${d.education.institution}</div>
-          </div>
-          <div class="edu-period">${d.education.period}</div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">${d.certifications.heading}</div>
-        <div class="certs-list">
-          ${d.certifications.list.map(c => `<div class="cert-item">${c}</div>`).join('')}
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">${d.languages.heading}</div>
-        <div class="languages-row">
-          ${d.languages.list.map(l => `
-            <div class="language-item">
-              <span class="lang-name">${l.name}</span>
-              <span class="lang-level">${l.level}</span>
+            <div class="skills-category">
+                <div class="skills-label" data-i18n="skills.frontend">Frontend</div>
+                <div class="chips">
+                    <span class="chip">JavaScript ES6+</span>
+                    <span class="chip">ReactJS</span>
+                    <span class="chip">HTML5</span>
+                    <span class="chip">CSS3</span>
+                </div>
             </div>
-          `).join('')}
+            <div class="skills-category">
+                <div class="skills-label" data-i18n="skills.backend">Backend</div>
+                <div class="chips">
+                    <span class="chip">Python</span>
+                    <span class="chip">Django</span>
+                    <span class="chip">Node.js</span>
+                    <span class="chip">Express</span>
+                    <span class="chip">Kotlin</span>
+                    <span class="chip">Spring</span>
+                    <span class="chip">Java</span>
+                    <span class="chip">Go</span>
+                </div>
+            </div>
+            <div class="skills-category">
+                <div class="skills-label" data-i18n="skills.database">Databases</div>
+                <div class="chips">
+                    <span class="chip">SwiftData</span>
+                    <span class="chip">CoreData</span>
+                    <span class="chip">Realm</span>
+                    <span class="chip">Room</span>
+                    <span class="chip">MongoDB</span>
+                    <span class="chip">Oracle</span>
+                    <span class="chip">PostgreSQL</span>
+                    <span class="chip">MySQL</span>
+                    <span class="chip">SQL Server</span>
+                </div>
+            </div>
+            <div class="skills-category">
+                <div class="skills-label" data-i18n="skills.architecture">Architectural Patterns</div>
+                <div class="chips">
+                    <span class="chip">VIPER</span>
+                    <span class="chip">MVC</span>
+                    <span class="chip">MVVM</span>
+                    <span class="chip">MVP</span>
+                </div>
+            </div>
+            <div class="skills-category">
+                <div class="skills-label" data-i18n="skills.devops">DevOps & Cloud</div>
+                <div class="chips">
+                    <span class="chip">AWS</span>
+                    <span class="chip">Docker</span>
+                    <span class="chip">Kubernetes</span>
+                    <span class="chip">OpenShift</span>
+                    <span class="chip">Jenkins</span>
+                    <span class="chip">CI/CD</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Info -->
+        <section class="card card--info">
+            <h2 class="card-heading" data-i18n="info.heading">Information</h2>
+            <div class="info-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span data-i18n="info.address">Cuauhtémoc, 06720, Mexico City</span>
+            </div>
+            <div class="info-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <a href="https://ierwinx.com" target="_blank">ierwinx.com</a>
+            </div>
+
+            <h2 class="card-heading" style="margin-top: 24px;" data-i18n="info.languages">Languages</h2>
+            <div class="info-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
+                <span data-i18n="info.langSpanish">Spanish - Native</span>
+            </div>
+            <div class="info-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/></svg>
+                <span data-i18n="info.langEnglish">English - Intermediate B1</span>
+            </div>
+
+            <h2 class="card-heading" style="margin-top: 24px;" data-i18n="social.heading">Social Networks</h2>
+            <div class="social-links">
+                <a href="https://www.github.com/ierwinx" target="_blank" class="social-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                    <span>GitHub</span>
+                </a>
+                <a href="https://www.linkedin.com/in/ierwinx" target="_blank" class="social-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                    <span>LinkedIn</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Projects -->
+        <section class="card card--projects">
+            <h2 class="card-heading" data-i18n="projects.heading">Featured Projects</h2>
+            <div class="projects-grid" id="projectsGrid"></div>
+        </section>
+
+        <!-- Experience -->
+        <section class="card card--experience">
+            <h2 class="card-heading" data-i18n="experience.heading">Work Experience</h2>
+            <div class="timeline" id="experienceTimeline"></div>
+        </section>
+
+        <!-- Education -->
+        <section class="card card--education">
+            <h2 class="card-heading" data-i18n="education.heading">Education</h2>
+            <div id="degreeContent"></div>
+        </section>
+
+        <!-- Courses -->
+        <section class="card card--certs">
+            <h2 class="card-heading" data-i18n="education.certifications">Courses</h2>
+            <div class="certs-grid" id="certsGrid"></div>
+        </section>
+
+        <!-- References -->
+        <section class="card card--references">
+            <h2 class="card-heading" data-i18n="references.heading">References</h2>
+            <div id="refsContent"></div>
+        </section>
+
+        <!-- Contact -->
+        <section class="card card--contact">
+            <h2 class="card-heading" data-i18n="contact.heading">Send a message</h2>
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <label for="nombre" data-i18n="contact.name">Name</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="apellido1" data-i18n="contact.lastName">Last Name</label>
+                    <input type="text" id="apellido1" name="apellido1" required>
+                </div>
+                <div class="form-group">
+                    <label for="empresa" data-i18n="contact.company">Company</label>
+                    <input type="text" id="empresa" name="empresa" required>
+                </div>
+                <div class="form-group">
+                    <label for="email" data-i18n="contact.email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="mensaje" data-i18n="contact.message">Message</label>
+                    <textarea id="mensaje" name="mensaje" required></textarea>
+                </div>
+                <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="6Lf3mxgtAAAAANvlkOI-l4t7W_bFnvspD1gCtDKW"></div>
+                    <span class="form-error" id="errorRecaptcha"></span>
+                </div>
+                <button type="submit" class="form-submit" data-i18n="contact.send">Send</button>
+            </form>
+            <div class="form-status" id="formStatus" style="display:none;"></div>
+        </section>
+
+        <!-- Testimonial -->
+        <section class="card card--testimonial">
+            <div class="testimonial">
+                <div class="testimonial-quote" data-i18n="testimonial.quote">"Erwin is the kind of engineer who not only delivers exceptional results, but elevates the entire team around him. His ability to lead complex mobile projects while maintaining code quality is outstanding."</div>
+                <div class="testimonial-author">
+                    <div class="testimonial-name">Carlos Altamirano</div>
+                    <div class="testimonial-role" data-i18n="testimonial.role">Chief — Garante / Gpo Proyectos Estrategias Empresariales</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scroll to top -->
+    <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+
+    <!-- Certificate Modal -->
+    <div class="modal-overlay" id="certModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="certModalTitle">Certificate</h3>
+                <button class="modal-close" id="certModalClose">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body" id="certModalBody"></div>
         </div>
-      </div>
-    `;
+    </div>
 
-    // Wait for fonts then generate PDF
-    document.fonts.ready.then(async () => {
-      const el = document.getElementById('cv-render');
-
-      const canvas = await html2canvas(el, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        onclone: (cloneDoc, cloneEl) => {
-          cloneEl.style.position = 'static';
-          cloneEl.style.left = 'auto';
-          cloneEl.style.top = 'auto';
-          cloneEl.style.width = '794px';
-          cloneDoc.body.style.overflow = 'visible';
-          cloneDoc.documentElement.style.overflow = 'visible';
-        }
-      });
-
-      const imgData = canvas.toDataURL('image/jpeg', 0.99);
-      const widthMM = 210;
-      const heightMM = (canvas.height / canvas.width) * widthMM;
-
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ unit: 'mm', format: [widthMM, heightMM], orientation: 'portrait' });
-      doc.setProperties({ title: `Erwin-cv-${lang.toUpperCase()}` });
-      doc.addImage(imgData, 'JPEG', 0, 0, widthMM, heightMM);
-
-      const blob = doc.output('blob');
-      const url = URL.createObjectURL(blob);
-
-      const frame = document.getElementById('pdf-frame');
-      frame.src = url;
-      frame.style.display = 'block';
-      document.getElementById('loader').style.display = 'none';
-      el.style.display = 'none';
-    });
-  </script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>if(location.protocol!=='file:'){var s=document.createElement('script');s.src='https://www.google.com/recaptcha/api.js';s.async=true;s.defer=true;document.head.appendChild(s);}</script>
+    <script src="js/app.js"></script>
+    <script src="js/effects.js"></script>
 </body>
 </html>

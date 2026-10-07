@@ -1,0 +1,1009 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iCSV — El editor de CSV más rápido para Mac</title>
+<meta name="description" content="iCSV abre, crea y edita CSV, TSV y PSV en macOS. Nativa, ultrarrápida y fiel byte a byte: nunca cambia tus datos.">
+<meta name="theme-color" content="#06110f">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@property --angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+
+:root {
+  --bg: #06110f;
+  --bg-2: #0a1a17;
+  --surface: rgba(255,255,255,.04);
+  --surface-2: rgba(255,255,255,.07);
+  --border: rgba(255,255,255,.09);
+  --text: #eef7f4;
+  --muted: #93aaa4;
+  --teal: #1c9e86;
+  --teal-2: #2fe0bd;
+  --orange: #ff9f00;
+  --orange-2: #ffc35c;
+  --red: #ff5d6c;
+  --radius: 22px;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: "Inter Tight", -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.55;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--orange); color: #111; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ---------- Ambient background ---------- */
+.ambient { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+.blob {
+  position: absolute; border-radius: 50%; filter: blur(90px); opacity: .55;
+  animation: float 22s ease-in-out infinite alternate;
+}
+.blob.b1 { width: 620px; height: 620px; background: radial-gradient(circle, var(--teal) 0%, transparent 70%); top: -180px; left: -120px; }
+.blob.b2 { width: 520px; height: 520px; background: radial-gradient(circle, var(--orange) 0%, transparent 70%); top: 30%; right: -200px; opacity: .28; animation-duration: 28s; }
+.blob.b3 { width: 700px; height: 700px; background: radial-gradient(circle, #0e6b5b 0%, transparent 70%); bottom: -300px; left: 25%; animation-duration: 34s; }
+@keyframes float {
+  0% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(80px,60px) scale(1.15); }
+  100% { transform: translate(-60px,120px) scale(.95); }
+}
+.gridbg {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+.noise {
+  position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+#particles { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+.cursor-glow {
+  position: fixed; width: 520px; height: 520px; border-radius: 50%; pointer-events: none; z-index: -1;
+  background: radial-gradient(circle, rgba(47,224,189,.13) 0%, transparent 60%);
+  transform: translate(-50%,-50%); transition: opacity .3s; left: -999px; top: -999px;
+}
+.progress {
+  position: fixed; top: 0; left: 0; height: 3px; z-index: 60; width: 0;
+  background: linear-gradient(90deg, var(--teal-2), var(--orange));
+  box-shadow: 0 0 14px var(--teal-2);
+}
+
+/* ---------- Layout ---------- */
+.wrap { width: min(1180px, 100% - 32px); margin-inline: auto; }
+section { padding: 120px 0; position: relative; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 600 13px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--teal-2);
+}
+.eyebrow::before { content: ""; width: 22px; height: 1px; background: currentColor; }
+h2.title {
+  font-size: clamp(36px, 5.4vw, 68px); line-height: 1.02; letter-spacing: -.035em; font-weight: 800;
+  margin: 18px 0 20px; max-width: 16ch;
+}
+.lead { color: var(--muted); font-size: clamp(17px, 1.6vw, 20px); max-width: 60ch; }
+.grad {
+  background: linear-gradient(100deg, var(--teal-2) 0%, #9ff5e1 35%, var(--orange-2) 70%, var(--orange) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shine 6s linear infinite;
+}
+@keyframes shine { to { background-position: 200% center; } }
+
+/* ---------- Nav ---------- */
+nav.top {
+  position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 50;
+  width: min(1180px, 100% - 24px);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 10px 10px 10px 18px; border-radius: 18px;
+  background: rgba(8,22,19,.55); border: 1px solid var(--border);
+  backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%);
+  transition: background .3s, box-shadow .3s;
+}
+nav.top.scrolled { background: rgba(8,22,19,.82); box-shadow: 0 10px 40px rgba(0,0,0,.35); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px; letter-spacing: -.02em; }
+.brand img { width: 30px; height: 30px; }
+.navlinks { display: flex; gap: 6px; }
+.navlinks a { padding: 8px 14px; border-radius: 10px; color: var(--muted); font-weight: 500; font-size: 15px; transition: color .2s, background .2s; }
+.navlinks a:hover { color: var(--text); background: var(--surface-2); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  --mx: 50%; --my: 50%;
+  position: relative; display: inline-flex; align-items: center; gap: 10px;
+  padding: 15px 26px; border-radius: 14px; font-weight: 700; font-size: 16px; cursor: pointer; border: 0;
+  transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .3s; isolation: isolate; overflow: hidden;
+  font-family: inherit;
+}
+.btn svg { width: 20px; height: 20px; flex: none; }
+.btn-primary {
+  color: #0b1512;
+  background: linear-gradient(135deg, var(--orange-2), var(--orange));
+  box-shadow: 0 10px 30px -8px rgba(255,159,0,.7), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.btn-primary::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(160px circle at var(--mx) var(--my), rgba(255,255,255,.55), transparent 60%);
+  opacity: 0; transition: opacity .3s;
+}
+.btn-primary:hover::after { opacity: 1; }
+.btn-primary:hover { box-shadow: 0 16px 44px -8px rgba(255,159,0,.85), inset 0 1px 0 rgba(255,255,255,.5); }
+.btn-ghost { color: var(--text); background: var(--surface-2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: rgba(255,255,255,.11); }
+.btn-sm { padding: 10px 16px; font-size: 14px; border-radius: 11px; }
+.ripple {
+  position: absolute; border-radius: 50%; transform: scale(0); pointer-events: none;
+  background: rgba(255,255,255,.6); animation: ripple .7s ease-out forwards;
+}
+@keyframes ripple { to { transform: scale(4); opacity: 0; } }
+
+/* ---------- Hero ---------- */
+.hero { padding: 170px 0 60px; text-align: center; }
+.badge {
+  display: inline-flex; align-items: center; gap: 10px; padding: 7px 14px 7px 8px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border); font-size: 14px; color: var(--muted);
+  position: relative;
+}
+.badge b { color: #0b1512; background: var(--teal-2); padding: 3px 9px; border-radius: 999px; font-size: 12px; }
+.badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal-2); box-shadow: 0 0 0 0 var(--teal-2); animation: pulse 2s infinite; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+.hero h1 {
+  font-size: clamp(46px, 8.6vw, 116px); line-height: .95; letter-spacing: -.05em; font-weight: 900;
+  margin: 26px auto 24px; max-width: 13ch;
+}
+.hero h1 .word { display: inline-block; opacity: 0; transform: translateY(40px) rotate(4deg); filter: blur(10px); animation: wordIn .9s cubic-bezier(.2,.8,.2,1) forwards; }
+@keyframes wordIn { to { opacity: 1; transform: none; filter: none; } }
+.hero .lead { margin: 0 auto; text-align: center; }
+.cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 38px; }
+.meta { margin-top: 20px; display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; color: var(--muted); font: 500 13px var(--mono); }
+.meta span { display: inline-flex; align-items: center; gap: 6px; }
+.meta span::before { content: "✓"; color: var(--teal-2); font-weight: 700; }
+
+.hero-icon {
+  width: 104px; height: 104px; margin: 0 auto 6px; filter: drop-shadow(0 20px 40px rgba(28,158,134,.5));
+  animation: bob 6s ease-in-out infinite;
+}
+@keyframes bob { 50% { transform: translateY(-10px) rotate(-3deg); } }
+
+/* ---------- App mockup ---------- */
+.stage { perspective: 1800px; margin-top: 80px; }
+.window {
+  position: relative; max-width: 1040px; margin: 0 auto; border-radius: 16px; text-align: left;
+  background: linear-gradient(180deg, #0f1f1c, #0b1715);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 60px 120px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(0,0,0,.4), 0 0 120px -20px rgba(47,224,189,.25);
+  transform: rotateX(18deg) scale(.94); transform-style: preserve-3d;
+  transition: transform .2s ease-out;
+  overflow: hidden;
+}
+.window::before {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: conic-gradient(from var(--angle), transparent 0 70%, var(--teal-2) 80%, var(--orange) 90%, transparent);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: spin 6s linear infinite;
+}
+@keyframes spin { to { --angle: 360deg; } }
+.titlebar { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.025); }
+.lights { display: flex; gap: 8px; }
+.lights i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+.lights i:nth-child(1) { background: #ff5f57; } .lights i:nth-child(2) { background: #febc2e; } .lights i:nth-child(3) { background: #28c840; }
+.titlebar .name { font-weight: 600; font-size: 14px; color: #cfe3de; display: flex; align-items: center; gap: 8px; }
+.titlebar .name small { color: var(--muted); font-weight: 500; }
+.titlebar .tools { margin-left: auto; display: flex; gap: 8px; }
+.titlebar .tools span { font: 500 12px var(--mono); padding: 5px 10px; border-radius: 7px; background: var(--surface-2); color: var(--muted); }
+.grid-wrap { position: relative; overflow: hidden; height: 400px; }
+table.grid { border-collapse: collapse; width: 100%; font: 400 13px var(--mono); table-layout: fixed; }
+.grid th, .grid td { padding: 0 12px; height: 30px; border-right: 1px solid rgba(255,255,255,.05); border-bottom: 1px solid rgba(255,255,255,.05); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.grid thead th { position: sticky; top: 0; background: #12423a; color: #dff7f1; font-weight: 700; text-align: left; height: 34px; z-index: 1; }
+.grid th.gut, .grid td.gut { width: 52px; text-align: right; color: #5f7a74; background: rgba(255,255,255,.02); }
+.grid thead th.gut { background: #0f3730; }
+.grid tbody tr:nth-child(even) td:not(.gut) { background: rgba(47,224,189,.025); }
+.grid td.num { text-align: right; color: #b9e9dd; }
+.grid td { color: #cfdcd9; position: relative; }
+.grid td.sel { outline: 2px solid var(--orange); outline-offset: -2px; background: rgba(255,159,0,.14) !important; color: #fff; }
+.grid td.flash { animation: flash 1s ease-out; }
+@keyframes flash { from { background: rgba(47,224,189,.35); } }
+.caret { display: inline-block; width: 2px; height: 14px; background: var(--orange); vertical-align: -2px; margin-left: 1px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.grid-fade { position: absolute; left: 0; right: 0; bottom: 0; height: 120px; background: linear-gradient(transparent, #0b1715); pointer-events: none; }
+.statusbar { display: flex; gap: 18px; flex-wrap: wrap; padding: 9px 16px; border-top: 1px solid var(--border); font: 500 12px var(--mono); color: var(--muted); background: rgba(255,255,255,.02); }
+.statusbar b { color: var(--teal-2); font-weight: 500; }
+.statusbar .right { margin-left: auto; }
+
+.floating-chip {
+  position: absolute; z-index: 3; padding: 10px 14px; border-radius: 14px; font: 600 13px var(--mono);
+  background: rgba(10,26,23,.85); border: 1px solid var(--border); backdrop-filter: blur(10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,.4); display: flex; align-items: center; gap: 8px;
+  animation: chip 7s ease-in-out infinite;
+}
+.floating-chip.c1 { top: 18%; left: -2%; color: var(--teal-2); }
+.floating-chip.c2 { bottom: 16%; right: -2%; color: var(--orange-2); animation-delay: -3s; }
+@keyframes chip { 50% { transform: translateY(-14px); } }
+.stage-rel { position: relative; max-width: 1100px; margin: 0 auto; }
+
+/* ---------- Marquee ---------- */
+.marquee { padding: 38px 0; border-block: 1px solid var(--border); overflow: hidden; background: rgba(255,255,255,.015); }
+.marquee .track { display: flex; gap: 46px; width: max-content; animation: marq 40s linear infinite; }
+.marquee:hover .track { animation-play-state: paused; }
+.marquee span { font: 700 clamp(20px, 2.6vw, 30px) var(--mono); color: #5d7a73; letter-spacing: -.02em; white-space: nowrap; transition: color .2s; }
+.marquee span:hover { color: var(--teal-2); }
+.marquee span.alt { color: transparent; -webkit-text-stroke: 1px #3d5e57; }
+@keyframes marq { to { transform: translateX(-50%); } }
+
+/* ---------- Stats ---------- */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.stat { background: var(--bg); padding: 38px 28px; position: relative; }
+.stat .n { font-size: clamp(38px, 4.4vw, 60px); font-weight: 900; letter-spacing: -.04em; line-height: 1; }
+.stat .n small { font-size: .45em; color: var(--muted); font-weight: 700; margin-left: 4px; letter-spacing: 0; }
+.stat p { color: var(--muted); margin-top: 10px; font-size: 15px; }
+
+/* ---------- Bento ---------- */
+.bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; margin-top: 60px; }
+.card {
+  --x: 50%; --y: 50%;
+  position: relative; border-radius: var(--radius); padding: 30px; overflow: hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
+  border: 1px solid var(--border);
+  transition: transform .4s cubic-bezier(.2,.8,.2,1), border-color .3s;
+}
+.card::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .4s;
+  background: radial-gradient(420px circle at var(--x) var(--y), rgba(47,224,189,.13), transparent 45%);
+}
+.card::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none; opacity: 0; transition: opacity .4s;
+  background: radial-gradient(300px circle at var(--x) var(--y), rgba(47,224,189,.8), transparent 50%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.bento:hover .card::after, .card:hover::before { opacity: 1; }
+.card:hover { transform: translateY(-4px); }
+.card h3 { font-size: 23px; letter-spacing: -.02em; margin: 18px 0 8px; font-weight: 800; }
+.card p { color: var(--muted); font-size: 15.5px; }
+.ico {
+  width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center;
+  background: linear-gradient(135deg, rgba(47,224,189,.22), rgba(47,224,189,.05)); border: 1px solid rgba(47,224,189,.3); color: var(--teal-2);
+}
+.ico.o { background: linear-gradient(135deg, rgba(255,159,0,.25), rgba(255,159,0,.05)); border-color: rgba(255,159,0,.35); color: var(--orange-2); }
+.ico svg { width: 22px; height: 22px; }
+.span-2 { grid-column: span 2; } .span-3 { grid-column: span 3; } .span-4 { grid-column: span 4; }
+.span-6 { grid-column: 1 / -1; }
+
+.speedo { margin-top: 26px; display: grid; gap: 14px; }
+.bar-row { display: grid; grid-template-columns: 120px 1fr 92px; align-items: center; gap: 12px; font: 500 13px var(--mono); color: var(--muted); }
+.bar { height: 10px; border-radius: 99px; background: rgba(255,255,255,.06); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--teal), var(--teal-2)); transition: width 1.8s cubic-bezier(.2,.8,.2,1); box-shadow: 0 0 18px rgba(47,224,189,.6); }
+.bar i.o { background: linear-gradient(90deg, #d98200, var(--orange-2)); box-shadow: 0 0 18px rgba(255,159,0,.6); }
+.bar i.dim { background: rgba(255,255,255,.22); box-shadow: none; }
+.bar-row b { color: var(--text); text-align: right; }
+
+.term {
+  margin-top: 22px; border-radius: 14px; background: #050c0b; border: 1px solid var(--border); padding: 16px 18px;
+  font: 13px/1.75 var(--mono); color: #a6c4bd; min-height: 196px;
+}
+.term .ok { color: var(--teal-2); } .term .k { color: var(--orange-2); } .term .c { color: #4f6b65; }
+
+.keys { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.kbd { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+.kbd kbd {
+  font: 600 14px var(--mono); color: var(--text); min-width: 38px; height: 38px; padding: 0 10px; border-radius: 9px;
+  display: inline-grid; place-items: center;
+  background: linear-gradient(180deg, #1d2d2a, #121e1c); border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 3px 0 #050b0a, inset 0 1px 0 rgba(255,255,255,.08);
+  transition: transform .1s, box-shadow .1s;
+}
+.kbd kbd.press { transform: translateY(3px); box-shadow: 0 0 0 #050b0a, 0 0 18px rgba(47,224,189,.5); color: var(--teal-2); }
+
+.undo-stack { margin-top: 22px; display: grid; gap: 8px; }
+.undo-stack div { font: 500 13px var(--mono); padding: 9px 12px; border-radius: 10px; background: rgba(255,255,255,.04); border: 1px solid var(--border); display: flex; justify-content: space-between; color: #b6cdc7; transition: opacity .4s, transform .4s; }
+.undo-stack div span { color: var(--muted); }
+.undo-stack div.gone { opacity: .25; transform: translateX(10px); text-decoration: line-through; }
+
+.pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.pill { font: 500 12.5px var(--mono); padding: 6px 11px; border-radius: 99px; background: rgba(255,255,255,.05); border: 1px solid var(--border); color: #b6cdc7; }
+
+/* ---------- Fidelity demo ---------- */
+.versus { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 56px; }
+.vs-card { border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; background: rgba(255,255,255,.025); }
+.vs-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); font-weight: 700; }
+.vs-head .tag { font: 600 12px var(--mono); padding: 5px 10px; border-radius: 99px; }
+.vs-card.bad .tag { background: rgba(255,93,108,.15); color: var(--red); }
+.vs-card.good { border-color: rgba(47,224,189,.4); box-shadow: 0 0 60px -20px rgba(47,224,189,.4); }
+.vs-card.good .tag { background: rgba(47,224,189,.15); color: var(--teal-2); }
+.vs-rows { padding: 8px 0; }
+.vs-row { display: grid; grid-template-columns: 1fr 1.3fr; gap: 12px; padding: 12px 20px; font: 14px var(--mono); border-bottom: 1px dashed rgba(255,255,255,.06); align-items: center; }
+.vs-row:last-child { border-bottom: 0; }
+.vs-row .lbl { color: var(--muted); font-family: var(--sans); font-size: 14px; }
+.vs-row .val { position: relative; transition: color .4s; }
+.bad .val.changed { color: var(--red); }
+.bad .val.changed::after { content: "⚠"; margin-left: 8px; font-size: 13px; }
+.good .val { color: #dffaf3; }
+.good .val::after { content: "✓"; margin-left: 8px; color: var(--teal-2); }
+.raw {
+  margin-top: 22px; padding: 16px 20px; border-radius: 14px; background: #050c0b; border: 1px solid var(--border);
+  font: 14px var(--mono); color: #a6c4bd; overflow-x: auto; white-space: nowrap;
+}
+.raw .sep { color: var(--orange); font-weight: 700; }
+.raw .c { color: #4f6b65; }
+
+/* ---------- Steps ---------- */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 56px; counter-reset: s; }
+.step { padding: 30px; border-radius: var(--radius); border: 1px solid var(--border); background: rgba(255,255,255,.025); position: relative; overflow: hidden; }
+.step::before {
+  counter-increment: s; content: "0" counter(s);
+  position: absolute; right: 18px; top: 6px; font: 900 92px/1 var(--sans); letter-spacing: -.06em;
+  color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,.1);
+}
+.step h3 { font-size: 22px; margin: 70px 0 8px; letter-spacing: -.02em; }
+.step p { color: var(--muted); }
+
+/* ---------- FAQ ---------- */
+.faq { margin-top: 50px; display: grid; gap: 12px; max-width: 860px; }
+.faq details { border: 1px solid var(--border); border-radius: 16px; background: rgba(255,255,255,.025); transition: background .3s, border-color .3s; }
+.faq details[open] { background: rgba(255,255,255,.05); border-color: rgba(47,224,189,.35); }
+.faq summary { list-style: none; cursor: pointer; padding: 20px 24px; font-weight: 700; font-size: 18px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font: 400 26px/1 var(--sans); color: var(--teal-2); transition: transform .3s; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { padding: 0 24px 22px; color: var(--muted); }
+.faq code { font-family: var(--mono); font-size: .9em; color: var(--orange-2); background: rgba(255,159,0,.1); padding: 1px 6px; border-radius: 6px; }
+
+/* ---------- Final CTA ---------- */
+.final { text-align: center; }
+.final-box {
+  position: relative; border-radius: 34px; padding: 90px 30px; overflow: hidden;
+  background:
+    radial-gradient(600px 300px at 50% 0%, rgba(47,224,189,.25), transparent 70%),
+    radial-gradient(500px 300px at 50% 110%, rgba(255,159,0,.2), transparent 70%),
+    linear-gradient(180deg, #0c201c, #081512);
+  border: 1px solid rgba(255,255,255,.1);
+}
+.final-box .ring {
+  position: absolute; left: 50%; top: 50%; border-radius: 50%; border: 1px solid rgba(47,224,189,.18);
+  transform: translate(-50%,-50%); animation: ring 6s linear infinite; pointer-events: none;
+}
+@keyframes ring { from { width: 120px; height: 120px; opacity: 1; } to { width: 1400px; height: 1400px; opacity: 0; } }
+.final-box img { width: 120px; margin: 0 auto 26px; filter: drop-shadow(0 20px 50px rgba(47,224,189,.45)); position: relative; }
+.final-box h2 { font-size: clamp(38px, 6vw, 80px); letter-spacing: -.045em; line-height: 1; font-weight: 900; position: relative; }
+.final-box .lead { margin: 18px auto 0; position: relative; }
+.final-box .cta-row { position: relative; }
+.checksum { margin-top: 26px; font: 12px var(--mono); color: #5f7a74; word-break: break-all; position: relative; cursor: pointer; transition: color .2s; }
+.checksum:hover { color: var(--teal-2); }
+.btn-big { padding: 20px 34px; font-size: 18px; border-radius: 16px; }
+
+footer { padding: 50px 0 60px; color: var(--muted); font-size: 14px; }
+footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; border-top: 1px solid var(--border); padding-top: 30px; }
+
+/* ---------- Reveal ---------- */
+.reveal { opacity: 0; transform: translateY(40px); filter: blur(6px); transition: opacity 1s cubic-bezier(.2,.8,.2,1), transform 1s cubic-bezier(.2,.8,.2,1), filter 1s; }
+.reveal.in { opacity: 1; transform: none; filter: none; }
+.d1 { transition-delay: .08s; } .d2 { transition-delay: .16s; } .d3 { transition-delay: .24s; } .d4 { transition-delay: .32s; }
+
+#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 90; }
+.toast {
+  position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 140%); z-index: 95;
+  padding: 14px 20px; border-radius: 14px; background: rgba(10,26,23,.92); border: 1px solid rgba(47,224,189,.4);
+  backdrop-filter: blur(14px); font-weight: 600; transition: transform .5s cubic-bezier(.2,.8,.2,1); max-width: calc(100% - 32px);
+}
+.toast.show { transform: translate(-50%, 0); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  .bento { grid-template-columns: 1fr 1fr; }
+  .span-2, .span-3, .span-4 { grid-column: span 2; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .versus, .steps { grid-template-columns: 1fr; }
+  .floating-chip { display: none; }
+  .navlinks { display: none; }
+}
+@media (max-width: 600px) {
+  section { padding: 80px 0; }
+  .hero { padding-top: 130px; }
+  .bento { grid-template-columns: 1fr; }
+  .span-2, .span-3, .span-4 { grid-column: span 1; }
+  .stats { grid-template-columns: 1fr; }
+  .grid-wrap { height: 300px; }
+  .grid .hide-sm { display: none; }
+  .titlebar .tools { display: none; }
+  .bar-row { grid-template-columns: 90px 1fr 70px; }
+  .vs-row { grid-template-columns: 1fr; gap: 2px; }
+  .btn { width: 100%; justify-content: center; }
+  .brand span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal, .hero h1 .word { opacity: 1; transform: none; filter: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="ambient"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="gridbg"></div>
+<canvas id="particles"></canvas>
+<div class="cursor-glow" id="glow"></div>
+<div class="noise"></div>
+<div class="progress" id="progress"></div>
+<canvas id="confetti"></canvas>
+<div class="toast" id="toast"></div>
+
+<nav class="top" id="nav">
+  <a href="#" class="brand"><img src="assets/icon.png" alt=""><span>iCSV</span></a>
+  <div class="navlinks">
+    <a href="#por-que">Por qué</a>
+    <a href="#fidelidad">Fidelidad</a>
+    <a href="#rendimiento">Rendimiento</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <a href="iCSV-1.0.dmg" download class="btn btn-primary btn-sm magnetic js-download">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16"/></svg>
+    Descargar
+  </a>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="wrap">
+    <img class="hero-icon" src="assets/icon.png" alt="Icono de iCSV">
+    <div class="badge"><b>v1.0</b><span class="dot"></span> Firmada y notarizada por Apple</div>
+    <h1 id="headline"><span class="word">Tus</span> <span class="word">CSV,</span> <span class="word grad">al</span> <span class="word grad">instante.</span></h1>
+    <p class="lead">iCSV es el editor de archivos delimitados para Mac que abre un gigabyte sin pestañear y guarda tus datos <strong>exactamente</strong> como estaban. Sin asistentes de importación. Sin ceros perdidos. Sin esperar.</p>
+    <div class="cta-row">
+      <a href="iCSV-1.0.dmg" download class="btn btn-primary magnetic js-download">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.47.83-.72 0-1.82-.81-3-.79-1.54.02-2.96.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.15.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.72 1.23-.02 2.01-1.12 2.76-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.4-.92-2.38-3.68ZM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.01.61-2.66 1.37-.58.67-1.09 1.76-.96 2.8 1.02.08 2.05-.51 2.68-1.28Z"/></svg>
+        Descargar para Mac
+      </a>
+      <a href="#por-que" class="btn btn-ghost magnetic">Descubre por qué →</a>
+    </div>
+    <div class="meta"><span>Gratis</span><span>2,5 MB</span><span>Apple Silicon + Intel</span><span>macOS 26 o posterior</span></div>
+
+    <div class="stage">
+      <div class="stage-rel">
+        <div class="floating-chip c1">⚡ 1,2 GB/s indexando</div>
+        <div class="floating-chip c2">✓ 0 bytes alterados</div>
+        <div class="window" id="win">
+          <div class="titlebar">
+            <div class="lights"><i></i><i></i><i></i></div>
+            <div class="name">ventas_2026.csv <small>— Editado</small></div>
+            <div class="tools"><span>⌘F Buscar</span><span>Formato ▾</span></div>
+          </div>
+          <div class="grid-wrap">
+            <table class="grid" id="grid">
+              <thead><tr><th class="gut"></th><th>id</th><th>cliente</th><th>ciudad</th><th class="hide-sm">código_postal</th><th>importe</th><th class="hide-sm">fecha</th></tr></thead>
+              <tbody></tbody>
+            </table>
+            <div class="grid-fade"></div>
+          </div>
+          <div class="statusbar">
+            <span>Codificación <b>UTF-8 + BOM</b></span>
+            <span>Separador <b>;</b></span>
+            <span>Fin de línea <b>CRLF</b></span>
+            <span class="right"><b id="rowcount">0</b> filas · 7 columnas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= MARQUEE ================= -->
+<div class="marquee" aria-hidden="true">
+  <div class="track" id="marquee"></div>
+</div>
+
+<!-- ================= STATS ================= -->
+<section style="padding-bottom: 40px;">
+  <div class="wrap">
+    <div class="stats reveal">
+      <div class="stat"><div class="n"><span class="count" data-to="1200">0</span><small>MB/s</small></div><p>de lectura en Apple Silicon. Un archivo de 100 MB se indexa en menos de una décima de segundo.</p></div>
+      <div class="stat"><div class="n"><span class="count" data-to="4">0</span><small>GB/s</small></div><p>de escritura por la ruta rápida de bytes crudos al guardar.</p></div>
+      <div class="stat"><div class="n"><span class="count" data-to="0">0</span><small>bytes</small></div><p>cambiados en lo que no tocas. Abrir y guardar produce un archivo idéntico.</p></div>
+      <div class="stat"><div class="n"><span class="count" data-to="0">0</span><small>dependencias</small></div><p>de terceros. 100 % Swift 6 y SwiftUI nativo, nada de Electron.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WHY / BENTO ================= -->
+<section id="por-que">
+  <div class="wrap">
+    <span class="eyebrow reveal">Por qué iCSV</span>
+    <h2 class="title reveal d1">Hecha para gente que <span class="grad">vive en datos.</span></h2>
+    <p class="lead reveal d2">Excel convierte tus datos. Los editores de texto no entienden columnas. Las apps web suben tus archivos a la nube. iCSV hace una sola cosa y la hace sin concesiones.</p>
+
+    <div class="bento" id="bento">
+      <article class="card span-4 reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h3>Rápida por diseño, no por casualidad</h3>
+        <p>El parser lee bytes, no texto: una sola pasada y cero memoria por celda. El grid solo dibuja lo que ves, así que 100 filas o 10 millones se sienten igual.</p>
+        <div class="speedo" id="speedo">
+          <div class="bar-row"><span>Lectura</span><div class="bar"><i data-w="100"></i></div><b>1 200 MB/s</b></div>
+          <div class="bar-row"><span>Objetivo</span><div class="bar"><i class="dim" data-w="33"></i></div><b>400 MB/s</b></div>
+          <div class="bar-row"><span>Escritura</span><div class="bar"><i class="o" data-w="100"></i></div><b>4 GB/s</b></div>
+        </div>
+      </article>
+
+      <article class="card span-2 reveal d1">
+        <div class="ico o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <h3>Fiel byte a byte</h3>
+        <p>Ceros a la izquierda, fechas, decimales, BOM, <code style="font-family:var(--mono);color:var(--orange-2)">sep=</code>, saltos de línea… lo que no editas se guarda idéntico. Siempre.</p>
+      </article>
+
+      <article class="card span-3 reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div>
+        <h3>Detecta todo, sin preguntar</h3>
+        <p>Codificación, separador, comillas, escape, fin de línea y encabezado. Si se equivoca, lo corriges en un clic.</p>
+        <div class="term" id="term"></div>
+      </article>
+
+      <article class="card span-3 reveal d1">
+        <div class="ico o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 15h10"/></svg></div>
+        <h3>Teclado primero, como una hoja de cálculo</h3>
+        <p>Escribe para reemplazar, ↩ para editar, ⇥ para avanzar. Flechas, selección con ⇧ y atajos para todo.</p>
+        <div class="keys" id="keys">
+          <span class="kbd"><kbd>↩</kbd>editar</span>
+          <span class="kbd"><kbd>⇥</kbd>siguiente</span>
+          <span class="kbd"><kbd>⌥</kbd><kbd>↩</kbd>salto de línea</span>
+          <span class="kbd"><kbd>⎋</kbd>cancelar</span>
+          <span class="kbd"><kbd>⌘</kbd><kbd>F</kbd>buscar</span>
+          <span class="kbd"><kbd>⌘</kbd><kbd>Z</kbd>deshacer</span>
+        </div>
+      </article>
+
+      <article class="card span-2 reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg></div>
+        <h3>Deshacer infinito</h3>
+        <p>Cada edición, fila, columna u ordenamiento se puede deshacer y rehacer, incluso sobre un millón de filas.</p>
+        <div class="undo-stack" id="undo">
+          <div>Ordenar «importe» <span>⌘Z</span></div>
+          <div>Insertar columna <span>⌘Z</span></div>
+          <div>Editar B12 <span>⌘Z</span></div>
+        </div>
+      </article>
+
+      <article class="card span-2 reveal d1">
+        <div class="ico o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+        <h3>Habla con Excel y Numbers</h3>
+        <p>Copia y pega rangos en ambos sentidos. Pegar fuera de la tabla la amplía sola. Guarda con el preset «Excel» y se abre perfecto.</p>
+      </article>
+
+      <article class="card span-2 reveal d2">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>Tus datos no salen de tu Mac</h3>
+        <p>Sin cuentas, sin nube, sin telemetría. App con sandbox, firmada con Developer ID y notarizada por Apple.</p>
+      </article>
+
+      <article class="card span-6 reveal">
+        <div class="ico o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
+        <h3>Todo lo que esperas de un editor serio</h3>
+        <p>Y nada que no necesites. Sin fórmulas, sin hojas múltiples, sin colores: solo tus datos, limpios y rápidos.</p>
+        <div class="pill-row">
+          <span class="pill">Buscar y reemplazar</span><span class="pill">Filtrar filas que coinciden</span><span class="pill">Ordenar texto o número</span>
+          <span class="pill">Números alineados a la derecha</span><span class="pill">Insertar / eliminar filas y columnas</span><span class="pill">Mover columnas</span>
+          <span class="pill">Autoajustar ancho</span><span class="pill">Encabezado en un clic</span><span class="pill">Celdas multilínea</span>
+          <span class="pill">Autoguardado y versiones</span><span class="pill">Modo tolerante con archivos rotos</span><span class="pill">Español e inglés</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FIDELITY ================= -->
+<section id="fidelidad">
+  <div class="wrap">
+    <span class="eyebrow reveal">Fidelidad</span>
+    <h2 class="title reveal d1">El mismo archivo. <span class="grad">Dos destinos.</span></h2>
+    <p class="lead reveal d2">Una sola fila de un CSV cualquiera. Mira qué pasa cuando la abres y la guardas sin tocar nada.</p>
+
+    <div class="raw reveal d2" id="raw"><span class="c">ventas.csv →</span> 00123<span class="sep">;</span>2026-03-04<span class="sep">;</span>1,50<span class="sep">;</span>+5215512345678<span class="sep">;</span>1E5<span class="sep">;</span>MARCH1</div>
+
+    <div class="versus">
+      <div class="vs-card bad reveal">
+        <div class="vs-head">Hoja de cálculo típica <span class="tag">datos alterados</span></div>
+        <div class="vs-rows" id="badrows"></div>
+      </div>
+      <div class="vs-card good reveal d1">
+        <div class="vs-head"><span style="display:flex;align-items:center;gap:10px"><img src="assets/icon.png" alt="" style="width:24px">iCSV</span> <span class="tag">idéntico</span></div>
+        <div class="vs-rows" id="goodrows"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PERFORMANCE ================= -->
+<section id="rendimiento">
+  <div class="wrap">
+    <span class="eyebrow reveal">Rendimiento</span>
+    <h2 class="title reveal d1">Presupuestos, <span class="grad">no promesas.</span></h2>
+    <p class="lead reveal d2">Cada ruta caliente se mide antes y después de cada cambio. Ninguna versión puede ser más de un 5 % más lenta que la anterior. Estos son los límites que la app tiene prohibido cruzar:</p>
+
+    <div class="bento" style="margin-top:50px">
+      <article class="card span-2 reveal"><div class="stat" style="background:none;padding:0"><div class="n">&lt;0,5<small>s</small></div><p>para abrir 100 MB (≈ 1 M filas × 20 columnas) y ver datos.</p></div></article>
+      <article class="card span-2 reveal d1"><div class="stat" style="background:none;padding:0"><div class="n">&lt;8<small>ms</small></div><p>para editar una celda. Menos que un frame a 120 Hz.</p></div></article>
+      <article class="card span-2 reveal d2"><div class="stat" style="background:none;padding:0"><div class="n">0<small>hitches</small></div><p>al hacer scroll en cualquier dirección, a 120 Hz.</p></div></article>
+      <article class="card span-2 reveal"><div class="stat" style="background:none;padding:0"><div class="n">&lt;1<small>s</small></div><p>para ordenar un millón de filas, sin bloquear la interfaz.</p></div></article>
+      <article class="card span-2 reveal d1"><div class="stat" style="background:none;padding:0"><div class="n">&lt;300<small>ms</small></div><p>para buscar en un archivo de 100 MB.</p></div></article>
+      <article class="card span-2 reveal d2"><div class="stat" style="background:none;padding:0"><div class="n">≈4<small>B/campo</small></div><p>de memoria extra: el índice guarda posiciones, no copias de texto.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STEPS ================= -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow reveal">Empieza en 30 segundos</span>
+    <h2 class="title reveal d1">Tres pasos. <span class="grad">Cero asistentes.</span></h2>
+    <div class="steps">
+      <div class="step reveal"><h3>Descarga</h3><p>Un DMG de 2,5 MB, firmado y notarizado. Universal para Apple Silicon e Intel.</p></div>
+      <div class="step reveal d1"><h3>Arrastra a Aplicaciones</h3><p>Como cualquier app de Mac. Sin instaladores, sin cuentas, sin permisos raros.</p></div>
+      <div class="step reveal d2"><h3>Abre cualquier CSV</h3><p>Doble clic, arrastrar al Dock o ⌘O. iCSV detecta el formato y te muestra la tabla al instante.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq">
+  <div class="wrap">
+    <span class="eyebrow reveal">Preguntas frecuentes</span>
+    <h2 class="title reveal d1">Lo que quizá te preguntas.</h2>
+    <div class="faq">
+      <details class="reveal"><summary>¿Qué formatos puedo abrir?</summary><p>CSV, TSV, PSV, DSV y en general cualquier texto delimitado: coma, punto y coma, tabulador, barra vertical, dos puntos, <code>^</code>, <code>~</code>, espacio o cualquier carácter ASCII. Entiende comillas dobles o simples, escapes estilo RFC 4180 (<code>""</code>) o MySQL (<code>\"</code>), y la línea <code>sep=</code> de Excel.</p></details>
+      <details class="reveal"><summary>¿Y las codificaciones raras de Windows?</summary><p>UTF-8 con o sin BOM, UTF-16 LE/BE (la exportación «Unicode» de Excel), UTF-32 con BOM, Windows-1252, ISO-8859-1 y Mac Roman se detectan automáticamente. Si necesitas otra, puedes reinterpretar el archivo desde el popover de formato.</p></details>
+      <details class="reveal"><summary>¿Qué pasa si el archivo está mal formado?</summary><p>iCSV nunca lo rechaza. Entra en modo tolerante: una comilla en medio de un campo se toma como literal, y si una comilla nunca se cierra se reinterpreta desde esa línea. Verás un aviso con el número de línea exacto.</p></details>
+      <details class="reveal"><summary>¿Cambia mis números o fechas como Excel?</summary><p>Jamás. Una celda es texto y se guarda tal cual. <code>00123</code> sigue siendo <code>00123</code>, <code>2026-03-04</code> no se convierte en otra fecha y <code>1E5</code> no se vuelve 100000. Lo que no editas sale byte a byte idéntico.</p></details>
+      <details class="reveal"><summary>¿Qué requisitos tiene?</summary><p>macOS 26 o posterior, en cualquier Mac con Apple Silicon o Intel. Ocupa unos pocos megas y no necesita conexión a internet.</p></details>
+      <details class="reveal"><summary>¿Por qué macOS dice que la descargué de internet?</summary><p>Es el aviso normal de Gatekeeper para cualquier app fuera del App Store. iCSV está firmada con Developer ID y notarizada por Apple, así que se abre sin advertencias de seguridad.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL CTA ================= -->
+<section class="final" id="descargar">
+  <div class="wrap">
+    <div class="final-box reveal">
+      <span class="ring"></span><span class="ring" style="animation-delay:-2s"></span><span class="ring" style="animation-delay:-4s"></span>
+      <img src="assets/icon.png" alt="">
+      <h2>Deja de esperar<br>a tus <span class="grad">datos.</span></h2>
+      <p class="lead">Descarga iCSV y abre ese archivo que tu hoja de cálculo no se atreve a abrir.</p>
+      <div class="cta-row">
+        <a href="iCSV-1.0.dmg" download class="btn btn-primary btn-big magnetic js-download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16"/></svg>
+          Descargar iCSV 1.0
+        </a>
+      </div>
+      <div class="meta"><span>iCSV-1.0.dmg · 2,5 MB</span><span>Universal</span><span>macOS 26+</span></div>
+      <div class="checksum" id="checksum" title="Copiar SHA-256">SHA-256 · 6714f1ae6f769ee33c43ade1a2b9c3e6ba693e8bf1a4dbbf1cc6b399529a3339</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a href="#" class="brand"><img src="assets/icon.png" alt="" style="width:24px;height:24px"> iCSV</a>
+    <span>© 2026 Erwin · Hecho en Swift con ❤️ para Mac</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  /* ---- Headline word stagger ---- */
+  $$("#headline .word").forEach((w, i) => w.style.animationDelay = (0.15 + i * 0.12) + "s");
+
+  /* ---- Nav + progress ---- */
+  const nav = $("#nav"), progress = $("#progress");
+  const onScroll = () => {
+    const h = document.documentElement;
+    progress.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+    nav.classList.toggle("scrolled", h.scrollTop > 20);
+  };
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+  /* ---- Cursor glow ---- */
+  const glow = $("#glow");
+  addEventListener("pointermove", e => { glow.style.left = e.clientX + "px"; glow.style.top = e.clientY + "px"; }, { passive: true });
+
+  /* ---- Particles: floating delimiters ---- */
+  const pc = $("#particles"), px = pc.getContext("2d");
+  const glyphs = [",", ";", "|", "⇥", "\"", ":"];
+  let parts = [], W, H;
+  const resize = () => {
+    W = pc.width = innerWidth * devicePixelRatio; H = pc.height = innerHeight * devicePixelRatio;
+    pc.style.width = innerWidth + "px"; pc.style.height = innerHeight + "px";
+    const n = Math.min(46, Math.floor(innerWidth / 30));
+    parts = Array.from({ length: n }, () => ({
+      x: Math.random() * W, y: Math.random() * H, s: (10 + Math.random() * 18) * devicePixelRatio,
+      v: (0.15 + Math.random() * 0.45) * devicePixelRatio, g: glyphs[Math.random() * glyphs.length | 0],
+      a: 0.05 + Math.random() * 0.12, r: Math.random() * 6.28, vr: (Math.random() - .5) * 0.01,
+      c: Math.random() < .25 ? "255,159,0" : "47,224,189"
+    }));
+  };
+  resize(); addEventListener("resize", resize);
+  const tick = () => {
+    px.clearRect(0, 0, W, H);
+    for (const p of parts) {
+      p.y -= p.v; p.r += p.vr; if (p.y < -40) { p.y = H + 40; p.x = Math.random() * W; }
+      px.save(); px.translate(p.x, p.y); px.rotate(p.r);
+      px.font = `700 ${p.s}px JetBrains Mono, monospace`; px.fillStyle = `rgba(${p.c},${p.a})`;
+      px.fillText(p.g, 0, 0); px.restore();
+    }
+    requestAnimationFrame(tick);
+  };
+  if (!reduce) tick();
+
+  /* ---- Window tilt ---- */
+  const win = $("#win");
+  const stage = $(".stage");
+  let baseTilt = 18;
+  const setTilt = (rx, ry, sc) => win.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(${sc})`;
+  const scrollTilt = () => {
+    const r = stage.getBoundingClientRect();
+    const t = Math.min(1, Math.max(0, 1 - (r.top - innerHeight * .25) / (innerHeight * .6)));
+    baseTilt = 18 * (1 - t);
+    setTilt(baseTilt, 0, .94 + .06 * t);
+  };
+  addEventListener("scroll", scrollTilt, { passive: true }); scrollTilt();
+  stage.addEventListener("pointermove", e => {
+    const r = win.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    setTilt(baseTilt - y * 6, x * 8, 1);
+  });
+  stage.addEventListener("pointerleave", scrollTilt);
+
+  /* ---- Live grid ---- */
+  const names = ["Ana López", "Carlos Ruiz", "Mariana Ortiz", "Diego Fernández", "Lucía Gómez", "Javier Torres", "Sofía Ramírez", "Pablo Díaz", "Valeria Cruz", "Andrés Molina", "Camila Rojas", "Emilio Vargas", "Renata Silva", "Tomás Herrera"];
+  const cities = ["Monterrey", "Madrid", "Bogotá", "CDMX", "Buenos Aires", "Lima", "Santiago", "Sevilla", "Guadalajara", "Quito", "Valencia", "Montevideo"];
+  const pad = n => String(n).padStart(5, "0");
+  const rnd = a => a[Math.random() * a.length | 0];
+  const tbody = $("#grid tbody");
+  let id = 1;
+  const mkRow = () => {
+    const tr = document.createElement("tr");
+    const d = new Date(2026, Math.random() * 12 | 0, 1 + (Math.random() * 28 | 0));
+    const cells = [
+      ["gut", id], ["num", pad(id)], ["", rnd(names)], ["", rnd(cities)],
+      ["hide-sm", pad(Math.random() * 99999 | 0)], ["num", (Math.random() * 9000 + 50).toFixed(2).replace(".", ",")],
+      ["hide-sm", d.toISOString().slice(0, 10)]
+    ];
+    tr.innerHTML = cells.map(([c, v]) => `<td class="${c}">${v}</td>`).join("");
+    id++; return tr;
+  };
+  for (let i = 0; i < 14; i++) tbody.appendChild(mkRow());
+
+  // Rapid row counter that mimics opening a big file.
+  const rc = $("#rowcount");
+  const target = 1048576; const t0 = performance.now();
+  const countUp = now => {
+    const p = Math.min(1, (now - t0) / 1600); const e = 1 - Math.pow(1 - p, 4);
+    rc.textContent = String(Math.round(target * e)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u2009");
+    if (p < 1) requestAnimationFrame(countUp);
+  };
+  requestAnimationFrame(countUp);
+
+  // Moving selection + typing into a cell.
+  let sel = { r: 2, c: 2 };
+  const cellAt = (r, c) => tbody.rows[r]?.cells[c];
+  const paint = () => { $$("td.sel", tbody).forEach(td => td.classList.remove("sel")); cellAt(sel.r, sel.c)?.classList.add("sel"); };
+  paint();
+  const visibleCols = () => innerWidth <= 600 ? [1, 2, 3, 5] : [1, 2, 3, 4, 5, 6];
+  const typeInto = async (td, text) => {
+    td.innerHTML = '<span class="caret"></span>';
+    for (const ch of text) {
+      await new Promise(r => setTimeout(r, 70 + Math.random() * 60));
+      td.innerHTML = td.textContent + ch + '<span class="caret"></span>';
+    }
+    await new Promise(r => setTimeout(r, 400));
+    td.textContent = text; td.classList.add("flash"); setTimeout(() => td.classList.remove("flash"), 1000);
+  };
+  const script = async () => {
+    while (true) {
+      for (let k = 0; k < 3; k++) {
+        await new Promise(r => setTimeout(r, 650));
+        const cols = visibleCols();
+        const ci = cols.indexOf(sel.c);
+        if (Math.random() < .5) sel.c = cols[Math.max(0, Math.min(cols.length - 1, ci + (Math.random() < .5 ? 1 : -1)))];
+        else sel.r = Math.max(0, Math.min(8, sel.r + (Math.random() < .5 ? 1 : -1)));
+        paint();
+      }
+      await new Promise(r => setTimeout(r, 500));
+      const td = cellAt(sel.r, sel.c);
+      const val = sel.c === 2 ? rnd(names) : sel.c === 3 ? rnd(cities) : sel.c === 5 ? (Math.random() * 9000).toFixed(2).replace(".", ",") : sel.c === 1 ? pad(Math.random() * 99999 | 0) : "2026-10-07";
+      if (td) await typeInto(td, val);
+      // Append a row as if pressing ↩ on the last one.
+      await new Promise(r => setTimeout(r, 500));
+      tbody.removeChild(tbody.rows[0]);
+      tbody.querySelectorAll("td.gut").forEach((g, i) => g.textContent = id - 13 + i);
+      const nr = mkRow(); tbody.appendChild(nr);
+      nr.querySelectorAll("td").forEach(td => td.classList.add("flash"));
+      paint();
+    }
+  };
+  if (!reduce) script();
+
+  /* ---- Marquee ---- */
+  const items = ["CSV", "TSV", "PSV", "UTF-8", "UTF-16 LE", "Windows-1252", "sep=;", "CRLF", "RFC 4180", "ISO-8859-1", "Mac Roman", "\\\"escape\\\"", "BOM", "DSV", "LF", "UTF-32", "CR"];
+  const track = $("#marquee");
+  const html = items.map((t, i) => `<span class="${i % 3 === 1 ? "alt" : ""}">${t}</span><span style="color:#ff9f00">✦</span>`).join("");
+  track.innerHTML = html + html;
+
+  /* ---- Reveal + one-shot triggers ---- */
+  const once = new Map();
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("in");
+    once.get(e.target)?.(); once.delete(e.target);
+    io.unobserve(e.target);
+  }), { threshold: .15, rootMargin: "0px 0px -40px 0px" });
+  $$(".reveal").forEach(el => io.observe(el));
+  const when = (el, fn) => { once.set(el, fn); io.observe(el); };
+
+  // Counters
+  when($(".stats"), () => $$(".count").forEach(el => {
+    const to = +el.dataset.to; const s = performance.now();
+    const f = now => {
+      const p = Math.min(1, (now - s) / 1800); const e = 1 - Math.pow(1 - p, 3);
+      el.textContent = String(Math.round(to * e)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u2009");
+      if (p < 1) requestAnimationFrame(f);
+    };
+    requestAnimationFrame(f);
+  }));
+
+  // Speed bars
+  when($("#speedo"), () => setTimeout(() => $$("#speedo i").forEach(i => i.style.width = i.dataset.w + "%"), 200));
+
+  // Terminal sniffer
+  const termLines = [
+    ['<span class="c">$ open</span> exportacion_excel.txt', 0],
+    ['Codificación &nbsp;<span class="k">UTF-16 LE</span> <span class="c">(BOM)</span> <span class="ok">✓</span>', 1],
+    ['Separador &nbsp;&nbsp;&nbsp;<span class="k">tabulador</span> <span class="ok">✓</span>', 1],
+    ['Comillas &nbsp;&nbsp;&nbsp;&nbsp;<span class="k">"</span> · escape <span class="k">""</span> <span class="ok">✓</span>', 1],
+    ['Fin de línea <span class="k">CRLF</span> <span class="ok">✓</span>', 1],
+    ['Encabezado &nbsp;&nbsp;<span class="k">sí</span> <span class="c">(fila 1)</span> <span class="ok">✓</span>', 1],
+    ['<span class="ok">→ 248 913 filas listas en 0,08 s</span>', 2]
+  ];
+  const term = $("#term");
+  const runTerm = async () => {
+    while (true) {
+      term.innerHTML = "";
+      for (const [l] of termLines) {
+        await new Promise(r => setTimeout(r, 420));
+        const d = document.createElement("div"); d.innerHTML = l;
+        d.style.opacity = 0; d.style.transform = "translateX(-6px)"; d.style.transition = "all .35s";
+        term.appendChild(d); requestAnimationFrame(() => { d.style.opacity = 1; d.style.transform = "none"; });
+      }
+      await new Promise(r => setTimeout(r, 4200));
+    }
+  };
+  when(term, () => reduce ? (term.innerHTML = termLines.map(l => `<div>${l[0]}</div>`).join("")) : runTerm());
+
+  // Keycaps pressing
+  const kbds = $$("#keys kbd");
+  when($("#keys"), () => !reduce && setInterval(() => {
+    const k = kbds[Math.random() * kbds.length | 0];
+    k.classList.add("press"); setTimeout(() => k.classList.remove("press"), 260);
+  }, 700));
+
+  // Undo stack
+  const undo = $$("#undo div");
+  when($("#undo"), () => {
+    if (reduce) return;
+    let i = 0, dir = 1;
+    setInterval(() => {
+      if (dir === 1) { undo[i].classList.add("gone"); i++; if (i === undo.length) { dir = -1; i--; } }
+      else { undo[i].classList.remove("gone"); i--; if (i < 0) { dir = 1; i = 0; } }
+    }, 1100);
+  });
+
+  /* ---- Fidelity demo ---- */
+  const fields = [
+    ["Código", "00123", "123"],
+    ["Fecha", "2026-03-04", "04/03/2026"],
+    ["Importe", "1,50", "1.5"],
+    ["Teléfono", "+5215512345678", "5.21551E+12"],
+    ["Referencia", "1E5", "100000"],
+    ["Gen", "MARCH1", "1-mar"]
+  ];
+  const badrows = $("#badrows"), goodrows = $("#goodrows");
+  fields.forEach(([l, ok]) => {
+    badrows.insertAdjacentHTML("beforeend", `<div class="vs-row"><span class="lbl">${l}</span><span class="val">${ok}</span></div>`);
+    goodrows.insertAdjacentHTML("beforeend", `<div class="vs-row"><span class="lbl">${l}</span><span class="val">${ok}</span></div>`);
+  });
+  const scramble = (el, to) => new Promise(res => {
+    const chars = "0123456789.,E+-/#";
+    let f = 0; const total = 16;
+    const it = setInterval(() => {
+      f++;
+      el.textContent = f < total ? Array.from({ length: Math.max(to.length, 3) }, () => chars[Math.random() * chars.length | 0]).join("") : to;
+      if (f >= total) { clearInterval(it); res(); }
+    }, 40);
+  });
+  when(badrows, async () => {
+    const vals = $$(".val", badrows);
+    for (let i = 0; i < vals.length; i++) {
+      await new Promise(r => setTimeout(r, reduce ? 0 : 350));
+      if (reduce) vals[i].textContent = fields[i][2]; else await scramble(vals[i], fields[i][2]);
+      vals[i].classList.add("changed");
+    }
+  });
+
+  /* ---- Card spotlight ---- */
+  $$(".card").forEach(c => c.addEventListener("pointermove", e => {
+    const r = c.getBoundingClientRect();
+    c.style.setProperty("--x", (e.clientX - r.left) + "px"); c.style.setProperty("--y", (e.clientY - r.top) + "px");
+  }));
+
+  /* ---- Magnetic buttons + highlight ---- */
+  $$(".magnetic").forEach(b => {
+    b.addEventListener("pointermove", e => {
+      const r = b.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      b.style.setProperty("--mx", x + "px"); b.style.setProperty("--my", y + "px");
+      if (!reduce) b.style.transform = `translate(${(x - r.width / 2) * .18}px, ${(y - r.height / 2) * .28}px)`;
+    });
+    b.addEventListener("pointerleave", () => b.style.transform = "");
+  });
+
+  /* ---- Download: ripple + confetti + toast ---- */
+  const toast = $("#toast");
+  const showToast = msg => { toast.textContent = msg; toast.classList.add("show"); clearTimeout(showToast.t); showToast.t = setTimeout(() => toast.classList.remove("show"), 3200); };
+  const cc = $("#confetti"), cx = cc.getContext("2d");
+  let bits = [];
+  const sizeConfetti = () => { cc.width = innerWidth * devicePixelRatio; cc.height = innerHeight * devicePixelRatio; cc.style.width = innerWidth + "px"; cc.style.height = innerHeight + "px"; };
+  sizeConfetti(); addEventListener("resize", sizeConfetti);
+  const burst = (x, y) => {
+    const colors = ["#2fe0bd", "#1c9e86", "#ff9f00", "#ffc35c", "#ffffff"];
+    const g = [",", ";", "|", "\""];
+    for (let i = 0; i < 90; i++) {
+      const a = Math.random() * Math.PI * 2, s = 4 + Math.random() * 9;
+      bits.push({ x: x * devicePixelRatio, y: y * devicePixelRatio, vx: Math.cos(a) * s * devicePixelRatio, vy: (Math.sin(a) * s - 6) * devicePixelRatio,
+        r: Math.random() * 6, vr: (Math.random() - .5) * .3, c: colors[i % colors.length], life: 1, glyph: Math.random() < .4 ? g[i % g.length] : null, w: (5 + Math.random() * 6) * devicePixelRatio });
+    }
+    if (bits.length === 90) requestAnimationFrame(confettiTick);
+  };
+  const confettiTick = () => {
+    cx.clearRect(0, 0, cc.width, cc.height);
+    bits = bits.filter(b => b.life > 0);
+    for (const b of bits) {
+      b.x += b.vx; b.y += b.vy; b.vy += .35 * devicePixelRatio; b.vx *= .985; b.r += b.vr; b.life -= .009;
+      cx.save(); cx.globalAlpha = Math.max(0, b.life); cx.translate(b.x, b.y); cx.rotate(b.r); cx.fillStyle = b.c;
+      if (b.glyph) { cx.font = `800 ${b.w * 2.4}px JetBrains Mono, monospace`; cx.fillText(b.glyph, 0, 0); }
+      else cx.fillRect(-b.w / 2, -b.w / 4, b.w, b.w / 2);
+      cx.restore();
+    }
+    if (bits.length) requestAnimationFrame(confettiTick); else cx.clearRect(0, 0, cc.width, cc.height);
+  };
+  $$(".js-download").forEach(b => b.addEventListener("click", e => {
+    const r = b.getBoundingClientRect();
+    const rip = document.createElement("span"); const d = Math.max(r.width, r.height);
+    rip.className = "ripple"; rip.style.width = rip.style.height = d + "px";
+    rip.style.left = (e.clientX - r.left - d / 2) + "px"; rip.style.top = (e.clientY - r.top - d / 2) + "px";
+    b.appendChild(rip); setTimeout(() => rip.remove(), 700);
+    if (!reduce) burst(e.clientX, e.clientY);
+    showToast("🎉 Descargando iCSV 1.0 — ábrelo y arrastra iCSV a Aplicaciones");
+  }));
+
+  /* ---- Copy checksum ---- */
+  $("#checksum").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText("6714f1ae6f769ee33c43ade1a2b9c3e6ba693e8bf1a4dbbf1cc6b399529a3339"); showToast("SHA-256 copiado al portapapeles"); }
+    catch { showToast("No se pudo copiar el SHA-256"); }
+  });
+})();
+</script>
+</body>
+</html>
