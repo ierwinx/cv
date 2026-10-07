@@ -11,7 +11,7 @@
         bio: `Software Engineer with over ${yearsExp}+ years of experience leading and developing software solutions in production environments. Strong focus on native mobile development, scalable architectures, and DevSecOps practices, with experience in AWS, server administration, and both relational and non-relational databases.`,
         available: "Available for projects",
         download: "View CV as PDF",
-        cvFile: "CV/?lang=en"
+        cvFile: "pdf/?lang=en"
       },
       info: {
         heading: "Information",
@@ -44,7 +44,7 @@
             description: "App for iPhone, iPad and Mac that helps pet owners keep track of their animals — storing health records, vaccination history, and more. Includes an Apple Watch companion, home screen widgets, and CarPlay support so your pets are always just a glance away.",
             tags: ["Swift", "SwiftUI"],
             emoji: "🐾",
-            url: "https://ierwinx.com/superpets/"
+            url: "/superpets/"
           },
           {
             name: "iRar",
@@ -52,7 +52,7 @@
             description: "Native macOS app to open, create and edit ZIP, RAR, 7z, TAR, GZIP, BZIP2, XZ and Zstandard archives, and modify JAR and AAR packages without extracting them. AES-256 passwords, split archives, CRC32 verification of every file, and everything processed locally on your Mac.",
             tags: ["Swift", "SwiftUI", "macOS"],
             emoji: "🗜️",
-            url: "https://ierwinx.com/irar/"
+            url: "/irar/"
           },
           {
             name: "iGit",
@@ -60,7 +60,7 @@
             description: "Git client for the terminal in the style of GitHub Desktop: native to macOS and written in Swift 6 with no dependencies. Pick files and individual lines to commit, sync with GitHub, and work with mouse or keyboard — with a safety net on every destructive action.",
             tags: ["Swift", "macOS", "Git", "CLI"],
             emoji: "⌨️",
-            url: "https://ierwinx.com/igit/"
+            url: "/igit/"
           },
           {
             name: "Banco Azteca",
@@ -100,7 +100,7 @@
             description: "Transforms FLAC, WAV, and AIFF files to high-quality AAC using Apple's native encoder. No external dependencies, fast and parallel.",
             tags: ["Swift", "macOS"],
             emoji: "🎵",
-            url: "https://ierwinx.com/musica/"
+            url: "/musica/"
           },
           {
             name: "Encuentro Católico",
@@ -124,7 +124,7 @@
             description: "Native macOS spectrum analyzer that reveals the truth about your music: drop in a file and find out whether that FLAC is really lossless or a disguised MP3. Metal-rendered spectrogram, automatic quality verdict with confidence level, library scanning with CSV export, 30+ formats, and a command-line tool.",
             tags: ["Swift", "Metal", "macOS"],
             emoji: "🎧",
-            url: "https://ierwinx.com/ispecter/"
+            url: "/ispecter/"
           },
           {
             name: "Python Course",
@@ -132,7 +132,7 @@
             description: "Free and complete Python course in Spanish: fundamentals, terminal applications, Tkinter GUIs, web development with Django, and REST APIs. 220 lessons with search and progress tracking.",
             tags: ["Python", "Django", "Tkinter"],
             emoji: "🐍",
-            url: "https://ierwinx.com/python/"
+            url: "/python/"
           }
         ]
       },
@@ -245,7 +245,7 @@
         bio: `Ingeniero de Software con más de ${yearsExp}+ años de experiencia liderando y desarrollando soluciones de software en entornos de producción. Especializado en desarrollo móvil nativo, arquitecturas escalables y prácticas DevSecOps, con experiencia en AWS, administración de servidores y bases de datos relacionales y no relacionales.`,
         available: "Disponible para proyectos",
         download: "Ver CV en PDF",
-        cvFile: "CV/?lang=es"
+        cvFile: "pdf/?lang=es"
       },
       info: {
         heading: "Información",
@@ -278,7 +278,7 @@
             description: "App para iPhone, iPad y Mac que ayuda a los dueños de mascotas a tener toda la información de sus animales en un solo lugar — historial de salud, vacunas y mucho más. Incluye companion para Apple Watch, widgets en pantalla de inicio y soporte para CarPlay.",
             tags: ["Swift", "SwiftUI"],
             emoji: "🐾",
-            url: "https://ierwinx.com/superpets/"
+            url: "/superpets/"
           },
           {
             name: "iRar",
@@ -286,7 +286,7 @@
             description: "App nativa para macOS que abre, crea y edita archivos ZIP, RAR, 7z, TAR, GZIP, BZIP2, XZ y Zstandard, y modifica paquetes JAR y AAR sin extraerlos. Contraseñas AES-256, archivos en partes, verificación CRC32 de cada archivo y todo procesado localmente en tu Mac.",
             tags: ["Swift", "SwiftUI", "macOS"],
             emoji: "🗜️",
-            url: "https://ierwinx.com/irar/"
+            url: "/irar/"
           },
           {
             name: "iGit",
@@ -294,7 +294,7 @@
             description: "Cliente de Git para la terminal al estilo de GitHub Desktop: nativo de macOS y escrito en Swift 6 sin dependencias. Elige archivos y líneas para hacer commit, sincroniza con GitHub y trabaja con ratón o teclado — con red de seguridad en cada acción destructiva.",
             tags: ["Swift", "macOS", "Git", "CLI"],
             emoji: "⌨️",
-            url: "https://ierwinx.com/igit/"
+            url: "/igit/"
           },
           {
             name: "Banco Azteca",
@@ -334,7 +334,7 @@
             description: "Transforma archivos FLAC, WAV y AIFF a AAC de alta calidad usando el encoder nativo de Apple. Sin dependencias externas, rápido y paralelo.",
             tags: ["Swift", "macOS"],
             emoji: "🎵",
-            url: "https://ierwinx.com/musica/"
+            url: "/musica/"
           },
           {
             name: "Encuentro Católico",
@@ -358,7 +358,7 @@
             description: "Analizador de espectro nativo para macOS que revela la verdad de tu música: arrastra un archivo y descubre si ese FLAC es realmente lossless o un MP3 disfrazado. Espectrograma renderizado en Metal, veredicto automático de calidad con nivel de confianza, análisis de bibliotecas completas con exportación a CSV, más de 30 formatos y herramienta de terminal.",
             tags: ["Swift", "Metal", "macOS"],
             emoji: "🎧",
-            url: "https://ierwinx.com/ispecter/"
+            url: "/ispecter/"
           },
           {
             name: "Curso de Python",
@@ -366,7 +366,7 @@
             description: "Curso completo y gratuito de Python en español: fundamentos, aplicaciones de terminal, interfaces gráficas con Tkinter, desarrollo web con Django y APIs REST. 220 lecciones con buscador y seguimiento de progreso.",
             tags: ["Python", "Django", "Tkinter"],
             emoji: "🐍",
-            url: "https://ierwinx.com/python/"
+            url: "/python/"
           }
         ]
       },

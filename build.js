@@ -23,22 +23,26 @@ function copyDir(src, dest) {
 if (fs.existsSync(distDir)) fs.rmSync(distDir, { recursive: true });
 copyDir(__dirname, distDir);
 
-// Minify JS files
-const jsDir = path.join(distDir, 'js');
-const jsFiles = fs.readdirSync(jsDir).filter(f => f.endsWith('.js'));
-for (const file of jsFiles) {
-  const filePath = path.join(jsDir, file);
-  execSync(`npx esbuild "${filePath}" --minify --outfile="${filePath}" --allow-overwrite`);
-  console.log(`Minified: js/${file}`);
-}
+// Minify JS and CSS for every site section that ships its own assets
+const minifyDirs = [
+  { js: 'cv/js', css: 'cv/css' },
+  { js: 'assets', css: 'assets' }
+];
 
-// Minify CSS files
-const cssDir = path.join(distDir, 'css');
-const cssFiles = fs.readdirSync(cssDir).filter(f => f.endsWith('.css'));
-for (const file of cssFiles) {
-  const filePath = path.join(cssDir, file);
-  execSync(`npx csso "${filePath}" --output "${filePath}"`);
-  console.log(`Minified: css/${file}`);
+for (const { js, css } of minifyDirs) {
+  const jsDir = path.join(distDir, js);
+  for (const file of fs.readdirSync(jsDir).filter(f => f.endsWith('.js'))) {
+    const filePath = path.join(jsDir, file);
+    execSync(`npx esbuild "${filePath}" --minify --outfile="${filePath}" --allow-overwrite`);
+    console.log(`Minified: ${js}/${file}`);
+  }
+
+  const cssDir = path.join(distDir, css);
+  for (const file of fs.readdirSync(cssDir).filter(f => f.endsWith('.css'))) {
+    const filePath = path.join(cssDir, file);
+    execSync(`npx csso "${filePath}" --output "${filePath}"`);
+    console.log(`Minified: ${css}/${file}`);
+  }
 }
 
 console.log('Build complete!');

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>og maker (temporal)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>body{background:#111;color:#fff;font:14px Inter}canvas{display:block;margin:10px 0;max-width:100%}</style>
+</head>
+<body>
+<div id="out">Generando…</div>
+<script>
+const W = 1200, H = 630;
+const PY = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path fill="#3776ab" d="M31.6 4c-14 0-13.1 6.1-13.1 6.1v6.3h13.3v1.9H13.2S4 17.2 4 31.7s8 14 8 14h4.8v-6.7s-.3-8 7.9-8h13.2s7.7.1 7.7-7.4V11.3S46.8 4 31.6 4zm-7.3 4.2a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8z"/><path fill="#ffd43b" d="M32.4 60c14 0 13.1-6.1 13.1-6.1v-6.3H32.2v-1.9h18.6S60 46.8 60 32.3s-8-14-8-14h-4.8v6.7s.3 8-7.9 8H26.1s-7.7-.1-7.7 7.4v12.3S17.2 60 32.4 60zm7.3-4.2a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"/></svg>`;
+const PY_URL = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(PY);
+
+const ICONS = {
+  iplist: '/iplist/icon.png', ijson: '/ijson/app-icon.png', icsv: '/icsv/assets/icon.png',
+  superpets: '/superpets/img/app-icon.png', irar: '/irar/assets/icono-256.png', igit: '/igit/favicon.svg',
+  ispecter: '/ispecter/assets/icon.png', iconverter: '/musica/assets/icon.png', python: PY_URL
+};
+
+const CARDS = [
+  { file: 'iplist.png',     icon: 'iplist',     c1: '#ff1f4b', c2: '#00e6b0', name: 'iPlist',     tag: ['Edita Plist.', 'Sin esperar. Sin perder nada.'], chips: ['macOS 27', 'Swift 6', 'Editor de Plist'], url: 'ierwinx.com/iplist' },
+  { file: 'ijson.png',      icon: 'ijson',      c1: '#7b5cf0', c2: '#c05cf0', name: 'iJson',      tag: ['Edita JSON', 'sin perder ni un byte.'], chips: ['macOS 27', 'Árbol y texto', '100 MB en 0,42 s'], url: 'ierwinx.com/ijson' },
+  { file: 'icsv.png',       icon: 'icsv',       c1: '#1a9e87', c2: '#ff9f0a', name: 'iCSV',       tag: ['El editor de CSV', 'más rápido para Mac.'], chips: ['macOS 26', '1,2 GB/s', 'Gratis'], url: 'ierwinx.com/icsv' },
+  { file: 'superpets.png',  icon: 'superpets',  c1: '#6a4cff', c2: '#ffc861', name: 'Super Pets', tag: ['Todo el cuidado de tus', 'mascotas en un solo lugar.'], chips: ['iPhone · iPad · Mac', 'Apple Watch · CarPlay', 'Gratis'], url: 'ierwinx.com/superpets', round: true },
+  { file: 'irar.png',       icon: 'irar',       c1: '#ffc93c', c2: '#ff9f1c', name: 'iRar',       tag: ['Todos tus archivos comprimidos,', 'nativos en tu Mac.'], chips: ['ZIP · RAR · 7z · ZSTD', 'macOS 26', 'Gratis'], url: 'ierwinx.com/irar' },
+  { file: 'igit.png',       icon: 'igit',       c1: '#7c5cff', c2: '#2ee6a6', name: 'iGit',       tag: ['GitHub Desktop,', 'en tu terminal.'], chips: ['macOS 15', 'Swift 6', 'Commits por línea'], url: 'ierwinx.com/igit' },
+  { file: 'ispecter.png',   icon: 'ispecter',   c1: '#ff7a1a', c2: '#b23cff', name: 'iSpecter',   tag: ['El tamaño del archivo miente.', 'El espectro, no.'], chips: ['Metal · 120 fps', 'macOS 26', 'Gratis'], url: 'ierwinx.com/ispecter' },
+  { file: 'iconverter.png', icon: 'iconverter', c1: '#4f8cff', c2: '#ec4899', name: 'iConverter', tag: ['FLAC, WAV y AIFF a AAC,', 'directo a Apple Music.'], chips: ['macOS 15', '320 kbps', 'Gratis'], url: 'ierwinx.com/musica' },
+  { file: 'python.png',     icon: 'python',     c1: '#3776ab', c2: '#ffd43b', name: 'Curso de Python', tag: ['De cero a apps de escritorio,', 'webs con Django y APIs REST.'], chips: ['220 lecciones', 'En español', 'Gratis'], url: 'ierwinx.com/python', small: true }
+];
+
+const load = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+
+function background(ctx, c1, c2) {
+  ctx.fillStyle = '#07070c';
+  ctx.fillRect(0, 0, W, H);
+  const glow = (x, y, r, color, a) => {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, color + a); g.addColorStop(1, color + '00');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  };
+  glow(260, 300, 520, c1, '66');
+  glow(1100, 80, 520, c2, '40');
+  glow(900, 640, 420, c1, '26');
+  // subtle grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.035)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 48) { ctx.beginPath(); ctx.moveTo(x + .5, 0); ctx.lineTo(x + .5, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 48) { ctx.beginPath(); ctx.moveTo(0, y + .5); ctx.lineTo(W, y + .5); ctx.stroke(); }
+  // vignette
+  const v = ctx.createRadialGradient(W / 2, H / 2, 200, W / 2, H / 2, 800);
+  v.addColorStop(0, 'rgba(7,7,12,0)'); v.addColorStop(1, 'rgba(7,7,12,0.75)');
+  ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+
+function brandMark(ctx, x, y, s) {
+  const g = ctx.createLinearGradient(x, y, x + s, y + s);
+  g.addColorStop(0, '#7c5cff'); g.addColorStop(.5, '#3fa9ff'); g.addColorStop(1, '#2ee6a6');
+  ctx.fillStyle = g; roundRect(ctx, x, y, s, s, s * 9 / 32); ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(x + s / 2, y + s * 9.5 / 32, s * 2.4 / 32, 0, Math.PI * 2); ctx.fill();
+  roundRect(ctx, x + s * 13.6 / 32, y + s * 13.5 / 32, s * 4.8 / 32, s * 11 / 32, s * 2.4 / 32); ctx.fill();
+}
+
+function chip(ctx, x, y, text, accent) {
+  ctx.font = '600 22px "JetBrains Mono"';
+  const w = ctx.measureText(text).width + 36;
+  roundRect(ctx, x, y, w, 46, 23);
+  ctx.fillStyle = accent ? accent + '33' : 'rgba(255,255,255,0.07)'; ctx.fill();
+  ctx.strokeStyle = accent ? accent + '88' : 'rgba(255,255,255,0.16)'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = accent ? '#fff' : '#d6d6e2';
+  ctx.fillText(text, x + 18, y + 31);
+  return w;
+}
+
+function brandRow(ctx, x, y) {
+  brandMark(ctx, x, y, 40);
+  ctx.font = '800 30px Inter'; ctx.fillStyle = '#fff';
+  ctx.fillText('ierwinx', x + 54, y + 30);
+}
+
+async function appCard(card) {
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  background(ctx, card.c1, card.c2);
+  const icon = await load(ICONS[card.icon]);
+  // icon with glow
+  const S = 300, ix = 90, iy = (H - S) / 2;
+  ctx.save();
+  ctx.shadowColor = card.c1; ctx.shadowBlur = 90;
+  if (card.round || card.icon === 'python') { roundRect(ctx, ix, iy, S, S, S * 0.23); ctx.clip(); }
+  if (card.icon === 'python') { ctx.fillStyle = '#12121c'; ctx.fillRect(ix, iy, S, S); ctx.drawImage(icon, ix + 45, iy + 45, S - 90, S - 90); }
+  else ctx.drawImage(icon, ix, iy, S, S);
+  ctx.restore();
+
+  const tx = 470;
+  brandRow(ctx, tx, 92);
+  ctx.fillStyle = '#fff';
+  ctx.font = `900 ${card.small ? 78 : 104}px Inter`;
+  ctx.letterSpacing = '-4px';
+  ctx.fillText(card.name, tx - 4, 260);
+  ctx.letterSpacing = '0px';
+  const g = ctx.createLinearGradient(tx, 0, tx + 640, 0);
+  g.addColorStop(0, card.c1 === '#3776ab' ? '#6fa8dc' : card.c1); g.addColorStop(1, card.c2);
+  ctx.font = '700 38px Inter';
+  ctx.fillStyle = '#e8e8f0'; ctx.fillText(card.tag[0], tx, 332);
+  ctx.fillStyle = g; ctx.fillText(card.tag[1], tx, 382);
+  let cx = tx;
+  card.chips.forEach((c, i) => { cx += chip(ctx, cx, 432, c, c === 'Gratis' ? '#2ee6a6' : null) + 12; });
+  ctx.font = '500 22px "JetBrains Mono"'; ctx.fillStyle = '#8a8aa0';
+  ctx.fillText(card.url, tx, 548);
+  return cv;
+}
+
+async function homeCard() {
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  background(ctx, '#7c5cff', '#2ee6a6');
+  brandRow(ctx, 80, 70);
+  ctx.fillStyle = '#fff'; ctx.font = '900 92px Inter'; ctx.letterSpacing = '-4px';
+  ctx.fillText('Software nativo,', 76, 230);
+  ctx.fillText('hecho con', 76, 326);
+  const g = ctx.createLinearGradient(520, 0, 960, 0);
+  g.addColorStop(0, '#7c5cff'); g.addColorStop(.5, '#3fa9ff'); g.addColorStop(1, '#2ee6a6');
+  ctx.fillStyle = g; ctx.fillText('obsesión.', 548, 326);
+  ctx.letterSpacing = '0px';
+  ctx.font = '600 28px Inter'; ctx.fillStyle = '#b5b5c8';
+  ctx.fillText('Apps para Mac, iPhone, iPad, Apple Watch, CarPlay y la terminal.', 80, 392);
+  const order = ['iplist', 'ijson', 'icsv', 'superpets', 'irar', 'igit', 'ispecter', 'iconverter'];
+  const S = 104, gap = 22;
+  let x = 80;
+  for (const k of order) {
+    const img = await load(ICONS[k]);
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 10;
+    if (k === 'superpets') { roundRect(ctx, x, 452, S, S, S * .23); ctx.clip(); }
+    ctx.drawImage(img, x, 452, S, S); ctx.restore();
+    x += S + gap;
+  }
+  ctx.font = '500 22px "JetBrains Mono"'; ctx.fillStyle = '#8a8aa0';
+  ctx.fillText('ierwinx.com', 1000, 92);
+  return cv;
+}
+
+function logo(size) {
+  const cv = document.createElement('canvas'); cv.width = cv.height = size;
+  brandMark(cv.getContext('2d'), 0, 0, size);
+  return cv;
+}
+
+async function send(cv, name) {
+  const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
+  await fetch('http://127.0.0.1:8766/?name=' + name, { method: 'POST', body: blob });
+  document.body.appendChild(cv);
+}
+
+(async () => {
+  await document.fonts.load('900 40px Inter'); await document.fonts.load('700 40px Inter');
+  await document.fonts.load('600 20px "JetBrains Mono"'); await document.fonts.ready;
+  const done = [];
+  await send(await homeCard(), 'home.png'); done.push('home.png');
+  for (const c of CARDS) { await send(await appCard(c), c.file); done.push(c.file); }
+  await send(logo(512), 'logo-512.png'); await send(logo(192), 'icon-192.png'); await send(logo(180), 'apple-touch-icon.png'); await send(logo(48), 'favicon-48.png');
+  document.getElementById('out').textContent = 'LISTO: ' + done.length;
+  window.__done = true;
+})().catch(e => { document.getElementById('out').textContent = 'ERROR ' + e; window.__err = String(e); });
+</script>
+</body>
+</html>

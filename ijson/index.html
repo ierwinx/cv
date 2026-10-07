@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" href="app-icon.png">
+<title>iJson para Mac</title>
+<meta name="description" content="iJson: editor de JSON nativo para macOS 27. Árbol y texto, archivos de 100 MB y tu formato original intacto.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: una sola columna ancha; el héroe es la propia app en vivo, luego una cuadrícula irregular de razones,
+   demos interactivas y un cierre de descarga. Oscuro primero; los colores de tipo vienen de NodeKind+Style. */
+:root {
+  --bg: #0b0912;
+  --bg-2: #13101d;
+  --surface: rgba(255,255,255,.045);
+  --surface-2: rgba(255,255,255,.08);
+  --line: rgba(196,181,253,.14);
+  --fg: #ece8f6;
+  --muted: #a39cb8;
+  --accent: #9b6bff;
+  --accent-2: #c56cf0;
+  --accent-ink: #ffffff;
+  --glow: rgba(155,107,255,.45);
+  /* colores por tipo de nodo, iguales a la app */
+  --k-object: #bf7bff;
+  --k-array: #8b8cff;
+  --k-string: #4ade80;
+  --k-number: #4aa8ff;
+  --k-bool: #ffa64d;
+  --k-null: #9a96a8;
+  --danger: #ff6b81;
+  --window: #15121f;
+  --window-bar: #1c1829;
+  --font-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --font-body: "Onest", -apple-system, "Helvetica Neue", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f5f3fa; --bg-2: #ebe7f5; --surface: rgba(255,255,255,.72); --surface-2: rgba(255,255,255,.95);
+    --line: rgba(76,52,140,.14); --fg: #18131f; --muted: #5f5873; --accent: #7442f0; --accent-2: #a23fd9;
+    --glow: rgba(116,66,240,.28); --k-object: #9333ea; --k-array: #4f46e5; --k-string: #15803d;
+    --k-number: #1d6fd8; --k-bool: #c2620a; --k-null: #6b6680; --danger: #d6284a; --window: #ffffff; --window-bar: #f1eef8;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f5f3fa; --bg-2: #ebe7f5; --surface: rgba(255,255,255,.72); --surface-2: rgba(255,255,255,.95);
+  --line: rgba(76,52,140,.14); --fg: #18131f; --muted: #5f5873; --accent: #7442f0; --accent-2: #a23fd9;
+  --glow: rgba(116,66,240,.28); --k-object: #9333ea; --k-array: #4f46e5; --k-string: #15803d;
+  --k-number: #1d6fd8; --k-bool: #c2620a; --k-null: #6b6680; --danger: #d6284a; --window: #ffffff; --window-bar: #f1eef8;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 400 1rem/1.6 var(--font-body);
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+a { color: inherit; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
+
+#field { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.aurora { position: fixed; inset: -20vmax; z-index: 0; pointer-events: none; filter: blur(80px); opacity: .55; }
+.aurora i { position: absolute; border-radius: 50%; animation: drift 22s ease-in-out infinite alternate; }
+.aurora i:nth-child(1) { width: 46vmax; height: 46vmax; left: 10%; top: 0; background: radial-gradient(circle, var(--glow), transparent 65%); }
+.aurora i:nth-child(2) { width: 38vmax; height: 38vmax; right: 5%; top: 18%; background: radial-gradient(circle, color-mix(in srgb, var(--k-number) 30%, transparent), transparent 65%); animation-duration: 28s; }
+.aurora i:nth-child(3) { width: 34vmax; height: 34vmax; left: 35%; top: 55%; background: radial-gradient(circle, color-mix(in srgb, var(--k-string) 20%, transparent), transparent 65%); animation-duration: 34s; }
+@keyframes drift { to { transform: translate3d(6vmax, 4vmax, 0) scale(1.15); } }
+
+.wrap { position: relative; z-index: 1; padding-inline: 20px; }
+.inner { max-width: 1180px; margin-inline: auto; }
+
+/* nav */
+.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  padding-block: 14px;
+  backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  border-bottom: 1px solid var(--line);
+}
+.nav .inner { display: flex; align-items: center; gap: 24px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 800 1.2rem var(--font-display); letter-spacing: -.02em; }
+.brand img { width: 30px; height: 30px; border-radius: 8px; }
+.nav-links { display: flex; gap: 22px; margin-left: auto; font-size: .92rem; color: var(--muted); }
+.nav-links a { text-decoration: none; transition: color .2s; }
+.nav-links a:hover { color: var(--fg); }
+.btn {
+  --mx: 0px; --my: 0px;
+  display: inline-flex; align-items: center; gap: 10px; border: 0; cursor: pointer;
+  font: 600 .95rem var(--font-body); text-decoration: none; border-radius: 999px;
+  padding: 12px 22px; transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s;
+  transform: translate(var(--mx), var(--my));
+}
+.btn-primary {
+  color: var(--accent-ink);
+  background: linear-gradient(120deg, var(--accent), var(--accent-2), var(--accent));
+  background-size: 200% 100%; animation: sheen 6s linear infinite;
+  box-shadow: 0 8px 30px -8px var(--glow), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.btn-primary:hover { box-shadow: 0 14px 44px -6px var(--glow), inset 0 1px 0 rgba(255,255,255,.3); }
+@keyframes sheen { to { background-position: -200% 0; } }
+.btn-ghost { color: var(--fg); background: var(--surface); border: 1px solid var(--line); }
+.btn-ghost:hover { background: var(--surface-2); }
+.btn small { font-weight: 400; opacity: .8; font-size: .8rem; }
+.nav .btn { padding: 9px 18px; font-size: .88rem; }
+@media (max-width: 760px) { .nav-links { display: none; } .nav .btn { margin-left: auto; } }
+
+/* hero */
+.hero { padding-block: clamp(48px, 9vw, 110px) 40px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(32px, 5vw, 64px); align-items: center; }
+@media (max-width: 960px) { .hero { grid-template-columns: minmax(0, 1fr); } }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px 6px 8px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface); font-size: .82rem; color: var(--muted);
+}
+.eyebrow b { font: 600 .72rem var(--font-mono); letter-spacing: .06em; color: var(--accent-ink); background: var(--accent); padding: 3px 8px; border-radius: 999px; }
+h1 {
+  font: 800 clamp(2.7rem, 6.4vw, 5.2rem)/0.98 var(--font-display); letter-spacing: -.045em;
+  margin: 22px 0 22px; text-wrap: balance;
+}
+h1 .brace { font-family: var(--font-mono); font-weight: 400; color: var(--accent); display: inline-block; animation: breathe 3.2s ease-in-out infinite; }
+h1 .brace:last-child { animation-delay: -1.6s; }
+@keyframes breathe { 50% { transform: translateY(-4px); text-shadow: 0 0 28px var(--glow); } }
+h1 .grad {
+  background: linear-gradient(100deg, var(--k-object), var(--k-number) 45%, var(--k-string) 80%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.lede { font-size: clamp(1.05rem, 1.6vw, 1.22rem); color: var(--muted); max-width: 34em; margin: 0 0 32px; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 26px; font-size: .85rem; color: var(--muted); padding: 0; list-style: none; }
+.facts li { display: flex; align-items: center; gap: 7px; }
+.facts li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--k-string); box-shadow: 0 0 10px var(--k-string); }
+
+/* app window */
+.stage { perspective: 1400px; min-width: 0; }
+.window {
+  --rx: 0deg; --ry: 0deg;
+  transform: rotateX(var(--rx)) rotateY(var(--ry)); transform-style: preserve-3d;
+  transition: transform .4s cubic-bezier(.2,.8,.2,1);
+  background: var(--window); border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+  box-shadow: 0 50px 100px -30px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.03), 0 0 80px -20px var(--glow);
+  position: relative;
+}
+.window::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  background: radial-gradient(500px circle at var(--gx, 50%) var(--gy, 0%), rgba(255,255,255,.07), transparent 40%);
+}
+.titlebar { display: flex; align-items: center; gap: 14px; padding: 11px 14px; background: var(--window-bar); border-bottom: 1px solid var(--line); }
+.lights { display: flex; gap: 7px; }
+.lights i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+.lights i:nth-child(2) { background: #febc2e; } .lights i:nth-child(3) { background: #28c840; }
+.doc-name { font-size: .82rem; color: var(--muted); font-weight: 500; }
+.seg { margin-left: auto; position: relative; display: flex; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 2px; }
+.seg button { position: relative; z-index: 1; border: 0; background: none; color: var(--muted); font: 500 .78rem var(--font-body); padding: 4px 12px; border-radius: 6px; cursor: pointer; transition: color .2s; }
+.seg button[aria-pressed="true"] { color: var(--fg); }
+.seg .pill { position: absolute; top: 2px; bottom: 2px; left: 2px; width: calc(50% - 2px); border-radius: 6px; background: var(--surface-2); box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .35s cubic-bezier(.3,1.4,.5,1); }
+.seg[data-mode="text"] .pill { transform: translateX(100%); }
+.pane { height: 340px; overflow: auto; font: 400 .8rem/1.75 var(--font-mono); }
+.rows { padding: 8px 0; }
+.row {
+  display: flex; align-items: center; gap: 8px; padding: 0 14px 0 calc(14px + var(--d) * 18px); cursor: default;
+  white-space: nowrap; animation: rowIn .35s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 28ms);
+}
+@keyframes rowIn { from { opacity: 0; transform: translateX(-8px); } }
+.row:hover { background: var(--surface); }
+.row[aria-selected="true"] { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.disc { width: 14px; height: 14px; display: grid; place-items: center; border: 0; background: none; color: var(--muted); cursor: pointer; padding: 0; transition: transform .2s; }
+.disc[aria-expanded="true"] { transform: rotate(90deg); }
+.disc.ph { visibility: hidden; }
+.badge { font: 600 .64rem var(--font-mono); padding: 1px 6px; border-radius: 5px; min-width: 32px; text-align: center; color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent); border: 1px solid color-mix(in srgb, var(--c) 30%, transparent); }
+.k-object { --c: var(--k-object); } .k-array { --c: var(--k-array); } .k-string { --c: var(--k-string); }
+.k-number { --c: var(--k-number); } .k-bool { --c: var(--k-bool); } .k-null { --c: var(--k-null); }
+.rkey { color: var(--fg); }
+.rval { color: var(--c); overflow: hidden; text-overflow: ellipsis; }
+.rval.meta { color: var(--muted); }
+.code { padding: 10px 0; counter-reset: ln; }
+.code .ln { display: block; padding: 0 14px 0 0; white-space: pre; animation: rowIn .3s both; animation-delay: calc(var(--i) * 22ms); }
+.code .ln::before { counter-increment: ln; content: counter(ln); display: inline-block; width: 3.2em; padding-right: 1em; text-align: right; color: color-mix(in srgb, var(--muted) 55%, transparent); }
+.t-key { color: var(--k-object); } .t-str { color: var(--k-string); } .t-num { color: var(--k-number); }
+.t-lit { color: var(--k-bool); } .t-null { color: var(--k-null); } .t-p { color: var(--muted); }
+.status { display: flex; gap: 16px; align-items: center; padding: 7px 14px; border-top: 1px solid var(--line); background: var(--window-bar); font: 400 .72rem var(--font-mono); color: var(--muted); overflow: hidden; white-space: nowrap; }
+.status .ok { color: var(--k-string); }
+.status .path { margin-left: auto; color: var(--fg); overflow: hidden; text-overflow: ellipsis; }
+.hint { margin-top: 14px; font-size: .8rem; color: var(--muted); text-align: center; }
+
+/* marquee */
+.marquee { position: relative; z-index: 1; border-block: 1px solid var(--line); padding-block: 18px; overflow: hidden; background: color-mix(in srgb, var(--bg-2) 60%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.track { display: flex; gap: 48px; width: max-content; animation: slide 40s linear infinite; font: 600 1.05rem var(--font-display); letter-spacing: -.01em; }
+.track span { display: inline-flex; align-items: center; gap: 12px; white-space: nowrap; color: var(--muted); }
+.track .badge { font-size: .7rem; }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+/* sections */
+section { padding-block: clamp(70px, 10vw, 130px) 0; }
+.kicker { font: 600 .74rem var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+h2 { font: 800 clamp(2rem, 4.4vw, 3.4rem)/1.02 var(--font-display); letter-spacing: -.04em; margin: 12px 0 16px; text-wrap: balance; max-width: 18em; }
+.sub { color: var(--muted); max-width: 40em; font-size: 1.08rem; margin: 0 0 44px; }
+
+.reveal { animation: reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+@keyframes reveal { from { opacity: .35; transform: translateY(28px) scale(.985); } }
+
+/* bento */
+.bento { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.card {
+  --mx: 50%; --my: 50%;
+  position: relative; padding: 28px; border-radius: 22px; background: var(--surface); border: 1px solid var(--line);
+  overflow: hidden; min-width: 0; display: flex; flex-direction: column; gap: 10px;
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .3s;
+}
+.card::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s;
+  background: radial-gradient(420px circle at var(--mx) var(--my), color-mix(in srgb, var(--accent) 18%, transparent), transparent 45%);
+}
+.card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+.card:hover::before { opacity: 1; }
+.card.wide { grid-column: span 2; }
+.card h3 { font: 700 1.35rem/1.15 var(--font-display); letter-spacing: -.02em; margin: 0; }
+.card p { margin: 0; color: var(--muted); max-width: 38em; }
+.card .viz { margin-top: auto; padding-top: 18px; font: 400 .82rem/1.7 var(--font-mono); }
+@media (max-width: 900px) { .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .bento { grid-template-columns: minmax(0, 1fr); } .card.wide { grid-column: auto; } }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font: 500 .75rem var(--font-mono); color: var(--muted); }
+.mini-modes { display: flex; gap: 10px; flex-wrap: wrap; }
+.mini-modes .m { flex: 1 1 200px; min-width: 0; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: color-mix(in srgb, var(--bg) 55%, transparent); }
+.squiggle { text-decoration: underline wavy var(--danger); text-underline-offset: 4px; }
+.err-pill { display: inline-block; margin-top: 8px; color: var(--danger); border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent); background: color-mix(in srgb, var(--danger) 10%, transparent); border-radius: 8px; padding: 4px 10px; }
+.undo { display: flex; gap: 6px; flex-wrap: wrap; }
+.undo span { padding: 4px 9px; border-radius: 8px; border: 1px dashed var(--line); }
+.undo span:last-child { border-style: solid; border-color: var(--accent); color: var(--fg); }
+
+/* fidelity */
+.lab { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 980px) { .lab { grid-template-columns: minmax(0, 1fr); } }
+.panel { border-radius: 18px; border: 1px solid var(--line); background: var(--window); overflow: hidden; min-width: 0; display: flex; flex-direction: column; }
+.panel-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--window-bar); font-size: .85rem; font-weight: 600; }
+.panel-head .chip { margin-left: auto; }
+.panel textarea { flex: 1; width: 100%; min-height: 300px; resize: vertical; border: 0; background: transparent; color: var(--fg); font: 400 .8rem/1.7 var(--font-mono); padding: 14px 16px; outline: none; }
+.panel pre { margin: 0; flex: 1; padding: 14px 16px; font: 400 .8rem/1.7 var(--font-mono); overflow: auto; min-height: 300px; max-height: 420px; white-space: pre; }
+.panel.bad { box-shadow: 0 0 0 1px color-mix(in srgb, var(--danger) 30%, transparent); }
+.panel.good { box-shadow: 0 0 0 1px color-mix(in srgb, var(--k-string) 30%, transparent), 0 20px 60px -30px color-mix(in srgb, var(--k-string) 40%, transparent); }
+.diff { background: color-mix(in srgb, var(--danger) 22%, transparent); outline: 1px solid color-mix(in srgb, var(--danger) 55%, transparent); border-radius: 3px; animation: pulse 2.4s ease-in-out infinite; }
+@keyframes pulse { 50% { background: color-mix(in srgb, var(--danger) 8%, transparent); } }
+.verdict { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); font-size: .8rem; }
+.verdict .chip.badc { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+.verdict .chip.goodc { color: var(--k-string); border-color: color-mix(in srgb, var(--k-string) 40%, transparent); }
+.mini-seg { display: flex; gap: 2px; margin-left: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 2px; }
+.mini-seg button { border: 0; background: none; color: var(--muted); font: 500 .74rem var(--font-body); padding: 3px 10px; border-radius: 6px; cursor: pointer; }
+.mini-seg button[aria-pressed="true"] { background: var(--surface-2); color: var(--fg); }
+.err-line { color: var(--danger); font: 500 .8rem var(--font-mono); }
+
+/* performance */
+.perf { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 900px) { .perf { grid-template-columns: minmax(0, 1fr); } }
+.bars { display: flex; flex-direction: column; gap: 22px; }
+.bar-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 14px; align-items: baseline; }
+.bar-row .lbl { font-weight: 500; }
+.bar-row .val { font: 600 1.05rem var(--font-mono); font-variant-numeric: tabular-nums; }
+.bar-row .val small { color: var(--muted); font-weight: 400; font-size: .75rem; margin-left: 4px; }
+.track-bar { grid-column: 1 / -1; height: 12px; border-radius: 999px; background: var(--surface-2); overflow: hidden; position: relative; }
+.fill { height: 100%; width: var(--w); border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--k-number)); box-shadow: 0 0 20px var(--glow); position: relative; }
+.fill::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent); animation: shimmer 2.6s ease-in-out infinite; transform: translateX(-100%); }
+@keyframes shimmer { to { transform: translateX(100%); } }
+.fill.grow { animation: grow 1.2s cubic-bezier(.2,.8,.2,1); }
+@keyframes grow { from { width: 0; } }
+.axis { display: flex; justify-content: space-between; font: 400 .7rem var(--font-mono); color: var(--muted); margin-top: -10px; }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.stat { padding: 22px; border-radius: 18px; border: 1px solid var(--line); background: var(--surface); min-width: 0; }
+.stat .num { font: 800 clamp(2rem, 4vw, 2.8rem)/1 var(--font-display); letter-spacing: -.04em; font-variant-numeric: tabular-nums; background: linear-gradient(120deg, var(--fg), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.stat .num small { font-size: .45em; letter-spacing: 0; }
+.stat p { margin: 8px 0 0; color: var(--muted); font-size: .88rem; }
+.note { font-size: .8rem; color: var(--muted); margin-top: 18px; }
+
+/* keys */
+.keys { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 900px) { .keys { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .keys { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.key { display: flex; flex-direction: column; gap: 12px; padding: 18px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); transition: transform .2s, border-color .2s; min-width: 0; }
+.key:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.caps { display: flex; gap: 5px; flex-wrap: wrap; }
+.cap { min-width: 34px; height: 34px; padding: 0 9px; display: grid; place-items: center; border-radius: 9px; font: 500 .95rem var(--font-body); background: linear-gradient(var(--surface-2), var(--surface)); border: 1px solid var(--line); box-shadow: 0 3px 0 0 var(--line); transition: transform .12s, box-shadow .12s; }
+.key:hover .cap { transform: translateY(2px); box-shadow: 0 1px 0 0 var(--line); }
+.key span { font-size: .92rem; color: var(--muted); }
+
+/* scope */
+.scope { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 800px) { .scope { grid-template-columns: minmax(0, 1fr); } }
+.scope ul { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.scope li { padding: 6px 12px; border-radius: 999px; font-size: .88rem; border: 1px solid var(--line); }
+.scope .yes li { color: var(--fg); background: color-mix(in srgb, var(--k-string) 10%, transparent); border-color: color-mix(in srgb, var(--k-string) 35%, transparent); }
+.scope .no li { color: var(--muted); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--danger) 70%, transparent); }
+
+/* download */
+.dl {
+  position: relative; overflow: hidden; border-radius: 32px; border: 1px solid var(--line);
+  padding: clamp(32px, 6vw, 72px); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: center;
+  background: radial-gradient(800px circle at 0% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 55%),
+              radial-gradient(700px circle at 100% 100%, color-mix(in srgb, var(--k-number) 16%, transparent), transparent 55%), var(--bg-2);
+}
+@media (max-width: 760px) { .dl { grid-template-columns: minmax(0, 1fr); } }
+.dl::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: conic-gradient(from var(--ang, 0deg), transparent 0 70%, var(--accent), var(--k-number), transparent); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: spin 6s linear infinite; pointer-events: none; }
+@property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes spin { to { --ang: 360deg; } }
+.app-icon { width: clamp(120px, 16vw, 190px); aspect-ratio: 1; max-width: 100%; border-radius: 22.5%; box-shadow: 0 30px 60px -20px rgba(0,0,0,.5), 0 0 80px -10px var(--glow); animation: float 6s ease-in-out infinite; }
+@keyframes float { 50% { transform: translateY(-12px) rotate(-2deg); } }
+.dl h2 { margin-top: 0; }
+.req { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; margin: 26px 0 30px; font-size: .9rem; }
+@media (max-width: 520px) { .req { grid-template-columns: minmax(0, 1fr); } }
+.req div { display: flex; flex-direction: column; border-top: 1px solid var(--line); padding-top: 10px; }
+.req dt { font: 600 .7rem var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.req dd { margin: 2px 0 0; font-weight: 500; }
+.steps { list-style: none; counter-reset: s; padding: 0; margin: 28px 0 0; display: flex; flex-wrap: wrap; gap: 10px 26px; font-size: .9rem; color: var(--muted); }
+.steps li { counter-increment: s; display: flex; align-items: center; gap: 8px; }
+.steps li::before { content: counter(s); width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line); font: 600 .72rem var(--font-mono); color: var(--fg); }
+
+footer { padding-block: 70px 40px; color: var(--muted); font-size: .85rem; }
+footer .inner { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 24px; }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 140%); z-index: 50; background: var(--fg); color: var(--bg); padding: 12px 18px; border-radius: 12px; font-size: .9rem; max-width: calc(100% - 32px); transition: transform .4s cubic-bezier(.3,1.4,.5,1); }
+.toast.show { transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .window { transform: none !important; }
+}
+</style>
+</head>
+<body>
+<canvas id="field" aria-hidden="true"></canvas>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<nav class="nav wrap">
+  <div class="inner">
+    <a class="brand" href="#top"><img src="app-icon.png" alt=""> iJson</a>
+    <div class="nav-links">
+      <a href="#por-que">Por qué</a>
+      <a href="#fidelidad">Fidelidad</a>
+      <a href="#rendimiento">Rendimiento</a>
+      <a href="#atajos">Atajos</a>
+    </div>
+    <a class="btn btn-primary magnetic" href="#descargar">Descargar</a>
+  </div>
+</nav>
+
+<main id="top">
+  <div class="wrap">
+    <div class="inner hero">
+      <div>
+        <span class="eyebrow"><b>v1.0</b> Nativo para macOS 27</span>
+        <h1><span class="brace">{</span> Edita JSON <span class="grad">sin perder ni un byte.</span> <span class="brace">}</span></h1>
+        <p class="lede">iJson abre, edita y exporta JSON en tu Mac. Cambia entre árbol y texto con una tecla, abre archivos de 100 MB en menos de medio segundo y guarda tu archivo tal como estaba.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary magnetic" href="#descargar" data-download>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 20h16"/></svg>
+            Descargar para Mac <small>.dmg · 2,4 MB</small>
+          </a>
+          <a class="btn btn-ghost" href="#fidelidad">Probar la demo</a>
+        </div>
+        <ul class="facts">
+          <li>Apple Silicon</li>
+          <li>Firmado y notarizado por Apple</li>
+          <li>Cero dependencias</li>
+        </ul>
+      </div>
+
+      <div class="stage">
+        <div class="window" id="win">
+          <div class="titlebar">
+            <div class="lights" aria-hidden="true"><i></i><i></i><i></i></div>
+            <span class="doc-name">pedido.json</span>
+            <div class="seg" id="seg" data-mode="tree" role="group" aria-label="Modo">
+              <span class="pill" aria-hidden="true"></span>
+              <button type="button" id="mode-tree" aria-pressed="true">Árbol ⌘1</button>
+              <button type="button" id="mode-text" aria-pressed="false">Texto ⌘2</button>
+            </div>
+          </div>
+          <div class="pane" id="pane" tabindex="0" aria-label="Vista previa del documento"></div>
+          <div class="status">
+            <span class="ok">● JSON válido</span>
+            <span id="st-size">—</span>
+            <span id="st-nodes">—</span>
+            <span class="path" id="st-path">$</span>
+          </div>
+        </div>
+        <p class="hint">Es interactivo: despliega nodos, selecciona filas y cambia de modo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="track" id="track"></div>
+  </div>
+
+  <section id="por-que" class="wrap">
+    <div class="inner">
+      <div class="kicker">Por qué iJson</div>
+      <h2 class="reveal">Hace una sola cosa, y la hace muy rápido.</h2>
+      <p class="sub reveal">Crear, abrir, editar y exportar JSON. Sin paneles que no usas, sin cuentas y sin un navegador escondido dentro de la app.</p>
+
+      <div class="bento">
+        <article class="card wide reveal">
+          <h3>Árbol y texto, el mismo documento</h3>
+          <p>Edita claves, valores y tipos en el árbol: inserta, duplica, mueve y pega nodos. O escribe a mano con colores de sintaxis. Cambias de vista con ⌘1 y ⌘2.</p>
+          <div class="viz mini-modes">
+            <div class="m"><span class="badge k-object">{ }</span> usuarios <span style="color:var(--muted)">→</span> <span class="badge k-string">abc</span> "Ana"</div>
+            <div class="m"><span class="t-key">"nombre"</span><span class="t-p">: </span><span class="t-str">"Ana"</span><span class="t-p">,</span></div>
+          </div>
+        </article>
+        <article class="card reveal">
+          <h3>Tu formato, intacto</h3>
+          <p>Si abres y guardas sin tocar el árbol, el archivo sale con los mismos bytes. El orden de las claves y números como <code>1.0</code> se quedan como están.</p>
+          <div class="viz"><span class="chip">1.0 → 1.0</span> <span class="chip">2⁶⁴ → 2⁶⁴</span></div>
+        </article>
+        <article class="card reveal">
+          <h3>Errores con dirección exacta</h3>
+          <p>Valida mientras escribes y te dice la línea y la columna. «Ir al error» te lleva allí.</p>
+          <div class="viz"><span class="t-key">"total"</span><span class="t-p">: </span><span class="t-num squiggle">12,5</span><br><span class="err-pill">Línea 4, columna 13</span></div>
+        </article>
+        <article class="card reveal">
+          <h3>Archivos grandes de verdad</h3>
+          <p>Abre 100 MB en unos 0,42 s y expande un nodo con un millón de hijos sin esperar. Aguanta 100 000 niveles de anidamiento.</p>
+          <div class="viz"><span class="chip">100 MB · 0,42 s</span></div>
+        </article>
+        <article class="card reveal">
+          <h3>Deshaz todo</h3>
+          <p>Cada edición guarda solo su paso inverso, así que deshacer cuesta lo mismo en un archivo de 1 KB que en uno de 100 MB.</p>
+          <div class="viz undo"><span>insertar</span><span>renombrar</span><span>⌘Z</span></div>
+        </article>
+        <article class="card wide reveal">
+          <h3>Una app de Mac de verdad</h3>
+          <p>Hecha con Swift 6 y SwiftUI, sin dependencias de terceros. Pestañas nativas, Revertir, Guardar como, búsqueda del sistema y modo oscuro, como cualquier app de macOS.</p>
+          <div class="viz" style="display:flex;gap:8px;flex-wrap:wrap"><span class="chip">Swift 6</span><span class="chip">SwiftUI</span><span class="chip">TextKit 2</span><span class="chip">Apple Silicon</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="fidelidad" class="wrap">
+    <div class="inner">
+      <div class="kicker">Fidelidad</div>
+      <h2 class="reveal">Otros editores reescriben tu JSON. iJson no.</h2>
+      <p class="sub reveal">La mayoría de herramientas pasan el JSON por <code>JSON.parse</code> o <code>JSONSerialization</code>. Eso redondea enteros grandes, convierte <code>120.50</code> en <code>120.5</code> y reordena claves. Edita el ejemplo y compara.</p>
+
+      <div class="lab">
+        <div class="panel">
+          <div class="panel-head">Tu JSON <span class="chip">editable</span></div>
+          <label for="src" style="position:absolute;left:-9999px">JSON de entrada</label>
+          <textarea id="src" spellcheck="false"></textarea>
+        </div>
+        <div class="panel bad">
+          <div class="panel-head">Parser típico <span class="chip">JSON.parse</span></div>
+          <pre id="out-generic"></pre>
+          <div class="verdict" id="v-generic"></div>
+        </div>
+        <div class="panel good">
+          <div class="panel-head">iJson
+            <div class="mini-seg" role="group" aria-label="Estilo">
+              <button type="button" id="st-pretty" aria-pressed="true">Bonito</button>
+              <button type="button" id="st-compact" aria-pressed="false">Compacto</button>
+            </div>
+          </div>
+          <pre id="out-ijson"></pre>
+          <div class="verdict" id="v-ijson"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rendimiento" class="wrap">
+    <div class="inner">
+      <div class="kicker">Rendimiento</div>
+      <h2 class="reveal">Medido, no prometido.</h2>
+      <p class="sub reveal">Cifras de <code>JSONBench</code>, el banco de pruebas del proyecto, en un Mac con Apple Silicon y build Release.</p>
+      <div class="perf">
+        <div class="card">
+          <h3>Rendimiento del núcleo</h3>
+          <div class="bars" style="margin-top:18px">
+            <div class="bar-row"><span class="lbl">Leer (parse)</span><span class="val"><span data-count="235">235</span><small>MB/s</small></span><div class="track-bar"><div class="fill" style="--w:58.75%"></div></div></div>
+            <div class="bar-row"><span class="lbl">Escribir compacto</span><span class="val"><span data-count="270">270</span><small>MB/s</small></span><div class="track-bar"><div class="fill" style="--w:67.5%"></div></div></div>
+            <div class="bar-row"><span class="lbl">Escribir bonito</span><span class="val"><span data-count="350">350</span><small>MB/s</small></span><div class="track-bar"><div class="fill" style="--w:87.5%"></div></div></div>
+            <div class="axis"><span>0</span><span>100</span><span>200</span><span>300</span><span>400 MB/s</span></div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="num"><span data-count="0.42" data-dec="2">0,42</span><small> s</small></div><p>Abrir un archivo de 100 MB</p></div>
+          <div class="stat"><div class="num"><span data-count="18">18</span><small> ms</small></div><p>Expandir un nodo con 1 millón de hijos</p></div>
+          <div class="stat"><div class="num"><span data-count="0.2" data-dec="1">0,2</span><small> ms</small></div><p>Editar un valor y ver el cambio</p></div>
+          <div class="stat"><div class="num"><span data-count="100000">100 000</span></div><p>Niveles de anidamiento sin que la app se caiga</p></div>
+        </div>
+      </div>
+      <p class="note">Una edición tarda bastante menos que un fotograma de pantalla (16 ms).</p>
+    </div>
+  </section>
+
+  <section id="atajos" class="wrap">
+    <div class="inner">
+      <div class="kicker">Teclado</div>
+      <h2 class="reveal">Todo a un atajo de distancia.</h2>
+      <p class="sub reveal">Están en el menú «JSON» y en el menú contextual de cada nodo.</p>
+      <div class="keys" id="keys"></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="inner">
+      <div class="kicker">Alcance</div>
+      <h2 class="reveal">Lo que deja fuera también es una ventaja.</h2>
+      <p class="sub reveal">Cada función que no está es una que no te estorba ni ralentiza la app.</p>
+      <div class="scope">
+        <div class="card yes"><h3>Hace</h3><ul>
+          <li>Abrir .json</li><li>Crear desde cero</li><li>Editar en árbol</li><li>Editar como texto</li><li>Validar en vivo</li><li>Embellecer</li><li>Compactar</li><li>Exportar bonito o compacto</li><li>Deshacer y rehacer</li><li>Copiar ruta del nodo</li>
+        </ul></div>
+        <div class="card no"><h3>No hace</h3><ul>
+          <li>JSON5 / comentarios</li><li>JSON Schema</li><li>JSONPath</li><li>Comparar archivos</li><li>Convertir a YAML / CSV</li><li>Descargar de la red</li><li>Plugins</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="descargar" class="wrap">
+    <div class="inner">
+      <div class="dl">
+        <img class="app-icon" src="app-icon.png" alt="Icono de iJson">
+        <div>
+          <div class="kicker">Descarga</div>
+          <h2>Lleva iJson a tu Mac.</h2>
+          <p class="sub" style="margin-bottom:0">Sin cuenta y sin instalador. Un .dmg firmado con Developer ID y notarizado por Apple.</p>
+          <dl class="req">
+            <div><dt>Versión</dt><dd>1.0</dd></div>
+            <div><dt>Tamaño</dt><dd>2,4 MB</dd></div>
+            <div><dt>Requiere</dt><dd>macOS 27 o posterior</dd></div>
+            <div><dt>Procesador</dt><dd>Apple Silicon</dd></div>
+          </dl>
+          <a class="btn btn-primary magnetic" href="#descargar" data-download style="font-size:1.05rem;padding:16px 28px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 20h16"/></svg>
+            Descargar iJson-1.0.dmg
+          </a>
+          <ol class="steps">
+            <li>Abre el .dmg</li>
+            <li>Arrastra iJson a Aplicaciones</li>
+            <li>Abre cualquier .json</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <div class="inner">
+    <span>iJson 1.0 · Editor de JSON para macOS</span>
+    <span>Hecho con Swift 6 y SwiftUI</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// Cambia esta URL por la del .dmg publicado (por ejemplo, un release de GitHub).
+const DOWNLOAD_URL = "iJson-1.0.dmg";
+
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+/* ---------- parser que conserva los lexemas, como el de la app ---------- */
+function parseJSON(src) {
+  let i = 0;
+  const fail = msg => {
+    const before = src.slice(0, i).split("\n");
+    const e = new Error(msg); e.line = before.length; e.col = before[before.length - 1].length + 1; throw e;
+  };
+  const ws = () => { while (i < src.length && " \t\n\r".includes(src[i])) i++; };
+  function str() {
+    const s = i++;
+    while (i < src.length && src[i] !== '"') {
+      if (src[i] === "\\") i++;
+      else if (src[i] < " ") fail("Carácter de control dentro de un texto");
+      i++;
+    }
+    if (i >= src.length) fail("Falta cerrar el texto con \"");
+    i++;
+    const raw = src.slice(s, i);
+    return { k: "string", raw, v: JSON.parse(raw) };
+  }
+  function val() {
+    ws();
+    const c = src[i];
+    if (c === "{") {
+      i++; const kids = []; ws();
+      if (src[i] === "}") { i++; return { k: "object", kids }; }
+      for (;;) {
+        ws(); if (src[i] !== '"') fail("Se esperaba una clave entre comillas");
+        const key = str().v; ws();
+        if (src[i] !== ":") fail("Se esperaban dos puntos después de la clave");
+        i++; kids.push({ key, node: val() }); ws();
+        if (src[i] === ",") { i++; continue; }
+        if (src[i] === "}") { i++; return { k: "object", kids }; }
+        fail("Se esperaba una coma o }");
+      }
+    }
+    if (c === "[") {
+      i++; const kids = []; ws();
+      if (src[i] === "]") { i++; return { k: "array", kids }; }
+      for (;;) {
+        kids.push({ key: null, node: val() }); ws();
+        if (src[i] === ",") { i++; continue; }
+        if (src[i] === "]") { i++; return { k: "array", kids }; }
+        fail("Se esperaba una coma o ]");
+      }
+    }
+    if (c === '"') return str();
+    const m = /^-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/.exec(src.slice(i, i + 400));
+    if (m && m[0]) { i += m[0].length; return { k: "number", raw: m[0] }; }
+    for (const [w, k] of [["true", "bool"], ["false", "bool"], ["null", "null"]])
+      if (src.startsWith(w, i)) { i += w.length; return { k, raw: w }; }
+    fail(i >= src.length ? "El documento termina antes de tiempo" : "Valor no válido");
+  }
+  const root = val(); ws();
+  if (i < src.length) fail("Hay contenido después del final del JSON");
+  return root;
+}
+
+function format(node, indent, html) {
+  const nl = indent ? "\n" : "", sp = indent ? " " : "";
+  const t = (cls, s) => html ? `<span class="${cls}">${esc(s)}</span>` : s;
+  function go(n, d) {
+    if (n.k === "object" || n.k === "array") {
+      const [o, c] = n.k === "object" ? ["{", "}"] : ["[", "]"];
+      if (!n.kids.length) return t("t-p", o + c);
+      const pad = indent.repeat(d + 1);
+      const parts = n.kids.map(({ key, node }) =>
+        pad + (key !== null ? t("t-key", JSON.stringify(key)) + t("t-p", ":" + sp) : "") + go(node, d + 1));
+      return t("t-p", o) + nl + parts.join(t("t-p", ",") + nl) + nl + indent.repeat(d) + t("t-p", c);
+    }
+    const cls = { string: "t-str", number: "t-num", bool: "t-lit", null: "t-null" }[n.k];
+    return t(cls, n.raw);
+  }
+  return go(node, 0);
+}
+
+/* ---------- ventana del héroe ---------- */
+const SAMPLE = `{
+  "pedido": "A-1042",
+  "cliente": { "nombre": "Ana Ruiz", "vip": true },
+  "total": 120.50,
+  "id_externo": 12345678901234567890,
+  "cupon": null,
+  "lineas": [
+    { "producto": "Café de Chiapas", "cantidad": 2 },
+    { "producto": "Pan de muerto", "cantidad": 1 }
+  ]
+}`;
+const heroTree = parseJSON(SAMPLE);
+const BADGE = { object: "{ }", array: "[ ]", string: "abc", number: "123", bool: "0|1", null: "∅" };
+const isIdent = k => /^[\p{L}_$][\p{L}\p{N}_$]*$/u.test(k);
+const expanded = new Set(["$", "$.cliente", "$.lineas", "$.lineas[0]"]);
+let selected = "$.cliente.nombre", mode = "tree", userTouched = false, animateRows = true;
+
+function flatten() {
+  const rows = [], stack = [{ node: heroTree, key: null, path: "$", d: 0 }];
+  while (stack.length) {
+    const r = stack.pop(); rows.push(r);
+    const n = r.node;
+    if ((n.k === "object" || n.k === "array") && expanded.has(r.path))
+      for (let j = n.kids.length - 1; j >= 0; j--) {
+        const { key, node } = n.kids[j];
+        const path = n.k === "array" ? `${r.path}[${j}]` : isIdent(key) ? `${r.path}.${key}` : `${r.path}["${key}"]`;
+        stack.push({ node, key: n.k === "array" ? String(j) : key, path, d: r.d + 1 });
+      }
+  }
+  return rows;
+}
+function countNodes(n) { let c = 0; const s = [n]; while (s.length) { const x = s.pop(); c++; if (x.kids) for (const k of x.kids) s.push(k.node); } return c; }
+
+const pane = $("#pane");
+function renderPane() {
+  const anim = animateRows && !reduce;
+  if (mode === "tree") {
+    pane.innerHTML = `<div class="rows" role="tree">` + flatten().map((r, idx) => {
+      const n = r.node, cont = n.k === "object" || n.k === "array";
+      const val = cont ? `<span class="rval meta">${n.k === "object" ? "{" + n.kids.length + "}" : "[" + n.kids.length + "]"}</span>`
+                       : `<span class="rval">${esc(n.raw)}</span>`;
+      const disc = cont ? `<button class="disc" data-toggle="${esc(r.path)}" aria-expanded="${expanded.has(r.path)}" aria-label="Desplegar"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>` : `<span class="disc ph"></span>`;
+      return `<div class="row k-${n.k}" role="treeitem" data-path="${esc(r.path)}" aria-selected="${r.path === selected}" style="--d:${r.d};--i:${anim ? idx : 0};${anim ? "" : "animation:none"}">${disc}<span class="badge">${BADGE[n.k]}</span><span class="rkey">${r.key === null ? "raíz" : esc(r.key)}</span>${val}</div>`;
+    }).join("") + `</div>`;
+  } else {
+    const lines = format(heroTree, "  ", true).split("\n");
+    pane.innerHTML = `<div class="code">` + lines.map((l, idx) => `<span class="ln" style="--i:${anim ? idx : 0};${anim ? "" : "animation:none"}">${l}</span>`).join("") + `</div>`;
+  }
+  $("#st-path").textContent = mode === "tree" ? selected : "Línea 1, columna 1";
+}
+function setMode(m) {
+  mode = m; animateRows = true;
+  $("#seg").dataset.mode = m;
+  $("#mode-tree").setAttribute("aria-pressed", m === "tree");
+  $("#mode-text").setAttribute("aria-pressed", m === "text");
+  renderPane();
+}
+$("#mode-tree").onclick = () => { userTouched = true; setMode("tree"); };
+$("#mode-text").onclick = () => { userTouched = true; setMode("text"); };
+pane.addEventListener("click", e => {
+  userTouched = true; animateRows = false;
+  const t = e.target.closest("[data-toggle]");
+  if (t) { const p = t.dataset.toggle; expanded.has(p) ? expanded.delete(p) : expanded.add(p); animateRows = true; renderPane(); return; }
+  const row = e.target.closest(".row");
+  if (row) { selected = row.dataset.path; renderPane(); }
+});
+$("#st-size").textContent = new Blob([SAMPLE]).size + " bytes";
+$("#st-nodes").textContent = countNodes(heroTree) + " nodos";
+renderPane();
+if (!reduce) setInterval(() => { if (!userTouched) setMode(mode === "tree" ? "text" : "tree"); }, 4200);
+
+/* inclinación 3D de la ventana */
+const win = $("#win");
+if (!reduce && matchMedia("(pointer: fine)").matches) {
+  win.parentElement.addEventListener("pointermove", e => {
+    const b = win.getBoundingClientRect();
+    const x = (e.clientX - b.left) / b.width, y = (e.clientY - b.top) / b.height;
+    win.style.setProperty("--ry", (x - .5) * 10 + "deg");
+    win.style.setProperty("--rx", (.5 - y) * 8 + "deg");
+    win.style.setProperty("--gx", x * 100 + "%");
+    win.style.setProperty("--gy", y * 100 + "%");
+  });
+  win.parentElement.addEventListener("pointerleave", () => { win.style.setProperty("--ry", "0deg"); win.style.setProperty("--rx", "0deg"); });
+}
+
+/* ---------- marquesina ---------- */
+const items = [["object", "Objetos"], ["array", "Arreglos"], ["string", "Textos"], ["number", "Números exactos"], ["bool", "Booleanos"], ["null", "Nulos"],
+  ["object", "Árbol ⌘1"], ["string", "Texto ⌘2"], ["number", "100 MB en 0,42 s"], ["array", "Deshacer sin límite"], ["bool", "Validación en vivo"], ["null", "Cero dependencias"]];
+const strip = items.map(([k, l]) => `<span><span class="badge k-${k}">${BADGE[k]}</span>${l}</span>`).join("");
+$("#track").innerHTML = strip + strip;
+
+/* ---------- laboratorio de fidelidad ---------- */
+const LAB = `{
+  "pedido": "A-1042",
+  "total": 120.50,
+  "descuento": 0.0,
+  "id_externo": 12345678901234567890,
+  "distancia_m": 1e4,
+  "lineas": {
+    "3": "café",
+    "10": "pan",
+    "1": "leche"
+  }
+}`;
+const src = $("#src"); src.value = LAB;
+let labIndent = "  ";
+
+function genericOutput(tree, value) {
+  // Recorre el valor que devuelve JSON.parse y marca lo que ya no coincide con el original.
+  let numbers = 0, moved = 0;
+  const lookup = (n, key) => n && n.k === "object" ? [...n.kids].reverse().find(k => k.key === key)?.node : n?.kids?.[key]?.node;
+  function go(v, n, d) {
+    const pad = "  ".repeat(d + 1), end = "  ".repeat(d);
+    if (Array.isArray(v)) {
+      if (!v.length) return `<span class="t-p">[]</span>`;
+      return `<span class="t-p">[</span>\n` + v.map((x, j) => pad + go(x, lookup(n, j), d + 1)).join(`<span class="t-p">,</span>\n`) + `\n${end}<span class="t-p">]</span>`;
+    }
+    if (v && typeof v === "object") {
+      const keys = Object.keys(v);
+      if (!keys.length) return `<span class="t-p">{}</span>`;
+      const orig = n && n.k === "object" ? [...new Set(n.kids.map(k => k.key))] : keys;
+      return `<span class="t-p">{</span>\n` + keys.map((k, j) => {
+        const wasMoved = orig[j] !== k; if (wasMoved) moved++;
+        const kh = `<span class="t-key${wasMoved ? " diff" : ""}">${esc(JSON.stringify(k))}</span>`;
+        return pad + kh + `<span class="t-p">: </span>` + go(v[k], lookup(n, k), d + 1);
+      }).join(`<span class="t-p">,</span>\n`) + `\n${end}<span class="t-p">}</span>`;
+    }
+    if (typeof v === "number") {
+      const out = JSON.stringify(v), changed = n && n.k === "number" && n.raw !== out;
+      if (changed) numbers++;
+      return `<span class="t-num${changed ? " diff" : ""}">${out}</span>`;
+    }
+    if (typeof v === "string") return `<span class="t-str">${esc(JSON.stringify(v))}</span>`;
+    return `<span class="${v === null ? "t-null" : "t-lit"}">${v}</span>`;
+  }
+  const html = go(value, tree, 0);
+  let dupes = 0; const s = [tree];
+  while (s.length) { const x = s.pop(); if (x.kids) { if (x.k === "object") dupes += x.kids.length - new Set(x.kids.map(k => k.key)).size; for (const k of x.kids) s.push(k.node); } }
+  return { html, numbers, moved, dupes };
+}
+
+function renderLab() {
+  const text = src.value;
+  let tree;
+  try { tree = parseJSON(text); }
+  catch (e) {
+    $("#out-ijson").innerHTML = `<span class="err-line">Línea ${e.line}, columna ${e.col}\n${esc(e.message)}</span>`;
+    $("#v-ijson").innerHTML = `<span class="chip badc">JSON no válido</span>`;
+    $("#out-generic").innerHTML = `<span class="err-line">SyntaxError</span>`;
+    $("#v-generic").innerHTML = `<span class="chip">Sin línea ni columna útiles</span>`;
+    return;
+  }
+  $("#out-ijson").innerHTML = format(tree, labIndent, true);
+  $("#v-ijson").innerHTML = `<span class="chip goodc">✓ Números y orden conservados</span>`;
+  const g = genericOutput(tree, JSON.parse(text));
+  $("#out-generic").innerHTML = g.html;
+  const chips = [];
+  if (g.numbers) chips.push(`${g.numbers} ${g.numbers === 1 ? "número reescrito" : "números reescritos"}`);
+  if (g.moved) chips.push(`${g.moved} ${g.moved === 1 ? "clave movida" : "claves movidas"}`);
+  if (g.dupes) chips.push(`${g.dupes} ${g.dupes === 1 ? "clave duplicada perdida" : "claves duplicadas perdidas"}`);
+  $("#v-generic").innerHTML = chips.length ? chips.map(c => `<span class="chip badc">✕ ${c}</span>`).join("") : `<span class="chip">Sin diferencias con este ejemplo</span>`;
+}
+let labTimer; src.addEventListener("input", () => { clearTimeout(labTimer); labTimer = setTimeout(renderLab, 150); });
+for (const [id, ind] of [["#st-pretty", "  "], ["#st-compact", ""]])
+  $(id).onclick = () => { labIndent = ind; $("#st-pretty").setAttribute("aria-pressed", ind !== ""); $("#st-compact").setAttribute("aria-pressed", ind === ""); renderLab(); };
+renderLab();
+
+/* ---------- atajos ---------- */
+const KEYS = [[["⌘", "1"], "Ver como árbol"], [["⌘", "2"], "Ver como texto"], [["⌥", "⌘", "B"], "Embellecer"], [["⌥", "⌘", "M"], "Compactar"],
+  [["⌘", "↩"], "Insertar debajo"], [["⇧", "⌘", "↩"], "Insertar hijo"], [["⌘", "D"], "Duplicar"], [["⌥", "⌘", "↑"], "Mover arriba"],
+  [["⇧", "⌘", "C"], "Copiar ruta"], [["⇧", "⌘", "V"], "Pegar JSON como nodo"], [["⌘", "L"], "Ir a línea"], [["⇧", "⌘", "E"], "Exportar bonito"]];
+$("#keys").innerHTML = KEYS.map(([caps, l]) => `<div class="key"><div class="caps">${caps.map(c => `<kbd class="cap">${c}</kbd>`).join("")}</div><span>${l}</span></div>`).join("");
+
+/* ---------- tarjetas con foco de luz y botones magnéticos ---------- */
+document.querySelectorAll(".card").forEach(c => c.addEventListener("pointermove", e => {
+  const b = c.getBoundingClientRect();
+  c.style.setProperty("--mx", e.clientX - b.left + "px"); c.style.setProperty("--my", e.clientY - b.top + "px");
+}));
+if (!reduce && matchMedia("(pointer: fine)").matches)
+  document.querySelectorAll(".magnetic").forEach(b => {
+    b.addEventListener("pointermove", e => {
+      const r = b.getBoundingClientRect();
+      b.style.setProperty("--mx", (e.clientX - r.left - r.width / 2) * .25 + "px");
+      b.style.setProperty("--my", (e.clientY - r.top - r.height / 2) * .35 + "px");
+    });
+    b.addEventListener("pointerleave", () => { b.style.setProperty("--mx", "0px"); b.style.setProperty("--my", "0px"); });
+  });
+
+/* ---------- contadores y barras: el valor final ya está a la vista; al entrar en pantalla se reanima ---------- */
+const fmtNum = (v, dec) => v.toLocaleString("es-MX", { minimumFractionDigits: dec, maximumFractionDigits: dec }).replace(/,/g, " ").replace(/\./g, ",");
+if (!reduce && "IntersectionObserver" in window) {
+  const io = new IntersectionObserver(entries => entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    io.unobserve(en.target);
+    en.target.querySelectorAll(".fill").forEach(f => { f.classList.remove("grow"); void f.offsetWidth; f.classList.add("grow"); });
+    en.target.querySelectorAll("[data-count]").forEach(el => {
+      const to = +el.dataset.count, dec = +(el.dataset.dec || 0), t0 = performance.now();
+      const tick = now => {
+        const p = Math.min(1, (now - t0) / 1300), e = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmtNum(to * e, dec);
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }), { threshold: .35 });
+  document.querySelectorAll(".perf").forEach(el => io.observe(el));
+}
+
+/* ---------- descarga ---------- */
+const toast = $("#toast"); let toastT;
+function say(msg) { toast.textContent = msg; toast.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove("show"), 3200); }
+document.querySelectorAll("[data-download]").forEach(a => {
+  if (DOWNLOAD_URL) { a.href = DOWNLOAD_URL; a.setAttribute("download", ""); }
+  else a.addEventListener("click", e => {
+    if (a.closest("#descargar")) { e.preventDefault(); say("El enlace de descarga todavía no está configurado en esta página."); }
+  });
+});
+
+/* ---------- campo de símbolos JSON en el fondo ---------- */
+(() => {
+  const cv = $("#field"), ctx = cv.getContext("2d");
+  const GLYPHS = ["{", "}", "[", "]", ":", ",", '""', "0", "1", "null", "true"];
+  let W, H, dpr, parts = [], colors = [], mouse = { x: -999, y: -999 };
+  const readColors = () => {
+    const cs = getComputedStyle(document.documentElement);
+    colors = ["--k-object", "--k-array", "--k-string", "--k-number", "--k-bool", "--muted"].map(v => cs.getPropertyValue(v).trim());
+  };
+  const resize = () => {
+    dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.round(Math.min(70, W * H / 22000));
+    parts = Array.from({ length: n }, () => ({
+      x: Math.random() * W, y: Math.random() * H, z: .3 + Math.random() * .9,
+      g: GLYPHS[Math.random() * GLYPHS.length | 0], c: Math.random() * 6 | 0, r: Math.random() * Math.PI, vr: (Math.random() - .5) * .004
+    }));
+  };
+  const draw = () => {
+    ctx.clearRect(0, 0, W, H);
+    const sy = scrollY;
+    for (const p of parts) {
+      if (!reduce) { p.y -= .18 * p.z; p.r += p.vr; if (p.y < -40) { p.y = H + 40; p.x = Math.random() * W; } }
+      const y = ((p.y - sy * .15 * p.z) % (H + 80) + H + 80) % (H + 80) - 40;
+      const dx = p.x - mouse.x, dy = y - mouse.y, dist = Math.hypot(dx, dy);
+      const near = Math.max(0, 1 - dist / 220);
+      ctx.save();
+      ctx.translate(p.x + (near ? dx / dist * near * 18 : 0), y + (near ? dy / dist * near * 18 : 0));
+      ctx.rotate(p.r);
+      ctx.globalAlpha = .08 + .1 * p.z + near * .5;
+      ctx.fillStyle = colors[p.c];
+      ctx.font = `${Math.round(12 + 16 * p.z)}px "JetBrains Mono", ui-monospace, monospace`;
+      ctx.fillText(p.g, 0, 0);
+      ctx.restore();
+    }
+    if (!reduce) requestAnimationFrame(draw);
+  };
+  readColors(); resize(); draw();
+  addEventListener("resize", () => { resize(); if (reduce) draw(); });
+  addEventListener("pointermove", e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { readColors(); if (reduce) draw(); });
+  new MutationObserver(() => { readColors(); if (reduce) draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+</body>
+</html>

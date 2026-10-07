@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>iPlist para macOS</title>
+<meta name="description" content="Editor de property lists para macOS. Abre, crea y edita plist al instante, sin perder orden, tipos ni formato.">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one dark stage lit by the icon's crimson→mint gradient; a live plist editor is the hero, then bento proof, benchmarks, keyboard. */
+:root {
+  --ink: #07090c;
+  --ink-2: #0d1116;
+  --panel: #11161d;
+  --line: #1f2731;
+  --fg: #eef3f1;
+  --muted: #8d9aa3;
+  --crimson: #ff1f4b;
+  --mint: #19f2b6;
+  --sky: #64b5ff;
+  --amber: #ffc95c;
+  --grad: linear-gradient(180deg, var(--crimson), #b0275d 38%, #2a8a86 62%, var(--mint));
+  --grad-x: linear-gradient(90deg, var(--crimson), #c43a6b 40%, #2fb39a 70%, var(--mint));
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "Geist", -apple-system, "Helvetica Neue", system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r: 22px;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: var(--ink); }
+body {
+  margin: 0; background: var(--ink); color: var(--fg);
+  font: 16px/1.6 var(--body); -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; border-radius: 8px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+p { margin: 0; }
+.wrap { width: min(1180px, 100%); margin-inline: auto; padding-inline: 20px; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.grad-text { background: var(--grad-x); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ---------- ambient ---------- */
+.aurora { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.aurora i { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; filter: blur(110px); opacity: .28; }
+.aurora i:nth-child(1) { background: var(--crimson); top: -30vmax; left: -15vmax; animation: drift 26s ease-in-out infinite alternate; }
+.aurora i:nth-child(2) { background: var(--mint); bottom: -35vmax; right: -20vmax; animation: drift 32s ease-in-out infinite alternate-reverse; }
+.aurora i:nth-child(3) { background: #3b2bff; top: 30%; left: 40%; width: 30vmax; height: 30vmax; opacity: .12; animation: drift 20s ease-in-out infinite alternate; }
+@keyframes drift { to { transform: translate(12vmax, 8vmax) scale(1.15); } }
+.grid-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 64px 64px; opacity: .35;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+.spot { position: fixed; z-index: 0; width: 600px; height: 600px; margin: -300px 0 0 -300px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(25,242,182,.09), transparent 60%); pointer-events: none; left: 50%; top: 30%; transition: opacity .3s; }
+main, header, footer { position: relative; z-index: 1; }
+
+/* ---------- nav ---------- */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; padding-block: 14px; }
+.nav .bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 8px 8px 8px 14px; border-radius: 999px;
+  background: rgba(13,17,22,.62); border: 1px solid var(--line);
+  backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+}
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 800 19px/1 var(--display); }
+.brand img { width: 30px; height: 30px; }
+.nav ul { display: flex; gap: 26px; list-style: none; margin: 0; padding: 0; font-size: 14px; color: var(--muted); }
+.nav ul a { text-decoration: none; transition: color .2s; }
+.nav ul a:hover { color: var(--fg); }
+
+.btn {
+  --h: 44px; position: relative; display: inline-flex; align-items: center; gap: 10px;
+  height: var(--h); padding-inline: 20px; border-radius: 999px; border: 0; cursor: pointer;
+  font: 600 15px/1 var(--body); text-decoration: none; color: #04110d; white-space: nowrap;
+  background: var(--mint); transition: transform .2s, box-shadow .3s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 40px -8px rgba(25,242,182,.6); }
+.btn.sm { --h: 36px; font-size: 14px; padding-inline: 16px; }
+.btn.big {
+  --h: 62px; padding-inline: 28px 30px; font-size: 17px; color: #fff; overflow: hidden; isolation: isolate;
+  background: var(--grad-x); background-size: 200% 100%; animation: slide 6s linear infinite;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.15) inset, 0 20px 60px -20px rgba(255,31,75,.7);
+}
+.btn.big::after { /* moving sheen */
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%);
+  transform: translateX(-100%); animation: sheen 3.2s ease-in-out infinite;
+}
+.btn.big:hover { box-shadow: 0 0 0 1px rgba(255,255,255,.3) inset, 0 24px 80px -16px rgba(25,242,182,.75); }
+.btn.big small { font: 400 13px/1 var(--mono); opacity: .8; }
+@keyframes slide { to { background-position: 200% 0; } }
+@keyframes sheen { 60%, 100% { transform: translateX(100%); } }
+.btn svg { width: 20px; height: 20px; flex: none; }
+
+/* ---------- hero ---------- */
+.hero { padding-block: 72px 40px; display: grid; grid-template-columns: 1.02fr 1fr; gap: 56px; align-items: center; }
+.hero > * { min-width: 0; }
+.pill {
+  display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px 6px 6px; border-radius: 999px;
+  background: var(--panel); border: 1px solid var(--line); font-size: 13px; color: var(--muted);
+}
+.pill b { font: 500 11px/1 var(--mono); color: #04110d; background: var(--mint); padding: 5px 8px; border-radius: 999px; letter-spacing: .04em; }
+.hero h1 { font-size: clamp(46px, 7.2vw, 92px); line-height: .92; font-weight: 800; margin-top: 22px; }
+.hero h1 .line { display: block; overflow: hidden; padding-bottom: .06em; }
+.hero h1 .line > span { display: inline-block; animation: rise .9s cubic-bezier(.2,.8,.2,1) both; }
+.hero h1 .line:nth-child(2) > span { animation-delay: .08s; }
+.hero h1 .line:nth-child(3) > span { animation-delay: .16s; }
+@keyframes rise { from { transform: translateY(40%); opacity: .2; filter: blur(8px); } }
+.lede { margin-top: 24px; font-size: 19px; color: #b9c4ca; max-width: 34ch; }
+.cta-row { margin-top: 34px; display: flex; flex-wrap: wrap; align-items: center; gap: 18px 22px; }
+.trust { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.trust span { display: flex; align-items: center; gap: 7px; }
+.trust svg { width: 14px; height: 14px; color: var(--mint); }
+
+/* the editor window */
+.stage { perspective: 1400px; }
+.window {
+  position: relative; border-radius: 16px; background: rgba(16,21,28,.86);
+  border: 1px solid #2a3440; overflow: hidden;
+  box-shadow: 0 50px 120px -30px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.03) inset, 0 0 80px -20px rgba(255,31,75,.35);
+  transform: rotateY(-9deg) rotateX(5deg); transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.8,.2,1);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  animation: float 7s ease-in-out infinite;
+}
+@keyframes float { 50% { translate: 0 -10px; } }
+.window::before { /* gradient border glow */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: linear-gradient(140deg, rgba(255,31,75,.7), transparent 35%, transparent 65%, rgba(25,242,182,.7));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.titlebar { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.02); }
+.dots { display: flex; gap: 7px; }
+.dots i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+.dots i:nth-child(2) { background: #febc2e; } .dots i:nth-child(3) { background: #28c840; }
+.titlebar .name { font: 600 13px/1 var(--body); }
+.titlebar .name em { font-style: normal; color: var(--muted); font-weight: 400; margin-left: 6px; }
+.seg { margin-left: auto; display: flex; padding: 2px; border-radius: 7px; background: #0a0e13; border: 1px solid var(--line); font: 500 11px/1 var(--body); }
+.seg span { padding: 5px 9px; border-radius: 5px; color: var(--muted); }
+.seg span.on { background: #253040; color: var(--fg); }
+.search { display: flex; align-items: center; gap: 8px; margin: 10px 12px 4px; padding: 7px 10px; border-radius: 8px; background: #0a0e13; border: 1px solid var(--line); font: 12px/1 var(--mono); color: var(--muted); }
+.search svg { width: 13px; height: 13px; }
+.table { font: 12.5px/1 var(--mono); overflow-x: auto; }
+.thead, .row { display: grid; grid-template-columns: minmax(170px, 1.35fr) 92px minmax(120px, 1fr); align-items: center; }
+.thead { padding: 8px 12px; font: 600 11px/1 var(--body); color: var(--muted); border-bottom: 1px solid var(--line); }
+.row { height: 31px; padding: 0 12px; border-radius: 6px; margin: 1px 6px; white-space: nowrap; transition: background .25s; }
+.row:nth-child(even) { background: rgba(255,255,255,.018); }
+.row.sel { background: linear-gradient(90deg, rgba(255,31,75,.55), rgba(176,39,93,.45)); }
+.row.flash { animation: flash 1.2s ease; }
+@keyframes flash { 0% { background: rgba(25,242,182,.35); } }
+.k { display: flex; align-items: center; gap: 6px; overflow: hidden; text-overflow: ellipsis; }
+.k .tw { width: 10px; color: var(--muted); font-size: 9px; flex: none; }
+.t { font-family: var(--body); font-size: 12px; color: var(--muted); }
+.t.s { color: #ff8aa3; } .t.b { color: var(--amber); } .t.d { color: var(--sky); } .t.a { color: #c6a4ff; } .t.n { color: var(--mint); }
+.v { overflow: hidden; text-overflow: ellipsis; color: #dfe7e4; }
+.v.dim { color: var(--muted); }
+.caret { display: inline-block; width: 1.5px; height: 14px; background: var(--fg); vertical-align: -2px; margin-left: 1px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.edit { background: #0a0e13; outline: 1.5px solid var(--mint); border-radius: 4px; padding: 3px 5px; margin-left: -5px; }
+.status { display: flex; justify-content: space-between; padding: 9px 14px; border-top: 1px solid var(--line); font: 11px/1 var(--mono); color: var(--muted); }
+.status b { color: var(--mint); font-weight: 500; }
+.toast {
+  position: absolute; right: 16px; bottom: 44px; display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 10px; background: #0a0e13; border: 1px solid #2a3440;
+  font: 500 12px/1 var(--body); box-shadow: 0 10px 30px rgba(0,0,0,.5);
+  opacity: 0; transform: translateY(8px) scale(.96); transition: opacity .3s, transform .3s;
+}
+.toast.show { opacity: 1; transform: none; }
+.toast kbd { font: 500 11px/1 var(--mono); padding: 4px 6px; border-radius: 5px; background: var(--panel); border: 1px solid var(--line); }
+
+/* ---------- marquee ---------- */
+.marquee { margin-top: 48px; padding-block: 22px; border-block: 1px solid var(--line); overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.track { display: flex; gap: 52px; width: max-content; animation: marq 38s linear infinite; }
+.track span { font: 600 clamp(22px, 3vw, 34px)/1 var(--display); color: #33404b; white-space: nowrap; display: flex; align-items: center; gap: 52px; }
+.track span::after { content: "✦"; font-size: .5em; color: var(--crimson); }
+.track span:nth-child(3n+2) { color: transparent; -webkit-text-stroke: 1px #4b5965; }
+@keyframes marq { to { transform: translateX(-50%); } }
+
+/* ---------- sections ---------- */
+section { padding-block: 110px 20px; }
+.head { display: grid; gap: 16px; max-width: 760px; margin-bottom: 52px; }
+.head h2 { font-size: clamp(36px, 5vw, 62px); line-height: 1; font-weight: 800; }
+.head p { color: #aab6bd; font-size: 18px; max-width: 58ch; }
+
+.bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+.card {
+  --mx: 50%; --my: 50%;
+  position: relative; grid-column: span 2; min-width: 0; padding: 28px; border-radius: var(--r);
+  background: var(--ink-2); border: 1px solid var(--line); overflow: hidden;
+  display: flex; flex-direction: column; gap: 12px; transition: border-color .3s, transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.card::before { /* cursor-following light */
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s;
+  background: radial-gradient(420px circle at var(--mx) var(--my), rgba(25,242,182,.12), transparent 45%);
+}
+.card:hover { border-color: #33424f; transform: translateY(-4px); }
+.card:hover::before { opacity: 1; }
+.card.w3 { grid-column: span 3; } .card.w4 { grid-column: span 4; }
+.card h3 { font-size: 24px; line-height: 1.15; font-weight: 600; }
+.card p { color: #9eabb2; font-size: 15px; }
+.card .tag { font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--mint); }
+.card .vis { margin-top: auto; padding-top: 14px; }
+
+.huge { font: 800 clamp(64px, 9vw, 120px)/.85 var(--display); letter-spacing: -0.04em; }
+.huge small { font-size: .3em; letter-spacing: 0; color: var(--muted); font-weight: 600; margin-left: 6px; }
+
+.diff { font: 12.5px/1.75 var(--mono); background: #080b0f; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; overflow-x: auto; white-space: pre; color: #8996a0; }
+.diff .ok { color: var(--mint); }
+.diff .tagx { color: #ff8aa3; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 500 12.5px/1 var(--mono); padding: 8px 11px; border-radius: 8px; background: #151c24; border: 1px solid var(--line); color: #cbd5d9; }
+.chip.i { color: var(--mint); } .chip.r { color: #9fd3ff; }
+
+.nodes { display: grid; grid-template-columns: repeat(24, 1fr); gap: 4px; }
+.nodes i { aspect-ratio: 1; border-radius: 2px; background: #1a222b; }
+.nodes i.on { background: var(--mint); box-shadow: 0 0 10px rgba(25,242,182,.6); }
+
+.undo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.undo .stack { display: flex; gap: 6px; }
+.undo .stack i { width: 26px; height: 34px; border-radius: 6px; background: linear-gradient(180deg, #2a3440, #151c24); border: 1px solid var(--line); animation: pop 3s ease-in-out infinite; }
+.undo .stack i:nth-child(2) { animation-delay: .2s; } .undo .stack i:nth-child(3) { animation-delay: .4s; } .undo .stack i:nth-child(4) { animation-delay: .6s; }
+@keyframes pop { 40% { transform: translateY(-6px); background: linear-gradient(180deg, var(--crimson), #7a1530); } 60% { transform: none; } }
+
+.native { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.native div { padding: 14px; border-radius: 12px; background: #0a0e13; border: 1px solid var(--line); font-size: 14px; display: flex; align-items: center; gap: 10px; }
+.native svg { width: 18px; height: 18px; color: var(--mint); flex: none; }
+
+/* ---------- performance ---------- */
+.perf { display: grid; grid-template-columns: 1fr 1.25fr; gap: 48px; align-items: start; }
+.perf > * { min-width: 0; }
+.score { padding: 34px; border-radius: var(--r); background: var(--grad); position: relative; overflow: hidden; color: #fff; }
+.score::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 80% 0%, rgba(255,255,255,.25), transparent 50%); }
+.score .huge { font-size: clamp(90px, 13vw, 168px); }
+.score p { position: relative; z-index: 1; font-size: 17px; max-width: 30ch; margin-top: 10px; }
+.score .eyebrow { color: rgba(255,255,255,.75); position: relative; z-index: 1; }
+.score .huge { position: relative; z-index: 1; }
+.bars { display: grid; gap: 26px; }
+.bar-g { display: grid; gap: 8px; }
+.bar-g header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 15px; }
+.bar-g header b { font: 500 13px/1 var(--mono); color: var(--mint); }
+.b { position: relative; height: 30px; border-radius: 8px; background: #0e1319; overflow: hidden; }
+.b > i { position: absolute; inset: 0 auto 0 0; width: var(--w); border-radius: 8px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px;
+  font: 500 12px/1 var(--mono); font-style: normal; transform-origin: left; transition: transform 1.4s cubic-bezier(.2,.8,.2,1); font-variant-numeric: tabular-nums; }
+.b.us > i { background: linear-gradient(90deg, #0f6d55, var(--mint)); color: #04110d; }
+.b.them > i { background: #26303b; color: #9aa7b0; }
+.b .lbl { position: absolute; left: 10px; top: 50%; translate: 0 -50%; font: 500 11px/1 var(--body); color: rgba(255,255,255,.7); z-index: 1; }
+.b.us .lbl { color: #04110d; }
+.bars.armed .b > i { transform: scaleX(.02); }
+.note { margin-top: 22px; font-size: 13px; color: var(--muted); }
+
+/* ---------- keyboard ---------- */
+.keys { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.key { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--ink-2); border: 1px solid var(--line); transition: border-color .2s, background .2s; }
+.key span { font-size: 14.5px; color: #c4ced3; }
+.key kbd { display: inline-flex; gap: 4px; }
+.key kbd b {
+  min-width: 30px; height: 30px; padding-inline: 7px; display: grid; place-items: center; border-radius: 7px;
+  font: 500 13px/1 var(--mono); color: var(--fg);
+  background: linear-gradient(180deg, #232c36, #151b22); border: 1px solid #34404c; box-shadow: 0 2px 0 #0a0d11;
+  transition: transform .1s, box-shadow .1s, background .2s;
+}
+.key.hit { border-color: var(--mint); background: rgba(25,242,182,.06); }
+.key.hit kbd b { transform: translateY(2px); box-shadow: 0 0 0 #000; background: linear-gradient(180deg, var(--mint), #0fae82); color: #04110d; border-color: var(--mint); }
+.try { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); margin-top: -28px; margin-bottom: 30px; }
+.try i { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 12px var(--mint); animation: blink 1.4s steps(1) infinite; }
+
+/* ---------- final cta ---------- */
+.final { margin-block: 120px 60px; padding: clamp(40px, 7vw, 90px) 24px; border-radius: 34px; text-align: center; position: relative; overflow: hidden;
+  background: var(--ink-2); border: 1px solid var(--line); display: grid; justify-items: center; gap: 22px; }
+.final::before { content: ""; position: absolute; width: 900px; height: 900px; left: 50%; top: 100%; translate: -50% -50%; border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--crimson), var(--mint), #3b2bff, var(--crimson)); filter: blur(90px); opacity: .35; animation: spin 18s linear infinite; }
+@keyframes spin { to { rotate: 360deg; } }
+.final > * { position: relative; }
+.final img { width: 112px; height: 112px; filter: drop-shadow(0 20px 40px rgba(255,31,75,.45)); animation: float 6s ease-in-out infinite; }
+.final h2 { font-size: clamp(40px, 6vw, 76px); line-height: .98; font-weight: 800; max-width: 14ch; }
+.final p { color: #b1bcc2; max-width: 46ch; }
+.req { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; font: 12.5px/1 var(--mono); color: var(--muted); }
+.req span::before { content: "→ "; color: var(--mint); }
+
+footer { padding-block: 28px 40px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+
+/* ---------- reveal (starts visible-ish, never hidden) ---------- */
+.rv { transition: transform .9s cubic-bezier(.2,.8,.2,1), opacity .9s; }
+.js .rv:not(.in) { transform: translateY(26px); opacity: .35; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 980px) {
+  .hero { grid-template-columns: 1fr; padding-top: 40px; }
+  .window { transform: none; }
+  .perf { grid-template-columns: 1fr; }
+  .card, .card.w3, .card.w4 { grid-column: span 6; }
+  .nav ul { display: none; }
+}
+@media (min-width: 640px) and (max-width: 980px) {
+  .card { grid-column: span 3; } .card.w4, .card.w3 { grid-column: span 6; }
+}
+@media (max-width: 520px) {
+  .wrap { padding-inline: 16px; }
+  .lede { font-size: 17px; }
+  .thead, .row { grid-template-columns: minmax(150px, 1.3fr) 70px minmax(90px, 1fr); }
+  .seg { display: none; }
+  .card { padding: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js .rv:not(.in) { transform: none; opacity: 1; }
+  .bars.armed .b > i { transform: none; }
+}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="grid-bg" aria-hidden="true"></div>
+<div class="spot" id="spot" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="wrap">
+    <div class="bar">
+      <a class="brand" href="#top"><img src="icon.png" alt="">iPlist</a>
+      <ul>
+        <li><a href="#por-que">Por qué</a></li>
+        <li><a href="#rendimiento">Rendimiento</a></li>
+        <li><a href="#teclado">Teclado</a></li>
+      </ul>
+      <a class="btn sm" href="iPlist-1.0.dmg" download>Descargar</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <span class="pill"><b>v1.0</b> Nuevo para macOS 27</span>
+      <h1>
+        <span class="line"><span>Edita plist.</span></span>
+        <span class="line"><span class="grad-text">Sin esperar.</span></span>
+        <span class="line"><span>Sin perder nada.</span></span>
+      </h1>
+      <p class="lede">Un editor de property lists nativo que hace una sola cosa: abrir, crear y editar plist. Rápido con archivos de cualquier tamaño y fiel byte a byte.</p>
+      <div class="cta-row">
+        <a class="btn big" href="iPlist-1.0.dmg" download id="dl">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>
+          Descargar para Mac <small>.dmg · 1,8 MB</small>
+        </a>
+        <div class="trust">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>Firmada y notarizada por Apple</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>Sin dependencias ni telemetría</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="window" id="win" aria-label="Vista previa del editor iPlist">
+        <div class="titlebar">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="name">Info.plist<em>— Editado</em></div>
+          <div class="seg"><span class="on">XML</span><span>Binario</span></div>
+        </div>
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Buscar claves y valores</div>
+        <div class="table">
+          <div class="thead"><span>Clave</span><span>Tipo</span><span>Valor</span></div>
+          <div id="rows">
+            <div class="row"><span class="k"><span class="tw">▼</span>Root</span><span class="t">Dictionary</span><span class="v dim">9 elementos</span></div>
+            <div class="row"><span class="k" style="padding-left:16px">CFBundleIdentifier</span><span class="t s">String</span><span class="v">com.ierwinx.iPlist</span></div>
+            <div class="row"><span class="k" style="padding-left:16px">CFBundleName</span><span class="t s">String</span><span class="v">iPlist</span></div>
+            <div class="row" id="target"><span class="k" style="padding-left:16px">CFBundleShortVersionString</span><span class="t s">String</span><span class="v" id="tv">1.0</span></div>
+            <div class="row"><span class="k" style="padding-left:16px">CFBundleVersion</span><span class="t n">Number</span><span class="v">42</span></div>
+            <div class="row"><span class="k" style="padding-left:2px"><span class="tw">▼</span>CFBundleDocumentTypes</span><span class="t a">Array</span><span class="v dim">1 elemento</span></div>
+            <div class="row"><span class="k" style="padding-left:30px"><span class="tw">▶</span>Item 0</span><span class="t">Dictionary</span><span class="v dim">4 elementos</span></div>
+            <div class="row"><span class="k" style="padding-left:16px">LSMinimumSystemVersion</span><span class="t s">String</span><span class="v">27.0</span></div>
+            <div class="row"><span class="k" style="padding-left:16px">NSSupportsAutomaticTermination</span><span class="t b">Boolean</span><span class="v">YES</span></div>
+            <div class="row"><span class="k" style="padding-left:16px">BuildDate</span><span class="t d">Date</span><span class="v">7 oct 2026, 12:47</span></div>
+          </div>
+        </div>
+        <div class="status"><span>XML · UTF-8</span><span><b>●</b> Autoguardado</span></div>
+        <div class="toast" id="toast"><kbd id="toastKey">⌘Z</kbd><span id="toastMsg">Deshacer edición</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="track">
+      <span>Info.plist</span><span>.entitlements</span><span>.xcprivacy</span><span>.stringsdict</span><span>XML</span><span>Binario</span><span>OpenStep</span><span>Preferencias</span>
+      <span>Info.plist</span><span>.entitlements</span><span>.xcprivacy</span><span>.stringsdict</span><span>XML</span><span>Binario</span><span>OpenStep</span><span>Preferencias</span>
+    </div>
+  </div>
+
+  <section id="por-que" class="wrap">
+    <div class="head rv">
+      <span class="eyebrow">Por qué iPlist</span>
+      <h2>Lo que Xcode no hace por ti con un plist.</h2>
+      <p>Abrir un archivo, cambiar un valor y guardarlo debería ser inmediato y no cambiar nada más. iPlist está hecho para eso, y no intenta ser otra cosa.</p>
+    </div>
+
+    <div class="bento">
+      <article class="card w4 rv">
+        <span class="tag">Fidelidad total</span>
+        <h3>Abre y guarda un archivo de Xcode sin producir ni un diff.</h3>
+        <p>Se conservan el orden de las claves, las claves duplicadas y el tipo exacto: un <code>integer</code> nunca se convierte en <code>real</code>.</p>
+        <div class="vis"><div class="diff"><span class="ok">$ git diff --stat Info.plist</span>
+ 0 files changed, <span class="ok">0 insertions(+)</span>, <span class="tagx">0 deletions(-)</span>
+<span class="ok">$ plutil -lint Info.plist</span>
+Info.plist: OK</div></div>
+      </article>
+
+      <article class="card rv">
+        <span class="tag">Archivos enormes</span>
+        <div class="huge">640k<small>nodos</small></div>
+        <p>Un plist de 36 MB abre al instante: solo se crean los nodos que ves.</p>
+        <div class="vis"><div class="nodes" id="nodes"></div></div>
+      </article>
+
+      <article class="card rv">
+        <span class="tag">Todos los formatos</span>
+        <h3>XML, binario y OpenStep.</h3>
+        <p>Cambia entre XML y binario desde la barra al guardar. El cambio también se puede deshacer.</p>
+        <div class="vis chips">
+          <span class="chip i">XML</span><span class="chip i">Binario</span><span class="chip r">OpenStep</span><span class="chip">.entitlements</span><span class="chip">.xcprivacy</span><span class="chip">.stringsdict</span>
+        </div>
+      </article>
+
+      <article class="card rv">
+        <span class="tag">Deshacer en todo</span>
+        <h3>Cada cambio se puede deshacer.</h3>
+        <p>Renombrar, mover, cambiar un tipo o pegar diez elementos: ⌘Z lo revierte, sin copias del documento.</p>
+        <div class="vis undo"><div class="stack"><i></i><i></i><i></i><i></i></div><span class="chip">⌘Z · ⇧⌘Z</span></div>
+      </article>
+
+      <article class="card rv">
+        <span class="tag">Copiar y pegar</span>
+        <h3>Copia como XML, pega donde quieras.</h3>
+        <p>Compatible con Xcode y cualquier editor de texto. También arrastra y suelta elementos entre ventanas.</p>
+        <div class="vis"><div class="diff">&lt;<span class="tagx">key</span>&gt;LSMinimumSystemVersion&lt;/<span class="tagx">key</span>&gt;
+&lt;<span class="tagx">string</span>&gt;<span class="ok">27.0</span>&lt;/<span class="tagx">string</span>&gt;</div></div>
+      </article>
+
+      <article class="card w4 rv">
+        <span class="tag">Nativo de macOS</span>
+        <h3>Todo lo que esperas de una app de Mac, sin reinventarlo.</h3>
+        <p>Hecha en SwiftUI y Swift 6 sobre el sistema de documentos de macOS 27. Lo que el sistema ya hace bien, iPlist lo usa tal cual.</p>
+        <div class="vis native">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg>Autoguardado</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Versiones</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M8 6V4h8v2"/></svg>Pestañas</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Búsqueda con filtro</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h7M7.5 5v2M5 11c2-1 4-3 5-6M6 8c1 2 3 3 5 3M13 20l4-9 4 9M14.5 17h5"/></svg>Inglés y español</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></svg>Sandbox</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="rendimiento" class="wrap">
+    <div class="head rv">
+      <span class="eyebrow">Rendimiento</span>
+      <h2>Más rápido que el parser de Apple.</h2>
+      <p>iPlist trae su propio lector y escritor de plist. Lo comparamos con <code>PropertyListSerialization</code> sobre una biblioteca de 40 000 pistas, en un build Release con Apple Silicon.</p>
+    </div>
+    <div class="perf">
+      <div class="score rv">
+        <span class="eyebrow">Escribir XML</span>
+        <div class="huge"><span id="mult">4,8</span>×</div>
+        <p>más rápido al guardar un XML de 35 MB: 218 ms frente a 1036 ms.</p>
+      </div>
+      <div class="bars armed" id="bars">
+        <div class="bar-g">
+          <header><span>Leer XML · 35 MB</span><b>1,4× más rápido</b></header>
+          <div class="b us"><span class="lbl">iPlist</span><i style="--w:24%">248 ms</i></div>
+          <div class="b them"><span class="lbl">Foundation</span><i style="--w:34.5%">357 ms</i></div>
+        </div>
+        <div class="bar-g">
+          <header><span>Leer binario · 12 MB</span><b>1,5× más rápido</b></header>
+          <div class="b us"><span class="lbl">iPlist</span><i style="--w:15%">69 ms</i></div>
+          <div class="b them"><span class="lbl">Foundation</span><i style="--w:15%">103 ms</i></div>
+        </div>
+        <div class="bar-g">
+          <header><span>Escribir XML</span><b>4,8× más rápido</b></header>
+          <div class="b us"><span class="lbl">iPlist</span><i style="--w:21%">218 ms</i></div>
+          <div class="b them"><span class="lbl">Foundation</span><i style="--w:100%">1036 ms</i></div>
+        </div>
+        <div class="bar-g">
+          <header><span>Escribir binario</span><b>2,2× más rápido</b></header>
+          <div class="b us"><span class="lbl">iPlist</span><i style="--w:19.9%">206 ms</i></div>
+          <div class="b them"><span class="lbl">Foundation</span><i style="--w:43.6%">452 ms</i></div>
+        </div>
+        <p class="note">Además, Foundation entrega objetos sin orden; iPlist entrega valores ordenados, listos para editar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="teclado" class="wrap">
+    <div class="head rv">
+      <span class="eyebrow">Teclado primero</span>
+      <h2>Edita sin tocar el ratón.</h2>
+      <p>Crea un elemento, escribe la clave, salta al valor y confirma. Todo con atajos que ya conoces de macOS.</p>
+    </div>
+    <p class="try"><i></i>Pulsa una de estas teclas en tu teclado</p>
+    <div class="keys" id="keys">
+      <div class="key" data-k="shift+meta+n"><span>Añadir elemento</span><kbd><b>⇧</b><b>⌘</b><b>N</b></kbd></div>
+      <div class="key" data-k="enter"><span>Editar clave · confirmar</span><kbd><b>⏎</b></kbd></div>
+      <div class="key" data-k="tab"><span>Pasar de la clave al valor</span><kbd><b>⇥</b></kbd></div>
+      <div class="key" data-k="escape"><span>Cancelar edición</span><kbd><b>⎋</b></kbd></div>
+      <div class="key" data-k="meta+d"><span>Duplicar</span><kbd><b>⌘</b><b>D</b></kbd></div>
+      <div class="key" data-k="backspace"><span>Eliminar</span><kbd><b>⌫</b></kbd></div>
+      <div class="key" data-k="alt+meta+arrowup"><span>Subir elemento</span><kbd><b>⌥</b><b>⌘</b><b>↑</b></kbd></div>
+      <div class="key" data-k="arrowright"><span>Expandir</span><kbd><b>→</b></kbd></div>
+      <div class="key" data-k="alt+meta+arrowright"><span>Expandir todo</span><kbd><b>⌥</b><b>⌘</b><b>→</b></kbd></div>
+      <div class="key" data-k="meta+f"><span>Buscar</span><kbd><b>⌘</b><b>F</b></kbd></div>
+      <div class="key" data-k="meta+g"><span>Siguiente coincidencia</span><kbd><b>⌘</b><b>G</b></kbd></div>
+      <div class="key" data-k="meta+z"><span>Deshacer</span><kbd><b>⌘</b><b>Z</b></kbd></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="final rv">
+      <img src="icon.png" alt="Ícono de iPlist">
+      <h2>Tu próximo plist ya se abre al instante.</h2>
+      <p>Ligera y sin cuentas. Descarga el .dmg, arrastra iPlist a Aplicaciones y abre cualquier plist con clic derecho → Abrir con.</p>
+      <a class="btn big" href="iPlist-1.0.dmg" download>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>
+        Descargar iPlist 1.0 <small>1,8 MB</small>
+      </a>
+      <div class="req"><span>macOS 27 o posterior</span><span>Mac con Apple Silicon</span><span>No reemplaza a Xcode como app predeterminada</span></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>iPlist · Hecho con SwiftUI y Swift 6</span>
+    <span>© 2026 Erwin</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  root.classList.add('js');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Reveal on scroll.
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: .12 });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+  // Benchmark bars grow when visible.
+  const bars = document.getElementById('bars');
+  new IntersectionObserver((es, o) => es.forEach(e => {
+    if (e.isIntersecting) { bars.classList.remove('armed'); o.disconnect(); }
+  }), { threshold: .3 }).observe(bars);
+
+  // Cursor spotlight + card light.
+  const spot = document.getElementById('spot');
+  addEventListener('pointermove', e => {
+    spot.style.left = e.clientX + 'px'; spot.style.top = e.clientY + 'px';
+  }, { passive: true });
+  document.querySelectorAll('.card').forEach(c => c.addEventListener('pointermove', e => {
+    const r = c.getBoundingClientRect();
+    c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  }));
+
+  // 3D tilt of the editor window.
+  const stage = document.getElementById('stage'), win = document.getElementById('win');
+  if (!reduce && matchMedia('(min-width: 981px)').matches) {
+    stage.addEventListener('pointermove', e => {
+      const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      win.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 10}deg)`;
+    });
+    stage.addEventListener('pointerleave', () => { win.style.transform = ''; });
+  }
+
+  // Lazy-materialization visual: only a few nodes light up.
+  const nodes = document.getElementById('nodes');
+  for (let i = 0; i < 96; i++) nodes.appendChild(document.createElement('i'));
+  const cells = [...nodes.children];
+  const lightNodes = () => {
+    cells.forEach(c => c.classList.remove('on'));
+    const start = Math.floor(Math.random() * 70);
+    for (let i = 0; i < 6; i++) cells[(start + i * (i < 3 ? 1 : 24)) % 96].classList.add('on');
+  };
+  lightNodes();
+  if (!reduce) setInterval(lightNodes, 1600);
+
+  // Scripted edit in the hero window: select, type, confirm, undo.
+  const row = document.getElementById('target'), tv = document.getElementById('tv');
+  const toast = document.getElementById('toast'), tKey = document.getElementById('toastKey'), tMsg = document.getElementById('toastMsg');
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const showToast = async (k, m) => { tKey.textContent = k; tMsg.textContent = m; toast.classList.add('show'); await wait(1400); toast.classList.remove('show'); };
+  async function loop() {
+    while (true) {
+      await wait(1400);
+      row.classList.add('sel');
+      await wait(700);
+      tv.innerHTML = '<span class="edit">1.0<span class="caret"></span></span>';
+      const ed = tv.firstChild;
+      await wait(500);
+      for (const s of ['1.', '1']) { ed.innerHTML = s + '<span class="caret"></span>'; await wait(160); }
+      for (const s of ['1.', '1.1']) { ed.innerHTML = s + '<span class="caret"></span>'; await wait(220); }
+      await wait(600);
+      tv.textContent = '1.1';
+      row.classList.remove('sel'); row.classList.add('flash');
+      showToast('⏎', 'Valor guardado');
+      await wait(2400);
+      row.classList.remove('flash');
+      tv.textContent = '1.0'; row.classList.add('flash');
+      await showToast('⌘Z', 'Deshacer edición');
+      await wait(800);
+      row.classList.remove('flash');
+    }
+  }
+  if (!reduce) loop();
+
+  // Keyboard showcase: light up the matching shortcut.
+  const keys = [...document.querySelectorAll('.key')];
+  addEventListener('keydown', e => {
+    const combo = [e.shiftKey && 'shift', e.altKey && 'alt', (e.metaKey || e.ctrlKey) && 'meta', e.key.toLowerCase()]
+      .filter(Boolean).join('+');
+    const k = keys.find(el => el.dataset.k === combo);
+    if (!k) return;
+    if (e.metaKey || e.ctrlKey || e.key === 'Backspace') e.preventDefault();
+    k.classList.add('hit');
+    setTimeout(() => k.classList.remove('hit'), 450);
+  });
+  // Demo the keys while the section is on screen and nobody is typing.
+  let typed = false; addEventListener('keydown', () => { typed = true; }, { once: true });
+  let ki = 0;
+  if (!reduce) setInterval(() => {
+    if (typed) return;
+    const r = document.getElementById('keys').getBoundingClientRect();
+    if (r.top > innerHeight || r.bottom < 0) return;
+    const k = keys[ki++ % keys.length];
+    k.classList.add('hit'); setTimeout(() => k.classList.remove('hit'), 500);
+  }, 900);
+})();
+</script>
+</body>
+</html>
