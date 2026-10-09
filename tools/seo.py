@@ -81,7 +81,7 @@ APPS = {
     ),
     'igit/index.html': dict(
         name='iGit', image='igit.jpg', category='DeveloperApplication', os='macOS 15',
-        version='0.0.1', download='/igit/downloads/iGit-0.0.1.pkg', free=True,
+        version='1.0.0', download='/igit/downloads/iGit-1.0.0.pkg', free=True,
     ),
     'ispecter/index.html': dict(
         name='iSpecter', image='ispecter.jpg', category='MultimediaApplication', os='macOS 26',
