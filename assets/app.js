@@ -796,7 +796,7 @@
     })(0);
   }
 
-  /* ── iConverter: same demo as the app's own page (/musica/) ── */
+  /* ── iConverter: same demo as the app's own page (/iconverter/) ── */
 
   const icLog = $('#icLog');
   const icFill = $('#icFill');
