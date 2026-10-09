@@ -202,7 +202,7 @@
 
   /* ───────────── Descargar ───────────── */
   // Instalador de la última versión (servido junto a esta página).
-  const PKG = "downloads/iGit-0.0.1.pkg";
+  const PKG = "downloads/iGit-1.0.0.pkg";
   $$("[data-download]").forEach((btn) => btn.addEventListener("click", (e) => {
     e.preventDefault();
     const r = btn.getBoundingClientRect();
@@ -210,7 +210,7 @@
     const a = document.createElement("a");
     a.href = PKG; a.setAttribute("download", "");
     document.body.appendChild(a); a.click(); a.remove();
-    showToast("✨ <b>¡Gracias!</b> Tu descarga de iGit 0.0.1 ha comenzado.");
+    showToast("✨ <b>¡Gracias!</b> Tu descarga de iGit 1.0.0 ha comenzado.");
   }));
 
   /* ───────────── Teclado interactivo ───────────── */
