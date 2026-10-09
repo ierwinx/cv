@@ -133,6 +133,30 @@
             tags: ["Python", "Django", "Tkinter"],
             emoji: "🐍",
             url: "/python/"
+          },
+          {
+            name: "iPlist",
+            role: "Author & macOS Developer",
+            description: "Native Plist editor for macOS. Open, create and edit property lists instantly without losing order, types or formatting — XML, binary and OpenStep. Built with SwiftUI on top of the macOS document system.",
+            tags: ["Swift", "SwiftUI", "macOS"],
+            emoji: "📋",
+            url: "/iplist/"
+          },
+          {
+            name: "iJson",
+            role: "Author & macOS Developer",
+            description: "Native JSON editor for macOS with tree and text views. Opens 100 MB files in 0.42 s and keeps your original formatting intact, byte for byte. Native tabs, Revert, Save As, system search and dark mode — no third-party dependencies.",
+            tags: ["Swift", "SwiftUI", "macOS"],
+            emoji: "🧩",
+            url: "/ijson/"
+          },
+          {
+            name: "iCSV",
+            role: "Author & macOS Developer",
+            description: "Native macOS app to open, create and edit CSV, TSV and PSV files. Ultra-fast and byte-for-byte faithful: it never changes your data. 100% Swift 6 and SwiftUI, no Electron and no third-party dependencies.",
+            tags: ["Swift", "SwiftUI", "macOS"],
+            emoji: "📊",
+            url: "/icsv/"
           }
         ]
       },
@@ -367,6 +391,30 @@
             tags: ["Python", "Django", "Tkinter"],
             emoji: "🐍",
             url: "/python/"
+          },
+          {
+            name: "iPlist",
+            role: "Autor & Desarrollador macOS",
+            description: "Editor de Plist nativo para macOS. Abre, crea y edita property lists al instante, sin perder orden, tipos ni formato — XML, binario y OpenStep. Hecho en SwiftUI sobre el sistema de documentos de macOS.",
+            tags: ["Swift", "SwiftUI", "macOS"],
+            emoji: "📋",
+            url: "/iplist/"
+          },
+          {
+            name: "iJson",
+            role: "Autor & Desarrollador macOS",
+            description: "Editor de JSON nativo para macOS con vista de árbol y de texto. Abre archivos de 100 MB en 0,42 s y conserva tu formato original intacto, byte a byte. Pestañas nativas, Revertir, Guardar como, búsqueda del sistema y modo oscuro — sin dependencias de terceros.",
+            tags: ["Swift", "SwiftUI", "macOS"],
+            emoji: "🧩",
+            url: "/ijson/"
+          },
+          {
+            name: "iCSV",
+            role: "Autor & Desarrollador macOS",
+            description: "App nativa para macOS que abre, crea y edita archivos CSV, TSV y PSV. Ultrarrápida y fiel byte a byte: nunca cambia tus datos. 100 % Swift 6 y SwiftUI, sin Electron y sin dependencias de terceros.",
+            tags: ["Swift", "SwiftUI", "macOS"],
+            emoji: "📊",
+            url: "/icsv/"
           }
         ]
       },
