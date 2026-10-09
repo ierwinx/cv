@@ -2,7 +2,15 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>og maker (temporal)</title>
+<title>Generador de imágenes para compartir</title>
+<!--
+  Dibuja las tarjetas 1200×630 de assets/og/ y los logos PNG de assets/.
+  Uso:
+    1. python3 tools/og-receiver.py          (guarda lo que esta página le envía)
+    2. python3 -m http.server 8765           (desde la raíz del proyecto)
+    3. Abre http://localhost:8765/tools/og-maker.html y espera a que diga LISTO.
+    4. Convierte a JPG: sips -s format jpeg -s formatOptions 82 tools/og-out/x.png --out assets/og/x.jpg
+-->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>body{background:#111;color:#fff;font:14px Inter}canvas{display:block;margin:10px 0;max-width:100%}</style>
 </head>
@@ -23,7 +31,7 @@ const CARDS = [
   { file: 'iplist.png',     icon: 'iplist',     c1: '#ff1f4b', c2: '#00e6b0', name: 'iPlist',     tag: ['Edita Plist.', 'Sin esperar. Sin perder nada.'], chips: ['macOS 27', 'Swift 6', 'Editor de Plist'], url: 'ierwinx.com/iplist' },
   { file: 'ijson.png',      icon: 'ijson',      c1: '#7b5cf0', c2: '#c05cf0', name: 'iJson',      tag: ['Edita JSON', 'sin perder ni un byte.'], chips: ['macOS 27', 'Árbol y texto', '100 MB en 0,42 s'], url: 'ierwinx.com/ijson' },
   { file: 'icsv.png',       icon: 'icsv',       c1: '#1a9e87', c2: '#ff9f0a', name: 'iCSV',       tag: ['El editor de CSV', 'más rápido para Mac.'], chips: ['macOS 26', '1,2 GB/s', 'Gratis'], url: 'ierwinx.com/icsv' },
-  { file: 'superpets.png',  icon: 'superpets',  c1: '#6a4cff', c2: '#ffc861', name: 'Super Pets', tag: ['Todo el cuidado de tus', 'mascotas en un solo lugar.'], chips: ['iPhone · iPad · Mac', 'Apple Watch · CarPlay', 'Gratis'], url: 'ierwinx.com/superpets', round: true },
+  { file: 'superpets.png',  icon: 'superpets',  c1: '#6a4cff', c2: '#ffc861', name: 'Super Pets', tag: ['Todo el cuidado de tus', 'mascotas en un solo lugar.'], chips: ['iPhone · iPad · Mac', 'Watch · CarPlay', 'Gratis'], url: 'ierwinx.com/superpets', round: true },
   { file: 'irar.png',       icon: 'irar',       c1: '#ffc93c', c2: '#ff9f1c', name: 'iRar',       tag: ['Todos tus archivos comprimidos,', 'nativos en tu Mac.'], chips: ['ZIP · RAR · 7z · ZSTD', 'macOS 26', 'Gratis'], url: 'ierwinx.com/irar' },
   { file: 'igit.png',       icon: 'igit',       c1: '#7c5cff', c2: '#2ee6a6', name: 'iGit',       tag: ['GitHub Desktop,', 'en tu terminal.'], chips: ['macOS 15', 'Swift 6', 'Commits por línea'], url: 'ierwinx.com/igit' },
   { file: 'ispecter.png',   icon: 'ispecter',   c1: '#ff7a1a', c2: '#b23cff', name: 'iSpecter',   tag: ['El tamaño del archivo miente.', 'El espectro, no.'], chips: ['Metal · 120 fps', 'macOS 26', 'Gratis'], url: 'ierwinx.com/ispecter' },
@@ -70,8 +78,9 @@ function brandMark(ctx, x, y, s) {
   roundRect(ctx, x + s * 13.6 / 32, y + s * 13.5 / 32, s * 4.8 / 32, s * 11 / 32, s * 2.4 / 32); ctx.fill();
 }
 
+let chipFont = 22;
 function chip(ctx, x, y, text, accent) {
-  ctx.font = '600 22px "JetBrains Mono"';
+  ctx.font = `600 ${chipFont}px "JetBrains Mono"`;
   const w = ctx.measureText(text).width + 36;
   roundRect(ctx, x, y, w, 46, 23);
   ctx.fillStyle = accent ? accent + '33' : 'rgba(255,255,255,0.07)'; ctx.fill();
@@ -113,6 +122,12 @@ async function appCard(card) {
   ctx.font = '700 38px Inter';
   ctx.fillStyle = '#e8e8f0'; ctx.fillText(card.tag[0], tx, 332);
   ctx.fillStyle = g; ctx.fillText(card.tag[1], tx, 382);
+  // shrink chip text until the row fits inside the card
+  chipFont = 22;
+  ctx.font = `600 ${chipFont}px "JetBrains Mono"`;
+  while (chipFont > 16 && card.chips.reduce((w, c) => w + ctx.measureText(c).width + 48, 0) > W - tx - 60) {
+    chipFont--; ctx.font = `600 ${chipFont}px "JetBrains Mono"`;
+  }
   let cx = tx;
   card.chips.forEach((c, i) => { cx += chip(ctx, cx, 432, c, c === 'Gratis' ? '#2ee6a6' : null) + 12; });
   ctx.font = '500 22px "JetBrains Mono"'; ctx.fillStyle = '#8a8aa0';
