@@ -500,58 +500,211 @@
     }, 700);
   }
 
-  /* ── iGit: scripted terminal session ────────────────── */
+  /* ── iGit: recreación de la pantalla real (igual que /igit/) ── */
 
-  const term = $('#term');
-  const termScript = [
-    { cmd: 'igit' },
-    { out: '<span class="h">iGit</span>  <span class="d">main ↑1 · ~/Developer/iGit</span>' },
-    { out: '' },
-    { out: '<span class="h">Cambios</span> <span class="d">(3 archivos)</span>', wait: 250 },
-    { out: ' <span class="g">☑</span> Sources/App/Sync.swift       <span class="g">+12</span> <span class="r">-3</span>', wait: 180 },
-    { out: ' <span class="g">☑</span> Sources/UI/DiffView.swift    <span class="g">+8</span>', wait: 180 },
-    { out: ' <span class="d">☐</span> Tests/SyncTests.swift        <span class="g">+21</span>', wait: 400 },
-    { out: '' },
-    { out: '<span class="d">  12 │</span> <span class="g">+ let result = try await git.push()</span>', wait: 200 },
-    { out: '<span class="d">  13 │</span> <span class="r">- print("debug:", result)</span>  <span class="d">← fuera</span>', wait: 700 },
-    { out: '' },
-    { prompt: '<span class="a">commit ›</span> ', cmd: 'feat: sincroniza con un clic' },
-    { out: '<span class="g">✓</span> Commit <span class="v">82bbc32</span> · 2 archivos', wait: 450 },
-    { out: '<span class="g">✓</span> Push a origin/main · <span class="v">82 ms</span>', wait: 450 },
-    { out: '<span class="d">PR #42 · CI</span>  <span class="g">✓ build</span>  <span class="g">✓ tests</span>  <span class="a">● deploy</span>', wait: 3200 }
+  const tui = $('#term');
+  const keycast = $('#keycast');
+  const TCOLS = 96;
+
+  function fitTui() {
+    const fs = Math.max(4, Math.min(14.5, tui.clientWidth / (TCOLS * 0.602)));
+    tui.style.setProperty('--fs', `${fs}px`);
+  }
+  addEventListener('resize', fitTui);
+
+  const swift = code => escapeHTML(code)
+    .replace(/("[^"]*")/g, '<span class="str">$1</span>')
+    .replace(/\b(package|static|let|var|func|return|guard|else|init|struct|enum|try|await|if|for|in|case)\b/g, '<span class="kw">$1</span>')
+    .replace(/\b([a-z][A-Za-z]+)(?=\()/g, '<span class="fn">$1</span>');
+  const middle = (s, n) => s.length <= n ? s : s.slice(0, Math.ceil((n - 1) * 0.35)) + '…' + s.slice(s.length - Math.floor((n - 1) * 0.65));
+
+  const FILES = [
+    { path: 'Sources/iGitUI/Keymap/Keymap.swift', kind: '◼', cls: 'c-mod', stats: '+4 −1', diff: [
+      ['hunk', '', '', '@@ -12,6 +12,9 @@ package struct Keymap {'],
+      ['ctx', 12, 12, '    package static let standard = Keymap()'],
+      ['del', 13, '', '    static let bindings: [Binding] = defaults'],
+      ['add', '', 13, '    let bindings: [Binding]'],
+      ['add', '', 14, '    package init(overrides: [AppCommand: [KeyChord]]) {'],
+      ['add', '', 15, '        print("debug keymap")'],
+      ['add', '', 16, '        bindings = Self.merge(defaults, overrides)'],
+      ['ctx', 14, 17, '    }']
+    ] },
+    { path: 'Sources/iGitCore/Rules/KeymapRules.swift', kind: '✚', cls: 'c-add', stats: '+6 −0', diff: [
+      ['hunk', '', '', '@@ -0,0 +1,6 @@'],
+      ['add', '', 1, '/// Valida el keymap.json del usuario.'],
+      ['add', '', 2, 'package enum KeymapRules {'],
+      ['add', '', 3, '    static func resolve(_ file: KeymapFile?) -> Resolved {'],
+      ['add', '', 4, '        guard let file else { return Resolved() }'],
+      ['add', '', 5, '        return Resolved(parsing: file)'],
+      ['add', '', 6, '    }']
+    ] },
+    { path: 'Sources/iGitApp/Subcommands/CLI.swift', kind: '◼', cls: 'c-mod', stats: '+2 −1', diff: [
+      ['hunk', '', '', '@@ -28,7 +28,8 @@ enum CLI {'],
+      ['ctx', 28, 28, '        case "doctor":'],
+      ['del', 29, '', '            return await doctor()'],
+      ['add', '', 29, '            return await doctor(environment)'],
+      ['add', '', 30, '        case "keymap": return keymap()'],
+      ['ctx', 30, 31, '        default:']
+    ] },
+    { path: 'docs/decisions/ADR-0023.md', kind: '✚', cls: 'c-add', stats: '+3 −0', diff: [
+      ['hunk', '', '', '@@ -0,0 +1,3 @@'],
+      ['add', '', 1, '# ADR-0023 · Keymap configurable'],
+      ['add', '', 2, ''],
+      ['add', '', 3, '**Estado:** aceptada']
+    ] },
+    { path: 'Notas.md', kind: '✚', cls: 'c-new', stats: '+1 −0', diff: [
+      ['hunk', '', '', '@@ -0,0 +1 @@'],
+      ['add', '', 1, '- probar la galería en Terminal.app']
+    ] }
   ];
 
-  function renderTerm(lines, caret) {
-    term.innerHTML = lines.join('\n') + (caret ? '<span class="caret"></span>' : '');
+  const SPIN = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏';
+  let S;
+  function freshState() {
+    return {
+      files: FILES.map((f, i) => ({ ...f, included: i !== 4, off: new Set() })),
+      sel: 0, focus: 'files', cursor: -1,
+      summary: '', typing: false, ready: false, press: false,
+      sync: { icon: '↑', title: 'Push origin', sub: '1 commit por subir' }, busy: false, spin: 0,
+      toast: ''
+    };
   }
 
-  async function runTerminal(isVisible) {
-    while (true) {
-      const lines = [];
-      for (const step of termScript) {
-        while (!isVisible()) await sleep(300);
-        if (step.cmd !== undefined) {
-          const prefix = step.prompt || '<span class="p">❯</span> ';
-          lines.push(prefix);
-          for (const ch of step.cmd) {
-            lines[lines.length - 1] += escapeHTML(ch);
-            renderTerm(lines, true);
-            await sleep(45 + Math.random() * 70);
-          }
-          await sleep(350);
-        } else {
-          lines.push(step.out);
-          renderTerm(lines, true);
-          await sleep(step.wait || 120);
-        }
+  function box(f) {
+    if (!f.included) return '☐';
+    const changes = f.diff.filter(l => l[0] === 'add' || l[0] === 'del').length;
+    return f.off.size === 0 ? '☑' : f.off.size < changes ? '◪' : '☐';
+  }
+
+  function renderTui() {
+    const f = S.files[S.sel];
+    const included = S.files.filter(x => x.included).length;
+    const all = included === S.files.length ? '☑' : included === 0 ? '☐' : '◪';
+    const rows = S.files.map((x, i) => {
+      const cls = ['row', 'file', i === S.sel ? 'sel' : '', i === S.sel && S.focus === 'files' ? 'focus' : ''].join(' ');
+      return `<div class="${cls}"><span><span class="check">${box(x)}</span> ${escapeHTML(middle(x.path, 23))}</span><span class="k ${x.cls}">${x.kind}</span></div>`;
+    }).join('');
+    const diff = f ? f.diff.map((l, i) => {
+      const [kind, o, n, text] = l;
+      if (kind === 'hunk') return `<div class="dl hunk"><span class="check">${box(f)}</span> ${escapeHTML(text)}</div>`;
+      const off = f.off.has(i) || !f.included;
+      const mark = kind === 'ctx' ? ' ' : off ? '☐' : '☑';
+      const sign = kind === 'add' ? '+' : kind === 'del' ? '−' : ' ';
+      const cls = ['dl', kind === 'ctx' ? '' : kind, off && kind !== 'ctx' ? 'off' : '', S.focus === 'diff' && S.cursor === i ? 'cursor' : ''].join(' ');
+      return `<div class="${cls}"><span class="check">${mark}</span> <span class="n">${String(o).padStart(2)} ${String(n).padStart(2)}</span><span class="t">${sign} ${swift(text)}</span></div>`;
+    }).join('') : '';
+    const btnLabel = included ? `Commit ${included} archivo${included === 1 ? '' : 's'} a main` : 'Commit a main';
+    const hints = S.focus === 'summary'
+      ? '<span><b>⌃S</b> commit · <b>Tab</b> panel · <b>Esc</b> volver</span>'
+      : S.focus === 'diff'
+        ? '<span><b>↑↓</b> mover · <b>Space</b> incluir · <b>x</b> hunk · <b>Esc</b> volver · <b>⌃P</b> comandos</span>'
+        : '<span><b>Tab</b> panel · <b>Space</b> incluir · <b>c</b> mensaje · <b>s</b> sync · <b>/</b> filtrar · <b>⌃P</b> comandos · <b>?</b> ayuda</span>';
+    tui.innerHTML = `
+      <div class="tb">
+        <div class="seg"><small>Repositorio actual</small>◇ iGit<span style="float:right">▾</span></div>
+        <div class="seg"><small>Rama actual</small>⎇ main<span style="float:right">▾</span></div>
+        <div class="seg ${S.busy ? 'busy' : ''}"><small>${S.busy ? 'Subiendo a origin…' : S.sync.sub}</small>${S.busy ? `<span class="spin">${SPIN[S.spin % SPIN.length]}</span> Push origin` : `${S.sync.icon} ${S.sync.title}`}</div>
+      </div>
+      <div class="tabs"><span class="on">Cambios ${S.files.length}</span><span>Historial</span></div>
+      <div class="main">
+        <div class="left">
+          <div class="row hdr">⌕ Filtrar…</div>
+          <div class="row hdr"><span class="check">${all}</span> ${S.files.length} archivos cambiados</div>
+          <div class="files">${rows}</div>
+          <div class="commit">
+            <div class="summary ${S.typing ? 'typing' : ''}">${S.summary ? escapeHTML(middle(S.summary, 26)) + (S.typing ? '<span class="tcaret">▍</span>' : '') : '◔ Resumen (obligatorio)'}</div>
+            <div class="desc">Descripción</div>
+            <div class="commit-btn ${S.ready ? 'ready' : ''} ${S.press ? 'press' : ''}">${btnLabel}</div>
+          </div>
+        </div>
+        <div class="right">
+          <div class="diffhead"><span>${f ? escapeHTML(f.path) : ''}</span><span class="st"><span class="c-add">${f ? f.stats.split(' ')[0] : ''}</span> <span class="c-del">${f ? f.stats.split(' ')[1] : ''}</span></span></div>
+          <div class="diff">${diff}</div>
+        </div>
+      </div>
+      <div class="hints">${hints}<span>main · ${S.files.length} cambios</span></div>
+      <div class="ttoast ${S.toast ? 'on' : ''}">${S.toast}</div>`.replace(/>\s*\n\s*</g, '><').trim();
+  }
+
+  function cast(k, label) {
+    const el = document.createElement('span');
+    el.innerHTML = `${escapeHTML(k)}${label ? `<em>${escapeHTML(label)}</em>` : ''}`;
+    keycast.appendChild(el);
+    setTimeout(() => el.remove(), 1400);
+    while (keycast.children.length > 3) keycast.firstChild.remove();
+  }
+
+  // La demo solo corre mientras se ve (0 % de CPU fuera de pantalla, como iGit).
+  const tuiVisible = whileVisible(tui);
+  const twait = async ms => {
+    await sleep(ms);
+    while (!tuiVisible() || document.hidden) await sleep(250);
+  };
+  const press = async (k, label, fn, ms = 650) => {
+    cast(k, label);
+    if (fn) fn();
+    renderTui();
+    await twait(ms);
+  };
+
+  async function runTui() {
+    for (;;) {
+      S = freshState();
+      fitTui();
+      renderTui();
+      await twait(1400);
+      await press('↓', '', () => (S.sel = 1));
+      await press('↓', '', () => (S.sel = 2));
+      await press('↓', '', () => (S.sel = 3), 500);
+      await press('Space', 'excluir', () => (S.files[3].included = false), 900);
+      await press('Home', '', () => (S.sel = 0), 700);
+      await press('⏎', 'al diff', () => { S.focus = 'diff'; S.cursor = 1; }, 500);
+      for (const c of [2, 3, 4, 5]) await press('↓', '', () => (S.cursor = c), 280);
+      await press('Space', 'quitar línea', () => S.files[0].off.add(5), 1000);
+      await press('c', 'mensaje', () => { S.focus = 'summary'; S.typing = true; }, 400);
+      for (const ch of 'Atajos configurables con keymap.json') {
+        S.summary += ch;
+        S.ready = true;
+        renderTui();
+        await twait(38 + Math.random() * 40);
       }
+      await twait(500);
+      await press('⌃S', 'commit', () => (S.press = true), 220);
+      S.press = false; S.typing = false; S.focus = 'files';
+      // Lo incluido se va; quedan la línea que no entró, el ADR excluido y Notas.md
+      const kept = S.files.filter((x, i) => !x.included || x.off.size > 0 || i === 4);
+      S.files = kept.map(x => x.path.endsWith('Keymap.swift')
+        ? { ...x, included: true, off: new Set(), stats: '+1 −0', diff: [['hunk', '', '', '@@ -15,0 +15,1 @@'], ['add', '', 15, '        print("debug keymap")']] }
+        : x);
+      S.sel = 0; S.summary = ''; S.ready = false;
+      S.sync = { icon: '↑', title: 'Push origin', sub: '2 commits por subir' };
+      S.toast = '✓ Commit: «Atajos configurables con keymap.json»';
+      renderTui();
+      await twait(2200);
+      S.toast = '';
+      await press('s', 'sincronizar', () => (S.busy = true), 120);
+      for (let i = 0; i < 16; i++) { S.spin++; renderTui(); await sleep(90); }
+      S.busy = false;
+      S.sync = { icon: '↻', title: 'Fetch origin', sub: 'hace un momento' };
+      S.toast = '✓ Push hecho · GitHub CI ●';
+      renderTui();
+      await twait(2600);
+      S.toast = '';
+      renderTui();
+      await twait(1200);
+      tui.style.transition = 'opacity .5s';
+      tui.style.opacity = '0';
+      await sleep(550);
+      tui.style.opacity = '1';
     }
   }
 
   if (reduceMotion) {
-    renderTerm(termScript.map(s => s.cmd !== undefined ? (s.prompt || '<span class="p">❯</span> ') + escapeHTML(s.cmd) : s.out), false);
+    S = freshState();
+    fitTui();
+    renderTui();
   } else {
-    runTerminal(whileVisible(term));
+    runTui();
   }
 
   /* ── iSpecter: live spectrogram ─────────────────────── */
