@@ -17,7 +17,8 @@ function copyDir(src, dest) {
       entry.name === 'node_modules' ||
       entry.name === '.git' ||
       entry.name === 'dist' ||
-      entry.name === '.github'
+      entry.name === '.github' ||
+      entry.name === 'tools' // dev-only: SEO script and share-image generator
     ) {
       continue;
     }
