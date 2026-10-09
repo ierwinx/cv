@@ -258,7 +258,7 @@ OLD_TAGS_RE = re.compile(
 def build_block(rel, text):
     if is_private(rel):
         return ('<!-- seo:start · generado por tools/seo.py -->\n'
-                '<meta name="robots" content="noindex, nofollow, noarchive">\n'
+                '<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">\n'
                 '<!-- seo:end -->')
 
     title, description, image, og_type, graph, _ = page_meta(rel, text)
