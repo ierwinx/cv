@@ -100,7 +100,7 @@
             description: "Transforms FLAC, WAV, and AIFF files to high-quality AAC using Apple's native encoder. No external dependencies, fast and parallel.",
             tags: ["Swift", "macOS"],
             emoji: "🎵",
-            url: "/musica/"
+            url: "/iconverter/"
           },
           {
             name: "Encuentro Católico",
@@ -358,7 +358,7 @@
             description: "Transforma archivos FLAC, WAV y AIFF a AAC de alta calidad usando el encoder nativo de Apple. Sin dependencias externas, rápido y paralelo.",
             tags: ["Swift", "macOS"],
             emoji: "🎵",
-            url: "/musica/"
+            url: "/iconverter/"
           },
           {
             name: "Encuentro Católico",

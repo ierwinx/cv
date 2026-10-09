@@ -33,6 +33,11 @@ SKIP_DIRS = {'.git', '.github', 'node_modules', 'dist', 'tools', 'memory'}
 PRIVATE_DIR = 'CV'   # oculto en buscadores (noindex + fuera del sitemap)
 
 
+# Rutas viejas que solo redirigen a la nueva (GitHub Pages no tiene 301):
+# no se tocan ni van al sitemap; llevan su propio canonical y noindex.
+REDIRECTS = {'musica/index.html': '/iconverter/'}
+
+
 def is_private(rel):
     # macOS no distingue mayúsculas; GitHub Pages sí. Comparamos sin importar mayúsculas.
     return rel.lower().startswith(PRIVATE_DIR.lower() + '/')
@@ -82,9 +87,9 @@ APPS = {
         name='iSpecter', image='ispecter.jpg', category='MultimediaApplication', os='macOS 26',
         version='1.0', size='12 MB', download='/ispecter/downloads/iSpecter.dmg', free=True,
     ),
-    'musica/index.html': dict(
+    'iconverter/index.html': dict(
         name='iConverter', image='iconverter.jpg', category='MultimediaApplication', os='macOS 15',
-        download='/musica/downloads/iConverter.dmg', free=True,
+        download='/iconverter/downloads/iConverter.dmg', free=True,
     ),
 }
 
@@ -383,7 +388,7 @@ def write_robots():
 
 
 def main():
-    pages = html_pages()
+    pages = [p for p in html_pages() if p not in REDIRECTS]
     changed = sum(process(rel) for rel in pages)
     count = write_sitemap(pages)
     write_robots()
