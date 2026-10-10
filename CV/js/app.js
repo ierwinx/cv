@@ -63,6 +63,14 @@
             url: "/igit/"
           },
           {
+            name: "iTunes",
+            role: "Author & macOS Developer",
+            description: "Music player that runs entirely in the terminal, with the soul of classic iTunes: FLAC, ALAC, AIFF, MP3 and more, album art drawn in pixels, a 10-band equalizer, a tag editor and lyrics — all without leaving the keyboard. Signed and notarized by Apple.",
+            tags: ["Swift", "macOS", "CLI"],
+            emoji: "🎧",
+            url: "/itunes/"
+          },
+          {
             name: "Banco Azteca",
             role: "iOS Developer Sr",
             description: "Core banking mobile app serving 10M+ users across Latin America. Lets customers check balances and movements, make SPEI transfers, pay bills, top up phones, manage and lock their cards, and apply for loans — all from their phone. Contributed to the development of new features for iOS, with a focus on security, performance and stability at massive scale.",
@@ -319,6 +327,14 @@
             tags: ["Swift", "macOS", "Git", "CLI"],
             emoji: "⌨️",
             url: "/igit/"
+          },
+          {
+            name: "iTunes",
+            role: "Autor & Desarrollador macOS",
+            description: "Reproductor de música 100 % terminal con alma de iTunes clásico: FLAC, ALAC, AIFF, MP3 y más, carátulas pintadas con píxeles, ecualizador de 10 bandas, editor de tags y letras — todo sin soltar el teclado. Firmado y notarizado por Apple.",
+            tags: ["Swift", "macOS", "CLI"],
+            emoji: "🎧",
+            url: "/itunes/"
           },
           {
             name: "Banco Azteca",
