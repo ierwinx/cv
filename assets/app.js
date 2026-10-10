@@ -49,9 +49,26 @@
   const dd = $('.dd');
   $$('.dd-panel a', dd).forEach(link => link.addEventListener('click', () => {
     link.blur();
+    dd.classList.remove('open');
     dd.classList.add('closing');
     setTimeout(() => dd.classList.remove('closing'), 600);
   }));
+
+  // Phones have no hover: the trigger toggles the panel instead of jumping to #suite
+  const phone = window.matchMedia('(max-width: 680px)');
+  const ddTrigger = $('.dd-trigger', dd);
+  ddTrigger.setAttribute('aria-expanded', 'false');
+  ddTrigger.addEventListener('click', e => {
+    if (!phone.matches) return;
+    e.preventDefault();
+    ddTrigger.setAttribute('aria-expanded', String(dd.classList.toggle('open')));
+  });
+  document.addEventListener('click', e => {
+    if (dd.classList.contains('open') && !dd.contains(e.target)) {
+      dd.classList.remove('open');
+      ddTrigger.setAttribute('aria-expanded', 'false');
+    }
+  });
 
   /* ── Cursor spotlight + hero orbit parallax ─────────── */
 
