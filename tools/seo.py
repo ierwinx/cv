@@ -97,9 +97,15 @@ APPS = {
         name='iCSV', image='icsv.jpg', category='DeveloperApplication', os='macOS 26',
         version='1.0', size='2.5 MB', download='/icsv/iCSV-1.0.dmg', free=True,
     ),
+    'ixml/index.html': dict(
+        name='iXML', image='ixml.jpg', category='DeveloperApplication', os='macOS 27',
+        version='1.0', size='2.5 MB', download='/ixml/iXML-1.0.dmg', free=False,
+        title='iXML — Editor de XML nativo para Mac',
+        description='iXML: editor de XML nativo para macOS. Texto, árbol visual y modo dividido; abre 10 MB en 230 ms y guarda tu archivo intacto, byte a byte.',
+    ),
 }
 
-HOME_DESCRIPTION = ('ierwinx es el estudio de software de Erwin: iPlist, iJson, iCSV, Super Pets, iRar, '
+HOME_DESCRIPTION = ('ierwinx es el estudio de software de Erwin: iPlist, iJson, iCSV, iXML, Super Pets, iRar, '
                     'iGit, iTunes, iSpecter e iConverter. Apps nativas para Mac, iPhone, iPad, Apple Watch, '
                     'CarPlay y la terminal, más un curso de Python gratis.')
 

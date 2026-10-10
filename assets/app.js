@@ -186,7 +186,7 @@
     });
   }
 
-  /* ── Nuevas: tabs for iPlist · iJson · iCSV ─────────── */
+  /* ── Nuevas: tabs for iPlist · iJson · iCSV · iXML ──── */
 
   const trio = $('#nuevas');
   const tabList = $('.tabs', trio);
@@ -250,7 +250,7 @@
     $(`.tab[data-tab="${next}"]`, tabList).focus();
   });
 
-  // Links to #iplist / #ijson / #icsv (menu, bento, dock) open the right tab.
+  // Links to #iplist / #ijson / #icsv / #ixml (menu, bento, dock) open the right tab.
   function openTabFromHash(name, smooth) {
     activateTab(name, true);
     trio.scrollIntoView({ behavior: smooth && !reduceMotion ? 'smooth' : 'auto' });
@@ -480,14 +480,82 @@
     }
   }
 
+  /* iXML: split view, tree and text in sync, plus ⇥ expansion */
+
+  const xmlTree = $('#xmlTree');
+  const xmlCode = $('#xmlCode');
+  const xmlFoot = $('#xmlFoot');
+  const xmlState = $('#xmlState');
+  const tag = t => s('xv-t', t);
+  const attr = (k, v) => `${s('xv-a', k)}${s('xv-p', '=')}${s('xv-v', `"${v}"`)}`;
+  const xmlLines = [
+    `${s('xv-p', '<?')}${s('xv-t', 'xml')} ${attr('version', '1.0')}${s('xv-p', '?>')}`,
+    tag('<biblioteca>'),
+    `  ${s('xv-c', '<!-- Clásicos -->')}`,
+    `  ${tag('<libro')} ${attr('id', '1')}${tag('>')}`,
+    `    ${tag('<titulo>')}Cien años de soledad${tag('</titulo>')}`,
+    `    ${tag('<autor>')}García Márquez${tag('</autor>')}`,
+    `    ${tag('<año>')}1967${tag('</año>')}`,
+    `  ${tag('</libro>')}`
+  ];
+  const xmlClose = tag('</biblioteca>');
+  const xmlTyped = 'libro[id=2 idioma]';
+  const xmlExpanded = `  ${tag('<libro')} ${attr('id', '2')} ${s('xv-a', 'idioma')}${s('xv-p', '=')}${s('xv-v', '"')}<span class="caret"></span>${s('xv-v', '"')}${tag('></libro>')}`;
+  const xmlNodes = [
+    { name: 'biblioteca', color: '#b9a8ff', lvl: 0, line: 1 },
+    { name: 'libro', color: '#ff9be9', lvl: 1, line: 3, at: 'id="1"' },
+    { name: 'titulo', color: '#8fe9ff', lvl: 2, line: 4 },
+    { name: 'autor', color: '#7dffc4', lvl: 2, line: 5 },
+    { name: 'año', color: '#ffd98a', lvl: 2, line: 6 }
+  ];
+  const xmlNewNode = { name: 'libro', color: '#ff9be9', lvl: 1, line: 8, at: 'id="2" idioma=""', fresh: true };
+
+  function renderXml(extra, nodes, sel = -1) {
+    const lines = extra === null ? [...xmlLines, xmlClose] : [...xmlLines, extra, xmlClose];
+    const selLine = sel >= 0 ? nodes[sel].line : -1;
+    xmlCode.innerHTML = lines.map((l, i) =>
+      `<span class="${i === selLine ? 'sel' : ''}"><span class="ln">${i + 1}</span>${l}</span>`).join('');
+    xmlTree.innerHTML = nodes.map((n, i) => `
+      <li class="${[i === sel ? 'sel' : '', n.fresh ? 'new' : ''].join(' ').trim()}" style="--lvl:${n.lvl}">
+        <span class="ic" style="background:${n.color}">${n.name[0].toUpperCase()}</span><span>${n.name}</span>${n.at ? `<span class="at">${escapeHTML(n.at)}</span>` : ''}
+      </li>`).join('');
+  }
+
+  async function runXml(isRunning) {
+    while (true) {
+      xmlState.textContent = 'Abierto';
+      xmlFoot.textContent = 'Árbol y texto, sincronizados';
+      renderXml(null, xmlNodes);
+      await waitWhile(isRunning, 900);
+      for (let i = 0; i < xmlNodes.length; i++) { renderXml(null, xmlNodes, i); await waitWhile(isRunning, 520); }
+
+      xmlState.textContent = 'Editado';
+      xmlFoot.textContent = 'Escribe la abreviatura…';
+      for (let i = 0; i <= xmlTyped.length; i++) {
+        renderXml(`  ${s('xv-g', xmlTyped.slice(0, i))}<span class="caret"></span>`, xmlNodes);
+        await waitWhile(isRunning, 85);
+      }
+      renderXml(`  ${s('xv-g', xmlTyped)}<span class="caret"></span><span class="kc">⇥ Tab</span>`, xmlNodes);
+      await waitWhile(isRunning, 700);
+      const nodes = [...xmlNodes, xmlNewNode];
+      xmlFoot.textContent = '…y la etiqueta se cierra sola';
+      renderXml(xmlExpanded, nodes, nodes.length - 1);
+      await waitWhile(isRunning, 2600);
+      xmlFoot.textContent = '⌘Z deshace la expansión de una vez';
+      await waitWhile(isRunning, 1600);
+    }
+  }
+
   if (reduceMotion) {
     renderPlist(plistData, -1);
     renderJsonTree(jsonBase, -1);
     renderCsv(1);
+    renderXml(xmlExpanded, [...xmlNodes, xmlNewNode]);
   } else {
     runPlist(panelRunning('iplist'));
     runJson(panelRunning('ijson'));
     runCsv(panelRunning('icsv'));
+    runXml(panelRunning('ixml'));
   }
 
   /* ── iRar: formats orbiting the icon ────────────────── */
