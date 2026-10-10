@@ -54,22 +54,6 @@ BRAND = {
 
 # Apps: datos tomados de la página de cada una. `free` solo donde la página lo dice.
 APPS = {
-    'iplist/index.html': dict(
-        name='iPlist', image='iplist.jpg', category='DeveloperApplication', os='macOS 27',
-        version='1.0', size='1.8 MB', download='/iplist/iPlist-1.0.dmg', free=False,
-        title='iPlist — Editor de Plist nativo para Mac',
-        description='Editor de Plist nativo para macOS. Abre, crea y edita property lists al instante, sin perder orden, tipos ni formato. XML, binario y OpenStep.',
-    ),
-    'ijson/index.html': dict(
-        name='iJson', image='ijson.jpg', category='DeveloperApplication', os='macOS 27',
-        version='1.0', size='2.4 MB', download='/ijson/iJson-1.0.dmg', free=False,
-        title='iJson — Editor de JSON nativo para Mac',
-        description='iJson: editor de JSON nativo para macOS. Árbol y texto, archivos de 100 MB en 0,42 s y tu formato original intacto, byte a byte.',
-    ),
-    'icsv/index.html': dict(
-        name='iCSV', image='icsv.jpg', category='DeveloperApplication', os='macOS 26',
-        version='1.0', size='2.5 MB', download='/icsv/iCSV-1.0.dmg', free=True,
-    ),
     'superpets/index.html': dict(
         name='Super Pets', image='superpets.jpg', category='LifestyleApplication',
         os='iOS, iPadOS, macOS, watchOS', version='1.3', free=True,
@@ -96,6 +80,22 @@ APPS = {
     'iconverter/index.html': dict(
         name='iConverter', image='iconverter.jpg', category='MultimediaApplication', os='macOS 15',
         download='/iconverter/downloads/iConverter.dmg', free=True,
+    ),
+    'iplist/index.html': dict(
+        name='iPlist', image='iplist.jpg', category='DeveloperApplication', os='macOS 27',
+        version='1.0', size='1.8 MB', download='/iplist/iPlist-1.0.dmg', free=False,
+        title='iPlist — Editor de Plist nativo para Mac',
+        description='Editor de Plist nativo para macOS. Abre, crea y edita property lists al instante, sin perder orden, tipos ni formato. XML, binario y OpenStep.',
+    ),
+    'ijson/index.html': dict(
+        name='iJson', image='ijson.jpg', category='DeveloperApplication', os='macOS 27',
+        version='1.0', size='2.4 MB', download='/ijson/iJson-1.0.dmg', free=False,
+        title='iJson — Editor de JSON nativo para Mac',
+        description='iJson: editor de JSON nativo para macOS. Árbol y texto, archivos de 100 MB en 0,42 s y tu formato original intacto, byte a byte.',
+    ),
+    'icsv/index.html': dict(
+        name='iCSV', image='icsv.jpg', category='DeveloperApplication', os='macOS 26',
+        version='1.0', size='2.5 MB', download='/icsv/iCSV-1.0.dmg', free=True,
     ),
 }
 
