@@ -83,6 +83,12 @@ APPS = {
         name='iGit', image='igit.jpg', category='DeveloperApplication', os='macOS 15',
         version='1.0.0', download='/igit/downloads/iGit-1.0.0.pkg', free=True,
     ),
+    'itunes/index.html': dict(
+        name='iTunes', image='itunes.jpg', category='MultimediaApplication', os='macOS 27',
+        version='1.0.0', size='730 KB', download='/itunes/downloads/itunes-1.0.0-macos-arm64.pkg', free=False,
+        title='iTunes — Reproductor de música para la terminal en Mac',
+        description='Reproductor de música 100 % terminal para macOS con alma de iTunes clásico: FLAC, ALAC, AIFF y MP3, ecualizador de 10 bandas, editor de tags, letras y carátulas.',
+    ),
     'ispecter/index.html': dict(
         name='iSpecter', image='ispecter.jpg', category='MultimediaApplication', os='macOS 26',
         version='1.0', size='12 MB', download='/ispecter/downloads/iSpecter.dmg', free=True,
@@ -94,7 +100,7 @@ APPS = {
 }
 
 HOME_DESCRIPTION = ('ierwinx es el estudio de software de Erwin: iPlist, iJson, iCSV, Super Pets, iRar, '
-                    'iGit, iSpecter e iConverter. Apps nativas para Mac, iPhone, iPad, Apple Watch, '
+                    'iGit, iTunes, iSpecter e iConverter. Apps nativas para Mac, iPhone, iPad, Apple Watch, '
                     'CarPlay y la terminal, más un curso de Python gratis.')
 
 # Reference used inside other entities: self-contained, so each page stands on its own.
