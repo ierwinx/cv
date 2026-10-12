@@ -849,7 +849,7 @@
     }
     animateTrail();
 
-    const hoverables = 'a, button, .cert-item, .project-card, .topbar-btn, .ref-toggle, .social-link, .download-btn, .form-submit';
+    const hoverables = 'a, button, .cert-item, .project-card, .topbar-btn, .ref-toggle, .social-link, .form-submit';
     document.querySelectorAll(hoverables).forEach(el => {
       el.addEventListener('mouseenter', () => {
         cursor.classList.add('custom-cursor--hover');
