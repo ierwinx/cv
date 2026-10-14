@@ -62,7 +62,7 @@ APPS = {
     'ilegato/index.html': dict(
         name='iLegato', image='ilegato.jpg', category='MultimediaApplication', os='iOS 27, iPadOS 27',
         version='1.0.0',
-        install='https://apps.apple.com/app/ilegato/id6822105958',
+        install='https://apps.apple.com/app/ilegato/id6822105958', free=True,
         title='iLegato — Música sin pérdida para iPhone, iPad y CarPlay',
         description='Reproductor para tu propia música en iPhone y iPad: FLAC y ALAC sin pérdida, Hi-Res, ecualizador, CarPlay, Siri y Google Cast. Sin suscripciones.',
     ),
