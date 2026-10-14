@@ -59,6 +59,13 @@ APPS = {
         os='iOS, iPadOS, macOS, watchOS', version='1.3', free=True,
         install='https://apps.apple.com/app/super-pets/id6787278041',
     ),
+    'ilegato/index.html': dict(
+        name='iLegato', image='ilegato.jpg', category='MultimediaApplication', os='iOS 27, iPadOS 27',
+        version='1.0.0',
+        install='https://apps.apple.com/app/ilegato/id6822105958',
+        title='iLegato — Música sin pérdida para iPhone, iPad y CarPlay',
+        description='Reproductor para tu propia música en iPhone y iPad: FLAC y ALAC sin pérdida, Hi-Res, ecualizador, CarPlay, Siri y Google Cast. Sin suscripciones.',
+    ),
     'irar/index.html': dict(
         name='iRar', image='irar.jpg', category='UtilitiesApplication', os='macOS 26',
         version='1.0', download='/irar/downloads/iRar-1.0.dmg', free=True,
@@ -105,7 +112,7 @@ APPS = {
     ),
 }
 
-HOME_DESCRIPTION = ('ierwinx es el estudio de software de Erwin: iPlist, iJson, iCSV, iXML, Super Pets, iRar, '
+HOME_DESCRIPTION = ('ierwinx es el estudio de software de Erwin: iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iRar, '
                     'iGit, iTunes, iSpecter e iConverter. Apps nativas para Mac, iPhone, iPad, Apple Watch, '
                     'CarPlay y la terminal, más un curso de Python gratis.')
 
@@ -212,9 +219,12 @@ def page_meta(rel, text):
         description = app.get('description', description)
         return title, description, app['image'], 'website', app_jsonld(rel, app, description, url), app.get('description')
 
-    if rel.startswith('superpets/'):
-        crumbs = [('ierwinx', SITE + '/'), ('Super Pets', SITE + '/superpets/'), (title.split(' — ')[0], url)]
-        return title, description, 'superpets.jpg', 'website', [breadcrumb(crumbs)], None
+    # Páginas dentro de una app (privacidad, soporte, términos…): miga de pan bajo la app.
+    app = APPS.get(rel.split('/')[0] + '/index.html')
+    if app and '/' in rel:
+        crumbs = [('ierwinx', SITE + '/'), (app['name'], url_for(rel.split('/')[0] + '/index.html')),
+                  (title.split(' — ')[0], url)]
+        return title, description, app['image'], 'website', [breadcrumb(crumbs)], None
 
     if rel == 'python/index.html':
         course = {
