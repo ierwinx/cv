@@ -7,9 +7,13 @@ Uso:
 
 Sirve la raíz del repo (así funcionan las rutas absolutas como /itunes/ o /CV/),
 desactiva la caché para ver los cambios al recargar y abre el navegador.
+
+Escucha solo en este equipo, en IPv4 (127.0.0.1) y en IPv6 (::1): en macOS "localhost"
+también resuelve a ::1 y Safari no reintenta por IPv4 si esa dirección no responde.
 """
 import functools
 import http.server
+import socket
 import socketserver
 import sys
 import threading
@@ -31,16 +35,29 @@ class Server(socketserver.ThreadingTCPServer):
     daemon_threads = True
 
 
+class Server6(Server):
+    address_family = socket.AF_INET6
+
+
 def main():
     handler = functools.partial(Handler, directory=str(ROOT))
     with Server(("127.0.0.1", PORT), handler) as httpd:
-        url = f"http://localhost:{PORT}/"
-        print(f"Sirviendo {ROOT} en {url}  (Ctrl+C para detener)")
+        try:
+            ipv6 = Server6(("::1", PORT), handler)
+            threading.Thread(target=ipv6.serve_forever, daemon=True).start()
+        except OSError:
+            ipv6 = None  # sin IPv6 en este equipo: basta con 127.0.0.1
+        url = f"http://127.0.0.1:{PORT}/"
+        print(f"Sirviendo {ROOT} en {url} (también http://localhost:{PORT}/)  (Ctrl+C para detener)")
         threading.Timer(0.5, webbrowser.open, args=(url,)).start()
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
             print("\nServidor detenido.")
+        finally:
+            if ipv6:
+                ipv6.shutdown()
+                ipv6.server_close()
 
 
 if __name__ == "__main__":
