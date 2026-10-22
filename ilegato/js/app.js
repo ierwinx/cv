@@ -363,6 +363,17 @@ if (fine && !reduced) {
   sync();
 })();
 
+// ───────── Auto: CarPlay | Android Auto ─────────
+(() => {
+  const car = $('#car');
+  if (!car) return;
+  const tabs = $$('[data-car]', car);
+  tabs.forEach(tab => tab.addEventListener('click', () => {
+    tabs.forEach(t => { t.classList.toggle('on', t === tab); t.setAttribute('aria-selected', t === tab); });
+    $$('[data-screen]', car).forEach(sc => sc.classList.toggle('on', sc.dataset.screen === tab.dataset.car));
+  }));
+})();
+
 // ───────── Marca de onda que fluye (como el WaveMark de la app) ─────────
 (() => {
   const wave = $('#wavePath');
