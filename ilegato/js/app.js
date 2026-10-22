@@ -3,6 +3,8 @@
 
 // Cuando la app esté publicada, pon aquí su enlace del App Store y todos los botones lo usarán.
 const APP_STORE_URL = 'https://apps.apple.com/app/ilegato/id6822105958';
+// Igual para Google Play: todos los botones con data-play usan este enlace.
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.ierwinx.ilegato';
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fine = matchMedia('(pointer: fine)').matches;
@@ -14,6 +16,12 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 if (APP_STORE_URL) {
   $$('[data-appstore]').forEach(a => { a.href = APP_STORE_URL; a.target = '_blank'; a.rel = 'noopener'; });
   $$('[data-appstore-label]').forEach(s => { s.textContent = 'Descargar en el App Store'; });
+}
+
+// ───────── Google Play ─────────
+if (PLAY_STORE_URL) {
+  $$('[data-play]').forEach(a => { a.href = PLAY_STORE_URL; a.target = '_blank'; a.rel = 'noopener'; });
+  $$('[data-play-label]').forEach(s => { s.textContent = 'Disponible en Google Play'; });
 }
 
 // ───────── Aurora: manchas de color que derivan y siguen un poco al cursor ─────────
@@ -313,7 +321,7 @@ if (fine && !reduced) {
 
 // ───────── iPad: se endereza al hacer scroll ─────────
 (() => {
-  const ipad = $('#ipad');
+  const ipad = $('#ipadDevice');
   if (!ipad || reduced) return;
   let queued = false;
   const update = () => {
@@ -324,6 +332,35 @@ if (fine && !reduced) {
   };
   addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
   update();
+})();
+
+// ───────── iPad: las pantallas rotan solas; tocar el iPad o un segmento cambia ─────────
+// El tiempo lo lleva la animación del segmento activo (CSS): al terminar, avanza. Fuera de pantalla se pausa.
+(() => {
+  const ipad = $('#ipadDevice');
+  const dots = $('#ipadDots');
+  if (!ipad || !dots) return;
+  const shots = $$('.ipad-screens img', ipad);
+  const buttons = $$('button', dots);
+  let current = 0;
+  const show = i => {
+    current = (i + shots.length) % shots.length;
+    shots.forEach((img, n) => img.classList.toggle('on', n === current));
+    buttons.forEach((b, n) => {
+      b.classList.toggle('on', n === current);
+      if (n === current) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
+  };
+  if (reduced) dots.classList.add('still'); // sin avance automático: solo al tocar
+  dots.addEventListener('animationend', () => show(current + 1));
+  ipad.addEventListener('click', () => show(current + 1));
+  ipad.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(current + 1); } });
+  buttons.forEach((b, n) => b.addEventListener('click', () => show(n)));
+  let visible = false;
+  const sync = () => dots.classList.toggle('paused', !visible || document.hidden);
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }, { threshold: .35 }).observe(ipad);
+  document.addEventListener('visibilitychange', sync);
+  sync();
 })();
 
 // ───────── Marca de onda que fluye (como el WaveMark de la app) ─────────
