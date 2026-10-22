@@ -60,11 +60,12 @@ APPS = {
         install='https://apps.apple.com/app/super-pets/id6787278041',
     ),
     'ilegato/index.html': dict(
-        name='iLegato', image='ilegato.jpg', category='MultimediaApplication', os='iOS 27, iPadOS 27',
+        name='iLegato', image='ilegato.jpg', category='MultimediaApplication', os='iOS 27, iPadOS 27, Android 15',
         version='1.0.0',
         install='https://apps.apple.com/app/ilegato/id6822105958', free=True,
-        title='iLegato — Música sin pérdida para iPhone, iPad y CarPlay',
-        description='Reproductor para tu propia música en iPhone y iPad: FLAC y ALAC sin pérdida, Hi-Res, ecualizador, CarPlay, Siri y Google Cast. Sin suscripciones.',
+        also=['https://play.google.com/store/apps/details?id=com.ierwinx.ilegato'],
+        title='iLegato — Música sin pérdida para iPhone, iPad y Android',
+        description='Reproductor para tu propia música en iPhone, iPad y Android: FLAC y ALAC sin pérdida, Hi-Res, ecualizador, CarPlay, Android Auto, AirPlay y Google Cast. Sin suscripciones.',
     ),
     'irar/index.html': dict(
         name='iRar', image='irar.jpg', category='UtilitiesApplication', os='macOS 26',
@@ -114,7 +115,7 @@ APPS = {
 
 HOME_DESCRIPTION = ('ierwinx es el estudio de software de Erwin: iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iRar, '
                     'iGit, iTunes, iSpecter e iConverter. Apps nativas para Mac, iPhone, iPad, Apple Watch, '
-                    'CarPlay y la terminal, más un curso de Python gratis.')
+                    'CarPlay, Android y la terminal, más un curso de Python gratis.')
 
 # Reference used inside other entities: self-contained, so each page stands on its own.
 ORG_REF = {'@type': 'Organization', '@id': SITE + '/#organization', 'name': 'ierwinx', 'url': SITE + '/'}
@@ -180,7 +181,7 @@ def app_jsonld(rel, app, description, url):
         data['downloadUrl'] = SITE + app['download']
     if app.get('install'):
         data['installUrl'] = app['install']
-        data['sameAs'] = [app['install']]
+        data['sameAs'] = [app['install']] + app.get('also', [])
     if app.get('free'):
         data['offers'] = {'@type': 'Offer', 'price': '0', 'priceCurrency': 'USD'}
     return [data, breadcrumb([('ierwinx', SITE + '/'), (app['name'], url)])]
