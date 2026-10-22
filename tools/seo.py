@@ -59,6 +59,16 @@ APPS = {
         os='iOS, iPadOS, macOS, watchOS', version='1.3', free=True,
         install='https://apps.apple.com/app/super-pets/id6787278041',
     ),
+    'irar/index.html': dict(
+        name='iRar', image='irar.jpg', category='UtilitiesApplication', os='macOS 26',
+        version='1.0', download='/irar/downloads/iRar-1.0.dmg', free=True,
+    ),
+    'ibridge/index.html': dict(
+        name='iBridge', image='ibridge.jpg', category='UtilitiesApplication', os='macOS 27',
+        version='1.0', size='11.6 MB', download='/ibridge/iBridge-1.0.dmg', free=False,
+        title='iBridge — Tu iPhone y tu Android, en tu Mac',
+        description='iBridge: explora, copia, mueve y borra fotos y archivos de tu iPhone, iPad y Android desde el Mac, tan fácil como el Finder. Arrastra al Finder, sin cuentas ni nube.',
+    ),
     'ilegato/index.html': dict(
         name='iLegato', image='ilegato.jpg', category='MultimediaApplication', os='iOS 27, iPadOS 27, Android 15',
         version='1.0.0',
@@ -66,10 +76,6 @@ APPS = {
         also=['https://play.google.com/store/apps/details?id=com.ierwinx.ilegato'],
         title='iLegato — Música sin pérdida para iPhone, iPad y Android',
         description='Reproductor para tu propia música en iPhone, iPad y Android: FLAC y ALAC sin pérdida, Hi-Res, ecualizador, CarPlay, Android Auto, AirPlay y Google Cast. Sin suscripciones.',
-    ),
-    'irar/index.html': dict(
-        name='iRar', image='irar.jpg', category='UtilitiesApplication', os='macOS 26',
-        version='1.0', download='/irar/downloads/iRar-1.0.dmg', free=True,
     ),
     'igit/index.html': dict(
         name='iGit', image='igit.jpg', category='DeveloperApplication', os='macOS 15',
@@ -113,7 +119,7 @@ APPS = {
     ),
 }
 
-HOME_DESCRIPTION = ('ierwinx es el estudio de software de Erwin: iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iRar, '
+HOME_DESCRIPTION = ('ierwinx es el estudio de software de Erwin: iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iRar, '
                     'iGit, iTunes, iSpecter e iConverter. Apps nativas para Mac, iPhone, iPad, Apple Watch, '
                     'CarPlay, Android y la terminal, más un curso de Python gratis.')
 

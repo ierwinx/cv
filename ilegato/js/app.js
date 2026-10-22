@@ -4,7 +4,9 @@
 // Cuando la app esté publicada, pon aquí su enlace del App Store y todos los botones lo usarán.
 const APP_STORE_URL = 'https://apps.apple.com/app/ilegato/id6822105958';
 // Igual para Google Play: todos los botones con data-play usan este enlace.
-const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.ierwinx.ilegato';
+// Vacío mientras no esté publicada: los botones se quedan en «Próximamente en Google Play».
+// Enlace: https://play.google.com/store/apps/details?id=com.ierwinx.ilegato
+const PLAY_STORE_URL = '';
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fine = matchMedia('(pointer: fine)').matches;
@@ -20,7 +22,10 @@ if (APP_STORE_URL) {
 
 // ───────── Google Play ─────────
 if (PLAY_STORE_URL) {
-  $$('[data-play]').forEach(a => { a.href = PLAY_STORE_URL; a.target = '_blank'; a.rel = 'noopener'; });
+  $$('[data-play]').forEach(a => {
+    a.href = PLAY_STORE_URL; a.target = '_blank'; a.rel = 'noopener';
+    a.classList.remove('btn-soon'); a.classList.add('magnetic'); a.removeAttribute('aria-disabled');
+  });
   $$('[data-play-label]').forEach(s => { s.textContent = 'Disponible en Google Play'; });
 }
 
