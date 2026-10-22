@@ -1173,14 +1173,16 @@
 
   /* ── Super Pets: screenshot carousel ────────────────── */
 
-  const shots = $$('#phoneScreen img');
   if (!reduceMotion) {
-    let s = 0;
-    setInterval(() => {
-      shots[s].classList.remove('on');
-      s = (s + 1) % shots.length;
-      shots[s].classList.add('on');
-    }, 3200);
+    $$('.phone-screen').forEach(screen => {
+      const shots = $$('img', screen);
+      let s = 0;
+      setInterval(() => {
+        shots[s].classList.remove('on');
+        s = (s + 1) % shots.length;
+        shots[s].classList.add('on');
+      }, 3200);
+    });
   }
 
   /* ── Academia: typed Python ─────────────────────────── */

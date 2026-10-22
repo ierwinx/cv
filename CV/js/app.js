@@ -215,6 +215,7 @@
         certifications: "Courses",
         certificateAlt: "Certificate",
         certs: [
+          { year: "2026", name: "iOS 13 App Design with SwiftUI from Scratch", institution: "Udemy", pdf: "swiftui" },
           { year: "2020", name: "iOS 12 & Swift 4", institution: "Udemy", img: "ios12" },
           { year: "2020", name: "iOS App Development", institution: "Platzi", img: "ios-desarrollo" },
           { year: "2020", name: "iOS Interface Development", institution: "Platzi", img: "ios-diseno" },
@@ -481,6 +482,7 @@
         certifications: "Cursos",
         certificateAlt: "Certificado",
         certs: [
+          { year: "2026", name: "Diseño de apps para iOS 13 con SwiftUI desde cero", institution: "Udemy", pdf: "swiftui" },
           { year: "2020", name: "iOS 12 y Swift 4", institution: "Udemy", img: "ios12" },
           { year: "2020", name: "Desarrollo de Apps para iOS", institution: "Platzi", img: "ios-desarrollo" },
           { year: "2020", name: "Desarrollo de interfaces para iOS", institution: "Platzi", img: "ios-diseno" },
@@ -641,7 +643,7 @@
     const container = document.getElementById('certsGrid');
     const certs = t.education?.certs || [];
     container.innerHTML = certs.map(c => `
-      <div class="cert-item" data-img="${c.img}">
+      <div class="cert-item" data-img="${c.img || ''}" data-pdf="${c.pdf || ''}">
         <span class="cert-year">${c.year}</span>
         <div>
           <div class="cert-name">${c.name}</div>
@@ -653,10 +655,13 @@
     container.querySelectorAll('.cert-item').forEach(item => {
       item.addEventListener('click', () => {
         const img = item.getAttribute('data-img');
+        const pdf = item.getAttribute('data-pdf');
         const modal = document.getElementById('certModal');
         const body = document.getElementById('certModalBody');
         document.getElementById('certModalTitle').textContent = t.education.certificateAlt;
-        body.innerHTML = `<img src="img/certificados/${img}.jpg" alt="${t.education.certificateAlt}">`;
+        body.innerHTML = pdf
+          ? `<iframe class="cert-pdf" src="img/certificados/${pdf}.pdf#toolbar=0&view=FitH" title="${t.education.certificateAlt}"></iframe>`
+          : `<img src="img/certificados/${img}.jpg" alt="${t.education.certificateAlt}">`;
         modal.classList.add('active');
       });
     });
