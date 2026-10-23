@@ -1,0 +1,15 @@
+---
+// Cifras con contador animado ([data-count]) y un brillo del color de cada una.
+import './stats.css';
+type Stat = { value: number; dec?: number; prefix?: string; unit: string; text: string; color?: string };
+interface Props { items: Stat[]; locale?: string }
+const { items, locale } = Astro.props;
+---
+<div class="stats">
+  {items.map((s) => (
+    <div class="stat reveal" style={s.color ? `--c:${s.color}` : undefined}>
+      <div class="num">{s.prefix}<span data-count={s.value} data-dec={s.dec} data-locale={locale}>0</span><span class="unit">{s.unit}</span></div>
+      <p set:html={s.text} />
+    </div>
+  ))}
+</div>

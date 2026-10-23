@@ -1,0 +1,249 @@
+---
+// iSpecter: diseño propio (Space Grotesk, fuego sobre violeta). Estilos en styles/pages/ispecter.css, comportamiento en scripts/pages/ispecter.ts.
+import AppPage from '../../layouts/AppPage.astro';
+import { downloadUrl, getApp } from '../../lib/apps';
+import '../../styles/pages/ispecter.css';
+
+const dl = downloadUrl(getApp('ispecter'));
+---
+<AppPage slug="ispecter">
+<div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+<canvas id="particles" aria-hidden="true"></canvas>
+<div class="spotlight" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="progress-bar" aria-hidden="true"></div>
+
+<nav class="nav" id="nav">
+  <a href="#" class="brand"><img src="assets/icon.png" alt="">iSpecter</a>
+  <div class="nav-links">
+    <a href="#problema">El problema</a>
+    <a href="#funciones">Funciones</a>
+    <a href="#veredicto">Veredicto</a>
+    <a href="#faq">Preguntas</a>
+  </div>
+  <a href={dl} class="btn btn-primary btn-sm magnetic" data-download>
+    <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Descargar
+  </a>
+</nav>
+
+<!-- ───────── HERO ───────── -->
+<header class="hero">
+  <div class="wrap">
+    <span class="pill reveal"><b>Nuevo</b> Veredicto automático de calidad · v<span data-version>1.0</span></span>
+    <h1 id="headline">Mira la verdad de tu música.</h1>
+    <p class="lead reveal" style="--d:.5s">
+      Ese FLAC de “24 bits” podría ser
+      <span class="rotator" id="rotator"><span class="on">un MP3 de 320 kbps.</span><span>un AAC reempaquetado.</span><span>un 16 bits con relleno.</span><span>un 44.1 kHz inflado a 96.</span></span>
+      <br>iSpecter dibuja su espectrograma en tiempo real y te dice qué hay de verdad dentro.
+    </p>
+    <div class="cta-row reveal" style="--d:.7s">
+      <a href={dl} class="btn btn-primary magnetic" data-download>
+        <svg class="apple" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.89 2.65 3.24 2.6 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.38.81 1.4-.02 2.29-1.27 3.14-2.53.99-1.45 1.4-2.86 1.42-2.93-.03-.01-2.72-1.04-2.75-4.14zM13.79 4.97c.72-.87 1.2-2.07 1.07-3.27-1.03.04-2.28.69-3.02 1.55-.66.77-1.24 1.99-1.09 3.17 1.15.09 2.32-.58 3.04-1.45z"/></svg>
+        <span class="label">Descargar para macOS<small>Gratis · Universal · <span data-size>DMG firmado</span></small></span>
+      </a>
+      <a href="#problema" class="btn btn-ghost magnetic">Ver cómo funciona ↓</a>
+    </div>
+    <div class="meta reveal" style="--d:.85s"><span>macOS 26 Tahoe</span><span>Apple Silicon e Intel</span><span>Firmado por Developer ID</span></div>
+
+    <div class="stage">
+      <div class="window" id="window">
+        <div class="titlebar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="file">Pista 07 — Master Hi-Res.flac <em>FLAC · 2 116 kbps · 96 kHz · 24 bits · estéreo</em></span>
+        </div>
+        <div class="app-body">
+          <div class="axis-y"><span>48k</span><span>36k</span><span>24k</span><span>12k</span><span>0</span></div>
+          <div class="spec-wrap" id="heroSpec">
+            <canvas id="heroCanvas" width="560" height="240"></canvas>
+            <div class="scan" aria-hidden="true"></div>
+            <div class="cutoff" id="heroCut" style="--cut:58.3%"><span>corte 20.0 kHz · pared</span></div>
+            <div class="crosshair" aria-hidden="true"><div class="readout" id="readout">—</div></div>
+          </div>
+          <div class="legend"><span>0</span><div class="bar"></div><span>−120</span></div>
+          <div class="axis-x"><span>0:00</span><span>0:45</span><span>1:30</span><span>2:15</span><span>3:00</span><span>3:45</span></div>
+        </div>
+        <div class="verdict" id="verdict">
+          <span class="tag">Hi-Res falso</span>
+          <h4>Probable MP3 320 kbps</h4>
+          <p>Pared abrupta en 20.0 kHz y nada por encima, en un archivo que dice ser de 96 kHz. Los 8 bits bajos están siempre en cero.</p>
+          <div class="conf"><i></i></div>
+          <div class="conf-row"><span>Confianza</span><span>92 %</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ───────── FORMATOS ───────── -->
+<div class="marquee" aria-label="Formatos soportados">
+  <div class="track" id="track"></div>
+</div>
+
+<!-- ───────── EL PROBLEMA ───────── -->
+<section id="problema">
+  <div class="wrap center">
+    <span class="eyebrow reveal">El problema</span>
+    <h2 class="reveal">El tamaño del archivo <span class="grad-text">miente.</span><br>El espectro, no.</h2>
+    <p class="lead reveal">Un MP3 recorta todo lo que hay por encima de ~20 kHz. Cuando alguien lo convierte a FLAC, el archivo crece, pero la información perdida no vuelve. Desliza para ver la diferencia.</p>
+    <div class="compare reveal" id="compare">
+      <canvas id="cmpLossy"></canvas>
+      <canvas id="cmpReal" class="top"></canvas>
+      <div class="wall" aria-hidden="true"></div>
+      <span class="badge l">✓ Lossless genuino</span>
+      <span class="badge r">✗ MP3 320 → FLAC</span>
+      <div class="handle" aria-hidden="true"></div>
+    </div>
+    <div class="compare-legend"><span>← Energía hasta Nyquist, con caída natural</span><span>Pared abrupta en 20 kHz y vacío por encima →</span></div>
+  </div>
+</section>
+
+<!-- ───────── FUNCIONES ───────── -->
+<section id="funciones">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow reveal">Funciones</span>
+      <h2 class="reveal">Todo lo que tenía Spek.<br><span class="grad-text">Y todo lo que le faltaba.</span></h2>
+    </div>
+    <div class="bento">
+      <article class="card xl reveal tilt">
+        <div class="icon">⚡️</div>
+        <h3>Render en Metal a 120 fps</h3>
+        <p>La matriz de dBFS vive en una textura de GPU. Cambiar de paleta o de rango dinámico es instantáneo; el zoom con trackpad recalcula el detalle de la zona visible sin trabarse.</p>
+        <div class="viz"><canvas id="miniSpec" width="600" height="110" style="width:100%;height:100%"></canvas></div>
+      </article>
+      <article class="card reveal tilt" style="--d:.1s">
+        <div class="icon">🧠</div>
+        <h3>Veredicto automático</h3>
+        <p>Detecta cortes, paredes, huecos espectrales, upsampling y bit depth falso. Siempre con su evidencia y nivel de confianza.</p>
+      </article>
+      <article class="card reveal tilt">
+        <div class="icon">🎨</div>
+        <h3>Paletas vivas</h3>
+        <p>Spectrum, Sox, Mono y paletas modernas, con transición animada entre ellas.</p>
+        <div class="viz palette-row">
+          <i style="background:linear-gradient(to top,#000004,#3b0f70,#8c2981,#de4968,#fe9f6d,#fcfdbf)"></i>
+          <i style="background:linear-gradient(to top,#000,#20007a,#a3007a,#ff2a00,#ffd200,#fff)"></i>
+          <i style="background:linear-gradient(to top,#000,#fff)"></i>
+          <i style="background:linear-gradient(to top,#030326,#0b4f8c,#16a3a3,#8fe38f,#f5ff9e)"></i>
+        </div>
+      </article>
+      <article class="card reveal tilt" style="--d:.1s">
+        <div class="icon">📚</div>
+        <h3>Biblioteca completa</h3>
+        <p>Analiza miles de canciones en paralelo, filtra los sospechosos y exporta CSV. En solo lectura: nunca toca tu música.</p>
+      </article>
+      <article class="card reveal tilt" style="--d:.2s">
+        <div class="icon">🎛️</div>
+        <h3>Control total</h3>
+        <p>DFT de 256 a 16 384, ventanas Hann, Hamming y Blackman-Harris, rango de −120 a 0 dBFS, escala log y selección de canal y pista.</p>
+      </article>
+      <article class="card wide reveal tilt">
+        <div class="icon">🎞️</div>
+        <h3>Más de 30 formatos</h3>
+        <p>Core Audio para lo nativo, SFBAudioEngine para lo audiófilo y un FFmpeg mínimo para lo exótico: WMA, Matroska, DTS, TrueHD y vídeos con varias pistas.</p>
+      </article>
+      <article class="card wide reveal tilt" style="--d:.1s">
+        <div class="icon">⌨️</div>
+        <h3>Y también en la terminal</h3>
+        <p>La herramienta <code>specter</code> audita bibliotecas enteras desde la línea de comandos.</p>
+        <div class="code"><span class="c"># ¿Qué tan honesta es mi colección?</span>
+<span class="k">specter</span> --csv Reports/flac.csv --solo-sospechosos ~/Musica
+<span class="ok">✓</span> 1 284 analizados  <span class="bad">✗</span> 37 lossless falsos  <span class="s">⚠</span> 12 hi-res inflados</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── VEREDICTO ───────── -->
+<section id="veredicto">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow reveal">Cómo piensa</span>
+      <h2 class="reveal">Cada códec deja <span class="grad-text">su huella.</span></h2>
+      <p class="lead reveal">El detector busca la frecuencia más alta con energía real y si termina en una pared abrupta. Luego cruza esa firma con el formato que el archivo dice tener.</p>
+    </div>
+    <div class="ladder">
+      <div class="rung reveal" style="--w:50%"><span class="hz">~11 kHz</span><div class="meter"><i></i></div><span class="src">MP3 ≤ 64 kbps</span></div>
+      <div class="rung reveal" style="--w:76%;--d:.05s"><span class="hz">~16–17.5 kHz</span><div class="meter"><i></i></div><span class="src">MP3 128 kbps</span></div>
+      <div class="rung reveal" style="--w:84%;--d:.1s"><span class="hz">~18–19 kHz</span><div class="meter"><i></i></div><span class="src">MP3 160–192 kbps</span></div>
+      <div class="rung reveal" style="--w:89%;--d:.15s"><span class="hz">~19.5–20 kHz</span><div class="meter"><i></i></div><span class="src">MP3 256 kbps / V2</span></div>
+      <div class="rung reveal" style="--w:92%;--d:.2s"><span class="hz">~20–20.5 kHz</span><div class="meter"><i></i></div><span class="src">MP3 320 / V0 / AAC alto</span></div>
+      <div class="rung reveal" style="--w:100%;--d:.25s"><span class="hz">Hasta Nyquist</span><div class="meter"><i></i></div><span class="src" style="color:var(--green)">Lossless genuino</span></div>
+    </div>
+    <div class="stats">
+      <div class="stat reveal"><b class="grad-text"><span data-count="1.5" data-dec="1">0</span> s</b><span>para un FLAC de 5 min en Apple Silicon</span></div>
+      <div class="stat reveal" style="--d:.1s"><b class="grad-text"><span data-count="30">0</span>+</b><span>formatos y contenedores</span></div>
+      <div class="stat reveal" style="--d:.2s"><b class="grad-text"><span data-count="120">0</span></b><span>fps al hacer zoom y hover</span></div>
+      <div class="stat reveal" style="--d:.3s"><b class="ice-text"><span data-count="0">0</span> bytes</b><span>escritos en tu música. Jamás.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── ATAJOS ───────── -->
+<section id="atajos" style="padding-top:0">
+  <div class="wrap center">
+    <span class="eyebrow reveal">Para quienes vienen de Spek</span>
+    <h2 class="reveal">Tus dedos ya lo saben.</h2>
+    <p class="lead reveal">Los mismos atajos de siempre. Minúscula para avanzar, mayúscula para retroceder.</p>
+    <div class="keys reveal" id="keys">
+      <div class="key"><kbd>C</kbd>Canal</div>
+      <div class="key"><kbd>F</kbd>Tamaño DFT</div>
+      <div class="key"><kbd>L</kbd>Límite inferior</div>
+      <div class="key"><kbd>U</kbd>Límite superior</div>
+      <div class="key"><kbd>P</kbd>Paleta</div>
+      <div class="key"><kbd>W</kbd>Ventana</div>
+      <div class="key"><kbd>S</kbd>Pista</div>
+      <div class="key"><kbd>⌘S</kbd>Exportar PNG</div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── DESCARGA ───────── -->
+<section id="descargar" style="padding-top:0">
+  <div class="wrap">
+    <div class="final reveal">
+      <canvas id="finalCanvas" aria-hidden="true"></canvas>
+      <img src="assets/icon.png" alt="Icono de iSpecter">
+      <h2>Deja de adivinar.<br><span class="grad-text">Empieza a ver.</span></h2>
+      <div class="price"><b>Gratis</b><span>sin cuentas, sin suscripciones, sin rastreo</span></div>
+      <div class="cta-row">
+        <a href={dl} class="btn btn-primary magnetic" data-download>
+          <svg class="apple" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.89 2.65 3.24 2.6 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.38.81 1.4-.02 2.29-1.27 3.14-2.53.99-1.45 1.4-2.86 1.42-2.93-.03-.01-2.72-1.04-2.75-4.14zM13.79 4.97c.72-.87 1.2-2.07 1.07-3.27-1.03.04-2.28.69-3.02 1.55-.66.77-1.24 1.99-1.09 3.17 1.15.09 2.32-.58 3.04-1.45z"/></svg>
+          <span class="label">Descargar iSpecter <span data-version>1.0</span><small>macOS 26 o posterior · <span data-size>DMG firmado</span></small></span>
+        </a>
+        <a href="#faq" class="btn btn-ghost magnetic">Requisitos y dudas</a>
+      </div>
+      <p class="sha" id="sha"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── FAQ ───────── -->
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow reveal">Preguntas frecuentes</span>
+      <h2 class="reveal">Lo que todos preguntan.</h2>
+    </div>
+    <div class="faq">
+      <details class="reveal"><summary>¿iSpecter puede modificar o borrar mi música?</summary><p>No. Los decodificadores abren los archivos solo para lectura y la app se niega a guardar reportes o imágenes dentro de una carpeta que estés analizando.</p></details>
+      <details class="reveal"><summary>¿El veredicto es infalible?</summary><p>Es una heurística muy bien calibrada, no una certeza. Un master con filtro paso-bajo o una grabación antigua pueden parecer con pérdida, y un AAC de alto bitrate reempaquetado puede ser casi idéntico al original. Por eso cada veredicto muestra su evidencia y su nivel de confianza.</p></details>
+      <details class="reveal"><summary>¿Qué necesito para usarla?</summary><p>Una Mac con macOS 26 Tahoe o posterior. La app es universal: funciona en Apple Silicon y en Intel.</p></details>
+      <details class="reveal"><summary>macOS dice que no puede verificar la app, ¿qué hago?</summary><p>Las versiones publicadas están firmadas con Developer ID y notarizadas por Apple. Si descargaste una compilación de prueba sin notarizar, haz clic derecho sobre iSpecter → Abrir, y confirma una sola vez.</p></details>
+      <details class="reveal"><summary>¿Qué librerías usa?</summary><p>Accelerate, Metal y AVFoundation de Apple; SFBAudioEngine (MIT) y una compilación mínima de FFmpeg bajo LGPL para formatos exóticos. Los avisos completos vienen dentro de la app.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a href="#" class="brand"><img src="assets/icon.png" alt="">iSpecter</a>
+    <span>Hecho con Swift, Metal y demasiado café · © {new Date().getFullYear()}</span>
+    <a href="#descargar" style="color:var(--text-2)">Descargar ↑</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>import '../../scripts/pages/ispecter';</script>
+</AppPage>

@@ -1,0 +1,297 @@
+/* CV en PDF (/CV/pdf/): pantalla de carga, visor y la hoja A4 que se rasteriza con html2canvas. */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  background: #525659;
+}
+
+/* ── Loading screen ──────────────────────── */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: #525659;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  z-index: 100;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#loader-text {
+  color: #ccc;
+  font-size: 13px;
+  font-weight: 300;
+}
+
+/* ── PDF iframe ──────────────────────────── */
+#pdf-frame {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: none;
+}
+
+
+/* ── CV render area (behind loader) ─────── */
+#cv-render {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 794px; /* 210mm at 96 DPI */
+  background: #fff;
+  padding: 53px 68px 60px; /* 14mm 18mm 16mm */
+  color: #1c1c1c;
+  font-size: 9pt;
+  line-height: 1.5;
+  z-index: 1; /* loader is z-index: 100, stays on top */
+}
+
+/* ── Header ─────────────────────────────── */
+#cv-render .cv-header {
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 2.5px solid #1c1c1c;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+/* Placeholder only: the photo is added to the PDF at full resolution after rasterizing */
+#cv-render .cv-photo {
+  flex: 0 0 110px;
+  height: 110px;
+}
+
+#cv-render .cv-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+#cv-render .cv-name {
+  font-size: 28pt;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #111;
+  line-height: 1.1;
+}
+
+#cv-render .cv-title {
+  font-size: 11.5pt;
+  font-weight: 300;
+  color: #555;
+  margin-top: 4px;
+  letter-spacing: 0.3px;
+}
+
+#cv-render .cv-contact {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  font-size: 8.5pt;
+  color: #444;
+}
+
+#cv-render .cv-contact-item {
+  display: flex;
+  align-items: center;
+}
+
+#cv-render .cv-contact-item:not(:last-child)::after {
+  content: '|';
+  margin: 0 10px;
+  color: #ccc;
+}
+
+#cv-render .cv-contact a {
+  color: #444;
+  text-decoration: none;
+}
+
+/* ── Section ─────────────────────────────── */
+#cv-render .section {
+  margin-bottom: 18px;
+}
+
+#cv-render .section-title {
+  font-size: 8pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #111;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#cv-render .section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #ddd;
+}
+
+/* ── Summary ─────────────────────────────── */
+#cv-render .summary-text {
+  font-size: 9.5pt;
+  color: #3a3a3a;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ── Skills ──────────────────────────────── */
+#cv-render .skills-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#cv-render .skill-row {
+  display: flex;
+  align-items: baseline;
+  font-size: 8.5pt;
+  line-height: 1.5;
+}
+
+#cv-render .skill-label {
+  font-weight: 600;
+  color: #111;
+  min-width: 160px;
+  flex-shrink: 0;
+}
+
+#cv-render .skill-value {
+  color: #444;
+  font-weight: 300;
+}
+
+/* ── Experience ──────────────────────────── */
+#cv-render .job {
+  margin-bottom: 14px;
+}
+
+#cv-render .job:last-child {
+  margin-bottom: 0;
+}
+
+#cv-render .job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 1px;
+}
+
+#cv-render .job-company {
+  font-size: 10.5pt;
+  font-weight: 600;
+  color: #111;
+}
+
+#cv-render .job-period {
+  font-size: 8.5pt;
+  font-weight: 400;
+  color: #777;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+#cv-render .job-roles {
+  font-size: 9pt;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 4px;
+}
+
+#cv-render .job-desc {
+  font-size: 8.5pt;
+  color: #555;
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+#cv-render .job-bullets {
+  margin: 0;
+  padding-left: 12px;
+}
+
+#cv-render .job-bullets li {
+  margin-bottom: 1px;
+}
+
+/* ── Education ───────────────────────────── */
+#cv-render .edu-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+#cv-render .edu-degree {
+  font-size: 10.5pt;
+  font-weight: 600;
+  color: #111;
+}
+
+#cv-render .edu-specialty {
+  font-size: 8.5pt;
+  color: #555;
+  font-weight: 300;
+  margin-top: 1px;
+}
+
+#cv-render .edu-institution {
+  font-size: 9pt;
+  font-weight: 500;
+  color: #444;
+  margin-top: 2px;
+}
+
+#cv-render .edu-period {
+  font-size: 8.5pt;
+  color: #777;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Courses ─────────────────────────────── */
+#cv-render .certs-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 20px;
+}
+
+#cv-render .cert-item {
+  font-size: 8.5pt;
+  color: #444;
+  font-weight: 300;
+  padding-left: 12px;
+  position: relative;
+  line-height: 1.5;
+}
+
+#cv-render .cert-item::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: #999;
+}

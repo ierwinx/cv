@@ -1,0 +1,55 @@
+---
+// Documento común a TODAS las páginas: <head>, favicon, fuentes, seasonal, enlace «saltar al contenido»
+// y la pausa de animaciones CSS fuera de pantalla.
+// No trae estilos de diseño: cada familia de páginas los aporta (AppLayout, o los de la propia página).
+// El SEO (canonical, Open Graph, JSON-LD) lo agrega tools/seo.py después del build.
+import '../styles/document.css';
+
+interface Props {
+  title: string;
+  description: string;
+  icon?: string;                 // favicon png o svg (ruta absoluta); para varios, usa el slot "head"
+  touchIcon?: string;            // ícono de iOS si no es el mismo favicon
+  themeColor?: string;
+  skipTo?: string | false;       // id del contenido principal (enlace «saltar al contenido»)
+  seasonal?: boolean;            // efectos de temporada (assets/seasonal.*); false en páginas utilitarias
+  fonts?: string;                // familias de Google Fonts: "Inter:wght@400;700&family=..."
+  vars?: Record<string, string>; // tokens del tema en <html style>
+  lang?: string;
+  htmlClass?: string;
+  bodyClass?: string;
+}
+const { title, description, icon, touchIcon = icon, themeColor, fonts, vars = {}, lang = 'es', skipTo = 'contenido', seasonal = true, htmlClass, bodyClass } = Astro.props;
+const style = Object.entries(vars).map(([k, v]) => `${k}:${v}`).join(';');
+---
+<!doctype html>
+<html lang={lang} class={htmlClass} style={style || undefined}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+{icon && <><link rel="icon" type={icon.endsWith('.svg') ? 'image/svg+xml' : 'image/png'} href={icon}><link rel="apple-touch-icon" href={touchIcon}></>}
+{themeColor && <meta name="theme-color" content={themeColor}>}
+<title>{title}</title>
+<meta name="description" content={description}>
+{fonts && <>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href={`https://fonts.googleapis.com/css2?family=${fonts}&display=swap`} rel="stylesheet">
+</>}
+<slot name="head" />
+{seasonal && <link rel="stylesheet" href="/assets/seasonal.css">}
+</head>
+<body class={bodyClass}>
+{skipTo && <a class="skip-link" href={`#${skipTo}`}>Saltar al contenido</a>}
+<slot />
+{seasonal && <script is:inline src="/assets/seasonal.js" defer></script>}
+<!-- Pausa las animaciones CSS de los bloques que no se ven (marquesinas, órbitas, brillos…): el navegador deja de
+     repintarlos. La regla [data-offscreen] está en styles/document.css. Inline: son 300 bytes en todas las páginas. -->
+<script is:inline>
+  (() => {
+    const io = new IntersectionObserver((es) => { for (const e of es) e.target.toggleAttribute('data-offscreen', !e.isIntersecting); }, { rootMargin: '200px 0px' });
+    document.querySelectorAll('body > :not(script):not(main), main > *').forEach((el) => io.observe(el));
+  })();
+</script>
+</body>
+</html>

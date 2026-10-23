@@ -1,0 +1,28 @@
+---
+// Portada de una app: ícono, píldora, título con remate en gradiente, texto, botones y garantías.
+// El slot por defecto va debajo (la demo de la app).
+import './hero.css';
+
+interface Props {
+  icon?: string;      // ícono grande sobre la píldora (opcional)
+  iconAlt?: string;
+  badge?: string;
+  pill: string;
+  title: string;      // primera línea del h1
+  accent: string;     // segunda línea, en gradiente
+  glitch?: boolean;   // efecto de interferencia sobre el remate
+  meta?: string[];
+}
+const { icon, iconAlt = '', badge = 'NUEVO', pill, title, accent, glitch = false, meta = [] } = Astro.props;
+---
+<header class="hero" id="top">
+  <div class="wrap">
+    {icon && <img class="hero-icon reveal" src={icon} alt={iconAlt} width="120" height="120">}
+    <div class="pill reveal"><b>{badge}</b> {pill}</div>
+    <h1 class="reveal">{title}<br><span class:list={['grad-text', { glitch }]} data-text={glitch ? accent : undefined}>{accent}</span></h1>
+    <p class="lead reveal"><slot name="lead" /></p>
+    <div class="cta reveal"><slot name="cta" /></div>
+    {meta.length > 0 && <div class="meta reveal">{meta.map((m) => <span>{m}</span>)}</div>}
+    <slot />
+  </div>
+</header>

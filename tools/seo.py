@@ -1,20 +1,24 @@
 #!/usr/bin/env python3
 """SEO de ierwinx.com: metadatos, datos estructurados, sitemap.xml y robots.txt.
 
-Uso (desde la raíz del proyecto):
+Corre solo como último paso de `npm run build`, sobre la salida ya compilada:
 
-    python3 tools/seo.py
+    python3 tools/seo.py                 # procesa dist/ con SITE (o http://localhost:4321)
+    SITE=https://ierwinx.com python3 tools/seo.py   # lo que hace el deploy
 
-Vuelve a correrlo cada vez que agregues una página o regeneres el curso de Python.
 Es idempotente: cada página lleva un único bloque entre <!-- seo:start --> y
 <!-- seo:end --> que se reemplaza completo en cada ejecución.
 
 Qué hace:
   * Todas las páginas públicas: canonical, Open Graph (WhatsApp, Facebook,
     LinkedIn), Twitter Card y JSON-LD para Google.
-  * /cv/ y todo lo que hay dentro: `noindex, nofollow` y fuera del sitemap,
+  * /CV/ y todo lo que hay dentro: `noindex, nofollow` y fuera del sitemap,
     para que no aparezcan en buscadores.
-  * Genera sitemap.xml y robots.txt en la raíz.
+  * Genera sitemap.xml y robots.txt en la raíz de dist/.
+  * Si SITE no es producción, cambia las URLs de producción que queden en el HTML
+    por SITE, para que una compilación local nunca enlace a ierwinx.com.
+
+Los datos de las apps y de la marca salen de src/data/apps.json y src/data/site.json.
 """
 
 import datetime
@@ -22,14 +26,23 @@ import html
 import json
 import os
 import re
+import subprocess
 
-SITE = 'https://ierwinx.com'
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def load(name):
+    with open(os.path.join(ROOT, 'src', 'data', name), encoding='utf-8') as f:
+        return json.load(f)
+
+
+SITE_DATA = load('site.json')
+PRODUCTION = SITE_DATA['production']
+SITE = os.environ.get('SITE', 'http://localhost:4321').rstrip('/')
+DIST = os.path.join(ROOT, 'dist')
 OG = SITE + '/assets/og/'
 LOGO = SITE + '/assets/logo-512.png'
 
-# Carpetas que no son sitio público o no deben indexarse.
-SKIP_DIRS = {'.git', '.github', 'node_modules', 'dist', 'tools', 'memory'}
 PRIVATE_DIR = 'CV'   # oculto en buscadores (noindex + fuera del sitemap)
 
 
@@ -45,83 +58,22 @@ def is_private(rel):
 BRAND = {
     '@type': 'Organization',
     '@id': SITE + '/#organization',
-    'name': 'ierwinx',
+    'name': SITE_DATA['name'],
     'url': SITE + '/',
     'logo': {'@type': 'ImageObject', 'url': LOGO, 'width': 512, 'height': 512},
-    'founder': {'@type': 'Person', 'name': 'Erwin'},
-    'sameAs': ['https://github.com/ierwinx', 'https://www.linkedin.com/in/ierwinx'],
+    'founder': {'@type': 'Person', 'name': SITE_DATA['founder']},
+    'sameAs': SITE_DATA['sameAs'],
 }
 
-# Apps: datos tomados de la página de cada una. `free` solo donde la página lo dice.
-APPS = {
-    'superpets/index.html': dict(
-        name='Super Pets', image='superpets.jpg', category='LifestyleApplication',
-        os='iOS, iPadOS, macOS, watchOS', version='1.3', free=True,
-        install='https://apps.apple.com/app/super-pets/id6787278041',
-    ),
-    'irar/index.html': dict(
-        name='iRar', image='irar.jpg', category='UtilitiesApplication', os='macOS 26',
-        version='1.0', download='/irar/downloads/iRar-1.0.dmg', free=True,
-    ),
-    'ibridge/index.html': dict(
-        name='iBridge', image='ibridge.jpg', category='UtilitiesApplication', os='macOS 27',
-        version='1.0', size='11.6 MB', download='/ibridge/iBridge-1.0.dmg', free=False,
-        title='iBridge — Tu iPhone y tu Android, en tu Mac',
-        description='iBridge: explora, copia, mueve y borra fotos y archivos de tu iPhone, iPad y Android desde el Mac, tan fácil como el Finder. Arrastra al Finder, sin cuentas ni nube.',
-    ),
-    'ilegato/index.html': dict(
-        name='iLegato', image='ilegato.jpg', category='MultimediaApplication', os='iOS 27, iPadOS 27, Android 15',
-        version='1.0.0',
-        install='https://apps.apple.com/app/ilegato/id6822105958', free=True,
-        also=['https://play.google.com/store/apps/details?id=com.ierwinx.ilegato'],
-        title='iLegato — Música sin pérdida para iPhone, iPad y Android',
-        description='Reproductor para tu propia música en iPhone, iPad y Android: FLAC y ALAC sin pérdida, Hi-Res, ecualizador, CarPlay, Android Auto, AirPlay y Google Cast. Sin suscripciones.',
-    ),
-    'igit/index.html': dict(
-        name='iGit', image='igit.jpg', category='DeveloperApplication', os='macOS 15',
-        version='1.0.0', download='/igit/downloads/iGit-1.0.0.pkg', free=True,
-    ),
-    'itunes/index.html': dict(
-        name='iTunes', image='itunes.jpg', category='MultimediaApplication', os='macOS 27',
-        version='1.0.0', size='730 KB', download='/itunes/downloads/itunes-1.0.0-macos-arm64.pkg', free=False,
-        title='iTunes — Reproductor de música para la terminal en Mac',
-        description='Reproductor de música 100 % terminal para macOS con alma de iTunes clásico: FLAC, ALAC, AIFF y MP3, ecualizador de 10 bandas, editor de tags, letras y carátulas.',
-    ),
-    'ispecter/index.html': dict(
-        name='iSpecter', image='ispecter.jpg', category='MultimediaApplication', os='macOS 26',
-        version='1.0', size='12 MB', download='/ispecter/downloads/iSpecter.dmg', free=True,
-    ),
-    'iconverter/index.html': dict(
-        name='iConverter', image='iconverter.jpg', category='MultimediaApplication', os='macOS 15',
-        download='/iconverter/downloads/iConverter.dmg', free=True,
-    ),
-    'iplist/index.html': dict(
-        name='iPlist', image='iplist.jpg', category='DeveloperApplication', os='macOS 27',
-        version='1.0', size='1.8 MB', download='/iplist/iPlist-1.0.dmg', free=False,
-        title='iPlist — Editor de Plist nativo para Mac',
-        description='Editor de Plist nativo para macOS. Abre, crea y edita property lists al instante, sin perder orden, tipos ni formato. XML, binario y OpenStep.',
-    ),
-    'ijson/index.html': dict(
-        name='iJson', image='ijson.jpg', category='DeveloperApplication', os='macOS 27',
-        version='1.0', size='2.4 MB', download='/ijson/iJson-1.0.dmg', free=False,
-        title='iJson — Editor de JSON nativo para Mac',
-        description='iJson: editor de JSON nativo para macOS. Árbol y texto, archivos de 100 MB en 0,42 s y tu formato original intacto, byte a byte.',
-    ),
-    'icsv/index.html': dict(
-        name='iCSV', image='icsv.jpg', category='DeveloperApplication', os='macOS 26',
-        version='1.0', size='2.5 MB', download='/icsv/iCSV-1.0.dmg', free=True,
-    ),
-    'ixml/index.html': dict(
-        name='iXML', image='ixml.jpg', category='DeveloperApplication', os='macOS 27',
-        version='1.0', size='2.5 MB', download='/ixml/iXML-1.0.dmg', free=False,
-        title='iXML — Editor de XML nativo para Mac',
-        description='iXML: editor de XML nativo para macOS. Texto, árbol visual y modo dividido; abre 10 MB en 230 ms y guarda tu archivo intacto, byte a byte.',
-    ),
-}
+# Apps, en el orden de la home: `<slug>/index.html` → datos de apps.json.
+APPS = {app['slug'] + '/index.html': app for app in load('apps.json')}
 
-HOME_DESCRIPTION = ('ierwinx es el estudio de software de Erwin: iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iRar, '
-                    'iGit, iTunes, iSpecter e iConverter. Apps nativas para Mac, iPhone, iPad, Apple Watch, '
-                    'CarPlay, Android y la terminal, más un curso de Python gratis.')
+HOME_DESCRIPTION = SITE_DATA['description']
+
+
+def download_url(app):
+    release = app.get('release')
+    return f"{SITE_DATA['releases']}/{release['tag']}/{release['file']}" if release else None
 
 # Reference used inside other entities: self-contained, so each page stands on its own.
 ORG_REF = {'@type': 'Organization', '@id': SITE + '/#organization', 'name': 'ierwinx', 'url': SITE + '/'}
@@ -183,8 +135,8 @@ def app_jsonld(rel, app, description, url):
         data['softwareVersion'] = app['version']
     if app.get('size'):
         data['fileSize'] = app['size']
-    if app.get('download'):
-        data['downloadUrl'] = SITE + app['download']
+    if download_url(app):
+        data['downloadUrl'] = download_url(app)
     if app.get('install'):
         data['installUrl'] = app['install']
         data['sameAs'] = [app['install']] + app.get('also', [])
@@ -206,7 +158,7 @@ def page_meta(rel, text):
         graph = [
             {
                 '@type': 'WebSite', '@id': SITE + '/#website', 'name': 'ierwinx',
-                'alternateName': 'ierwinx.com', 'url': SITE + '/', 'inLanguage': 'es',
+                'alternateName': SITE_DATA['alternateName'], 'url': SITE + '/', 'inLanguage': 'es',
                 'publisher': ORG_REF,
             },
             BRAND,
@@ -341,7 +293,7 @@ def apply_overrides(rel, text):
 
 
 def process(rel):
-    path = os.path.join(ROOT, rel)
+    path = os.path.join(DIST, rel)
     with open(path, encoding='utf-8') as f:
         text = f.read()
     original = text
@@ -365,12 +317,32 @@ def process(rel):
 
 def html_pages():
     pages = []
-    for dirpath, dirnames, filenames in os.walk(ROOT):
-        dirnames[:] = sorted(d for d in dirnames if d not in SKIP_DIRS and not d.startswith('.'))
+    for dirpath, dirnames, filenames in os.walk(DIST):
+        dirnames[:] = sorted(d for d in dirnames if not d.startswith(('.', '_')))
         for name in sorted(filenames):
             if name.endswith('.html') and not name.startswith('_'):
-                pages.append(os.path.relpath(os.path.join(dirpath, name), ROOT).replace(os.sep, '/'))
+                pages.append(os.path.relpath(os.path.join(dirpath, name), DIST).replace(os.sep, '/'))
     return pages
+
+
+def commit_dates():
+    """Ruta en el repo → fecha de su último commit (una sola llamada a git)."""
+    try:
+        log = subprocess.run(['git', 'log', '--format=%x00%cs', '--name-only'], cwd=ROOT,
+                             capture_output=True, text=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return {}
+    dates = {}
+    for chunk in log.split('\0')[1:]:
+        date, *files = chunk.strip().split('\n')
+        for name in files:
+            dates.setdefault(name, date)
+    return dates
+
+
+def source_of(rel):
+    """Archivo fuente que genera dist/<rel>: una página de Astro o un archivo de public/."""
+    return [f'src/pages/{rel[:-len(".html")]}.astro', f'public/{rel}']
 
 
 def write_sitemap(pages):
@@ -383,19 +355,21 @@ def write_sitemap(pages):
             return '0.7'
         return '0.5'
 
+    dates = commit_dates()
+    today = datetime.date.today().isoformat()
     entries = []
     for rel in pages:
         if is_private(rel):
             continue
-        mtime = os.path.getmtime(os.path.join(ROOT, rel))
-        lastmod = datetime.date.fromtimestamp(mtime).isoformat()
+        # La fecha del build no sirve (todo saldría modificado hoy): usamos la del commit de su fuente.
+        lastmod = next((dates[s] for s in source_of(rel) if s in dates), today)
         entries.append(
             f'  <url>\n    <loc>{url_for(rel)}</loc>\n    <lastmod>{lastmod}</lastmod>\n'
             f'    <priority>{priority(rel)}</priority>\n  </url>')
     xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
            + '\n'.join(entries) + '\n</urlset>\n')
-    with open(os.path.join(ROOT, 'sitemap.xml'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(DIST, 'sitemap.xml'), 'w', encoding='utf-8') as f:
         f.write(xml)
     return len(entries)
 
@@ -412,17 +386,38 @@ def write_robots():
         '\n'
         f'Sitemap: {SITE}/sitemap.xml\n'
     )
-    with open(os.path.join(ROOT, 'robots.txt'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(DIST, 'robots.txt'), 'w', encoding='utf-8') as f:
         f.write(robots)
 
 
+def rebase_to_site(pages):
+    """Fuera de producción, las URLs absolutas de producción pasan a apuntar a SITE."""
+    if SITE == PRODUCTION:
+        return 0
+    changed = 0
+    for rel in pages:
+        path = os.path.join(DIST, rel)
+        with open(path, encoding='utf-8') as f:
+            text = f.read()
+        rebased = text.replace(f'"{PRODUCTION}', f'"{SITE}')
+        if rebased != text:
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(rebased)
+            changed += 1
+    return changed
+
+
 def main():
-    pages = [p for p in html_pages() if p not in REDIRECTS]
+    if not os.path.isdir(DIST):
+        raise SystemExit('No existe dist/: corre primero `npm run build`.')
+    all_pages = html_pages()
+    pages = [p for p in all_pages if p not in REDIRECTS]
     changed = sum(process(rel) for rel in pages)
     count = write_sitemap(pages)
     write_robots()
+    rebased = rebase_to_site(all_pages)
     private = [p for p in pages if is_private(p)]
-    print(f'{len(pages)} páginas revisadas, {changed} actualizadas.')
+    print(f'SEO para {SITE}: {len(pages)} páginas revisadas, {changed} actualizadas, {rebased} con URLs locales.')
     print(f'sitemap.xml: {count} URLs públicas.  noindex: {", ".join(private)}')
 
 

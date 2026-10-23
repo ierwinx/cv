@@ -1,0 +1,411 @@
+---
+// Portada de iLegato. La estructura (fondo, nav, pie, script) está en IlegatoShell.
+import IlegatoShell from '../../components/ilegato/IlegatoShell.astro';
+import StoreButtons from '../../components/ilegato/StoreButtons.astro';
+
+type Card = { span: number; c: string; d?: string; icon: string; title: string; text: string; extra?: string };
+const card = ({ c, d }: Card) => `--c:${c}` + (d ? `; --d:${d}` : '');
+
+const FORMATS = ['FLAC', 'ALAC', 'AIFF', 'WAV', 'CAF', 'AAC', 'MP3'];
+// Marquee: «on» resalta el formato, «hi» la insignia dorada.
+const MARQUEE: [string, string?][] = [['FLAC', 'on'], ['ALAC', 'on'], ['HI-RES 24 BIT', 'hi'], ['AIFF', 'on'], ['WAV', 'on'], ['CAF', 'on'], ['AAC', 'on'], ['MP3', 'on'], ['SIN PAUSAS ENTRE CANCIONES'], ['10 BANDAS']];
+
+const WHY: Card[] = [
+  { span: 4, c: '#f5c451', icon: '<path d="M3 12h2M7 7v10M11 4v16M15 8v8M19 10v4M21 12h0"/>', title: 'Sin pérdida. De verdad.',
+    text: 'FLAC, ALAC, AIFF, WAV y CAF suenan tal como se grabaron. Los archivos de alta resolución llevan la insignia <b style="color:var(--gold)">HI-RES</b> junto a su formato real: códec, bits y frecuencia.',
+    extra: '<div class="big grad">24 bit</div>' },
+  { span: 2, c: '#2ee6a6', d: '100ms', icon: '<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>', title: 'Cero suscripciones',
+    text: 'Sin cuentas, sin mensualidades, sin anuncios. Tu música no caduca.',
+    extra: '<div class="big">$0<small style="font-size:.3em;color:var(--muted)">/mes</small></div>' },
+  { span: 2, c: '#3fa9ff', icon: '<path d="M4 12c2-4 4-4 6 0s4 4 6 0 3-3 4-2"/>', title: 'Sin pausas',
+    text: 'Los discos en vivo y conceptuales fluyen sin silencios entre canciones.' },
+  { span: 2, c: '#ec4899', d: '100ms', icon: '<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>', title: 'Tu privacidad intacta',
+    text: 'Sin cuentas, sin anuncios y sin rastreo. Tu biblioteca vive en tu dispositivo.' },
+  { span: 2, c: '#7c5cff', d: '200ms', icon: '<path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2 8 12.7 4 8.8 9.5 8z"/>', title: 'Se ve como suena',
+    text: 'El tema Dinámico toma los colores de la portada que está sonando. Toda la app respira con tu música.' },
+  { span: 3, c: '#3fa9ff', icon: '<rect x="2" y="5" width="13" height="10" rx="2"/><path d="M8 19h3M17 8h4v11h-4z"/>', title: 'En toda tu casa',
+    text: 'AirPlay 2, Bluetooth y <b>Google Cast</b> desde una sola pantalla, en iPhone y en Android. Tu TV, tus HomePod, tus bocinas Nest: la cola, el aleatorio y la repetición siguen funcionando igual.' },
+  { span: 3, c: '#2ee6a6', d: '100ms', icon: '<path d="M5 17h14l-1.5-6.5A2 2 0 0 0 15.6 9H8.4a2 2 0 0 0-1.9 1.5zM7 17v2M17 17v2"/><circle cx="8" cy="14" r="1"/><circle cx="16" cy="14" r="1"/>', title: 'En el auto y por voz',
+    text: 'CarPlay y Android Auto con tu biblioteca completa y el ecualizador. En iPhone, también Siri: <i>"Oye Siri, pon Silverstein en iLegato"</i>.' },
+];
+
+// Celdas: true → ✓, false → ✕, texto → matiz.
+const COMPARE: [string, ...(boolean | string)[]][] = [
+  ['Reproduce la música que ya tienes (FLAC, AIFF, WAV…)', true, false, 'A veces'],
+  ['Sin suscripción ni cuenta', true, false, true],
+  ['Funciona sin internet, siempre', true, 'Con descargas', true],
+  ['Formato real visible (bits y kHz) e insignia Hi-Res', true, 'Parcial', false],
+  ['Ecualizador de 10 bandas con presets por género', true, 'Básico', 'A veces'],
+  ['CarPlay, Android Auto, AirPlay y Google Cast', true, 'Varía', false],
+  ['Editor de etiquetas y carátulas', true, false, 'A veces'],
+  ['Sin anuncios ni rastreo', true, 'Varía', 'Varía'],
+];
+const mark = (v: boolean | string) => (v === true ? '<span class="yes">✓</span>' : v === false ? '<span class="no">✕</span>' : `<span class="meh">${v}</span>`);
+
+type Step = { shot: string; alt: string; glow: string; eyebrow: string; title: string; accent: string; text: string; list?: string[] };
+const STORY: Step[] = [
+  { shot: 'reproductor', alt: 'Reproductor', glow: '#7c5cff', eyebrow: '01 · Reproductor', title: 'Escucha', accent: 'cada detalle.',
+    text: 'La carátula en grande, el formato real de cada archivo y una barra de progreso con ondas que reaccionan a la música.',
+    list: ['Insignia Hi-Res y formato exacto: FLAC · 24 bit · 44.1 kHz', 'Tres estilos de barra: Onda, Forma de onda y Espectro', 'Controles en la pantalla bloqueada: en el Centro de control del iPhone y en la notificación de Android'] },
+  { shot: 'ecualizador', alt: 'Ecualizador', glow: '#2ee6a6', eyebrow: '02 · Ecualizador', title: 'El sonido,', accent: 'a tu gusto.',
+    text: 'Diez bandas con el espectro en vivo y más de 30 presets por género, tono y uso. O ajusta las bandas y guarda los tuyos.',
+    list: ['Metalcore, Deathcore, Post-hardcore, Midwest emo, Punk…', 'Automático por género: se elige solo según la etiqueta de la canción'] },
+  { shot: 'letras', alt: 'Letras sincronizadas', glow: '#3fa9ff', eyebrow: '03 · Letras', title: 'Canta', accent: 'cada palabra.',
+    text: 'Las letras guardadas en tus archivos, sincronizadas línea por línea cuando vienen con tiempos (.lrc).' },
+  { shot: 'artista', alt: 'Página de artista', glow: '#ec4899', eyebrow: '04 · Biblioteca', title: 'Toda tu música,', accent: 'ordenada.',
+    text: 'Copias tus carpetas a tu iPhone o a la carpeta Música de tu Android y iLegato lee las etiquetas: artistas de la A a la Z, álbumes por año, discos separados. Se actualiza sola cuando agregas música.',
+    list: ['Fotos de artista y carátulas que puedes cambiar', 'Editor de etiquetas: título, artista, álbum, letra y más'] },
+  { shot: 'temas', alt: 'Temas', glow: '#f5c451', eyebrow: '05 · Temas', title: 'Colores que', accent: 'siguen tu música.',
+    text: 'Dinámico toma los tonos de la portada que suena. También Aurora, Tokyo Night, Atardecer y Grafito. Los efectos se reducen solos con Ahorro de batería.' },
+  { shot: 'dispositivos', alt: 'Dispositivos', glow: '#3fa9ff', eyebrow: '06 · Dispositivos', title: 'Suena en', accent: 'toda tu casa.',
+    text: 'Apple TV, HomePod y bocinas AirPlay 2, audífonos Bluetooth o tu TV y bocinas con Google Cast. Todo desde una sola pantalla, en tu iPhone o en tu Android.' },
+];
+
+const IPAD: [file: string, label: string, alt: string][] = [
+  ['biblioteca', 'Biblioteca', 'iLegato en iPad con dos paneles: artistas y discografía'],
+  ['reproductor', 'Reproductor', 'Reproductor en iPad en horizontal'],
+  ['letras', 'Letras', 'Letras junto a la carátula en iPad'],
+  ['ecualizador', 'Ecualizador', 'Ecualizador con la curva en vivo en iPad'],
+];
+
+const ANDROID: Card[] = [
+  { span: 3, c: '#2ee6a6', icon: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>', title: 'Tu carpeta Música',
+    text: 'Copias tus carpetas por cable a la carpeta <b>Music</b> del teléfono y iLegato las ordena solo, aunque sean miles de canciones.' },
+  { span: 3, c: '#3fa9ff', d: '100ms', icon: '<path d="M5 17h14l-1.5-6.5A2 2 0 0 0 15.6 9H8.4a2 2 0 0 0-1.9 1.5zM7 17v2M17 17v2"/><circle cx="8" cy="14" r="1"/><circle cx="16" cy="14" r="1"/>', title: 'Android Auto',
+    text: 'Tus artistas y álbumes en la pantalla del auto, con el ecualizador y sus presets a un toque.' },
+  { span: 3, c: '#7c5cff', icon: '<rect x="2" y="5" width="13" height="10" rx="2"/><path d="M8 19h3M17 8h4v11h-4z"/>', title: 'AirPlay 2 y Google Cast',
+    text: 'Manda tu música a tu TV o bocinas con Google Cast o AirPlay 2, y controla la reproducción desde el control remoto de la TV.' },
+  { span: 3, c: '#ec4899', d: '100ms', icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M10 4v16"/>', title: 'Teléfono y tableta',
+    text: 'En tabletas, dos paneles como en el iPad: artistas a la izquierda y su música a la derecha. Requiere Android 15 o posterior.' },
+];
+
+const STATS: [number, string][] = [[7, 'formatos de audio'], [10, 'bandas de ecualizador'], [33, 'presets incluidos'], [0, 'suscripciones, anuncios y rastreo']];
+
+const link = 'style="color:var(--blue)"';
+const FAQ: [string, string][] = [
+  ['¿Cómo paso mi música en iPhone o iPad?', '<p>Conecta tu iPhone o iPad a la Mac con el cable, ábrelo en el Finder, ve a la pestaña <b>Archivos</b> y arrastra tus carpetas sobre iLegato. También puedes usar la app Archivos con iCloud Drive, AirDrop o una memoria USB-C.</p><p>iLegato lee las etiquetas y organiza todo por artista, álbum y disco.</p>'],
+  ['¿Hay versión para Android?', `<p>Sí, ya está en <a href="https://play.google.com/store/apps/details?id=com.ierwinx.ilegato" target="_blank" rel="noopener" ${link}>Google Play</a>. iLegato para Android tiene el mismo diseño y las mismas funciones: formatos sin pérdida, ecualizador, letras, editor de etiquetas, temas, Android Auto, AirPlay 2 y Google Cast. Funciona en teléfonos y tabletas con Android 15 o posterior.</p>`],
+  ['¿Cómo paso mi música en Android?', '<p>Conecta tu teléfono a la computadora con el cable y elige <b>Transferencia de archivos</b>. En Windows ábrelo en el Explorador; en Mac usa una app de transferencia MTP. Copia tus carpetas dentro de la carpeta <b>Music</b> (Música) del teléfono.</p><p>La primera vez, iLegato te pide acceso a esa carpeta; después la revisa sola cada vez que abres la app.</p>'],
+  ['¿Qué formatos reproduce?', '<p>FLAC, ALAC, AIFF, WAV, CAF, AAC y MP3. Los archivos de 24 bits o de 88.2 kHz en adelante se marcan como Hi-Res.</p>'],
+  ['¿Necesito internet o una cuenta?', '<p>No. Tu música está en tu dispositivo y iLegato no tiene cuentas ni suscripciones. Solo usas la red si quieres enviar la música a una TV o bocina.</p>'],
+  ['¿Cómo uso Siri?', '<p>Di el nombre de la app al final: <i>"Oye Siri, pon Bad Omens en iLegato"</i>. También funciona "en Legato". Puedes pedir artistas, álbumes, canciones, géneros o "pon música".</p>'],
+  ['¿Funciona con CarPlay y Android Auto?', '<p>Sí. Al conectar tu teléfono, iLegato aparece en la pantalla del auto con tus artistas y álbumes, el ecualizador y la cola de reproducción.</p>'],
+  ['¿Qué datos recolecta?', `<p>iLegato no tiene cuentas, servidores propios ni publicidad, y no te rastrea. Lo único que sale de tu dispositivo es el diagnóstico técnico y anónimo que el componente de Google Cast envía a Google para mejorar Cast y, en Android, el respaldo de ajustes que hace tu cuenta de Google si lo tienes activado. Lee la <a href="privacy.html" ${link}>política de privacidad</a> completa.</p>`],
+];
+
+// Pantallas del auto (img/car/*.webp)
+const RECENT: [img: string, album: string, artist: string, year: number][] = [
+  ['badomens', 'Finding God Before God Finds Me', 'Bad Omens', 2019],
+  ['bmth', 'amo', 'Bring Me The Horizon', 2019],
+  ['architects', 'For Those That Wish To Exist', 'Architects', 2021],
+  ['sleeptoken', 'Take Me Back To Eden', 'Sleep Token', 2023],
+  ['spiritbox', 'Eternal Blue', 'Spiritbox', 2021],
+];
+const ICON = {
+  phone: '<path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/>',
+  maps: '<path d="M12 2 4.5 20.3l.7.7L12 18l6.8 3 .7-.7z"/>',
+  grid: '<path d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/>',
+  pause: '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>',
+  shuffle: '<path d="M3 7h3.5c4 0 6.5 10 11 10H21M3 17h3.5c1.6 0 2.9-1.5 4-3.2M14 10.2C15.1 8.5 16.4 7 18 7h3M18.5 4.5 21 7l-2.5 2.5M18.5 14.5 21 17l-2.5 2.5"/>',
+  chevron: '<path d="m9 6 6 6-6 6"/>',
+};
+const fill = (d: string) => `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${d}</svg>`;
+const line = (d: string) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const icon = (d: string) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">${d}</svg>`;
+---
+<IlegatoShell variant="home">
+  <link slot="head" rel="preload" as="image" href="img/iphone-reproductor.webp">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="waveGrad" x1="0" x2="1"><stop offset="0" stop-color="#ec4899"/><stop offset=".35" stop-color="#7c5cff"/><stop offset=".7" stop-color="#3fa9ff"/><stop offset="1" stop-color="#2ee6a6"/></linearGradient>
+    </defs>
+  </svg>
+
+  <main id="top">
+    <!-- ───────── Hero ───────── -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="eyebrow reveal"><span class="gold">Hi-Res</span> · Sin pérdida · iPhone · Android</p>
+          <h1 class="split">Tu música, <span class="grad">en serio.</span></h1>
+          <p class="lead reveal" style="--d:300ms">El reproductor para la música que <b>ya es tuya</b>: tus FLAC, tus discos ripeados, tu colección de años. Suena como se grabó, en tu iPhone, tu iPad, tu Android y tu auto. Sin suscripciones, sin cuentas, sin anuncios.</p>
+          <StoreButtons delay="450ms" />
+          <div class="chips reveal" style="--d:600ms">
+            <span class="chip hi">HI-RES 24 BIT</span>{FORMATS.map((f) => <span class="chip">{f}</span>)}
+          </div>
+        </div>
+        <div class="phones" id="phones">
+          <div class="stage">
+            <div class="phone p2 float b"><img src="img/iphone-artistas.webp" alt="Lista de artistas de iLegato con índice A–Z" width="640" height="1391"></div>
+            <div class="phone p3 float c"><img src="img/iphone-ecualizador.webp" alt="Ecualizador de 10 bandas con el preset Metalcore" width="640" height="1391"></div>
+            <div class="phone p1 float"><img src="img/iphone-reproductor.webp" alt="Reproductor de iLegato con una canción FLAC Hi-Res de 24 bits" width="640" height="1391"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Formatos ───────── -->
+    <div class="marquee" aria-label="Formatos compatibles">
+      <div class="marquee-track">
+        {[false, true].map((hidden) => MARQUEE.map(([text, cls]) => <><span class={cls} aria-hidden={hidden || undefined}>{text}</span><span aria-hidden={hidden || undefined}>·</span></>))}
+      </div>
+    </div>
+
+    <!-- ───────── Por qué ───────── -->
+    <section class="section" id="porque" data-glow="#7c5cff">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow reveal">Por qué iLegato</p>
+          <h2 class="split">Hecho para quien <span class="grad">sí tiene su música.</span></h2>
+          <p class="lead reveal">Las apps de streaming te rentan un catálogo. iLegato hace lo contrario: toma la colección que ya es tuya y la trata con el cuidado que merece.</p>
+        </div>
+        <div class="bento">
+          {WHY.map((c) => (
+            <article class={`card span-${c.span} reveal tilt`} style={card(c)}>
+              <div class="icon" set:html={icon(c.icon)} />
+              <h3>{c.title}</h3>
+              <p set:html={c.text} />
+              {c.extra && <Fragment set:html={c.extra} />}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Comparativa ───────── -->
+    <section class="section" id="comparativa" data-glow="#3fa9ff" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal">Lado a lado</p>
+          <h2 class="split">La diferencia <span class="grad">se escucha.</span></h2>
+        </div>
+        <div class="compare" id="compare">
+          <table>
+            <thead><tr><th scope="col"></th><th scope="col" class="us">iLegato</th><th scope="col">Apps de streaming</th><th scope="col">Reproductores básicos</th></tr></thead>
+            <tbody>
+              {COMPARE.map(([label, ...cells], i) => (
+                <tr style={`--i:${i}`}><th scope="row">{label}</th>{cells.map((v, n) => <td class={n === 0 ? 'us' : undefined} set:html={mark(v)} />)}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="compare-note reveal">Comparación general por categoría, no contra una app en particular.</p>
+      </div>
+    </section>
+
+    <!-- ───────── Recorrido con teléfono fijo ───────── -->
+    <section class="section" id="recorrido" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal">La app</p>
+          <h2 class="split">Cada pantalla, <span class="grad">un detalle.</span></h2>
+        </div>
+        <div class="story">
+          <div class="story-phone">
+            <div class="phone">
+              <div class="screens">
+                {STORY.map((s, i) => <img class={i === 0 ? 'on' : undefined} src={`img/iphone-${s.shot}.webp`} alt={s.alt} data-shot={s.shot} loading="lazy">)}
+              </div>
+            </div>
+          </div>
+          <div class="story-steps">
+            {STORY.map((s) => (
+              <article class="step" data-shot={s.shot} data-glow={s.glow}>
+                <p class="eyebrow">{s.eyebrow}</p>
+                <h3>{s.title} <span class="grad">{s.accent}</span></h3>
+                <p>{s.text}</p>
+                {s.list && <ul>{s.list.map((li) => <li>{li}</li>)}</ul>}
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Ecualizador interactivo (lo dibuja scripts/pages/ilegato.ts) ───────── -->
+    <section class="section" id="ecualizador" data-glow="#7c5cff" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal">Pruébalo aquí</p>
+          <h2 class="split">Un preset para <span class="grad">tu escena.</span></h2>
+          <p class="lead reveal">Son las curvas reales de la app. Toca un género y mira cómo cambia.</p>
+        </div>
+        <div class="eq-box reveal">
+          <div class="eq-top">
+            <div><p class="eyebrow">Activo</p><div class="eq-name" id="eqName">Metalcore</div></div>
+            <span class="eqbars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          </div>
+          <div class="eq-graph">
+            <svg id="eqSvg" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-label="Curva del ecualizador">
+              <defs>
+                <linearGradient id="eqStroke" x1="0" x2="1"><stop offset="0" stop-color="#ec4899"/><stop offset=".4" stop-color="#7c5cff"/><stop offset="1" stop-color="#2ee6a6"/></linearGradient>
+                <linearGradient id="eqFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#7c5cff" stop-opacity=".45"/><stop offset="1" stop-color="#7c5cff" stop-opacity="0"/></linearGradient>
+                <linearGradient id="eqBar" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3fa9ff"/><stop offset="1" stop-color="#7c5cff" stop-opacity="0"/></linearGradient>
+              </defs>
+              <g class="grid">{[50, 100, 200, 250].map((y) => <line x1="0" x2="1000" y1={y} y2={y}/>)}</g>
+              <line class="zero" x1="0" x2="1000" y1="150" y2="150"/>
+              <g class="bars" id="eqBars"></g>
+              <path class="area" id="eqArea"/>
+              <path class="curve" id="eqCurve"/>
+              <g id="eqDots"></g>
+            </svg>
+          </div>
+          <div class="eq-labels">{['32', '64', '125', '250', '500', '1K', '2K', '4K', '8K', '16K'].map((f) => <span>{f}</span>)}</div>
+          <div class="eq-chips" id="eqChips"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── iPad ───────── -->
+    <section class="section" id="ipad" data-glow="#ec4899" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal">iPad</p>
+          <h2 class="split">Dos paneles. <span class="grad">Cero límites.</span></h2>
+          <p class="lead reveal">Tus artistas a la izquierda y su música a la derecha, con el reproductor a pantalla completa en horizontal.</p>
+        </div>
+        <div class="ipad-wrap">
+          <div class="ipad" id="ipadDevice" role="button" tabindex="0" aria-label="Ver la siguiente pantalla">
+            <div class="ipad-screens">
+              {IPAD.map(([file, , alt], i) => <img class={i === 0 ? 'on' : undefined} src={`img/ipad-${file}.webp`} alt={alt} loading="lazy" width="1600" height="1051">)}
+            </div>
+          </div>
+        </div>
+        <div class="ipad-dots" id="ipadDots" aria-label="Pantallas del iPad">
+          {IPAD.map(([, label], i) => <button class={i === 0 ? 'on' : undefined} type="button" aria-current={i === 0 ? 'true' : undefined}><span>{label}</span><i></i></button>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Android ───────── -->
+    <section class="section" id="android" data-glow="#2ee6a6" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal">Android</p>
+          <h2 class="split">También en <span class="grad">Android.</span></h2>
+          <p class="lead reveal">Ya disponible en Google Play. La misma app, hecha desde cero para Android: el mismo diseño, el mismo sonido y tu música, sin cuentas ni suscripciones.</p>
+        </div>
+        <div class="bento">
+          {ANDROID.map((c) => (
+            <article class={`card span-${c.span} reveal tilt`} style={card(c)}>
+              <div class="icon" set:html={icon(c.icon)} />
+              <h3>{c.title}</h3>
+              <p set:html={c.text} />
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── CarPlay y Siri ───────── -->
+    <section class="section" id="auto" data-glow="#2ee6a6" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal">CarPlay · Android Auto · Siri</p>
+          <h2 class="split">Tu colección <span class="grad">también maneja.</span></h2>
+          <p class="lead reveal">Explora tus artistas y álbumes en la pantalla del auto con CarPlay o Android Auto, o en iPhone simplemente pídeselo a Siri.</p>
+        </div>
+        <div class="duo">
+          <div class="car reveal" id="car">
+            <div class="car-switch" role="tablist" aria-label="Sistema del auto">
+              <button type="button" role="tab" aria-selected="true" data-car="carplay" class="on">CarPlay</button>
+              <button type="button" role="tab" aria-selected="false" data-car="auto">Android Auto</button>
+            </div>
+            <div class="car-bezel">
+              <!-- CarPlay: dock de Apple, pestaña Inicio con lo que suena, agregados recientemente y aleatorio -->
+              <div class="car-screen cp on" data-screen="carplay" role="img" aria-label="iLegato en CarPlay: pestaña Inicio con la canción actual, álbumes agregados recientemente y aleatorio">
+                <aside class="cp-dock">
+                  <span class="cp-time">9:41</span><span class="sig" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                  <span class="cp-app" style="background:#34c759" set:html={fill(ICON.phone)} />
+                  <span class="cp-app" style="background:#0a84ff" set:html={fill(ICON.maps)} />
+                  <span class="cp-app on"><img src="img/icon-512.png" alt=""></span>
+                  <span class="cp-home" set:html={fill(ICON.grid)} />
+                </aside>
+                <div class="cp-main">
+                  <div class="cp-title">Inicio</div>
+                  <div class="cp-list">
+                    <div class="cp-now">
+                      <img src="img/car/knocked.webp" alt="">
+                      <div><b>Hive Mind (feat. Denzel Curry)</b><small>Knocked Loose</small></div>
+                      <span class="cp-btn" set:html={fill(ICON.pause)} /><span class="cp-btn" set:html={fill('<path d="M5 6v12l8.5-6zM14 6v12l8.5-6z"/>')} />
+                    </div>
+                    <p class="cp-head">Agregados recientemente</p>
+                    <ul>{RECENT.slice(0, 3).map(([img, album, artist]) => <li><img src={`img/car/${img}.webp`} alt="" class="round"><div><b>{album}</b><small>{artist}</small></div><Fragment set:html={line(ICON.chevron)} /></li>)}</ul>
+                    <ul class="cp-shuffle"><li><span class="cp-shuf" set:html={line(ICON.shuffle)} /><div><b>Aleatorio · toda tu música</b><small>4,762 canciones</small></div><Fragment set:html={line(ICON.chevron)} /></li></ul>
+                  </div>
+                  <nav class="cp-tabs"><span class="on"><Fragment set:html={fill('<path d="M12 3 2.5 11h2.5v9h5.5v-6h3v6H19v-9h2.5z"/>')} />Inicio</span><span><Fragment set:html={fill('<path d="M12 2a3.5 3.5 0 0 0-3.5 3.5v6a3.5 3.5 0 0 0 7 0v-6A3.5 3.5 0 0 0 12 2zm-6.5 9.5a1 1 0 0 1 2 0 4.5 4.5 0 0 0 9 0 1 1 0 0 1 2 0 6.5 6.5 0 0 1-5.5 6.4V21h3a1 1 0 0 1 0 2h-8a1 1 0 0 1 0-2h3v-3.1a6.5 6.5 0 0 1-5.5-6.4z"/>')} />Artistas</span><span><Fragment set:html={fill('<path d="M6 3h12v2H6zM4 6.5h16v2H4zM3 10h18a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1z"/>')} />Álbumes</span></nav>
+                </div>
+              </div>
+              <!-- Android Auto: barra de Google, pestaña Inicio con aleatorio y agregados recientemente en cuadrícula -->
+              <div class="car-screen aa" data-screen="auto" role="img" aria-label="iLegato en Android Auto: pestaña Inicio con aleatorio, álbumes agregados recientemente y el reproductor abajo">
+                <aside class="aa-rail">
+                  <span class="aa-time">9:41</span>
+                  <span class="aa-app" style="background:#1e8e3e" set:html={fill(ICON.maps)} />
+                  <span class="aa-app on"><img src="img/icon-512.png" alt=""></span>
+                  <span class="aa-app" style="background:#34a853" set:html={fill(ICON.phone)} />
+                  <span class="aa-home" set:html={fill(ICON.grid)} />
+                </aside>
+                <div class="aa-main">
+                  <header class="aa-bar">
+                    <img src="img/icon-512.png" alt="">
+                    <nav><span class="on">Inicio</span><span>Artistas</span><span>Álbumes</span><span>Ecualizador</span></nav>
+                    <span class="aa-search" set:html={line('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')} />
+                  </header>
+                  <div class="aa-shuffle"><span set:html={line(ICON.shuffle)} /><div><b>Aleatorio · toda tu música</b><small>4,762 canciones</small></div></div>
+                  <p class="aa-group">Agregados recientemente</p>
+                  <ul class="aa-grid">{RECENT.map(([img, album, artist, year]) => <li><img src={`img/car/${img}.webp`} alt=""><b>{album}</b><small>{artist} · {year}</small></li>)}</ul>
+                  <div class="aa-player">
+                    <img src="img/car/knocked.webp" alt="">
+                    <div><b>Hive Mind (feat. Denzel Curry)</b><small>Knocked Loose</small></div>
+                    <span class="aa-btn" set:html={fill(ICON.pause)} />
+                    <i class="aa-progress"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card siri reveal" style="--c:#7c5cff; --d:120ms">
+            <div class="orb" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <p class="eyebrow">Siri</p>
+            <div class="siri-say" aria-live="polite"><span id="siriText"></span><span class="caret"></span></div>
+            <p>Artistas, álbumes, canciones o géneros. Funciona con el iPhone en la bolsa, con la app cerrada y en CarPlay.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Números ───────── -->
+    <section class="section" data-glow="#f5c451" style="padding-top:0">
+      <div class="wrap stats">
+        {STATS.map(([n, label], i) => <div class="stat reveal" style={i ? `--d:${i * 100}ms` : undefined}><b class="grad" data-count={n}>0</b><span>{label}</span></div>)}
+      </div>
+    </section>
+
+    <!-- ───────── Preguntas ───────── -->
+    <section class="section" id="preguntas" data-glow="#7c5cff" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow reveal">Preguntas</p>
+          <h2 class="split">Lo que <span class="grad">querrás saber.</span></h2>
+        </div>
+        <div class="faq">
+          {FAQ.map(([q, a]) => <details class="reveal"><summary>{q}</summary><div class="answer" set:html={a} /></details>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Llamado final ───────── -->
+    <section class="section final" id="descargar" data-glow="#ec4899">
+      <div class="wrap">
+        <img class="icon-big" src="img/icon-512.png" alt="Ícono de iLegato" width="150" height="150">
+        <svg class="wavemark" viewBox="0 0 120 40" aria-hidden="true" style="margin:0 auto 24px;display:block"><path id="wavePath" d="M4 20 Q 19 4 34 20 T 64 20 T 94 20 T 116 20"/></svg>
+        <h2 class="split">Tu música merece <span class="grad">sonar así.</span></h2>
+        <p class="lead reveal">iLegato para iPhone, iPad, CarPlay, Android y Android Auto.</p>
+        <StoreButtons icons={false} delay="200ms">
+          <a class="btn btn-ghost magnetic" href="support.html">Soporte</a>
+        </StoreButtons>
+      </div>
+    </section>
+  </main>
+</IlegatoShell>

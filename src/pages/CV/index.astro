@@ -1,0 +1,194 @@
+---
+// CV público de Erwin (/CV/, en mayúsculas: GitHub Pages distingue). Bilingüe: el HTML sale en inglés y
+// scripts/pages/cv.ts cambia el idioma y genera las secciones largas, todo desde src/data/cv.json.
+// seo.py le pone noindex y lo deja fuera del sitemap; sus Open Graph son propios para compartir el enlace.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import cv from '../../data/cv.json';
+import site from '../../data/site.json';
+import '../../styles/pages/cv.css';
+
+const t = cv.web.en;
+const years = new Date().getFullYear() - cv.careerStart;
+const bio = t.hero.bio.replace('{years}', String(years));
+const image = new URL('/CV/img/inge.jpg', Astro.site).href;
+const url = new URL('/CV/', Astro.site).href;
+const live = import.meta.env.PROD && url.startsWith(site.production);   // el formulario solo envía en producción
+const ogTitle = 'Erwin De La Luz De León — Mobile Software Engineer';
+const ogDescription = '10+ years leading mobile development, scalable architectures, and DevSecOps practices.';
+
+const GLOBE = '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>';
+const TRANSLATE = '<path d="M5 8l6 6"/><path d="M4 14l6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="M22 22l-5-10-5 10"/><path d="M14 18h6"/>';
+const SOCIAL: Record<string, string> = {
+  GitHub: '<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>',
+  LinkedIn: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>',
+};
+const FIELDS: [id: string, key: keyof typeof t.contact, type?: 'text' | 'email'][] = [
+  ['nombre', 'name', 'text'], ['apellido1', 'lastName', 'text'], ['empresa', 'company', 'text'], ['email', 'email', 'email'], ['mensaje', 'message'],
+];
+---
+<BaseLayout title="Erwin De La Luz - Mobile Software Engineer" lang="en"
+            description="Software Engineer with over 10 years of experience in native mobile development, scalable architectures, and DevSecOps."
+            icon="/CV/img/icono.png" fonts="Inter:wght@400;500;600;700">
+  <Fragment slot="head">
+    <script is:inline>if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark';</script>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content={ogTitle}>
+    <meta property="og:description" content={ogDescription}>
+    <meta property="og:image" content={image}>
+    <meta property="og:url" content={url}>
+    <meta property="og:site_name" content="Erwin De La Luz">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content={ogTitle}>
+    <meta name="twitter:description" content={ogDescription}>
+    <meta name="twitter:image" content={image}>
+  </Fragment>
+
+  <div class="custom-cursor" id="cursor"></div>
+  <div class="custom-cursor--trail" id="cursorTrail"></div>
+  <nav class="topbar">
+    <span class="topbar-name" id="topbarName">{cv.person.name}</span>
+    <button class="topbar-btn" id="langBtn" aria-label="Change language">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={GLOBE} />
+      <span data-i18n="nav.langToggle">{t.nav.langToggle}</span>
+    </button>
+    <button class="topbar-btn" id="themeBtn" aria-label="Toggle theme">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+      <span data-i18n="nav.themeToggle">{t.nav.themeToggle}</span>
+    </button>
+  </nav>
+
+  <main class="bento" id="contenido">
+    <section class="card card--hero">
+      <h1 class="hero-title" data-i18n="hero.name">{t.hero.name}</h1>
+      <p class="hero-subtitle"><span id="typingText"></span><span class="typing-cursor">|</span></p>
+      <p class="hero-bio" data-i18n="hero.bio">{bio}</p>
+    </section>
+
+    <section class="card card--photo">
+      <div class="photo-wrapper">
+        <img src={cv.person.photo} alt="Erwin De La Luz">
+        <div class="availability-badge">
+          <span class="availability-dot"></span>
+          <span data-i18n="hero.available">{t.hero.available}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card--skills">
+      <h2 class="card-heading" data-i18n="skills.heading">{t.skills.heading}</h2>
+      {Object.entries(cv.skills).map(([key, chips]) => (
+        <div class="skills-category">
+          <div class="skills-label" data-i18n={`skills.${key}`}>{t.skills[key as keyof typeof t.skills]}</div>
+          <div class="chips">{chips.map((c) => <span class="chip">{c}</span>)}</div>
+        </div>
+      ))}
+    </section>
+
+    <section class="card card--info">
+      <h2 class="card-heading" data-i18n="info.heading">{t.info.heading}</h2>
+      <div class="info-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span data-i18n="info.address">{t.info.address}</span>
+      </div>
+      <div class="info-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={GLOBE} />
+        <a href="/">Portafolio</a>
+      </div>
+
+      <h2 class="card-heading" style="margin-top: 24px;" data-i18n="info.languages">{t.info.languages}</h2>
+      {(['langSpanish', 'langEnglish'] as const).map((key) => (
+        <div class="info-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={TRANSLATE} />
+          <span data-i18n={`info.${key}`}>{t.info[key]}</span>
+        </div>
+      ))}
+
+      <h2 class="card-heading" style="margin-top: 24px;" data-i18n="social.heading">{t.social.heading}</h2>
+      <div class="social-links">
+        {cv.person.social.map((s) => (
+          <a href={s.url} target="_blank" class="social-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={SOCIAL[s.name]} />
+            <span>{s.name}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Las secciones vacías las llena scripts/pages/cv.ts en el idioma elegido -->
+    <section class="card card--projects">
+      <h2 class="card-heading" data-i18n="projects.heading">{t.projects.heading}</h2>
+      <div class="projects-grid" id="projectsGrid"></div>
+    </section>
+
+    <section class="card card--experience">
+      <h2 class="card-heading" data-i18n="experience.heading">{t.experience.heading}</h2>
+      <div class="timeline" id="experienceTimeline"></div>
+    </section>
+
+    <section class="card card--education">
+      <h2 class="card-heading" data-i18n="education.heading">{t.education.heading}</h2>
+      <div id="degreeContent"></div>
+    </section>
+
+    <section class="card card--certs">
+      <h2 class="card-heading" data-i18n="education.certifications">{t.education.certifications}</h2>
+      <div class="certs-grid" id="certsGrid"></div>
+    </section>
+
+    <section class="card card--references">
+      <h2 class="card-heading" data-i18n="references.heading">{t.references.heading}</h2>
+      <div id="refsContent"></div>
+    </section>
+
+    <section class="card card--contact">
+      <h2 class="card-heading" data-i18n="contact.heading">{t.contact.heading}</h2>
+      <form class="contact-form" id="contactForm" data-live={String(live)}>
+        {FIELDS.map(([id, key, type]) => (
+          <div class="form-group">
+            <label for={id} data-i18n={`contact.${key}`}>{t.contact[key]}</label>
+            {type ? <input type={type} id={id} name={id} required> : <textarea id={id} name={id} required></textarea>}
+          </div>
+        ))}
+        <div class="form-group">
+          <div class="g-recaptcha" data-sitekey="6Lf3mxgtAAAAANvlkOI-l4t7W_bFnvspD1gCtDKW"></div>
+          <span class="form-error" id="errorRecaptcha"></span>
+        </div>
+        <button type="submit" class="form-submit" data-i18n="contact.send">{t.contact.send}</button>
+      </form>
+      <div class="form-status" id="formStatus" style="display:none;"></div>
+    </section>
+
+    <section class="card card--testimonial">
+      <div class="testimonial">
+        <div class="testimonial-quote" data-i18n="testimonial.quote">{t.testimonial.quote}</div>
+        <div class="testimonial-author">
+          <div class="testimonial-name">{cv.person.testimonialAuthor}</div>
+          <div class="testimonial-role" data-i18n="testimonial.role">{t.testimonial.role}</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Enlace oculto al CV en PDF: invisible, centrado al final de la página -->
+  <a class="cv-hidden-link" id="downloadCV" href="pdf/?lang=en" target="_blank" rel="nofollow noopener" aria-label="View CV">
+    <span data-i18n="hero.download">{t.hero.download}</span>
+  </a>
+
+  <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <div class="modal-overlay" id="certModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="certModalTitle">Certificate</h3>
+        <button class="modal-close" id="certModalClose">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="certModalBody"></div>
+    </div>
+  </div>
+
+  <script>import '../../scripts/pages/cv';</script>
+</BaseLayout>

@@ -1,0 +1,27 @@
+---
+// CV en PDF (/CV/pdf/?lang=en|es): las dos hojas se generan al compilar en <template>; el script elige
+// la del idioma, la rasteriza y muestra el PDF en el visor del navegador. noindex (lo pone seo.py).
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Resume from '../../../components/cv/Resume.astro';
+import cv from '../../../data/cv.json';
+import '../../../styles/pages/cv-pdf.css';
+
+const langs = ['en', 'es'] as const;
+---
+<BaseLayout title="Erwin-cv" lang="en" description="CV de Erwin De La Luz De León en PDF."
+            fonts="Poppins:wght@300;400;500;600;700" skipTo={false} seasonal={false}>
+  <meta slot="head" name="bingbot" content="noindex, nofollow">
+
+  <div id="loader">
+    <div class="spinner"></div>
+    <span id="loader-text">{cv.pdf.en.loaderText}</span>
+  </div>
+
+  <div id="cv-render" data-career-start={cv.careerStart} data-ios-start={cv.iosStart} data-photo={`../${cv.person.photo}`}></div>
+
+  <iframe id="pdf-frame"></iframe>
+
+  {langs.map((lang) => <template id={`cv-${lang}`} data-loader={cv.pdf[lang].loaderText}><Resume lang={lang} /></template>)}
+
+  <script>import '../../../scripts/pages/cv-pdf';</script>
+</BaseLayout>

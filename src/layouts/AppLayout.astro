@@ -1,0 +1,31 @@
+---
+// Familia «aurora» (iBridge, iXML…): sistema de diseño común con tema por app desde apps.json,
+// capas de ambiente, nav de cristal, aviso de descarga y el comportamiento de scripts/init.ts.
+import AppPage from './AppPage.astro';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/effects.css';
+import Ambient from '../components/layout/Ambient.astro';
+import Nav from '../components/layout/Nav.astro';
+import Toast from '../components/layout/Toast.astro';
+import { getApp } from '../lib/apps';
+
+interface Props {
+  slug: string;
+  nav: [href: string, label: string][];
+  toast: string;                // texto del aviso al descargar
+  stars?: boolean;
+}
+const { slug, nav, toast, stars } = Astro.props;
+const app = getApp(slug);
+---
+<AppPage slug={slug}>
+  <Ambient stars={stars} />
+  {Astro.slots.has('logo')
+    ? <Nav app={app} links={nav}><Fragment slot="logo"><slot name="logo" /></Fragment></Nav>
+    : <Nav app={app} links={nav} />}
+  <slot />
+  <slot name="footer" />
+  <Toast text={toast} />
+  <script>import '../scripts/init';</script>
+</AppPage>

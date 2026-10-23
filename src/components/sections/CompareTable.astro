@@ -1,0 +1,23 @@
+---
+// Tabla comparativa: la primera columna de valores es la app («us»).
+// Celdas: true → ✓, false → ✕, texto → matiz en ámbar.
+import './compare.css';
+interface Props { columns: string[]; rows: [label: string, ...cells: (boolean | string)[]][] }
+const { columns, rows } = Astro.props;
+const cell = (v: boolean | string) => (v === true ? ['y', '✓'] : v === false ? ['x', '✕'] : ['m', v]);
+---
+<div class="compare reveal">
+  <div class="scroll-x">
+    <table>
+      <thead><tr><th></th>{columns.map((c, i) => <th class={i === 0 ? 'us' : undefined}>{c}</th>)}</tr></thead>
+      <tbody>
+        {rows.map(([label, ...cells]) => (
+          <tr><td>{label}</td>{cells.map((v, i) => {
+            const [cls, text] = cell(v);
+            return <td class={i === 0 ? `us ${cls}` : cls}>{text}</td>;
+          })}</tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
