@@ -1,0 +1,70 @@
+---
+// Estructura común de las páginas de iLegato: fondo, nav, pie, estilos y script.
+// La portada usa variant="home" (anclas de sección); las legales, "legal" con su encabezado.
+import AppPage from '../../layouts/AppPage.astro';
+import '../../styles/pages/ilegato.css';
+
+type Home = { variant: 'home' };
+type Legal = {
+  variant: 'legal';
+  title: string;
+  description: string;
+  eyebrow: string;
+  heading: string;     // h1; el remate va en degradado
+  accent: string;
+  updated?: string;    // «Última actualización: …»
+};
+type Props = Home | Legal;
+
+const props = Astro.props;
+const home = props.variant === 'home';
+const mail = 'contacto@ierwinx.com';
+const links: [string, string][] = home
+  ? [['#porque', 'Por qué'], ['#recorrido', 'La app'], ['#ecualizador', 'Ecualizador'], ['#android', 'Android'], ['#auto', 'En el auto'], ['#preguntas', 'Preguntas']]
+  : [['./', 'Inicio'], ['privacy.html', 'Privacidad'], ['terms.html', 'Términos'], ['support.html', 'Soporte']];
+const top = home ? '#top' : './';
+---
+<AppPage slug="ilegato" title={home ? undefined : props.title} description={home ? undefined : props.description} skipTo={home ? 'top' : 'doc'}>
+  <slot name="head" slot="head" />
+  <canvas id="aurora" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="cursor-light" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"></div>
+
+  <header class="nav" id="nav">
+    <a class="brand" href={top}><img src="img/icon-512.png" alt="" width="30" height="30">iLegato</a>
+    <nav class="nav-links" aria-label={home ? 'Secciones' : 'Páginas'}>
+      {links.map(([href, label]) => <a href={href}>{label}</a>)}
+    </nav>
+    {home
+      ? <a class="btn btn-primary magnetic" href="#descargar">Descargar</a>
+      : <a class="btn btn-primary magnetic" href={`mailto:${mail}?subject=iLegato`}>Contacto</a>}
+  </header>
+
+  {home ? <slot /> : (
+    <main class="doc" id="doc">
+      <div class="wrap">
+        <p class="eyebrow reveal">{props.eyebrow}</p>
+        <h1 class="split">{props.heading} <span class="grad">{props.accent}</span></h1>
+        {props.updated && <p class="updated">Última actualización: {props.updated}</p>}
+        <slot />
+      </div>
+    </main>
+  )}
+
+  <footer>
+    <div class="wrap foot">
+      <a class="brand" href={top}><img src="img/icon-512.png" alt="" width="30" height="30">iLegato</a>
+      <nav aria-label="Legal">
+        <a href="privacy.html">Privacidad</a>
+        <a href="terms.html">Términos</a>
+        <a href="support.html">Soporte</a>
+        <a href={`mailto:${mail}`}>{mail}</a>
+      </nav>
+      <span>© {new Date().getFullYear()} <a href="/">ierwinx</a></span>
+    </div>
+  </footer>
+
+  <script>import '../../scripts/pages/ilegato';</script>
+</AppPage>

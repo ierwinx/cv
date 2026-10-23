@@ -1,0 +1,31 @@
+/* Capas de ambiente (components/layout/Ambient.astro), aparición, aviso y animaciones compartidas. */
+#stars { position: fixed; inset: 0; z-index: 0; pointer-events: none }
+.aurora { position: fixed; inset: -20%; z-index: 0; pointer-events: none; filter: blur(90px); opacity: var(--aurora-opacity) }
+.aurora span { position: absolute; border-radius: 50%; mix-blend-mode: screen; animation: float 22s ease-in-out infinite }
+.aurora span:nth-child(1) { width: 45vw; height: 45vw; left: 5%; top: 0; background: var(--a1) }
+.aurora span:nth-child(2) { width: 38vw; height: 38vw; right: 5%; top: 15%; background: var(--a2); animation-delay: -7s; animation-duration: 26s }
+.aurora span:nth-child(3) { width: 34vw; height: 34vw; left: 35%; top: 45%; background: var(--a3); animation-delay: -13s; animation-duration: 30s; opacity: .6 }
+.grain { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .07; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") }
+.spot { position: fixed; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 30%), color-mix(in srgb, var(--a1) 13%, transparent), transparent 60%) }
+#progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 100; background: var(--grad); box-shadow: 0 0 12px var(--a2) }
+#confetti { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 150; pointer-events: none }
+
+.reveal { opacity: 0; transform: translateY(40px); filter: blur(8px); transition: opacity .9s cubic-bezier(.2, .8, .2, 1), transform .9s cubic-bezier(.2, .8, .2, 1), filter .9s }
+.reveal.in { opacity: 1; transform: none; filter: none }
+
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 120px); z-index: 200; padding: 14px 20px; border-radius: 14px; background: var(--toast-bg); border: 1px solid rgba(255, 255, 255, .15); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); font-size: 14px; transition: transform .45s cubic-bezier(.2, .8, .2, 1); box-shadow: 0 20px 50px -10px rgba(0, 0, 0, .6) }
+.toast.on { transform: translate(-50%, 0) }
+
+.grad-text { background: var(--grad); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shift 8s linear infinite }
+.kbd { display: inline-block; font-family: var(--mono); font-size: 12px; padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .06); color: var(--text) }
+
+@property --ang { syntax: "<angle>"; initial-value: 0deg; inherits: false }
+@keyframes float { 0%, 100% { transform: translate(0, 0) scale(1) } 33% { transform: translate(8vw, -6vh) scale(1.15) } 66% { transform: translate(-6vw, 8vh) scale(.9) } }
+@keyframes shift { to { background-position: 200% 0 } }
+@keyframes sweep { 0%, 60% { left: -60% } 100% { left: 130% } }
+@keyframes bob { 50% { transform: translateY(-10px) rotate(-2deg) } }
+@keyframes spin { to { --ang: 360deg } }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; filter: none }
+}

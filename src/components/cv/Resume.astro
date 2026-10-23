@@ -1,0 +1,73 @@
+---
+// Hoja del CV en PDF para un idioma (datos de src/data/cv.json → pdf). La convierte a PDF scripts/pages/cv-pdf.ts.
+// {years} e {iosYears} se reemplazan en el navegador para que los años no dependan de la fecha del build.
+import cv from '../../data/cv.json';
+
+interface Props { lang: 'en' | 'es' }
+const d = cv.pdf[Astro.props.lang];
+const contact = [d.email, d.phone, d.location];
+const links = [d.linkedin, d.github, d.website];
+---
+<div class="cv-header">
+  <div class="cv-photo"></div>
+  <div class="cv-header-text">
+    <div class="cv-name">{d.name}</div>
+    <div class="cv-title">{d.title}</div>
+    <div class="cv-contact">
+      {contact.map((c) => <>{' '}<span class="cv-contact-item">{c}</span></>)}
+      {links.map((l) => <>{' '}<span class="cv-contact-item"><a href={`https://${l}`}>{l}</a></span></>)}
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">{d.summary.heading}</div>
+  <p class="summary-text">{d.summary.text}</p>
+</div>
+
+<div class="section">
+  <div class="section-title">{d.skills.heading}</div>
+  <div class="skills-grid">
+    {d.skills.groups.map((g) => (
+      <div class="skill-row">
+        <span class="skill-label">{g.label}</span>
+        <span class="skill-value">{g.value}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">{d.experience.heading}</div>
+  {d.experience.jobs.map((j) => (
+    <div class="job">
+      <div class="job-header">
+        <span class="job-company">{j.company}</span>
+        <span class="job-period">{j.period}</span>
+      </div>
+      <div class="job-roles">{j.roles}</div>
+      <div class="job-desc">{Array.isArray(j.description)
+        ? <ul class="job-bullets">{j.description.map((b) => <li>{b}</li>)}</ul>
+        : j.description}</div>
+    </div>
+  ))}
+</div>
+
+<div class="section">
+  <div class="section-title">{d.education.heading}</div>
+  <div class="edu-block">
+    <div>
+      <div class="edu-degree">{d.education.degree}</div>
+      <div class="edu-specialty">{d.education.specialty}</div>
+      <div class="edu-institution">{d.education.institution}</div>
+    </div>
+    <div class="edu-period">{d.education.period}</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">{d.certifications.heading}</div>
+  <div class="certs-list">
+    {d.certifications.list.map((c) => <div class="cert-item">{c}</div>)}
+  </div>
+</div>

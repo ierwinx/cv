@@ -1,0 +1,13 @@
+---
+// Tarjeta del bento: ícono (trazos SVG), título, texto y extra opcional en el slot.
+// span: columnas de 6 (2, 3 o 4). bg/stroke: colores del ícono si no son los del tema.
+interface Props { title: string; icon: string; span?: 2 | 3 | 4; bg?: string; stroke?: string }
+const { title, icon, span = 2, bg, stroke } = Astro.props;
+const style = [bg && `--ib:${bg}`, stroke && `--is:${stroke}`].filter(Boolean).join(';');
+---
+<div class={`card w${span} tilt reveal`}>
+  <div class="icon" style={style || undefined}><svg viewBox="0 0 24 24" set:html={icon} /></div>
+  <h3>{title}</h3>
+  {Astro.slots.has('text') && <p><slot name="text" /></p>}
+  <slot />
+</div>

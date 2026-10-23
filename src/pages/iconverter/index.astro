@@ -1,0 +1,273 @@
+---
+// iConverter: diseño propio (azul, violeta y rosa). Estilos en styles/pages/iconverter.css, comportamiento en scripts/pages/iconverter.ts.
+import AppPage from '../../layouts/AppPage.astro';
+import { downloadUrl, getApp } from '../../lib/apps';
+import IconverterDemo from '../../components/demos/IconverterDemo.astro';
+import '../../styles/pages/iconverter.css';
+
+const app = getApp('iconverter');
+const dl = downloadUrl(app);
+const requirement = 'macOS 15.6 o superior';
+---
+<AppPage slug="iconverter">
+<!-- Gradientes SVG reutilizables -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#4f8cff"/><stop offset=".5" stop-color="#d946ef"/><stop offset="1" stop-color="#ec4899"/></linearGradient>
+    <linearGradient id="lg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7aa7ff"/><stop offset="1" stop-color="#f472b6"/></linearGradient>
+  </defs>
+</svg>
+
+<div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+<div class="gridlines" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor-glow" aria-hidden="true"></div>
+<div class="scroll-bar" aria-hidden="true"></div>
+
+<!-- ───────── NAV ───────── -->
+<header class="nav" id="nav">
+  <a href="#" class="brand"><img src="assets/icon.png" alt="">iConverter</a>
+  <nav class="nav-links">
+    <a href="#demo">Demo</a>
+    <a href="#funciones">Funciones</a>
+    <a href="#ahorro">Ahorro</a>
+    <a href="#descargar">Descargar</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <a href={dl} class="btn btn-primary magnetic" download data-download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg><span>Descargar gratis</span></a>
+</header>
+
+<main id="contenido">
+<!-- ───────── HERO ───────── -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow fade-up"><i></i>Nuevo para macOS · Universal</span>
+      <h1>
+        <span class="line"><span>Tu música</span></span>
+        <span class="line"><span class="grad-text">lossless,</span></span>
+        <span class="line"><span>lista para <span class="rotator" id="rotator"><span class="on">Apple Music.</span><span>tu iPhone.</span><span>tus AirPods.</span><span>tu CarPlay.</span></span></span></span>
+      </h1>
+      <p class="lead fade-up" style="animation-delay:.45s">Convierte bibliotecas completas de <b>FLAC, WAV y AIFF</b> a <b>AAC (M4A)</b> usando todos los núcleos de tu Mac. Carátulas, metadatos y carpetas intactos. Sin terminal, sin ffmpeg, sin complicaciones.</p>
+      <div class="hero-cta fade-up" style="animation-delay:.6s">
+        <a href={dl} class="btn btn-primary magnetic" download data-download>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.87-.76-1.47.02-2.83.86-3.59 2.17-1.54 2.66-.39 6.6 1.1 8.76.73 1.06 1.6 2.24 2.73 2.2 1.1-.04 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.84-1.22 1.18-2.41 1.2-2.47-.03-.01-2.3-.88-2.33-3.5zM14.2 6.13c.6-.74 1.01-1.75.9-2.77-.87.04-1.94.59-2.56 1.32-.56.64-1.05 1.68-.92 2.67.98.08 1.97-.5 2.58-1.22z"/></svg>
+          <span>Descargar gratis para Mac</span>
+        </a>
+        <a href="#demo" class="btn btn-ghost magnetic">Verlo en acción
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+      </div>
+      <div class="hero-meta fade-up" style="animation-delay:.75s">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Apple Silicon e Intel</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Firmada y notarizada por Apple</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>Gratis, sin anuncios</span>
+      </div>
+    </div>
+
+    <div class="stage fade-up" style="animation-delay:.3s" id="stage">
+      <canvas id="waves" aria-hidden="true"></canvas>
+      <div class="ring"></div><div class="ring r2"></div>
+      <div class="icon-3d" id="icon3d"><img src="assets/icon.png" alt="Icono de iConverter"></div>
+      <div class="chip c1">.flac</div>
+      <div class="chip c2">.wav</div>
+      <div class="chip c3">.aiff</div>
+      <div class="chip c4">320 kbps</div>
+      <div class="chip c5">→ <b>.m4a</b></div>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true"></div>
+</section>
+
+<!-- ───────── MARQUEE ───────── -->
+<div class="marquee" aria-label="Formatos compatibles">
+  <div class="marquee-track" id="marquee"></div>
+</div>
+
+<!-- ───────── DEMO ───────── -->
+<section id="demo">
+  <div class="wrap center">
+    <span class="eyebrow reveal"><i></i>Así de simple</span>
+    <h2 class="reveal" data-d="1">Elige carpeta. Pulsa <span class="grad-text">Iniciar.</span><br>Listo.</h2>
+    <p class="lead reveal" data-d="2">Una sola ventana, diseñada con el lenguaje visual de macOS. Mira cómo se convierte un álbum completo en tiempo real.</p>
+    <div class="demo reveal" id="demoBox">
+      <IconverterDemo />
+    </div>
+  </div>
+</section>
+
+<!-- ───────── CÓMO FUNCIONA ───────── -->
+<section>
+  <div class="wrap center">
+    <span class="eyebrow reveal"><i></i>Cómo funciona</span>
+    <h2 class="reveal" data-d="1">Tres pasos. <span class="grad-text">Cero fricción.</span></h2>
+    <div class="pipeline">
+      <svg class="connector" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0 10 C 25 0, 25 20, 50 10 S 75 0, 100 10"/></svg>
+      <div class="step reveal" data-d="1"><div class="step-num">1</div><h3>Elige tu carpeta</h3><p>iConverter escanea todas las subcarpetas y separa lo lossless de lo que ya está comprimido.</p></div>
+      <div class="step reveal" data-d="2"><div class="step-num">2</div><h3>Ajusta la calidad</h3><p>De 128 a 320 kbps. AAC a 256 kbps es la misma calidad que usa Apple Music.</p></div>
+      <div class="step reveal" data-d="3"><div class="step-num">3</div><h3>Disfruta</h3><p>Por defecto, los M4A caen en la carpeta que Apple Music importa automáticamente. Sin arrastrar nada.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── FUNCIONES ───────── -->
+<section id="funciones">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow reveal"><i></i>Funciones</span>
+      <h2 class="reveal" data-d="1">Todo lo que tu biblioteca<br><span class="grad-text">merece.</span></h2>
+    </div>
+    <div class="bento">
+      <article class="card w4 reveal tilt">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg></div>
+        <h3>Multinúcleo de verdad</h3>
+        <p>Convierte tantas canciones en paralelo como núcleos tenga tu Mac. En un chip con 10 núcleos, son 10 pistas a la vez.</p>
+        <div class="cores" id="cores"></div>
+      </article>
+      <article class="card half reveal tilt" data-d="1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M2 12h2M6 7v10M10 4v16M14 8v8M18 6v12M22 12h-2"/></svg></div>
+        <h3>Codificador nativo</h3>
+        <p>Usa el motor AAC de Apple (AVFoundation). Nada de binarios externos.</p>
+        <div class="eq" id="eq"></div>
+      </article>
+      <article class="card w3 reveal tilt">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></div>
+        <h3>Carátulas y metadatos</h3>
+        <p>Título, artista, álbum, número de pista y la portada incrustada en cada M4A. También guarda un <code>cover.jpg</code> por álbum.</p>
+        <div class="album">
+          <div class="cover"></div>
+          <div class="meta-rows">
+            <div><span>Artista</span><b>Tu artista favorito</b></div>
+            <div><span>Álbum</span><b>Remaster 24-bit</b></div>
+            <div><span>Pista</span><b>04 / 12</b></div>
+          </div>
+        </div>
+      </article>
+      <article class="card w3 reveal tilt" data-d="1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+        <h3>Tu estructura, intacta</h3>
+        <p>Replica exactamente tus carpetas de Artista / Álbum en el destino.</p>
+        <div class="tree">
+<span class="d">📁 Nova Lumen/</span><br>
+&nbsp;&nbsp;<span class="d">📁 Horizonte Eléctrico/</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="c">🖼 cover.jpg</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="f">🎵 01 Amanecer.m4a</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="f">🎵 02 Ondas.m4a</span>
+        </div>
+      </article>
+      <article class="card half reveal tilt">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M8 17l4 4 4-4M12 12v9"/><path d="M20.9 18A5 5 0 0 0 18 9h-1.3A8 8 0 1 0 4 16.3"/></svg></div>
+        <h3>Lossy se copia, no se degrada</h3>
+        <p>MP3, OGG, Opus, WMA, AAC y M4A se copian tal cual: nunca re-comprime lo ya comprimido.</p>
+        <div class="tags"><span>.mp3</span><span>.ogg</span><span>.opus</span><span>.wma</span><span>.aac</span><span>.m4a</span></div>
+      </article>
+      <article class="card w4 reveal tilt" data-d="1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18"/></svg></div>
+        <h3>Diseñada para macOS moderno</h3>
+        <p>Hecha en SwiftUI con Swift 6. En macOS 26 Tahoe luce el nuevo Liquid Glass; en Sequoia usa materiales translúcidos nativos. Binario universal: vuela en Apple Silicon y también corre en Intel.</p>
+        <div class="tags"><span>SwiftUI</span><span>Swift 6</span><span>Liquid Glass</span><span>arm64 + x86_64</span><span>Hardened Runtime</span><span>Notarizada</span></div>
+      </article>
+    </div>
+
+    <div class="stats">
+      <div class="stat reveal"><b data-count="4">0</b><span>formatos lossless de entrada</span></div>
+      <div class="stat reveal" data-d="1"><b data-count="6">0</b><span>formatos lossy que copia intactos</span></div>
+      <div class="stat reveal" data-d="2"><b data-count="320">0</b><span>kbps de calidad máxima</span></div>
+      <div class="stat reveal" data-d="3"><b data-count="0">0</b><span>dependencias externas</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── AHORRO ───────── -->
+<section id="ahorro">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow reveal"><i></i>Calculadora</span>
+      <h2 class="reveal" data-d="1">Recupera <span class="grad-text">gigas</span> de tu iPhone.</h2>
+      <p class="lead reveal" data-d="2">El FLAC es perfecto para archivar, pero ocupa muchísimo en un dispositivo móvil. Mueve el control y mira la diferencia.</p>
+    </div>
+    <div class="calc reveal">
+      <div>
+        <label for="gb">Tamaño de tu biblioteca FLAC <output id="gbOut">100 GB</output></label>
+        <input type="range" class="range" id="gb" min="5" max="2000" step="5" value="100">
+        <label>Calidad AAC</label>
+        <div class="bitrates" id="brs">
+          <button data-k="128">128</button><button data-k="192">192</button><button data-k="256" class="on">256</button><button data-k="320">320</button>
+        </div>
+        <p class="note" style="margin-top:22px">Estimación con FLAC de 16-bit/44.1 kHz a ~900 kbps promedio. El tamaño real varía según el material.</p>
+      </div>
+      <div class="bars">
+        <div class="row"><small>FLAC original <b id="flacOut">100 GB</b></small><div class="track"><div class="fill a" style="width:100%"></div></div></div>
+        <div class="row"><small>AAC con iConverter <b id="aacOut">28 GB</b></small><div class="track"><div class="fill b" id="aacBar" style="width:28%"></div></div></div>
+        <div><span class="saved grad-text" id="savedOut">72 GB</span><div class="note">de espacio liberado, aproximadamente</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── DESCARGA ───────── -->
+<section id="descargar">
+  <div class="wrap center">
+    <span class="eyebrow reveal"><i></i>Descarga</span>
+    <h2 class="reveal" data-d="1">Gratis. <span class="grad-text">Para siempre.</span></h2>
+    <p class="lead reveal" data-d="2">Sin suscripciones, sin cuentas, sin anuncios, sin rastreo. Solo descarga y convierte.</p>
+    <div class="price-wrap reveal" data-d="2">
+      <div class="price">
+        <div class="price-in">
+          <span class="tag">100% gratis</span>
+          <div class="amount"><sup>$</sup><b>0</b><small>para siempre</small></div>
+          <p style="color:var(--ink-2)">iConverter {app.version} para macOS</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6 9 17l-5-5"/></svg>Conversiones ilimitadas</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6 9 17l-5-5"/></svg>FLAC, WAV, AIFF → AAC 128–320 kbps</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6 9 17l-5-5"/></svg>Carátulas y metadatos preservados</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6 9 17l-5-5"/></svg>Sin anuncios ni recopilación de datos</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6 9 17l-5-5"/></svg>Apple Silicon e Intel</li>
+          </ul>
+          <a href={dl} class="btn btn-primary magnetic" download data-download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg><span>Descargar iConverter</span></a>
+          <p class="fine">Versión {app.version} · Requiere {requirement} · DMG de {app.size}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── FAQ ───────── -->
+<section id="faq">
+  <div class="wrap center">
+    <span class="eyebrow reveal"><i></i>FAQ</span>
+    <h2 class="reveal" data-d="1">Preguntas frecuentes</h2>
+    <div class="faq" style="text-align:left">
+      <details class="reveal"><summary>¿Pierdo calidad al convertir?<i>+</i></summary><div class="ans"><div>AAC es un formato con pérdida, pero a 256–320 kbps es transparente para la gran mayoría de oídos y equipos; es el mismo formato que usa Apple Music. Tus archivos FLAC originales nunca se modifican, así que siempre conservas el master.</div></div></details>
+      <details class="reveal" data-d="1"><summary>¿Qué versiones de macOS soporta?<i>+</i></summary><div class="ans"><div>macOS 15.6 Sequoia o superior. En macOS 26 Tahoe la interfaz usa Liquid Glass. Funciona de forma nativa en Mac con Apple Silicon y con Intel.</div></div></details>
+      <details class="reveal" data-d="2"><summary>¿Cómo llegan las canciones a Apple Music?<i>+</i></summary><div class="ans"><div>Por defecto iConverter guarda los M4A en la carpeta «Automatically Add to Music» de tu biblioteca, así Apple Music las importa solo. Puedes cambiar la carpeta de salida cuando quieras.</div></div></details>
+      <details class="reveal" data-d="3"><summary>¿Qué pasa con mis MP3 y otros archivos ya comprimidos?<i>+</i></summary><div class="ans"><div>Se copian tal cual a la carpeta de destino, respetando la estructura. Re-comprimir un archivo con pérdida solo empeoraría su calidad, así que iConverter no lo hace.</div></div></details>
+      <details class="reveal" data-d="4"><summary>¿De verdad es gratis?<i>+</i></summary><div class="ans"><div>Sí. Sin versión de prueba, sin límites y sin funciones bloqueadas. Descárgala, úsala y compártela.</div></div></details>
+      <details class="reveal" data-d="5"><summary>¿Es seguro instalarla?<i>+</i></summary><div class="ans"><div>Sí. La app está firmada con un certificado Developer ID y notarizada por Apple, así que Gatekeeper la abre sin advertencias. No recopila datos ni se conecta a internet.</div></div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── CTA FINAL ───────── -->
+<section class="final">
+  <svg class="wave-svg" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true"><path id="wavePath" fill="url(#lg)" fill-opacity=".25"/><path id="wavePath2" fill="url(#lg)" fill-opacity=".15"/></svg>
+  <div class="wrap" style="position:relative">
+    <img src="assets/icon.png" alt="" class="icon reveal">
+    <h2 class="reveal" data-d="1">Tu música merece<br><span class="grad-text">sonar en todas partes.</span></h2>
+    <p class="lead reveal" data-d="2" style="margin:0 auto 34px">Descarga iConverter gratis y convierte tu biblioteca hoy mismo.</p>
+    <a href={dl} class="btn btn-primary magnetic reveal" data-d="3" download data-download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg><span>Descargar gratis</span></a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="brand" style="font-size:15px"><img src="assets/icon.png" alt="" style="width:26px;height:26px;border-radius:7px">iConverter</div>
+    <nav><a href="#funciones">Funciones</a><a href="#descargar">Descargar</a><a href="#faq">FAQ</a><a href="mailto:soporte@ejemplo.com">Soporte</a></nav>
+    <span>© {new Date().getFullYear()} BugSoft · Hecho con ♥ para macOS</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>import '../../scripts/pages/iconverter';</script>
+</AppPage>

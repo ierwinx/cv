@@ -1,0 +1,54 @@
+---
+// Spotlight de una app en la home: ficha (plataformas, lema, funciones, cifras, botones) y su visual en el slot.
+// Textos en src/data/home.json; enlaces e ícono en apps.json. `panel`: pestaña de los editores (sin número ni reveal).
+import AppIcon from './AppIcon.astro';
+import { downloadUrl, getApp } from '../../lib/apps';
+
+export type SpotData = {
+  slug: string; accent: string; c1: string; c2: string; platforms: string; lead: string; accentText: string;
+  desc: string; features: string[]; cta: string; soon?: string;
+  stats: { count?: number; dec?: number; prefix?: string; suffix?: string; text?: string; label: string }[];
+};
+interface Props { spot: SpotData; index?: number; total?: number; flip?: boolean; panel?: boolean; active?: boolean }
+const { spot, index = 0, total = 0, flip = false, panel = false, active = false } = Astro.props;
+const app = getApp(spot.slug);
+const Tag = panel ? 'article' : 'section';
+const reveal = panel ? undefined : 'reveal';
+const pad = (n: number) => String(n).padStart(2, '0');
+const store = app.install;   // App Store (apps móviles); si no, el instalador de GitHub Releases
+const APPLE = '<path fill="currentColor" d="M16.4 12.6c0-2.5 2-3.7 2.1-3.7-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1.1-2.8-4.2zM14 5.2c.7-.8 1.2-2 1-3.2-1 .1-2.2.7-3 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.3-.6 3-1.4z"/>';
+---
+<Tag class:list={['spot', { 'spot--flip': flip, 'spot--panel': panel, active: panel && active }]} id={spot.slug}
+     role={panel ? 'tabpanel' : undefined} aria-labelledby={panel ? `tab-${spot.slug}` : undefined}
+     data-accent={spot.accent} style={`--c1:${spot.c1};--c2:${spot.c2}`} hidden={panel && !active}>
+  <div class="spot-copy">
+    {!panel && <p class="spot-index reveal">{pad(index)} / {pad(total)}</p>}
+    <div class:list={['spot-title', reveal]}>
+      <AppIcon app={app} />
+      <div>
+        <h2>{app.name}</h2>
+        <p>{spot.platforms}</p>
+      </div>
+    </div>
+    <p class:list={['spot-lead', reveal]}>{spot.lead} <span class="accent-text">{spot.accentText}</span></p>
+    <p class:list={['spot-desc', reveal]} set:html={spot.desc} />
+    <ul class:list={['features', reveal]}>{spot.features.map((f) => <li set:html={f} />)}</ul>
+    <div class:list={['stats', reveal]}>
+      {spot.stats.map((s) => (
+        <div>{s.count !== undefined
+          ? <b data-count={s.count} data-dec={s.dec} data-prefix={s.prefix} data-suffix={s.suffix}>0</b>
+          : <b>{s.text}</b>}<span>{s.label}</span></div>
+      ))}
+    </div>
+    <div class:list={['spot-ctas', reveal]}>
+      {store
+        ? <a class="btn btn--accent magnetic" href={store} target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={APPLE} />{spot.cta}</a>
+        : <a class="btn btn--accent magnetic" href={downloadUrl(app)} download>{spot.cta}</a>}
+      {spot.soon && <span class="btn btn--ghost btn--soon" aria-disabled="true">{spot.soon}</span>}
+      <a class="btn btn--ghost magnetic" href={`/${app.slug}/`}>Conocer más →</a>
+    </div>
+  </div>
+  <div class:list={['spot-visual', reveal]}>
+    <slot />
+  </div>
+</Tag>

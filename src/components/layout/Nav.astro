@@ -1,0 +1,14 @@
+---
+// Barra flotante de cristal: marca de la app, anclas de la página y botón principal.
+import './nav.css';
+import DownloadButton from '../ui/DownloadButton.astro';
+import type { App } from '../../lib/apps';
+
+interface Props { app: App; links: [href: string, label: string][] }
+const { app, links } = Astro.props;
+---
+<nav class="site-nav" aria-label={app.name}>
+  <a class="brand" href="#top"><slot name="logo"><img src={app.icon} alt=""></slot>{app.name}</a>
+  <ul>{links.map(([href, label]) => <li><a href={href}>{label}</a></li>)}</ul>
+  <slot name="cta">{app.release && <DownloadButton app={app} size="sm">Descargar</DownloadButton>}</slot>
+</nav>

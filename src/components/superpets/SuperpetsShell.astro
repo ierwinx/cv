@@ -1,0 +1,83 @@
+---
+// Estructura común de todas las páginas de Super Pets: fondo, nav, footer, estilos y script.
+// La portada usa variant="home" (anclas, botón de descarga, footer completo); las legales, "legal".
+import AppPage from '../../layouts/AppPage.astro';
+import { getApp } from '../../lib/apps';
+import '../../styles/pages/superpets.css';
+
+interface Props {
+  variant: 'home' | 'legal';
+  title?: string;
+  description?: string;
+  deleteAccountLink?: boolean;   // enlace «Eliminar cuenta» en el footer
+}
+const { variant, title, description, deleteAccountLink = false } = Astro.props;
+const app = getApp('superpets');
+const home = variant === 'home';
+const current = Astro.url.pathname.split('/').pop();
+const links: [string, string][] = home
+  ? [['#features', 'Funciones'], ['#tour', 'Recorrido'], ['#screenshots', 'Capturas'], ['support.html', 'Soporte'], ['privacy.html', 'Privacidad']]
+  : [['index.html', 'Inicio'], ['support.html', 'Soporte'], ['privacy.html', 'Privacidad'], ['terms.html', 'Términos']];
+---
+<AppPage slug="superpets" title={title} description={description} bodyClass={home ? 'home' : undefined}>
+<div class="bg-aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+<div class="bg-grain" aria-hidden="true"></div>
+<div class="scroll-progress" aria-hidden="true"></div>
+
+<nav class="nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <img src="img/app-icon.png" alt="Super Pets">
+            Super Pets
+        </a>
+        <ul class="nav-links" id="navLinks">
+            {links.map(([href, label]) => <li><a href={href} class={href === current ? 'is-active' : undefined}>{label}</a></li>)}
+        </ul>
+        {home && <a href={app.install} class="nav-cta magnetic">Descargar</a>}
+        <button class="nav-menu-btn" id="navMenuBtn" aria-label="Menú"><span></span><span></span></button>
+    </div>
+</nav>
+
+<slot />
+
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            {home
+              ? <h3><img src="img/app-icon.png" alt="" width="32" height="32"> Super Pets</h3>
+              : <h3>Super Pets</h3>}
+            <p>La app para dueños responsables que quieren lo mejor para sus mascotas.{home && ' Gestiona salud, vacunas y cuidados desde un solo lugar.'}</p>
+        </div>
+        {home && <div class="footer-links">
+            <h4>App</h4>
+            <ul>
+                <li><a href="#features">Funciones</a></li>
+                <li><a href="#screenshots">Capturas</a></li>
+                <li><a href={app.install}>App Store</a></li>
+            </ul>
+        </div>}
+        <div class="footer-links">
+            <h4>Legal</h4>
+            <ul>
+                <li><a href="privacy.html">Privacidad</a></li>
+                <li><a href="terms.html">Términos de uso</a></li>
+                <li><a href="support.html">Soporte</a></li>
+                {deleteAccountLink && <li><a href="delete-account.html">Eliminar cuenta</a></li>}
+            </ul>
+        </div>
+        {!home && <div class="footer-links">
+            <h4>App</h4>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href={app.install}>App Store</a></li>
+            </ul>
+        </div>}
+    </div>
+    {home && <div class="footer-giant" aria-hidden="true">Super Pets</div>}
+    <div class="footer-bottom">
+        <p>&copy; {new Date().getFullYear()} Super Pets. Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+<script>import '../../scripts/pages/superpets';</script>
+</AppPage>

@@ -1,0 +1,128 @@
+---
+import AppLayout from '../../layouts/AppLayout.astro';
+import Footer from '../../components/layout/Footer.astro';
+import DownloadButton from '../../components/ui/DownloadButton.astro';
+import Button from '../../components/ui/Button.astro';
+import Icon from '../../components/ui/Icon.astro';
+import Hero from '../../components/sections/Hero.astro';
+import Marquee from '../../components/sections/Marquee.astro';
+import Section from '../../components/sections/Section.astro';
+import Stats from '../../components/sections/Stats.astro';
+import Bento from '../../components/sections/Bento.astro';
+import BentoCard from '../../components/sections/BentoCard.astro';
+import Steps from '../../components/sections/Steps.astro';
+import CompareTable from '../../components/sections/CompareTable.astro';
+import Principles from '../../components/sections/Principles.astro';
+import DownloadCta from '../../components/sections/DownloadCta.astro';
+import IxmlDemo from '../../components/demos/IxmlDemo.astro';
+import { getApp } from '../../lib/apps';
+import '../../styles/pages/ixml.css';
+
+const app = getApp('ixml');
+---
+<AppLayout slug="ixml" stars
+  nav={[['#rendimiento', 'Rendimiento'], ['#funciones', 'Funciones'], ['#comparativa', 'Comparativa']]}
+  toast="🎉 ¡Gracias por descargar iXML! Arrástralo a Aplicaciones para empezar.">
+  <svg slot="logo" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset=".5" stop-color="#00d4ff"/><stop offset="1" stop-color="#ff4fd8"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#lg)"/><path d="M11 10l-5 6 5 6M21 10l5 6-5 6M18 8l-4 16" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+  <Hero pill="iXML 1.0 · nativo para macOS 27" title="El XML," accent="a la velocidad del Mac." glitch
+        meta={['Firmado y notarizado por Apple', 'Apple Silicon', 'Cero dependencias']}>
+    <Fragment slot="lead">Abre archivos de <strong>50&nbsp;MB</strong> sin pestañear, edítalos como <strong>texto</strong>, como <strong>árbol visual</strong> o ambos a la vez, y guarda <strong>sin perder ni un espacio</strong>. Hecho en Swift 6, sin Electron, sin Java, sin excusas.</Fragment>
+    <Fragment slot="cta">
+      <DownloadButton app={app}><Icon name="apple" /> Descargar para macOS</DownloadButton>
+      <Button href="#funciones" variant="ghost">Ver qué puede hacer <Icon name="arrow-down" /></Button>
+    </Fragment>
+    <IxmlDemo />
+  </Hero>
+
+  <Marquee items={['Modo texto', 'Árbol visual', 'Modo dividido', 'Autocierre', 'Expansión con ⇥', 'Errores en vivo', 'Correcciones rápidas', 'Formatear y minificar', 'Plantillas', 'Undo unificado']} />
+
+  <main id="contenido">
+    <Section id="rendimiento" center eyebrow="rendimiento medido, no prometido" title="Rápido de verdad." accent="Con números."
+             sub="Un parser propio escrito sobre UTF-16, una arena plana de nodos sin ARC y nada pesado en el hilo principal. Cada cifra sale de los benchmarks del proyecto (Apple Silicon, compilación release).">
+      <Stats locale="es-ES" items={[
+        { value: 205, unit: 'M car/s', text: 'Velocidad del parser: 10&nbsp;MB analizados en 48&nbsp;ms.', color: 'var(--a1)' },
+        { value: 230, unit: 'ms', text: 'De doble clic a ver 10&nbsp;MB de XML coloreado.', color: 'var(--a2)' },
+        { value: 1.4, dec: 1, unit: 'M nodos', text: 'Un archivo de 50&nbsp;MB parseado en 262&nbsp;ms, fuera del main.', color: 'var(--a3)' },
+        { value: 1, prefix: '<', unit: 'ms', text: 'Para resaltar la sintaxis de la pantalla visible.', color: 'var(--a4)' },
+      ]} />
+    </Section>
+
+    <Section id="funciones" flush eyebrow="funciones" title="Escribe menos." accent="Edita más."
+             sub="Todo lo que esperas de un editor profesional, y lo que no sabías que necesitabas.">
+      <Bento>
+        <BentoCard span={4} title="Asistente de escritura que se adelanta" icon='<path d="M4 7h10M4 12h16M4 17h7"/><path d="M17 15l3 2-3 2"/>'>
+          <Fragment slot="text">Escribe <span class="kbd">libro[id=3 idioma]</span> y pulsa <span class="kbd">⇥</span>. Expande <span class="kbd">lista&gt;item*3</span>, cierra etiquetas con <span class="kbd">&gt;</span>, completa <span class="kbd">&lt;/</span> y convierte <span class="kbd">=</span> en <span class="kbd">=""</span>. Puedes escribir un XML entero sin teclear nunca una etiqueta de cierre.</Fragment>
+          <div class="mini xml-code" set:html={`<span class="ghost">lista&gt;item*3</span> <span class="kbd">⇥</span>
+<span class="t">&lt;lista&gt;</span>
+  <span class="t">&lt;item&gt;</span><span class="caret"></span><span class="t">&lt;/item&gt;</span>
+  <span class="t">&lt;item&gt;&lt;/item&gt;</span>
+  <span class="t">&lt;item&gt;&lt;/item&gt;</span>
+<span class="t">&lt;/lista&gt;</span>`} />
+        </BentoCard>
+        <BentoCard title="Un solo ⌘Z para todo" bg="rgba(61,255,168,.14)" stroke="#7dffc4" icon='<path d="M9 14l-4-4 4-4"/><path d="M5 10h11a4 4 0 010 8h-1"/>'>
+          <Fragment slot="text">Ediciones visuales y de texto comparten el mismo historial. Cada expansión se deshace de una vez.</Fragment>
+        </BentoCard>
+        <BentoCard title="Errores en vivo" bg="rgba(255,79,216,.14)" stroke="#ff9be9" icon='<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/>'>
+          <Fragment slot="text">Etiquetas sin cerrar, cierres que no coinciden, atributos duplicados o un <span class="kbd">&amp;</span> suelto. Aparecen en menos de 300&nbsp;ms y se arreglan con un clic.</Fragment>
+        </BentoCard>
+        <BentoCard title="Filtro instantáneo" bg="rgba(0,212,255,.14)" stroke="#8fe9ff" icon='<path d="M3 6h7M3 12h11M3 18h5"/><circle cx="18" cy="16" r="3"/><path d="M20.2 18.2L22 20"/>'>
+          <Fragment slot="text">Busca por nombre, atributo o texto en todo el árbol. 10&nbsp;MB filtrados en ~6&nbsp;ms.</Fragment>
+        </BentoCard>
+        <BentoCard title="Formatear y minificar" bg="rgba(255,198,92,.14)" stroke="#ffd98a" icon='<path d="M4 4h16v16H4z"/><path d="M9 9h6M9 13h6M9 17h3"/>'>
+          <Fragment slot="text">Respeta tu estilo de sangría. Y si abres un XML minificado en una sola línea, iXML te ofrece formatearlo.</Fragment>
+        </BentoCard>
+        <BentoCard span={3} title="Fiel a tu archivo, byte a byte" icon='<path d="M12 3v18M3 12h18"/><rect x="3" y="3" width="18" height="18" rx="3"/>'>
+          <Fragment slot="text">El texto es la verdad: el árbol visual nunca reescribe el documento. Comentarios, espacios, orden de atributos, tipo de comillas, codificación, BOM y saltos de línea quedan intactos al guardar.</Fragment>
+        </BentoCard>
+        <BentoCard span={3} title="Abrir 10 MB, paso a paso" bg="rgba(0,212,255,.14)" stroke="#8fe9ff" icon='<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>'>
+          <div class="bars">
+            <div class="bar" style="--h:4%"><b>5 ms</b><small>Decodificar</small></div>
+            <div class="bar" style="--h:38%"><b>48 ms</b><small>Parsear</small></div>
+            <div class="bar" style="--h:100%"><b>230 ms</b><small>Texto visible</small></div>
+            <div class="bar" style="--h:3%"><b>&lt;1 ms</b><small>Resaltar</small></div>
+          </div>
+        </BentoCard>
+      </Bento>
+    </Section>
+
+    <Section flush center eyebrow="tres modos, un documento" title="Elige cómo pensar" accent="tu XML.">
+      <Steps items={[
+        ['Texto', 'Un <span class="kbd">NSTextView</span> nativo con resaltado por pantalla, números de línea con marcas de error, renombrado enlazado de apertura y cierre, y la barra de búsqueda de macOS.'],
+        ['Visual', 'Árbol con iconos, colores por etiqueta, chips de atributos e inspector. Renombra, inserta, duplica, mueve, envuelve o arrastra nodos sin escribir una sola etiqueta.'],
+        ['Dividido', 'Árbol y texto lado a lado, con la selección sincronizada. Toca un nodo y el cursor salta a su código; mueve el cursor y el árbol te sigue.'],
+      ]} />
+    </Section>
+
+    <Section id="comparativa" center eyebrow="por qué iXML" title="Lo que los demás" accent="no se atreven a medir."
+             sub="La mayoría de los editores de XML son apps de Java de hace dos décadas, editores web empaquetados en Electron o editores de código genéricos con un plugin encima. iXML se diseñó desde cero para el Mac y para el XML.">
+      <CompareTable columns={['iXML', 'Editores XML en Java', 'Apps Electron', 'Editor de código + plugin']} rows={[
+        ['App 100 % nativa de macOS', true, false, false, 'Depende'],
+        ['Editor visual en árbol', true, true, 'A veces', false],
+        ['Texto y árbol sincronizados', true, 'Parcial', false, false],
+        ['Guarda sin reformatear tu archivo', true, 'Parcial', 'Parcial', true],
+        ['Un solo historial de deshacer', true, 'Parcial', false, '—'],
+        ['Expansión de etiquetas con ⇥', true, false, false, 'Con extensiones'],
+        ['Parser tolerante a errores', true, 'Parcial', false, 'Depende'],
+        ['Sin runtime ni dependencias externas', true, false, false, false],
+      ]} />
+    </Section>
+
+    <Section flush eyebrow="ingeniería" title="Construido como" accent="debe construirse.">
+      <Principles items={[
+        ['Swift 6 estricto', 'Concurrencia comprobada por el compilador. El trabajo pesado corre fuera del hilo principal, así que la interfaz nunca se congela.'],
+        ['Núcleo puro y probado', 'Lexer, parser, árbol y asistente viven en un paquete que solo usa la librería estándar, con tests para cada regla.'],
+        ['≤ 64 bytes por nodo', 'Una arena plana de structs: millones de nodos con buena localidad en caché y sin conteo de referencias.'],
+        ['Accesible y bilingüe', 'Compatible con VoiceOver, colores por etiqueta en claro y oscuro, interfaz en español e inglés.'],
+      ]} />
+    </Section>
+
+    <DownloadCta eyebrow="listo en segundos" title="Tu próximo XML" accent="merece algo mejor."
+                 sub="Descarga iXML, arrástralo a Aplicaciones y abre ese archivo que tu editor actual no se atreve a abrir."
+                 requirements={['macOS 27 o posterior', 'Optimizado para Apple Silicon', 'Firmado con Developer ID', 'Notarizado por Apple']}>
+      <DownloadButton app={app}><Icon name="download" /> Descargar iXML 1.0 (.dmg)</DownloadButton>
+    </DownloadCta>
+  </main>
+
+  <Footer slot="footer" app={app} note="Hecho con cariño para el Mac." tagline="Abre .xml, .svg, .xsd, .xsl y plist XML." />
+</AppLayout>

@@ -1,0 +1,32 @@
+---
+// Documento de la página de una app: título, descripción, íconos, color y fuentes salen de apps.json.
+// Las páginas secundarias (privacidad, soporte…) pasan su propio title/description.
+// No impone diseño: las apps con diseño propio importan su CSS y su script.
+import BaseLayout from './BaseLayout.astro';
+import { getApp } from '../lib/apps';
+
+interface Props {
+  slug: string;
+  title?: string;
+  description?: string;
+  skipTo?: string;
+  htmlClass?: string;
+  bodyClass?: string;
+}
+const { slug, skipTo, htmlClass, bodyClass } = Astro.props;
+const app = getApp(slug);
+const title = Astro.props.title ?? app.title;
+const description = Astro.props.description ?? app.description;
+if (!app.theme || !app.icon || !title || !description) {
+  throw new Error(`Faltan "theme", "icon", "title" o "description" de ${slug} en apps.json`);
+}
+// Apps del App Store: Safari en iPhone muestra el banner «Abrir en el App Store».
+const appStoreId = app.install?.match(/apps\.apple\.com\/.*\/id(\d+)/)?.[1];
+---
+<BaseLayout title={title} description={description} icon={app.icon} touchIcon={app.touchIcon}
+            themeColor={app.theme.color} fonts={app.theme.fonts} vars={app.theme.vars}
+            skipTo={skipTo} htmlClass={htmlClass} bodyClass={bodyClass}>
+  {appStoreId && <meta slot="head" name="apple-itunes-app" content={`app-id=${appStoreId}`}>}
+  <slot name="head" slot="head" />
+  <slot />
+</BaseLayout>

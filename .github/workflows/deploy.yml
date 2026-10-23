@@ -21,16 +21,24 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # historial y etiquetas: lastmod del sitemap y paridad con legacy-v1
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+          cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Build (minify)
+      - name: Build (Astro + SEO)
         run: npm run build
+        env:
+          SITE: https://ierwinx.com
+
+      - name: Check
+        run: npm run check
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
