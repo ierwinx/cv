@@ -2,7 +2,7 @@ import apps from '../data/apps.json';
 import site from '../data/site.json';
 
 export type App = (typeof apps)[number] & {
-  release?: { tag: string; file: string };
+  release?: { tag: string; file: string; sha256?: string };   // sha256: el del archivo publicado, para comprobarlo
   size?: string;               // tamaño del instalador, p. ej. "3.5 MB"
   install?: string;            // App Store (apps móviles)
   play?: string;               // Google Play; sin él, los botones dicen «Próximamente»
