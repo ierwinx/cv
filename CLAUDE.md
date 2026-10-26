@@ -34,12 +34,13 @@ src/data/home.json     textos de los spotlights de la home (lema, funciones, cif
 src/data/cv.json       CV en es/en: la página /CV/ (`web`) y la hoja PDF (`pdf`); los años se calculan al cargar
 src/data/site.json     marca, URL de producción, base de GitHub Releases, descripción de la home
 src/lib/apps.ts        getApp(slug), downloadUrl(app)
+src/lib/contact.ts     contactAttrs(): a dónde envía el formulario de contacto y si pide reCAPTCHA (al compilar)
 src/styles/            tokens.css (nombres canónicos) · base.css · effects.css (aurora, reveal, toast, keyframes)
 src/styles/pages/      lo que es exclusivo de una página (home.css, ilegato.css, cv.css…)
 src/layouts/           BaseLayout (head, favicon, fuentes, seasonal, «saltar al contenido») · AppPage (head de una
                        app desde apps.json, banner de App Store) · AppLayout (AppPage + tema, ambiente, nav y toast)
 src/components/layout  Ambient, Nav, Footer, Toast
-src/components/ui      Button, DownloadButton, Icon
+src/components/ui      Button, DownloadButton, Icon, ContactForm (formulario de contacto → micro Backierwinx)
 src/components/sections Hero, Marquee, Section, Bento/BentoCard, Steps, Stats, CompareTable, Principles, Faq, DownloadCta
 src/components/mockups AppWindow (ventana 3D del hero)
 src/components/demos   <App>Demo.astro + <app>.css: demos que comparten la página de la app y la home
@@ -47,7 +48,8 @@ src/components/home    Spot (spotlight genérico), menú/órbita/dock (AppIcon, 
 src/components/<app>   piezas de una sola app: SuperpetsShell, IlegatoShell + StoreButtons, cv/Resume
 src/scripts/init.ts    comportamiento común, activado por clases/atributos (ver abajo)
 src/scripts/core/      dom ($, $$, esc), motion (sleep, reduceMotion, whileVisible), loop (frameLoop), ambient,
-                       reveal, counters (countUp, initCounters), pointer (tilt, magnetic), celebrate (confetti, toast)
+                       reveal, counters (countUp, initCounters), pointer (tilt, magnetic), celebrate (confetti, toast),
+                       contact (initContactForm, initContactForms)
 src/scripts/demos/     <app>.ts → export function mount(root)  (ibridge, ixml, igit, iconverter)
 src/scripts/home/      visuales de la home → mount(root) (editores, iTunes, espectrograma, iRar, Academia)
 src/scripts/pages/     el script de cada página con diseño propio (home.ts, itunes.ts, cv.ts…)
@@ -122,6 +124,19 @@ Todo el sitio sale de Astro (`docs/REDISENO.md` §5, fases 0–7 hechas): ya no 
 `git worktree add <tmp> legacy-v1`, sírvelo con `python3 -m http.server 8101 --directory <tmp>` y compara capturas a
 1440 px y 390 px con movimiento reducido. El usuario valida visualmente antes de dar algo por bueno. Al terminar,
 `git worktree remove <tmp>`.
+
+## Formulario de contacto
+
+**El sitio no publica ningún correo**: el contacto es un formulario que envía al microservicio
+`~/Desarrollo/Backierwinx` (FastAPI + Firestore en Render, URL en `site.json → contactApi`). Lo usan el CV (con su
+propio marcado bilingüe) y, con `<ContactForm origen="…">`, el soporte de iLegato y Super Pets, la página de
+eliminar cuenta de Super Pets e iConverter. Las páginas legales enlazan a `support.html#contacto`.
+
+- Solo el build de producción envía y pide reCAPTCHA v2; en local el envío se simula (`console.info`).
+- Probar contra el micro local: `PUBLIC_CONTACT_API=http://localhost:8000 npm run dev` (sin reCAPTCHA).
+- El script de la página llama a `initContactForms()` (o `initContactForm(form, opciones)` en el CV). Al acercarse
+  el formulario a la pantalla carga reCAPTCHA y llama a `GET /salud` para despertar el micro (Render gratis duerme).
+- `origen` identifica la página en Firestore (`cv`, `ilegato`, `superpets`, `superpets-eliminar-cuenta`, `iconverter`).
 
 ## SEO (`tools/seo.py`)
 

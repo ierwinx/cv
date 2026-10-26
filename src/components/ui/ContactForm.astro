@@ -1,0 +1,28 @@
+---
+// Formulario de contacto de las páginas de las apps: envía al micro Backierwinx (ver lib/contact.ts).
+// Solo trae marcado y CSS; lo monta el script de la página con initContactForms() de scripts/core/contact.
+// Toma los colores de la página: currentColor para texto y bordes, --cf-accent para el foco y el botón.
+import { contactAttrs, RECAPTCHA_KEY } from '../../lib/contact';
+import './contact-form.css';
+
+interface Props {
+  origen: string;                   // qué página lo envía: ilegato, superpets, iconverter…
+  placeholder?: string;
+  send?: string;                    // texto del botón
+  captchaTheme?: 'light' | 'dark';
+}
+const { origen, placeholder = 'Cuéntame en qué te ayudo', send = 'Enviar mensaje', captchaTheme = 'dark' } = Astro.props;
+const attrs = contactAttrs(Astro.site, origen);
+---
+<form class="cf" data-contact {...attrs}>
+  <div class="cf-row">
+    <label class="cf-field"><span>Nombre</span><input name="nombre" autocomplete="name" required maxlength="80"></label>
+    <label class="cf-field"><span>Correo</span><input type="email" name="email" autocomplete="email" required maxlength="160"></label>
+  </div>
+  <label class="cf-field"><span>Mensaje</span><textarea name="mensaje" required minlength="5" maxlength="4000" rows="5" placeholder={placeholder}></textarea></label>
+  <label class="cf-hp" aria-hidden="true">Sitio web<input name="web" tabindex="-1" autocomplete="off"></label>
+  {attrs['data-captcha'] === 'true' && <div class="g-recaptcha" data-sitekey={RECAPTCHA_KEY} data-theme={captchaTheme}></div>}
+  <p class="cf-error" role="alert"></p>
+  <button class="cf-send" type="submit">{send}</button>
+  <p class="cf-status" role="status" hidden></p>
+</form>
