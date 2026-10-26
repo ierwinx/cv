@@ -265,8 +265,9 @@ import { countUp as count } from '../core/counters';
   }));
 
   /* ---- Copy checksum ---- */
-  $("#checksum")!.addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText("6714f1ae6f769ee33c43ade1a2b9c3e6ba693e8bf1a4dbbf1cc6b399529a3339"); showToast("SHA-256 copiado al portapapeles"); }
+  const checksum = $("#checksum")!;
+  checksum.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(checksum.dataset.sha!); showToast("SHA-256 copiado al portapapeles"); }
     catch { showToast("No se pudo copiar el SHA-256"); }
   });
 })();
