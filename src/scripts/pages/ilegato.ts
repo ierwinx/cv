@@ -7,6 +7,7 @@ import { initCounters } from '../core/counters';
 import { initMagnetic, initTilt } from '../core/pointer';
 import { initReveal } from '../core/reveal';
 import { frameLoop } from '../core/loop';
+import { initContactForms } from '../core/contact';
 
 const fine = matchMedia('(pointer: fine)').matches;
 const root = document.documentElement;
@@ -348,3 +349,6 @@ $$('[data-glow]').forEach((el) => glowWatch.observe(el));
     if (visible) requestAnimationFrame(flow);
   }
 })();
+
+// ───────── Formulario de contacto (soporte) ─────────
+initContactForms();

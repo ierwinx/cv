@@ -7,6 +7,7 @@ import { frameLoop } from '../core/loop';
 import { toast } from '../core/celebrate';
 import { initCounters, plainCount } from '../core/counters';
 import { mount as mountDemo } from '../demos/iconverter';
+import { initContactForms } from '../core/contact';
 
 const finePointer = matchMedia('(pointer: fine)').matches;
 $$('[data-iconverter]').forEach(mountDemo);
@@ -158,3 +159,6 @@ initCounters('[data-count]', { duration: 1600, threshold: .5, format: plainCount
   const draw = (_: number, k: number) => { p1.setAttribute('d', path(0, 34, .006)); p2.setAttribute('d', path(2, 46, .0045)); t += .02 * k; };
   if (reduce) draw(0, 0); else frameLoop(draw, { visible: $('.final')! });
 })();
+
+// Formulario de contacto
+initContactForms();

@@ -1,17 +1,12 @@
 // CV bilingüe (/CV/): idioma, tema, secciones generadas desde src/data/cv.json, formulario y efectos.
-// El formulario solo envía de verdad en el build de producción; en local simula el envío.
+// El formulario envía al micro Backierwinx solo en el build de producción; en local simula el envío.
 import cv from '../../data/cv.json';
 import { $, $$ } from '../core/dom';
+import { initContactForm } from '../core/contact';
 
 type Lang = 'en' | 'es';
 type Texts = (typeof cv.web)['en'];
 type Project = Texts['projects']['list'][number];
-
-declare const grecaptcha: { getResponse(): string; reset(): void } | undefined;
-
-// Solo el build de producción envía correos (data-live lo decide la página al compilar):
-// en local o en pruebas nunca se toca EmailJS ni reCAPTCHA.
-const LIVE = $('#contactForm')!.dataset.live === 'true';
 
 const now = new Date().getFullYear();
 const years = now - cv.careerStart;
@@ -167,38 +162,14 @@ function showStatus(form: HTMLFormElement, ok: boolean, text: string) {
   setTimeout(() => { status.style.display = 'none'; form.style.display = 'grid'; }, 4000);
 }
 
-function initContactForm() {
+function initForm() {
+  // Envía al micro Backierwinx; en local simula el envío (lo decide la página al compilar)
   const form = $<HTMLFormElement>('#contactForm')!;
   const error = $('#errorRecaptcha')!;
-  if (LIVE) {
-    const s = document.createElement('script');
-    s.src = 'https://www.google.com/recaptcha/api.js';
-    s.async = s.defer = true;
-    document.head.appendChild(s);
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const captcha = typeof grecaptcha !== 'undefined' ? grecaptcha : undefined;
-    if (captcha && !captcha.getResponse()) { error.textContent = t.contact.recaptchaError; return; }
-    error.textContent = '';
-
-    if (!LIVE) {
-      console.info('[CV] Envío simulado: en local el formulario no manda correos.', Object.fromEntries(new FormData(form)));
-      form.reset();
-      showStatus(form, true, `${t.contact.success} (simulado)`);
-      return;
-    }
-    try {
-      const emailjs = (await import('@emailjs/browser')).default;
-      emailjs.init({ publicKey: 'user_km4RSsF30l5sCapcs0ucE' });
-      await emailjs.sendForm('service_nqyh7vk', 'template_cq9vtfz', form);
-      form.reset();
-      captcha?.reset();
-      showStatus(form, true, t.contact.success);
-    } catch {
-      showStatus(form, false, t.contact.error);
-    }
+  initContactForm(form, {
+    texts: () => ({ sending: t.contact.sending, success: t.contact.success, error: t.contact.error, captcha: t.contact.recaptchaError }),
+    onError: (text) => { error.textContent = text; },
+    onDone: (ok, text) => showStatus(form, ok, text),
   });
 }
 
@@ -278,7 +249,7 @@ function typeEffect() {
 
 updateThemeIcon();
 setLang(lang);
-initContactForm();
+initForm();
 initScrollAnimations();
 initModal();
 $('#langBtn')!.addEventListener('click', () => setLang(lang === 'en' ? 'es' : 'en'));

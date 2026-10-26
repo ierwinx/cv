@@ -4,7 +4,8 @@
 // seo.py le pone noindex y lo deja fuera del sitemap; sus Open Graph son propios para compartir el enlace.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import cv from '../../data/cv.json';
-import site from '../../data/site.json';
+import { contactAttrs, RECAPTCHA_KEY } from '../../lib/contact';
+import '../../components/ui/contact-form.css';   // solo usa .cf-hp (la trampa para bots)
 import '../../styles/pages/cv.css';
 
 const t = cv.web.en;
@@ -12,7 +13,7 @@ const years = new Date().getFullYear() - cv.careerStart;
 const bio = t.hero.bio.replace('{years}', String(years));
 const image = new URL('/CV/img/inge.jpg', Astro.site).href;
 const url = new URL('/CV/', Astro.site).href;
-const live = import.meta.env.PROD && url.startsWith(site.production);   // el formulario solo envía en producción
+const contact = contactAttrs(Astro.site, 'cv');   // el formulario solo envía al micro en producción
 const ogTitle = 'Erwin De La Luz De León — Mobile Software Engineer';
 const ogDescription = '10+ years leading mobile development, scalable architectures, and DevSecOps practices.';
 
@@ -23,7 +24,7 @@ const SOCIAL: Record<string, string> = {
   LinkedIn: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>',
 };
 const FIELDS: [id: string, key: keyof typeof t.contact, type?: 'text' | 'email'][] = [
-  ['nombre', 'name', 'text'], ['apellido1', 'lastName', 'text'], ['empresa', 'company', 'text'], ['email', 'email', 'email'], ['mensaje', 'message'],
+  ['nombre', 'name', 'text'], ['apellido', 'lastName', 'text'], ['empresa', 'company', 'text'], ['email', 'email', 'email'], ['mensaje', 'message'],
 ];
 ---
 <BaseLayout title="Erwin De La Luz - Mobile Software Engineer" lang="en"
@@ -142,15 +143,16 @@ const FIELDS: [id: string, key: keyof typeof t.contact, type?: 'text' | 'email']
 
     <section class="card card--contact">
       <h2 class="card-heading" data-i18n="contact.heading">{t.contact.heading}</h2>
-      <form class="contact-form" id="contactForm" data-live={String(live)}>
+      <form class="contact-form" id="contactForm" {...contact}>
         {FIELDS.map(([id, key, type]) => (
           <div class="form-group">
             <label for={id} data-i18n={`contact.${key}`}>{t.contact[key]}</label>
             {type ? <input type={type} id={id} name={id} required> : <textarea id={id} name={id} required></textarea>}
           </div>
         ))}
+        <label class="cf-hp" aria-hidden="true">Website<input name="web" tabindex="-1" autocomplete="off"></label>
         <div class="form-group">
-          <div class="g-recaptcha" data-sitekey="6Lf3mxgtAAAAANvlkOI-l4t7W_bFnvspD1gCtDKW"></div>
+          {contact['data-captcha'] === 'true' && <div class="g-recaptcha" data-sitekey={RECAPTCHA_KEY}></div>}
           <span class="form-error" id="errorRecaptcha"></span>
         </div>
         <button type="submit" class="form-submit" data-i18n="contact.send">{t.contact.send}</button>

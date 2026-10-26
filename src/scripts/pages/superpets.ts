@@ -3,6 +3,7 @@ import { $, $$ } from '../core/dom';
 import { reduceMotion as reduced } from '../core/motion';
 import { confetti } from '../core/celebrate';
 import { countUp } from '../core/counters';
+import { initContactForms } from '../core/contact';
 
 (() => {
     const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -301,3 +302,6 @@ import { countUp } from '../core/counters';
         });
     }
 })();
+
+// ── Formulario de contacto (soporte y eliminar cuenta) ──
+initContactForms();
