@@ -1,8 +1,9 @@
 // Página de iJson: ventana interactiva del héroe, laboratorio de fidelidad, atajos y campo de símbolos.
 import { $, $$, esc } from '../core/dom';
 import { reduceMotion as reduce } from '../core/motion';
-import { frameLoop } from '../core/loop';
 import { initCounters } from '../core/counters';
+import { initGlyphs } from '../core/glyphs';
+import { initNav } from '../core/nav';
 import { initMagnetic } from '../core/pointer';
 
 type Kind = 'object' | 'array' | 'string' | 'number' | 'bool' | 'null';
@@ -284,48 +285,6 @@ if (!reduce) {
   document.querySelectorAll(".perf").forEach(el => io.observe(el));
 }
 
-/* ---------- campo de símbolos JSON en el fondo ---------- */
-(() => {
-  const cv = $<HTMLCanvasElement>("#field")!, ctx = cv.getContext("2d")!;
-  const GLYPHS = ["{", "}", "[", "]", ":", ",", '""', "0", "1", "null", "true"];
-  type Glyph = { x: number; y: number; z: number; g: string; c: number; r: number; vr: number };
-  let W = 0, H = 0, dpr = 1, parts: Glyph[] = [], colors: string[] = [];
-  const mouse = { x: -999, y: -999 };
-  const readColors = () => {
-    const cs = getComputedStyle(document.documentElement);
-    colors = ["--k-object", "--k-array", "--k-string", "--k-number", "--k-bool", "--muted"].map(v => cs.getPropertyValue(v).trim());
-  };
-  const resize = () => {
-    dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
-    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const n = Math.round(Math.min(70, W * H / 22000));
-    parts = Array.from({ length: n }, () => ({
-      x: Math.random() * W, y: Math.random() * H, z: .3 + Math.random() * .9,
-      g: GLYPHS[Math.random() * GLYPHS.length | 0], c: Math.random() * 6 | 0, r: Math.random() * Math.PI, vr: (Math.random() - .5) * .004
-    }));
-  };
-  const draw = (_ = 0, k = 1) => {
-    ctx.clearRect(0, 0, W, H);
-    const sy = scrollY;
-    for (const p of parts) {
-      if (!reduce) { p.y -= .18 * p.z * k; p.r += p.vr * k; if (p.y < -40) { p.y = H + 40; p.x = Math.random() * W; } }
-      const y = ((p.y - sy * .15 * p.z) % (H + 80) + H + 80) % (H + 80) - 40;
-      const dx = p.x - mouse.x, dy = y - mouse.y, dist = Math.hypot(dx, dy);
-      const near = Math.max(0, 1 - dist / 220);
-      ctx.save();
-      ctx.translate(p.x + (near ? dx / dist * near * 18 : 0), y + (near ? dy / dist * near * 18 : 0));
-      ctx.rotate(p.r);
-      ctx.globalAlpha = .08 + .1 * p.z + near * .5;
-      ctx.fillStyle = colors[p.c];
-      ctx.font = `${Math.round(12 + 16 * p.z)}px "JetBrains Mono", ui-monospace, monospace`;
-      ctx.fillText(p.g, 0, 0);
-      ctx.restore();
-    }
-  };
-  readColors(); resize();
-  if (reduce) draw(); else frameLoop(draw, { fps: 30 });   // fondo lento: 30 fps se ven igual
-  addEventListener("resize", () => { resize(); if (reduce) draw(); });
-  addEventListener("pointermove", e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { readColors(); if (reduce) draw(); });
-  new MutationObserver(() => { readColors(); if (reduce) draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-})();
+/* ---------- campo de símbolos JSON en el fondo (core/glyphs) ---------- */
+initNav();
+initGlyphs();

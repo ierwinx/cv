@@ -1,14 +1,47 @@
 ---
-// Pie de las páginas de app: siempre enlaza a la home de ierwinx.
+// Pie común de las páginas de app (estructura de Super Pets): marca y lema, columna App, columna Legal
+// y el nombre gigante en la portada. Si la app aún no tiene páginas legales (apps.json → legal), Legal
+// solo lleva al formulario de /contacto/.
+import '../../styles/tokens.css';
 import './footer.css';
-import type { App } from '../../lib/apps';
+import { downloadUrl, type App } from '../../lib/apps';
 
-interface Props { app: App; note: string; tagline: string }
-const { app, note, tagline } = Astro.props;
+interface Props {
+  app: App;
+  tagline: string;
+  giant?: boolean;                          // nombre gigante (portada)
+  extra?: [href: string, label: string][];  // enlaces de más en Legal (p. ej. «Eliminar cuenta»)
+}
+const { app, tagline, giant = false, extra = [] } = Astro.props;
+const base = `/${app.slug}/`;
+const get: [string, string][] = [
+  ...(app.install ? [[app.install, 'App Store'] as [string, string]] : []),
+  ...(app.play ? [[app.play, 'Google Play'] as [string, string]] : []),
+  ...(app.release ? [[downloadUrl(app), `Descargar ${app.version ? `v${app.version}` : ''}`.trim()] as [string, string]] : []),
+];
+const legal: [string, string][] = app.legal
+  ? [[`${base}privacy.html`, 'Privacidad'], [`${base}terms.html`, 'Términos de uso'], [`${base}support.html`, 'Soporte'], [`${base}support.html#contacto`, 'Contacto'], ...extra]
+  : [[`/contacto/?app=${app.slug}`, '¿Problemas? Escríbeme'], ...extra];
 ---
-<footer class="site-footer">
-  <div class="wrap">
-    <span>© {new Date().getFullYear()} {app.name} · por <a href="/">ierwinx</a>. {note}</span>
-    <span>{tagline} · <a href={`/contacto/?app=${app.slug}`}>¿Problemas? Escríbeme</a></span>
+<footer class="ui-footer">
+  <div class="ui-footer-inner">
+    <div class="ui-footer-brand">
+      <a href={base}><img src={app.home?.logo ?? app.icon} alt="" width="32" height="32"> {app.name}</a>
+      <p>{tagline}</p>
+    </div>
+    <nav class="ui-footer-links" aria-label="App">
+      <h4>App</h4>
+      <ul>
+        <li><a href={base}>Inicio</a></li>
+        {get.map(([href, label]) => <li><a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener' : undefined}>{label}</a></li>)}
+        <li><a href="/">Más apps</a></li>
+      </ul>
+    </nav>
+    <nav class="ui-footer-links" aria-label="Legal">
+      <h4>{app.legal ? 'Legal' : 'Ayuda'}</h4>
+      <ul>{legal.map(([href, label]) => <li><a href={href}>{label}</a></li>)}</ul>
+    </nav>
   </div>
+  {giant && <div class="ui-footer-giant" aria-hidden="true">{app.name}</div>}
+  <div class="ui-footer-bottom">© {new Date().getFullYear()} {app.name} · por <a href="/">ierwinx</a></div>
 </footer>

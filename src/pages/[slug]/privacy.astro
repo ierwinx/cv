@@ -1,0 +1,40 @@
+---
+// Política de privacidad de cada app de Mac (Super Pets e iLegato tienen la suya). Datos: data/legal.json.
+import LegalShell from '../../components/legal/LegalShell.astro';
+import { legalPaths, type LegalProps } from '../../lib/legal';
+
+export const getStaticPaths = legalPaths;
+const { app, legal } = Astro.props as LegalProps;
+---
+<LegalShell app={app} title={`Política de privacidad — ${app.name}`}
+            description={`Política de privacidad de ${app.name}: qué guarda en tu Mac, qué permisos pide y por qué el desarrollador no recibe tus datos.`}
+            eyebrow="Legal" heading="Política de" accent="privacidad" updated={legal.updated}>
+  <div class="lg-callout reveal"><b>En resumen:</b> <Fragment set:html={legal.summary} /></div>
+
+  <h2>Quién es el responsable</h2>
+  <p>{app.name} es desarrollada por ierwinx (<a href="/">ierwinx.com</a>). Para cualquier duda sobre esta política usa el <a href="support.html#contacto">formulario de contacto</a>.</p>
+
+  <h2>Lo que el desarrollador no recibe</h2>
+  <p>{app.name} no tiene cuentas de usuario ni servidores del desarrollador. No envía al desarrollador ningún dato: ni tu nombre, ni tu correo, ni tus archivos, ni identificadores del Mac, ni cómo usas la app. No incluye publicidad, analíticas ni rastreo.</p>
+  <p set:html={legal.network} />
+
+  <h2>Información que vive en tu Mac</h2>
+  <p>Para funcionar, {app.name} guarda en tu Mac:</p>
+  <ul>{legal.saves.map((s) => <li set:html={s} />)}</ul>
+  <p>Nada de esto sale de tu Mac, salvo en las copias de seguridad que tú hagas (por ejemplo, Time Machine).</p>
+
+  <h2>Permisos</h2>
+  <ul>{legal.permissions.map(([t, d]) => <li><b>{t}:</b> <Fragment set:html={d} /></li>)}</ul>
+
+  <h2>Diagnósticos de Apple</h2>
+  <p>Si en Ajustes del Sistema → Privacidad y seguridad → Análisis y mejoras aceptas compartir análisis con Apple, macOS puede enviar a Apple reportes de fallos. Ese tratamiento se rige por la <a href="https://www.apple.com/legal/privacy/" rel="noopener">política de privacidad de Apple</a>; el desarrollador no recibe datos que te identifiquen.</p>
+
+  <h2>Si me escribes</h2>
+  <p>El <a href="support.html#contacto">formulario de soporte</a> envía tu nombre, tu correo y tu mensaje a un servicio del desarrollador solo para poder responderte. No se usan para nada más ni se comparten. El formulario usa Google reCAPTCHA para evitar spam, sujeto a la <a href="https://policies.google.com/privacy" rel="noopener">política de privacidad de Google</a>.</p>
+
+  <h2>Menores de edad</h2>
+  <p>{app.name} no recopila datos de nadie, incluidos menores de 13 años.</p>
+
+  <h2>Cambios a esta política</h2>
+  <p>Si esta política cambia, se publicará aquí con su nueva fecha de actualización.</p>
+</LegalShell>

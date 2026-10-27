@@ -1,29 +1,27 @@
 ---
 // iPlist: diseño propio (Bricolage + Geist). Estilos en styles/pages/iplist.css, comportamiento en scripts/pages/iplist.ts.
 import AppPage from '../../layouts/AppPage.astro';
-import { downloadUrl, getApp } from '../../lib/apps';
+import Nav from '../../components/layout/Nav.astro';
+import Footer from '../../components/layout/Footer.astro';
+import Button from '../../components/ui/Button.astro';
+import DownloadButton from '../../components/ui/DownloadButton.astro';
+import GlyphField from '../../components/ui/GlyphField.astro';
+import DownloadCta from '../../components/sections/DownloadCta.astro';
+import { getApp } from '../../lib/apps';
 import '../../styles/pages/iplist.css';
 
-const dl = downloadUrl(getApp('iplist'));
+const app = getApp('iplist');
 ---
 <AppPage slug="iplist" skipTo="top">
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="grid-bg" aria-hidden="true"></div>
 <div class="spot" id="spot" aria-hidden="true"></div>
 
-<header class="nav">
-  <div class="wrap">
-    <div class="bar">
-      <a class="brand" href="#top"><img src="icon.png" alt="">iPlist</a>
-      <ul>
-        <li><a href="#por-que">Por qué</a></li>
-        <li><a href="#rendimiento">Rendimiento</a></li>
-        <li><a href="#teclado">Teclado</a></li>
-      </ul>
-      <a class="btn sm" href={dl} download>Descargar</a>
-    </div>
-  </div>
-</header>
+<GlyphField app={app} />
+
+<Nav app={app} links={[['#por-que', 'Por qué'], ['#rendimiento', 'Rendimiento'], ['#teclado', 'Teclado']]}>
+  <img slot="logo" src="icon.png" alt="" width="36" height="36">
+</Nav>
 
 <main id="top">
   <div class="wrap hero">
@@ -36,10 +34,10 @@ const dl = downloadUrl(getApp('iplist'));
       </h1>
       <p class="lede">Un editor de property lists nativo que hace una sola cosa: abrir, crear y editar plist. Rápido con archivos de cualquier tamaño y fiel byte a byte.</p>
       <div class="cta-row">
-        <a class="btn big" href={dl} download id="dl">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>
-          Descargar para Mac <small>.dmg · 1,8 MB</small>
-        </a>
+        <DownloadButton app={app} size="lg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>
+          Descargar para Mac <small>.dmg · {app.size}</small>
+        </DownloadButton>
         <div class="trust">
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>Firmada y notarizada por Apple</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>Sin dependencias ni telemetría</span>
@@ -209,26 +207,18 @@ Info.plist: OK</div></div>
     </div>
   </section>
 
-  <div class="wrap">
-    <div class="final rv">
-      <img src="icon.png" alt="Ícono de iPlist">
-      <h2>Tu próximo plist ya se abre al instante.</h2>
-      <p>Ligera y sin cuentas. Descarga el .dmg, arrastra iPlist a Aplicaciones y abre cualquier plist con clic derecho → Abrir con.</p>
-      <a class="btn big" href={dl} download>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>
-        Descargar iPlist 1.0 <small>1,8 MB</small>
-      </a>
-      <div class="req"><span>macOS 27 o posterior</span><span>Mac con Apple Silicon</span><span>No reemplaza a Xcode como app predeterminada</span></div>
-    </div>
-  </div>
+  <DownloadCta app={app} icon="icon.png" title="Tu próximo plist" accent="ya se abre al instante."
+               sub="Ligera y sin cuentas. Descarga el .dmg, arrastra iPlist a Aplicaciones y abre cualquier plist con clic derecho → Abrir con."
+               requirements={['macOS 27 o posterior', 'Mac con Apple Silicon', app.size!, 'No reemplaza a Xcode como app predeterminada']}>
+    <DownloadButton app={app} size="lg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>
+      Descargar iPlist {app.version}
+    </DownloadButton>
+    <Button href="support.html" variant="ghost" size="lg">Soporte</Button>
+  </DownloadCta>
 </main>
 
-<footer>
-  <div class="wrap">
-    <span>iPlist · Hecho con SwiftUI y Swift 6</span>
-    <span>© 2026 Erwin · <a href="/contacto/?app=iplist">¿Problemas? Escríbeme</a></span>
-  </div>
-</footer>
+<Footer app={app} giant tagline="Editor de property lists nativo para macOS: abre, crea y edita plist al instante, sin perder orden, tipos ni formato. Hecho con SwiftUI y Swift 6." />
 
 <script>import '../../scripts/pages/iplist';</script>
 </AppPage>

@@ -2,27 +2,24 @@
 // iJson: diseño propio (Bricolage + Onest, claro y oscuro). Estilos en styles/pages/ijson.css,
 // comportamiento en scripts/pages/ijson.ts.
 import AppPage from '../../layouts/AppPage.astro';
-import { downloadUrl, getApp } from '../../lib/apps';
+import GlyphField from '../../components/ui/GlyphField.astro';
+import Nav from '../../components/layout/Nav.astro';
+import Footer from '../../components/layout/Footer.astro';
+import Button from '../../components/ui/Button.astro';
+import DownloadButton from '../../components/ui/DownloadButton.astro';
+import DownloadCta from '../../components/sections/DownloadCta.astro';
+import { getApp } from '../../lib/apps';
 import '../../styles/pages/ijson.css';
 
-const dl = downloadUrl(getApp('ijson'));
+const app = getApp('ijson');
 ---
 <AppPage slug="ijson" skipTo="top">
-<canvas id="field" aria-hidden="true"></canvas>
+<GlyphField app={app} id="field" colors="--k-object,--k-array,--k-string,--k-number,--k-bool,--muted" />
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 
-<nav class="nav wrap">
-  <div class="inner">
-    <a class="brand" href="#top"><img src="app-icon.png" alt=""> iJson</a>
-    <div class="nav-links">
-      <a href="#por-que">Por qué</a>
-      <a href="#fidelidad">Fidelidad</a>
-      <a href="#rendimiento">Rendimiento</a>
-      <a href="#atajos">Atajos</a>
-    </div>
-    <a class="btn btn-primary magnetic" href="#descargar">Descargar</a>
-  </div>
-</nav>
+<Nav app={app} links={[['#por-que', 'Por qué'], ['#fidelidad', 'Fidelidad'], ['#rendimiento', 'Rendimiento'], ['#atajos', 'Atajos']]}>
+  <img slot="logo" src="app-icon.png" alt="" width="36" height="36">
+</Nav>
 
 <main id="top">
   <div class="wrap">
@@ -32,11 +29,11 @@ const dl = downloadUrl(getApp('ijson'));
         <h1><span class="brace">{'{'}</span> Edita JSON <span class="grad">sin perder ni un byte.</span> <span class="brace">{'}'}</span></h1>
         <p class="lede">iJson abre, edita y exporta JSON en tu Mac. Cambia entre árbol y texto con una tecla, abre archivos de 100 MB en menos de medio segundo y guarda tu archivo tal como estaba.</p>
         <div class="cta-row">
-          <a class="btn btn-primary magnetic" href={dl} download>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 20h16"/></svg>
-            Descargar para Mac <small>.dmg · 2,4 MB</small>
-          </a>
-          <a class="btn btn-ghost" href="#fidelidad">Probar la demo</a>
+          <DownloadButton app={app}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 20h16"/></svg>
+            Descargar para Mac <small>.dmg · {app.size}</small>
+          </DownloadButton>
+          <Button href="#fidelidad" variant="ghost">Probar la demo</Button>
         </div>
         <ul class="facts">
           <li>Apple Silicon</li>
@@ -199,41 +196,18 @@ const dl = downloadUrl(getApp('ijson'));
     </div>
   </section>
 
-  <section id="descargar" class="wrap">
-    <div class="inner">
-      <div class="dl">
-        <img class="app-icon" src="app-icon.png" alt="Icono de iJson">
-        <div>
-          <div class="kicker">Descarga</div>
-          <h2>Lleva iJson a tu Mac.</h2>
-          <p class="sub" style="margin-bottom:0">Sin cuenta y sin instalador. Un .dmg firmado con Developer ID y notarizado por Apple.</p>
-          <dl class="req">
-            <div><dt>Versión</dt><dd>1.0</dd></div>
-            <div><dt>Tamaño</dt><dd>2,4 MB</dd></div>
-            <div><dt>Requiere</dt><dd>macOS 27 o posterior</dd></div>
-            <div><dt>Procesador</dt><dd>Apple Silicon</dd></div>
-          </dl>
-          <a class="btn btn-primary magnetic" href={dl} download style="font-size:1.05rem;padding:16px 28px">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 20h16"/></svg>
-            Descargar iJson-1.0.dmg
-          </a>
-          <ol class="steps">
-            <li>Abre el .dmg</li>
-            <li>Arrastra iJson a Aplicaciones</li>
-            <li>Abre cualquier .json</li>
-          </ol>
-        </div>
-      </div>
-    </div>
-  </section>
+  <DownloadCta app={app} icon="app-icon.png" eyebrow="Descarga" title="Lleva iJson" accent="a tu Mac."
+               sub="Sin cuenta y sin instalador. Abre el .dmg, arrastra iJson a Aplicaciones y abre cualquier .json."
+               requirements={[`Versión ${app.version}`, app.size!, 'macOS 27 o posterior', 'Apple Silicon', 'Firmado y notarizado']}>
+    <DownloadButton app={app} size="lg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 20h16"/></svg>
+      Descargar iJson {app.version}
+    </DownloadButton>
+    <Button href="support.html" variant="ghost" size="lg">Soporte</Button>
+  </DownloadCta>
 </main>
 
-<footer class="wrap">
-  <div class="inner">
-    <span>iJson 1.0 · Editor de JSON para macOS</span>
-    <span>Hecho con Swift 6 y SwiftUI · <a href="/contacto/?app=ijson">¿Problemas? Escríbeme</a></span>
-  </div>
-</footer>
+<Footer app={app} giant tagline="Editor de JSON nativo para macOS: árbol y texto, archivos enormes al instante y tu formato intacto. Hecho con Swift 6 y SwiftUI." />
 
 <script>import '../../scripts/pages/ijson';</script>
 </AppPage>

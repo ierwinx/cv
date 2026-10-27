@@ -1,10 +1,24 @@
 ---
 // iSpecter: diseño propio (Space Grotesk, fuego sobre violeta). Estilos en styles/pages/ispecter.css, comportamiento en scripts/pages/ispecter.ts.
 import AppPage from '../../layouts/AppPage.astro';
-import { downloadUrl, getApp } from '../../lib/apps';
+import Nav from '../../components/layout/Nav.astro';
+import Footer from '../../components/layout/Footer.astro';
+import Button from '../../components/ui/Button.astro';
+import DownloadButton from '../../components/ui/DownloadButton.astro';
+import GlyphField from '../../components/ui/GlyphField.astro';
+import Faq from '../../components/sections/Faq.astro';
+import DownloadCta from '../../components/sections/DownloadCta.astro';
+import { getApp } from '../../lib/apps';
 import '../../styles/pages/ispecter.css';
 
-const dl = downloadUrl(getApp('ispecter'));
+const app = getApp('ispecter');
+const FAQ: [string, string][] = [
+  ['¿iSpecter puede modificar o borrar mi música?', '<p>No. Los decodificadores abren los archivos solo para lectura y la app se niega a guardar reportes o imágenes dentro de una carpeta que estés analizando.</p>'],
+  ['¿El veredicto es infalible?', '<p>Es una heurística muy bien calibrada, no una certeza. Un master con filtro paso-bajo o una grabación antigua pueden parecer con pérdida, y un AAC de alto bitrate reempaquetado puede ser casi idéntico al original. Por eso cada veredicto muestra su evidencia y su nivel de confianza.</p>'],
+  ['¿Qué necesito para usarla?', '<p>Una Mac con macOS 26 Tahoe o posterior. La app es universal: funciona en Apple Silicon y en Intel.</p>'],
+  ['macOS dice que no puede verificar la app, ¿qué hago?', '<p>Las versiones publicadas están firmadas con Developer ID y notarizadas por Apple. Si descargaste una compilación de prueba sin notarizar, haz clic derecho sobre iSpecter → Abrir, y confirma una sola vez.</p>'],
+  ['¿Qué librerías usa?', '<p>Accelerate, Metal y AVFoundation de Apple; SFBAudioEngine (MIT) y una compilación mínima de FFmpeg bajo LGPL para formatos exóticos. Los avisos completos vienen dentro de la app.</p>'],
+];
 ---
 <AppPage slug="ispecter">
 <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
@@ -13,18 +27,12 @@ const dl = downloadUrl(getApp('ispecter'));
 <div class="grain" aria-hidden="true"></div>
 <div class="progress-bar" aria-hidden="true"></div>
 
-<nav class="nav" id="nav">
-  <a href="#" class="brand"><img src="assets/icon.png" alt="">iSpecter</a>
-  <div class="nav-links">
-    <a href="#problema">El problema</a>
-    <a href="#funciones">Funciones</a>
-    <a href="#veredicto">Veredicto</a>
-    <a href="#faq">Preguntas</a>
-  </div>
-  <a href={dl} class="btn btn-primary btn-sm magnetic" data-download>
-    <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Descargar
-  </a>
-</nav>
+<GlyphField app={app} density={0.6} />
+
+<Nav app={app} links={[['#problema', 'El problema'], ['#funciones', 'Funciones'], ['#veredicto', 'Veredicto'], ['#faq', 'Preguntas']]}>
+  <img slot="logo" src="assets/icon.png" alt="" width="36" height="36">
+  <DownloadButton slot="cta" app={app} size="sm"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Descargar</DownloadButton>
+</Nav>
 
 <!-- ───────── HERO ───────── -->
 <header class="hero">
@@ -37,11 +45,11 @@ const dl = downloadUrl(getApp('ispecter'));
       <br>iSpecter dibuja su espectrograma en tiempo real y te dice qué hay de verdad dentro.
     </p>
     <div class="cta-row reveal" style="--d:.7s">
-      <a href={dl} class="btn btn-primary magnetic" data-download>
+      <DownloadButton app={app}>
         <svg class="apple" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.89 2.65 3.24 2.6 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.38.81 1.4-.02 2.29-1.27 3.14-2.53.99-1.45 1.4-2.86 1.42-2.93-.03-.01-2.72-1.04-2.75-4.14zM13.79 4.97c.72-.87 1.2-2.07 1.07-3.27-1.03.04-2.28.69-3.02 1.55-.66.77-1.24 1.99-1.09 3.17 1.15.09 2.32-.58 3.04-1.45z"/></svg>
         <span class="label">Descargar para macOS<small>Gratis · Universal · <span data-size>DMG firmado</span></small></span>
-      </a>
-      <a href="#problema" class="btn btn-ghost magnetic">Ver cómo funciona ↓</a>
+      </DownloadButton>
+      <Button href="#problema" variant="ghost">Ver cómo funciona ↓</Button>
     </div>
     <div class="meta reveal" style="--d:.85s"><span>macOS 26 Tahoe</span><span>Apple Silicon e Intel</span><span>Firmado por Developer ID</span></div>
 
@@ -199,24 +207,17 @@ const dl = downloadUrl(getApp('ispecter'));
 </section>
 
 <!-- ───────── DESCARGA ───────── -->
-<section id="descargar" style="padding-top:0">
-  <div class="wrap">
-    <div class="final reveal">
-      <canvas id="finalCanvas" aria-hidden="true"></canvas>
-      <img src="assets/icon.png" alt="Icono de iSpecter">
-      <h2>Deja de adivinar.<br><span class="grad-text">Empieza a ver.</span></h2>
-      <div class="price"><b>Gratis</b><span>sin cuentas, sin suscripciones, sin rastreo</span></div>
-      <div class="cta-row">
-        <a href={dl} class="btn btn-primary magnetic" data-download>
-          <svg class="apple" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.89 2.65 3.24 2.6 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.38.81 1.4-.02 2.29-1.27 3.14-2.53.99-1.45 1.4-2.86 1.42-2.93-.03-.01-2.72-1.04-2.75-4.14zM13.79 4.97c.72-.87 1.2-2.07 1.07-3.27-1.03.04-2.28.69-3.02 1.55-.66.77-1.24 1.99-1.09 3.17 1.15.09 2.32-.58 3.04-1.45z"/></svg>
-          <span class="label">Descargar iSpecter <span data-version>1.0</span><small>macOS 26 o posterior · <span data-size>DMG firmado</span></small></span>
-        </a>
-        <a href="#faq" class="btn btn-ghost magnetic">Requisitos y dudas</a>
-      </div>
-      <p class="sha" id="sha"></p>
-    </div>
-  </div>
-</section>
+<DownloadCta app={app} icon="assets/icon.png" title="Deja de adivinar." accent="Empieza a ver."
+             sub="Gratis: sin cuentas, sin suscripciones, sin rastreo."
+             requirements={['macOS 26 Tahoe o posterior', 'Apple Silicon e Intel', 'Firmado por Developer ID']}>
+  <canvas slot="bg" id="finalCanvas"></canvas>
+  <DownloadButton app={app} size="lg">
+    <svg class="apple" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.89 2.65 3.24 2.6 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.38.81 1.4-.02 2.29-1.27 3.14-2.53.99-1.45 1.4-2.86 1.42-2.93-.03-.01-2.72-1.04-2.75-4.14zM13.79 4.97c.72-.87 1.2-2.07 1.07-3.27-1.03.04-2.28.69-3.02 1.55-.66.77-1.24 1.99-1.09 3.17 1.15.09 2.32-.58 3.04-1.45z"/></svg>
+    <span class="label">Descargar iSpecter <span data-version>1.0</span><small>macOS 26 o posterior · <span data-size>DMG firmado</span></small></span>
+  </DownloadButton>
+  <Button href="support.html" variant="ghost" size="lg">Soporte</Button>
+  <p slot="extra" class="sha" id="sha"></p>
+</DownloadCta>
 
 <!-- ───────── FAQ ───────── -->
 <section id="faq" style="padding-top:0">
@@ -225,23 +226,11 @@ const dl = downloadUrl(getApp('ispecter'));
       <span class="eyebrow reveal">Preguntas frecuentes</span>
       <h2 class="reveal">Lo que todos preguntan.</h2>
     </div>
-    <div class="faq">
-      <details class="reveal"><summary>¿iSpecter puede modificar o borrar mi música?</summary><p>No. Los decodificadores abren los archivos solo para lectura y la app se niega a guardar reportes o imágenes dentro de una carpeta que estés analizando.</p></details>
-      <details class="reveal"><summary>¿El veredicto es infalible?</summary><p>Es una heurística muy bien calibrada, no una certeza. Un master con filtro paso-bajo o una grabación antigua pueden parecer con pérdida, y un AAC de alto bitrate reempaquetado puede ser casi idéntico al original. Por eso cada veredicto muestra su evidencia y su nivel de confianza.</p></details>
-      <details class="reveal"><summary>¿Qué necesito para usarla?</summary><p>Una Mac con macOS 26 Tahoe o posterior. La app es universal: funciona en Apple Silicon y en Intel.</p></details>
-      <details class="reveal"><summary>macOS dice que no puede verificar la app, ¿qué hago?</summary><p>Las versiones publicadas están firmadas con Developer ID y notarizadas por Apple. Si descargaste una compilación de prueba sin notarizar, haz clic derecho sobre iSpecter → Abrir, y confirma una sola vez.</p></details>
-      <details class="reveal"><summary>¿Qué librerías usa?</summary><p>Accelerate, Metal y AVFoundation de Apple; SFBAudioEngine (MIT) y una compilación mínima de FFmpeg bajo LGPL para formatos exóticos. Los avisos completos vienen dentro de la app.</p></details>
-    </div>
+    <Faq items={FAQ} />
   </div>
 </section>
 
-<footer>
-  <div class="wrap">
-    <a href="#" class="brand"><img src="assets/icon.png" alt="">iSpecter</a>
-    <span>Hecho con Swift, Metal y demasiado café · © {new Date().getFullYear()}</span>
-    <span><a href="/contacto/?app=ispecter">¿Problemas? Escríbeme</a> · <a href="#descargar" style="color:var(--text-2)">Descargar ↑</a></span>
-  </div>
-</footer>
+<Footer app={app} giant tagline="Analizador de espectro nativo para macOS. Hecho con Swift, Metal y demasiado café." />
 
 <div class="toast" id="toast" role="status"></div>
 

@@ -30,6 +30,10 @@ compilar; en el navegador solo corre TypeScript vanilla. `build.format: 'preserv
 ```
 src/data/apps.json     FUENTE ÚNICA de cada app: nombre, versión, tamaño, release/App Store, título/descripción SEO,
                        ícono, tema y `home` (subtítulo del menú, ícono de la home, «Nuevo»). Su orden es el de la home
+                       También `glyphs` (símbolos/emojis que flotan en el fondo) y `theme.vars` (tokens de color)
+src/data/legal.json    datos REALES de cada app de Mac para /<slug>/privacy, terms y support (sacados de su repo:
+                       Info.plist, entitlements, red, dónde guarda datos, licencia, FAQ). Super Pets e iLegato tienen
+                       sus propias páginas
 src/data/home.json     textos de los spotlights de la home (lema, funciones, cifras, botones, colores)
 src/data/cv.json       CV en es/en: la página /CV/ (`web`) y la hoja PDF (`pdf`); los años se calculan al cargar
 src/data/site.json     marca, URL de producción, base de GitHub Releases, descripción de la home
@@ -39,8 +43,10 @@ src/styles/            tokens.css (nombres canónicos) · base.css · effects.cs
 src/styles/pages/      lo que es exclusivo de una página (home.css, ilegato.css, cv.css…)
 src/layouts/           BaseLayout (head, favicon, fuentes, seasonal, «saltar al contenido») · AppPage (head de una
                        app desde apps.json, banner de App Store) · AppLayout (AppPage + tema, ambiente, nav y toast)
-src/components/layout  Ambient, Nav, Footer, Toast
-src/components/ui      Button, DownloadButton, Icon, ContactForm (formulario de contacto → micro Backierwinx)
+src/components/layout  Ambient, Nav (la de Super Pets), Footer (columnas App/Legal y nombre gigante), Toast
+src/components/ui      Button (el de iLegato), DownloadButton, GlyphField (símbolos flotantes de iJson), Icon,
+                       ContactForm (formulario de contacto → micro Backierwinx)
+src/components/legal   LegalShell: documento de privacidad/términos/soporte de src/pages/[slug]/*.astro
 src/components/sections Hero, Marquee, Section, Bento/BentoCard, Steps, Stats, CompareTable, Principles, Faq, DownloadCta
 src/components/mockups AppWindow (ventana 3D del hero)
 src/components/demos   <App>Demo.astro + <app>.css: demos que comparten la página de la app y la home
@@ -117,6 +123,16 @@ home y CV) no usan el sistema aurora: `AppPage` (o `BaseLayout`) + `styles/pages
 `scripts/pages/<slug>.ts`. Si varias páginas de la misma app comparten estructura, va en un *shell*
 (`SuperpetsShell`, `IlegatoShell`).
 
+**Piezas comunes en TODAS las páginas de app** (aurora y propias): `Nav`, `Button`/`DownloadButton`, `Faq`,
+`DownloadCta` (slots `art`, `bg`, `extra` para lo propio de cada app) y `Footer`, más `GlyphField`. El script de la
+página llama a `initNav()` y `initGlyphs()` (`init.ts` ya lo hace en las aurora). Sus clases llevan prefijo `ui-` para
+no chocar con el CSS propio; solo usan tokens (`apps.json → theme.vars`; `--ui-grad` si el `--grad` de la página no
+sirve para texto). Todas las páginas son oscuras (sin tema claro) y todas las apps son gratis.
+
+**Privacidad, términos y soporte** de cada app de Mac: `src/pages/[slug]/{privacy,terms,support}.astro` con
+`LegalShell` y `data/legal.json`. Al añadir una app, agrega su entrada en `legal.json` con datos verificados en su
+repo (no inventes permisos ni funciones).
+
 ## Estado
 
 Todo el sitio sale de Astro (`docs/REDISENO.md` §5, fases 0–7 hechas): ya no queda HTML legado en `public/`.
@@ -130,9 +146,10 @@ Todo el sitio sale de Astro (`docs/REDISENO.md` §5, fases 0–7 hechas): ya no 
 
 **El sitio no publica ningún correo**: el contacto es un formulario que envía al microservicio
 `~/Desarrollo/Backierwinx` (FastAPI + Firestore en Render, URL en `site.json → contactApi`). Lo usan el CV (con su
-propio marcado bilingüe) y, con `<ContactForm origen="…">`, el soporte de iLegato y Super Pets, la página de
-eliminar cuenta de Super Pets, iConverter y `/contacto/`. Las páginas legales enlazan a `support.html#contacto`; las
-demás apps y la home enlazan en su pie a `/contacto/?app=<slug>` (muestra la app y la manda como `origen`).
+propio marcado bilingüe) y, con `<ContactForm origen="…">`, el soporte de cada app (`origen` = slug), la página de
+eliminar cuenta de Super Pets, iConverter y `/contacto/`. El pie de cada app y sus páginas legales enlazan a
+`support.html#contacto`; la home y lo que no es de una app usan `/contacto/?app=<slug>` (muestra la app y la manda como
+`origen`).
 
 - Solo el build de producción envía y pide reCAPTCHA v2; en local el envío se simula (`console.info`).
 - Probar contra el micro local: `PUBLIC_CONTACT_API=http://localhost:8000 npm run dev` (sin reCAPTCHA).

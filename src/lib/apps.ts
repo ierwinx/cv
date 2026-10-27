@@ -12,6 +12,8 @@ export type App = (typeof apps)[number] & {
   description?: string;
   icon?: string;
   touchIcon?: string;
+  legal?: boolean;             // tiene privacy.html, terms.html y support.html (el pie enlaza a ellas)
+  glyphs?: string[];           // símbolos o emojis que flotan en el fondo (ui/GlyphField)
 };
 
 export function getApp(slug: string): App {

@@ -1,0 +1,43 @@
+---
+// Términos de uso de cada app de Mac (Super Pets e iLegato tienen los suyos). Datos: data/legal.json.
+import LegalShell from '../../components/legal/LegalShell.astro';
+import { legalPaths, type LegalProps } from '../../lib/legal';
+
+export const getStaticPaths = legalPaths;
+const { app, legal } = Astro.props as LegalProps;
+const gpl = legal.license === 'gpl';
+---
+<LegalShell app={app} title={`Términos de uso — ${app.name}`}
+            description={`Términos de uso de ${app.name}: app gratuita, licencia, software de terceros y garantía.`}
+            eyebrow="Legal" heading="Términos" accent="de uso" updated={legal.updated}>
+  <h2>1. Aceptación</h2>
+  <p>Al descargar o usar {app.name} aceptas estos términos. Si no estás de acuerdo, no uses la app.</p>
+
+  <h2>2. Qué es {app.name}</h2>
+  <p>{app.description}</p>
+
+  <h2>3. Es gratis</h2>
+  <p>{app.name} es gratuita: sin compras dentro de la app, sin suscripciones, sin cuentas y sin anuncios. Descárgala siempre desde <a href={`/${app.slug}/`}>ierwinx.com/{app.slug}</a>; las copias de otros sitios pueden estar modificadas.</p>
+
+  <h2>4. Licencia</h2>
+  {gpl
+    ? <p>{app.name} se distribuye bajo la <b>GNU General Public License, versión 2</b> (GPL-2.0-only), porque incluye componentes con esa licencia. Puedes usarla, estudiarla, modificarla y redistribuirla según esa licencia, cuyo texto completo viene con la app.</p>
+    : <p>{app.name} se distribuye bajo la licencia <b>PolyForm Noncommercial 1.0.0</b>: puedes usarla gratis para fines personales y no comerciales. El código, el diseño, el nombre y el ícono son de su autor, Erwin (ierwinx).</p>}
+
+  <h2>5. Tus archivos son tu responsabilidad</h2>
+  <p>{app.name} trabaja con archivos que tú eliges. Eres responsable de tener los derechos necesarios sobre ellos y de mantener copias de seguridad de lo importante antes de modificarlo.</p>
+
+  {legal.thirdParty && <>
+    <h2>6. Software de terceros</h2>
+    <p>{app.name} incluye software de código abierto: <Fragment set:html={legal.thirdParty} /> Cada componente conserva su propia licencia.</p>
+  </>}
+
+  <h2>{legal.thirdParty ? 7 : 6}. Garantía y responsabilidad</h2>
+  <p>La app se ofrece «tal cual», sin garantías de ningún tipo. En la medida que lo permita la ley, el desarrollador no es responsable por pérdida de datos ni por daños derivados del uso de la app.</p>
+
+  <h2>{legal.thirdParty ? 8 : 7}. Actualizaciones y cambios</h2>
+  <p>La app puede recibir actualizaciones y estos términos pueden cambiar; la versión vigente siempre estará en esta página con su fecha de actualización.</p>
+
+  <h2>{legal.thirdParty ? 9 : 8}. Legislación aplicable</h2>
+  <p>Estos términos se rigen por las leyes aplicables en tu jurisdicción. Cualquier duda o disputa se resolverá preferentemente mediante comunicación directa por el <a href="support.html#contacto">formulario de contacto</a>.</p>
+</LegalShell>

@@ -1,0 +1,47 @@
+---
+// Soporte de cada app de Mac (Super Pets e iLegato tienen el suyo): instalación, requisitos, preguntas y
+// formulario de contacto. Datos: data/legal.json.
+import LegalShell from '../../components/legal/LegalShell.astro';
+import Faq from '../../components/sections/Faq.astro';
+import ContactForm from '../../components/ui/ContactForm.astro';
+import DownloadButton from '../../components/ui/DownloadButton.astro';
+import { legalPaths, type LegalProps } from '../../lib/legal';
+
+export const getStaticPaths = legalPaths;
+const { app, legal } = Astro.props as LegalProps;
+const pkg = legal.install === 'pkg';
+const faq: [string, string][] = [
+  ...legal.faq,
+  ['¿Por qué macOS dice que la descargué de internet?', `<p>Es el aviso normal de Gatekeeper para cualquier app fuera del App Store. ${app.name} está firmada con Developer ID y notarizada por Apple, así que basta con confirmar <b>Abrir</b> una vez.</p>`],
+  ['¿Cómo actualizo?', `<p>Descarga la versión más reciente desde <a href="/${app.slug}/">la página de ${app.name}</a> e instálala encima de la anterior. Tus ajustes se conservan.</p>`],
+  ['¿Cuánto cuesta?', '<p>Nada. Es gratis: sin compras, sin suscripciones y sin anuncios.</p>'],
+  ['¿Cómo la desinstalo?', `<p>${legal.uninstall}</p>`],
+];
+---
+<LegalShell app={app} title={`Soporte — ${app.name}`}
+            description={`Soporte de ${app.name}: instalación, requisitos, preguntas frecuentes y formulario de contacto.`}
+            eyebrow="Ayuda" heading="¿Cómo te" accent="ayudamos?">
+  <p class="lg-lead reveal">Respuestas rápidas a lo más común. Si no está aquí, escríbeme y te respondo lo antes posible.</p>
+
+  <div class="lg-cards">
+    <div class="lg-card reveal"><b>Requisitos</b><p set:html={legal.requirements} /></div>
+    <div class="lg-card reveal"><b>Versión actual</b><p>{app.name} {app.version}{app.size && ` · ${app.size}`} · gratis</p></div>
+  </div>
+
+  <h2>Instalar {app.name}</h2>
+  <ol class="lg-steps">
+    {pkg
+      ? <><li>Descarga el instalador <code>.pkg</code>.</li><li>Ábrelo y sigue los pasos. Instala el comando en tu Mac.</li><li>Abre la Terminal y escribe <code>{app.slug}</code>.</li></>
+      : <><li>Descarga el archivo <code>.dmg</code> y ábrelo.</li><li>Arrastra {app.name} a la carpeta Aplicaciones.</li><li>Ábrela desde Aplicaciones o Launchpad.</li></>}
+  </ol>
+  {app.release && <p><DownloadButton app={app} size="sm">{`Descargar ${app.name} ${app.version}`}</DownloadButton></p>}
+
+  <h2>Preguntas frecuentes</h2>
+  <Faq items={faq} />
+
+  <div class="lg-contact reveal" id="contacto">
+    <h2>Escríbeme</h2>
+    <p>Para reportar un problema, incluye tu versión de macOS, el modelo de tu Mac y qué estabas haciendo.</p>
+    <ContactForm origen={app.slug} placeholder={`Cuéntame qué pasó con ${app.name}: versión de macOS, modelo de Mac y qué estabas haciendo.`} />
+  </div>
+</LegalShell>

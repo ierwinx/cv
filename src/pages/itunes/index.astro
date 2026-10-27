@@ -1,11 +1,16 @@
 ---
 // iTunes: diseño propio (terminal Tokyo Night, Space Grotesk). Estilos en styles/pages/itunes.css, comportamiento en scripts/pages/itunes.ts.
 import AppPage from '../../layouts/AppPage.astro';
-import { downloadUrl, getApp } from '../../lib/apps';
+import Nav from '../../components/layout/Nav.astro';
+import Footer from '../../components/layout/Footer.astro';
+import Button from '../../components/ui/Button.astro';
+import DownloadButton from '../../components/ui/DownloadButton.astro';
+import GlyphField from '../../components/ui/GlyphField.astro';
+import DownloadCta from '../../components/sections/DownloadCta.astro';
+import { getApp } from '../../lib/apps';
 import '../../styles/pages/itunes.css';
 
 const app = getApp('itunes');
-const dl = downloadUrl(app);
 ---
 <AppPage slug="itunes" skipTo="top">
   <div class="grain" aria-hidden="true"></div>
@@ -13,24 +18,11 @@ const dl = downloadUrl(app);
   <div class="cursor-glow" aria-hidden="true"></div>
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-  <!-- ============ NAV ============ -->
-  <header class="nav">
-    <a class="brand" href="#top">
-      <span class="brand-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-      <span>iTunes<em>.term</em></span>
-    </a>
-    <nav class="nav-links">
-      <a href="#demo">Demo</a>
-      <a href="#features">Ventajas</a>
-      <a href="#capturas">Capturas</a>
-      <a href="#atajos">Atajos</a>
-      <a href="#instalar">Instalar</a>
-    </nav>
-    <a class="btn btn-sm btn-glow magnetic" href={dl} download>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16" /></svg>
-      Descargar
-    </a>
-  </header>
+  <GlyphField app={app} />
+
+  <Nav app={app} links={[['#demo', 'Demo'], ['#features', 'Ventajas'], ['#capturas', 'Capturas'], ['#atajos', 'Atajos'], ['#descargar', 'Instalar']]}>
+    <span slot="logo" class="brand-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  </Nav>
 
   <main id="top">
     <!-- ============ HERO ============ -->
@@ -48,16 +40,15 @@ const dl = downloadUrl(app);
           y editor de tags… todo sin soltar el teclado.
         </p>
         <div class="hero-cta reveal">
-          <a class="btn btn-primary magnetic" href={dl} download>
-            <span class="btn-shine"></span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16" /></svg>
+          <DownloadButton app={app}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16" /></svg>
             Descargar para macOS
-            <small>.pkg · Apple Silicon · 730 KB</small>
-          </a>
-          <a class="btn btn-ghost magnetic" href="#demo">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+            <small>.pkg · Apple Silicon · {app.size}</small>
+          </DownloadButton>
+          <Button href="#demo" variant="ghost">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
             Probar la demo en vivo
-          </a>
+          </Button>
         </div>
         <div class="hero-term reveal">
           <span class="prompt">~</span><span class="typed" id="typed"></span><span class="caret"></span>
@@ -277,28 +268,20 @@ const dl = downloadUrl(app);
     </section>
 
     <!-- ============ INSTALAR ============ -->
-    <section id="instalar" class="section install">
-      <div class="install-card reveal">
-        <div class="install-orb" aria-hidden="true"></div>
-        <p class="eyebrow">Instalar</p>
-        <h2>Listo en <span class="gradient-text">30 segundos.</span></h2>
-        <p class="install-sub">El instalador trae TagLib incluido: no necesitas Homebrew. Instala <code>itunes</code> en <code>/usr/local/bin</code>.</p>
-
-        <a class="btn btn-primary btn-xl magnetic" href={dl} download>
-          <span class="btn-shine"></span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16" /></svg>
-          Descargar itunes-1.0.0-macos-arm64.pkg
-        </a>
-        <ul class="badges">
-          <li>✓ Developer ID</li><li>✓ Notarizado</li><li>✓ Apple Silicon</li><li>✓ macOS 27+</li>
-        </ul>
-
+    <DownloadCta app={app} eyebrow="Instalar" title="Listo en" accent="30 segundos."
+                 sub="El instalador trae TagLib incluido: no necesitas Homebrew. Instala itunes en /usr/local/bin."
+                 requirements={['✓ Developer ID', '✓ Notarizado', '✓ Apple Silicon', '✓ macOS 27+']}>
+      <DownloadButton app={app} size="lg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16" /></svg>
+        Descargar {app.release!.file}
+      </DownloadButton>
+      <Button href="support.html" variant="ghost" size="lg">Soporte</Button>
+      <div slot="extra" class="install-extra">
         <ol class="steps">
           <li><span>1</span><div><b>Abre el .pkg</b>y sigue el instalador.</div></li>
           <li><span>2</span><div><b>Agrega tu música</b><pre><code>itunes ~/Music</code></pre></div></li>
           <li><span>3</span><div><b>La próxima vez</b>solo escribe<pre><code>itunes</code></pre></div></li>
         </ol>
-
         <details class="checksum">
           <summary>SHA-256 del instalador</summary>
           <code>{app.release!.sha256}</code>
@@ -310,13 +293,10 @@ swift build -c release
 cp .build/release/itunes /usr/local/bin/</code></pre>
         </details>
       </div>
-    </section>
+    </DownloadCta>
   </main>
 
-  <footer class="footer">
-    <span class="brand-bars small" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-    <p>iTunes.term · hecho con Swift en México · <a href="/contacto/?app=itunes">¿Problemas? Escríbeme</a> · <a href="#top">volver arriba ↑</a></p>
-  </footer>
+  <Footer app={app} giant tagline="iTunes.term: reproductor de música 100 % terminal para macOS con alma de iTunes clásico. Hecho con Swift en México. No está afiliado a Apple." />
 
   <div class="lightbox" id="lightbox" hidden>
     <button class="lightbox-close" aria-label="Cerrar">×</button>

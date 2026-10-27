@@ -2,6 +2,8 @@
 import { $, $$ } from '../core/dom';
 import { reduceMotion as reduced } from '../core/motion';
 import { initMagnetic } from '../core/pointer';
+import { initNav } from '../core/nav';
+import { initGlyphs } from '../core/glyphs';
 import { frameLoop } from '../core/loop';
 import { confetti, toast } from '../core/celebrate';
 import { countUp, plainCount } from '../core/counters';
@@ -36,12 +38,10 @@ const statsIO = new IntersectionObserver((entries) => {
 }, { threshold: 0.4 });
 $$('.stat, .race').forEach((el) => statsIO.observe(el));
 
-/* ───────────── Barra de progreso y navegación ───────────── */
-const nav = $('.nav')!;
+/* ───────────── Barra de progreso (la nav es la común: core/nav) ───────────── */
 const onScroll = () => {
   const max = root.scrollHeight - innerHeight;
   root.style.setProperty('--scroll', max > 0 ? (scrollY / max).toFixed(4) : '0');
-  nav.classList.toggle('scrolled', scrollY > 20);
 };
 addEventListener('scroll', onScroll, { passive: true });
 onScroll();
@@ -132,7 +132,7 @@ if (!reduced) $$('.scramble').forEach((el) => setTimeout(() => scramble(el), 250
 })();
 
 /* ───────────── Descargar ───────────── */
-// Cada botón trae en data-download la URL del instalador (apps.json → release).
+// Los botones de descarga (ui/DownloadButton) enlazan al instalador de GitHub Releases.
 $$('[data-download]').forEach((btn) => btn.addEventListener('click', (e) => {
   e.preventDefault();
   const r = btn.getBoundingClientRect();
@@ -141,7 +141,7 @@ $$('[data-download]').forEach((btn) => btn.addEventListener('click', (e) => {
     gravity: 0.25, drag: 0.985, decay: 1 / 160, width: [6, 12], height: [3, 8],
   });
   const a = document.createElement('a');
-  a.href = btn.dataset.download!; a.setAttribute('download', '');
+  a.href = (btn as HTMLAnchorElement).href; a.setAttribute('download', '');
   document.body.appendChild(a); a.click(); a.remove();
   toast('✨ <b>¡Gracias!</b> Tu descarga de iGit 1.0.0 ha comenzado.', { ms: 3800 });
 }));
@@ -173,3 +173,6 @@ addEventListener('keydown', (e) => {
   e.preventDefault();
   pressKey(btn);
 });
+
+initNav();
+initGlyphs();

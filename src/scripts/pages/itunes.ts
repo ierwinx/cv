@@ -6,6 +6,8 @@
 import { $, $$ } from "../core/dom";
 import { frameLoop } from "../core/loop";
 import { countUp as count, plainCount } from "../core/counters";
+import { initNav } from "../core/nav";
+import { initGlyphs } from "../core/glyphs";
 
 type Style = { fg: string; bg: string; b: boolean };
 type Cell = Style & { ch: string };
@@ -1237,19 +1239,15 @@ type Step = { key?: string; say?: string; wait: number; do?: () => void };
      ======================================================================== */
   if (SHOT) return;
 
-  // Cursor glow + barra de progreso + nav
+  // Cursor glow + barra de progreso (la nav es la común: core/nav)
+  initNav();
+  initGlyphs();
   const root = document.documentElement;
   addEventListener("pointermove", (e) => { root.style.setProperty("--mx", e.clientX + "px"); root.style.setProperty("--my", e.clientY + "px"); }, { passive: true });
-  const progress = $(".scroll-progress")!, nav = $(".nav")!;
-  const navLinks = $$(".nav-links a");
-  const sections = navLinks.map((a) => $(a.getAttribute("href")!));
+  const progress = $(".scroll-progress")!;
   function onScroll() {
     const max = document.documentElement.scrollHeight - innerHeight;
     progress.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
-    nav.classList.toggle("scrolled", scrollY > 40);
-    let active = -1;
-    sections.forEach((s, i) => { if (s && s.getBoundingClientRect().top < innerHeight * .4) active = i; });
-    navLinks.forEach((a, i) => a.classList.toggle("active", i === active));
     // La ventana de la terminal entra con una ligera inclinación 3D.
     if (win && !REDUCED) {
       const r = win.getBoundingClientRect(), p = Math.max(0, Math.min(1, (innerHeight - r.top) / (innerHeight * .7)));

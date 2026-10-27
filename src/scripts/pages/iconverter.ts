@@ -1,5 +1,7 @@
 // Página de iConverter: pipeline de conversión, calculadora y FAQ. La ventana animada es components/demos/IconverterDemo;
 // versión, tamaño y año los pone la página al compilar (apps.json).
+import { initNav } from '../core/nav';
+import { initGlyphs } from '../core/glyphs';
 import { $, $$ } from '../core/dom';
 import { reduceMotion as reduce } from '../core/motion';
 import { initMagnetic } from '../core/pointer';
@@ -17,11 +19,12 @@ $$('[data-download]').forEach((b) => {
   b.addEventListener('click', () => toast('⬇️ Descargando iConverter… Ábrelo y arrástralo a Aplicaciones.', { className: 'show', ms: 3200, html: false }));
 });
 
-/* ── Nav + barra de scroll ── */
-const nav = $('#nav')!, sbar = $('.scroll-bar')!;
+/* ── Barra de scroll (la nav es la común: core/nav) ── */
+initNav();
+initGlyphs();
+const sbar = $('.scroll-bar')!;
 function onScroll() {
   const y = scrollY, h = document.documentElement.scrollHeight - innerHeight;
-  nav.classList.toggle('scrolled', y > 20);
   sbar.style.transform = `scaleX(${h > 0 ? y / h : 0})`;
 }
 addEventListener('scroll', onScroll, { passive: true }); onScroll();

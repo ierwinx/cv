@@ -1,19 +1,24 @@
 ---
-// Llamada final con anillos animados: título, texto, botón (slot) y requisitos.
-import './section.css';
+// Llamado final de las páginas de app (el de iLegato): ícono flotando, título con degradado, texto,
+// botones (slot) y requisitos. Slots propios de cada app: "art" (adorno bajo el ícono), "bg" (fondo de la
+// sección, p. ej. un canvas) y "extra" (debajo de los requisitos, p. ej. el SHA-256).
+import '../../styles/tokens.css';
 import './download.css';
-interface Props { eyebrow: string; title: string; accent: string; sub: string; requirements: string[] }
-const { eyebrow, title, accent, sub, requirements } = Astro.props;
+import type { App } from '../../lib/apps';
+
+interface Props { app: App; eyebrow?: string; title: string; accent: string; sub: string; requirements?: string[]; icon?: string; id?: string; [attr: `data-${string}`]: string }
+const { app, eyebrow, title, accent, sub, requirements = [], icon = app.home?.logo ?? app.icon, id = 'descargar', ...attrs } = Astro.props;
 ---
-<section id="descargar" class="section flush">
-  <div class="wrap">
-    <div class="download reveal">
-      <div class="rings"><i></i><i></i><i></i></div>
-      <div class="eyebrow">// {eyebrow}</div>
-      <h2>{title}<br><span class="grad-text">{accent}</span></h2>
-      <p class="sub">{sub}</p>
-      <div class="cta"><slot /></div>
-      <div class="req">{requirements.map((r) => <span>{r}</span>)}</div>
-    </div>
+<section id={id} class="ui-final" {...attrs}>
+  {Astro.slots.has('bg') && <div class="ui-final-bg" aria-hidden="true"><slot name="bg" /></div>}
+  <div class="ui-final-wrap">
+    <img class="ui-final-icon" src={icon} alt={`Ícono de ${app.name}`} width="150" height="150">
+    <slot name="art" />
+    {eyebrow && <p class="ui-eyebrow reveal">{eyebrow}</p>}
+    <h2 class="split">{title} <span class="ui-grad">{accent}</span></h2>
+    <p class="ui-final-sub reveal">{sub}</p>
+    <div class="ui-btns reveal"><slot /></div>
+    {requirements.length > 0 && <div class="ui-final-req reveal">{requirements.map((r) => <span>{r}</span>)}</div>}
+    <slot name="extra" />
   </div>
 </section>
