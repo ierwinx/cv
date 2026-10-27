@@ -1,0 +1,150 @@
+---
+// iMount: discos NTFS y ext4 en el Mac. Comparte interfaz con iBridge: la demo del hero y las tarjetas de
+// formatos usan sus mismas piezas (IbridgeDemo variant="imount" y las clases .devices/.devcard de ibridge.css).
+import AppLayout from '../../layouts/AppLayout.astro';
+import Footer from '../../components/layout/Footer.astro';
+import DownloadButton from '../../components/ui/DownloadButton.astro';
+import Button from '../../components/ui/Button.astro';
+import Icon from '../../components/ui/Icon.astro';
+import Hero from '../../components/sections/Hero.astro';
+import Marquee from '../../components/sections/Marquee.astro';
+import Section from '../../components/sections/Section.astro';
+import Bento from '../../components/sections/Bento.astro';
+import BentoCard from '../../components/sections/BentoCard.astro';
+import Steps from '../../components/sections/Steps.astro';
+import CompareTable from '../../components/sections/CompareTable.astro';
+import Principles from '../../components/sections/Principles.astro';
+import Faq from '../../components/sections/Faq.astro';
+import DownloadCta from '../../components/sections/DownloadCta.astro';
+import IbridgeDemo from '../../components/demos/IbridgeDemo.astro';
+import { getApp } from '../../lib/apps';
+import '../../styles/pages/ibridge.css';
+import '../../styles/pages/imount.css';
+
+const app = getApp('imount');
+const DISK = '<path d="M5 4h14l2 12H3z"/><rect x="3" y="16" width="18" height="4" rx="1.5"/><path d="M16 18h2"/>';
+---
+<AppLayout slug="imount" stars
+  nav={[['#formatos', 'NTFS y ext4'], ['#funciones', 'Funciones'], ['#comparativa', 'Comparativa'], ['#preguntas', 'Preguntas']]}
+  toast="🎉 ¡Gracias por descargar iMount! Arrástralo a Aplicaciones y conecta tu disco.">
+
+  <Hero icon={app.icon!} iconAlt="Ícono de iMount" pill={`iMount ${app.version} · nativo para macOS 27`}
+        title="Discos de Windows y Linux," accent="en tu Mac."
+        meta={['Firmado y notarizado por Apple', 'NTFS y ext4', 'Sin drivers ni extensiones']}>
+    <Fragment slot="lead">Conecta un disco <strong>NTFS</strong> o <strong>ext4</strong> y ábrelo como en el Finder: <strong>copia, mueve, renombra y borra</strong>. Sin instalar drivers ni extensiones, y <strong>sin nada corriendo en segundo plano</strong> cuando cierras la app.</Fragment>
+    <Fragment slot="cta">
+      <DownloadButton app={app}><Icon name="apple" /> Descargar para macOS</DownloadButton>
+      <Button href="#formatos" variant="ghost">Ver cómo funciona <Icon name="arrow-down" /></Button>
+    </Fragment>
+    <IbridgeDemo variant="imount" />
+  </Hero>
+
+  <Marquee items={['NTFS', 'ext4', 'Lectura y escritura', 'Arrastrar al Finder', 'Vista rápida', 'Editar y guardar de vuelta', 'Sin drivers', 'Nada en segundo plano', 'Una contraseña por disco', 'Apple Silicon']} />
+
+  <main id="contenido">
+    <Section id="formatos" center eyebrow="dos formatos, cero drivers" title="Lo que el Mac no abre," accent="ahora lo abres."
+             sub="macOS solo lee los discos de Windows y ni siquiera ve los de Linux. Hasta hoy la salida era instalar un driver que se queda corriendo. iMount lee el disco dentro de la app y, al cerrarla, no deja nada.">
+      <div class="devices">
+        <div class="devcard tilt reveal" style="--c:#5ac8fa">
+          <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={DISK} /></div>
+          <h3>NTFS · Windows</h3>
+          <p>El Finder solo lo lee. iMount también escribe, con <code class="kbd">ntfs-3g</code>, la librería que lleva años abriendo discos de Windows fuera de Windows.</p>
+          <ul class="zones">
+            <li><span class="em">✍️</span><div><b>Lectura y escritura</b><span>Copia, mueve, renombra y borra en tus discos externos y memorias de Windows.</span></div></li>
+            <li><span class="em">💤</span><div><b>Respeta el Inicio rápido</b><span>Si Windows dejó el disco hibernado, iMount lo abre en solo lectura y te dice por qué, para no dañar nada.</span></div></li>
+            <li><span class="em">🧹</span><div><b>Sin archivos de sistema</b><span>Oculta <code class="kbd">$MFT</code>, «System Volume Information» y la papelera de Windows.</span></div></li>
+          </ul>
+        </div>
+        <div class="devcard tilt reveal" style="--c:#8f8bff">
+          <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={DISK} /></div>
+          <h3>ext4 · Linux</h3>
+          <p>El Finder ni lo ve. iMount lo abre con <code class="kbd">libext2fs</code>, la misma librería que usa <code class="kbd">e2fsck</code> en Linux.</p>
+          <ul class="zones">
+            <li><span class="em">📓</span><div><b>Journal incluido</b><span>Si el disco no se desconectó bien, iMount reproduce el journal antes de abrirlo, como lo haría Linux.</span></div></li>
+            <li><span class="em">🐧</span><div><b>Permisos de Linux</b><span>Lo que copias hereda el dueño y el grupo de su carpeta, para que en Linux lo sigas editando.</span></div></li>
+            <li><span class="em">🛡️</span><div><b>ext4 de hoy</b><span>Compatible con <code class="kbd">metadata_csum</code>, 64 bits y <code class="kbd">orphan_file</code>: lo que crea <code class="kbd">mkfs.ext4</code> actual.</span></div></li>
+          </ul>
+        </div>
+      </div>
+    </Section>
+
+    <Section id="funciones" flush eyebrow="funciones" title="Todo lo que haces en el Finder." accent="Ahora en tus discos."
+             sub="Copiar, mover, renombrar, borrar y arrastrar, con una cola de copias que te dice cuánto falta.">
+      <Bento>
+        <BentoCard span={4} title="Arrastra y suelta, en los dos sentidos" icon='<path d="M5 9l4-4 4 4"/><path d="M9 5v10"/><path d="M19 15l-4 4-4-4"/><path d="M15 19V9"/>'>
+          <Fragment slot="text">Selecciona carpetas del disco y arrástralas al Finder, o suelta archivos del escritorio sobre la ventana de iMount. Con dos discos conectados, arrastra de uno al otro.</Fragment>
+          <div class="flow"><span class="node">💾 NTFS</span><span class="arrow"></span><span class="node">💻 Mac</span><span class="arrow"></span><span class="node">🐧 ext4</span></div>
+        </BentoCard>
+        <BentoCard title="Edita y guarda de vuelta" bg="rgba(90,200,250,.14)" stroke="#a8e4ff" icon='<path d="M4 20l4-1 11-11-3-3L5 16z"/>'>
+          <Fragment slot="text">Abre un documento del disco con su app de Mac. Al guardarlo, iMount lo escribe de vuelta en el disco.</Fragment>
+        </BentoCard>
+        <BentoCard title="Varios discos a la vez" bg="rgba(86,80,255,.16)" stroke="#b3b0ff" icon='<rect x="2" y="6" width="9" height="12" rx="2"/><rect x="13" y="6" width="9" height="12" rx="2"/>'>
+          <Fragment slot="text">Cada disco abre su propia ventana con su color, para no confundir el de Windows con el de Linux.</Fragment>
+        </BentoCard>
+        <BentoCard title="Vista rápida" bg="rgba(143,139,255,.16)" stroke="#c9c6ff" icon='<circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/>'>
+          <Fragment slot="text">Pulsa <span class="kbd">espacio</span> y mira la foto, el video o el PDF sin copiarlo antes.</Fragment>
+        </BentoCard>
+        <BentoCard title="¿Ya existe? Te pregunta" bg="rgba(255,120,150,.14)" stroke="#ffadc0" icon='<path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="5"/>'>
+          <Fragment slot="text">Si un archivo ya está en el destino, eliges: reemplazar, conservar los dos o saltarlo. Para uno o para todos.</Fragment>
+        </BentoCard>
+        <BentoCard span={3} title="Nombres que funcionan en Windows y en Linux" icon='<path d="M4 7V5h16v2"/><path d="M9 20h6"/><path d="M12 5v15"/>'>
+          <Fragment slot="text">Antes de escribir, iMount revisa que el nombre sea válido en el disco y te lo dice en palabras, no con un código. Los acentos se guardan de forma que Windows y Linux los lean igual.</Fragment>
+          <div class="say">
+            <div><s>CON.txt</s> → <b>«Windows no acepta ese nombre»</b></div>
+            <div><s>EROFS</s> → <b>«El disco está en solo lectura: apaga Windows por completo»</b></div>
+          </div>
+        </BentoCard>
+        <BentoCard span={3} title="Copias largas que se ven avanzar" bg="rgba(90,200,250,.14)" stroke="#a8e4ff" icon='<path d="M4 15v4h16v-4"/><path d="M12 4v11M8 11l4 4 4-4"/>'>
+          <Fragment slot="text">Copia miles de archivos y sigue explorando: la carpeta se va llenando en pantalla, una barra te dice cuánto falta y cada archivo terminado queda guardado, aunque desconectes el disco después.</Fragment>
+        </BentoCard>
+      </Bento>
+    </Section>
+
+    <Section flush center eyebrow="listo en un minuto" title="Conecta. Autoriza." accent="Copia.">
+      <Steps items={[
+        ['Conecta', 'Conecta tu disco o memoria USB. iMount solo te muestra sus particiones NTFS y ext4; de las demás se encarga el Finder.'],
+        ['Autoriza', 'macOS te pide tu contraseña (o Touch ID) una vez por disco. iMount no instala ningún ayudante para hacerlo.'],
+        ['Copia', 'Explora, arrastra y copia como en el Finder. Al terminar, expulsa el disco desde la app y listo.'],
+      ]} />
+    </Section>
+
+    <Section id="comparativa" center eyebrow="por qué iMount" title="Sin drivers." accent="Sin rastro."
+             sub="Los drivers montan el disco en el sistema y dejan extensiones o procesos registrados. iMount hace el trabajo dentro de la app y desaparece al cerrarla.">
+      <CompareTable columns={['iMount', 'Finder', 'Drivers (macFUSE, Paragon…)']} rows={[
+        ['Leer discos NTFS', true, true, true],
+        ['Escribir en discos NTFS', true, false, true],
+        ['Abrir discos ext4', true, false, 'Algunos'],
+        ['Sin instalar drivers ni extensiones', true, true, false],
+        ['Nada corriendo al cerrar', true, true, false],
+        ['Gratis', true, true, 'Algunos'],
+      ]} />
+    </Section>
+
+    <Section flush eyebrow="ingeniería" title="Hecho para el Mac." accent="Y para tus datos.">
+      <Principles items={[
+        ['Nada en segundo plano', 'Al cerrar iMount no queda ningún proceso, daemon, extensión ni elemento de inicio. Ni siquiera el punto en el Dock.'],
+        ['Todo dentro de la app', 'Lee el disco directamente con ntfs-3g y libext2fs, en el mismo proceso. No monta nada en el sistema ni en el Finder.'],
+        ['Cuida tus archivos', 'Cada archivo se sincroniza con el disco al terminar de copiarlo. Si desconectas el disco entre copias, lo ya copiado está a salvo.'],
+        ['Swift 6 y Apple Silicon', 'App nativa: cada disco trabaja en su propia cola, así la ventana nunca se congela aunque copies miles de archivos.'],
+      ]} />
+    </Section>
+
+    <Section id="preguntas" flush center eyebrow="preguntas" title="Antes de" accent="conectar.">
+      <Faq items={[
+        ['¿Necesito instalar algo más?', 'No. Las librerías de NTFS y ext4 vienen dentro de la app. Arrastra iMount a Aplicaciones y ábrela.'],
+        ['¿Por qué me pide mi contraseña?', 'macOS solo deja abrir un disco directamente a un administrador. iMount usa la herramienta del propio sistema para pedir permiso una vez por disco, sin instalar ayudantes ni servicios.'],
+        ['¿Por qué mi disco de Windows sale en solo lectura?', 'Porque Windows lo dejó hibernado (Inicio rápido) o no se apagó bien. Escribir así podría dañarlo. En Windows, apaga con Mayús + Apagar o desactiva el Inicio rápido, y vuelve a conectarlo.'],
+        ['¿Y mis discos exFAT, FAT32 o APFS?', 'Esos ya los abre el Finder, así que iMount ni los muestra. Si un disco tiene particiones de varios tipos, iMount solo te enseña las NTFS y ext4.'],
+        ['¿Funciona en Macs con Intel?', 'No. iMount está hecho solo para Macs con Apple Silicon (M1 o posterior) y macOS 27 o posterior.'],
+      ]} />
+    </Section>
+
+    <DownloadCta eyebrow="conecta y listo" title="Ese disco de Windows," accent="por fin en tu Mac."
+                 sub="Descarga iMount, arrástralo a Aplicaciones y conecta tu disco. Sin drivers, sin reiniciar y sin dejar nada instalado."
+                 requirements={['macOS 27 o posterior', 'Solo Apple Silicon', '4 MB', 'Firmado con Developer ID', 'Notarizado por Apple']}>
+      <DownloadButton app={app}><Icon name="download" /> Descargar iMount {app.version} (.dmg)</DownloadButton>
+    </DownloadCta>
+  </main>
+
+  <Footer slot="footer" app={app} note="Hecho para los discos que el Mac no abre." tagline="NTFS y ext4, en tu Mac." />
+</AppLayout>

@@ -1,9 +1,19 @@
 ---
-// iBridge: fotos que viajan de cada teléfono al Mac (solo CSS).
+// Archivos que viajan de dos dispositivos al Mac (solo CSS). Por defecto iBridge (teléfonos);
+// ImountFlow lo usa con discos. Estilos en styles/pages/home.css (.ibridge-visual).
+type Side = { emoji: string; name: string; note: string; color: string };
+interface Props { icon?: string; left?: Side; right?: Side; fly?: string[]; glow?: string }
+const {
+  icon = '/ibridge/app-icon.png',
+  left = { emoji: '📱', name: 'iPhone', note: 'Fotos y videos', color: '#0a84ff' },
+  right = { emoji: '🤖', name: 'Android', note: 'WhatsApp', color: '#3ddc84' },
+  fly = ['🌅', '🎂', '🐶', '🏖️', '⚽', '🌮'],
+  glow = 'rgba(10, 132, 255, 0.4)',
+} = Astro.props;
 ---
-<div class="ibridge-visual" aria-hidden="true">
-  <div class="ib-dev ib-dev--ios"><span>📱</span><b>iPhone</b><small>Fotos y videos</small></div>
-  <img class="ib-icon" src="/ibridge/app-icon.png" alt="">
-  <div class="ib-dev ib-dev--android"><span>🤖</span><b>Android</b><small>WhatsApp</small></div>
-  <div class="ib-fly">{['🌅', '🎂', '🐶', '🏖️', '⚽', '🌮'].map((e) => <i>{e}</i>)}</div>
+<div class="ibridge-visual" aria-hidden="true" style={`--glow-ib:${glow}`}>
+  <div class="ib-dev ib-dev--ios" style={`--dc:${left.color}`}><span>{left.emoji}</span><b>{left.name}</b><small>{left.note}</small></div>
+  <img class="ib-icon" src={icon} alt="">
+  <div class="ib-dev ib-dev--android" style={`--dc:${right.color}`}><span>{right.emoji}</span><b>{right.name}</b><small>{right.note}</small></div>
+  <div class="ib-fly">{fly.map((e) => <i>{e}</i>)}</div>
 </div>
