@@ -17,11 +17,15 @@ Qué hace:
   * Genera sitemap.xml y robots.txt en la raíz de dist/.
   * Si SITE no es producción, cambia las URLs de producción que queden en el HTML
     por SITE, para que una compilación local nunca enlace a ierwinx.com.
+  * Al final, en todas las páginas: Content-Security-Policy y Referrer-Policy como <meta>
+    (GitHub Pages no deja poner cabeceras), entre <!-- csp:start --> y <!-- csp:end -->.
 
 Los datos de las apps y de la marca salen de src/data/apps.json y src/data/site.json.
 """
 
+import base64
 import datetime
+import hashlib
 import html
 import json
 import os
@@ -407,6 +411,70 @@ def rebase_to_site(pages):
     return changed
 
 
+# ── Content-Security-Policy ─────────────────────────────────────────────
+# El navegador solo carga y ejecuta lo que esta lista permite. Los scripts en línea de cada página
+# entran por su huella SHA-256, calculada aquí sobre el HTML final (por eso corre al último).
+
+CSP_RE = re.compile(r'\n?[ \t]*<!-- csp:start.*?<!-- csp:end -->', re.S)
+INLINE_SCRIPT_RE = re.compile(r'<script(?![^>]*\bsrc=)([^>]*)>(.*?)</script>', re.S | re.I)
+RECAPTCHA = 'https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/'
+
+
+def origin(url):
+    m = re.match(r'https?://[^/]+', url or '')
+    return m.group(0) if m else ''
+
+
+def script_hashes(text):
+    """Huellas de los scripts en línea que el navegador ejecuta (JSON-LD y otros datos no)."""
+    hashes = []
+    for attrs, body in INLINE_SCRIPT_RE.findall(text):
+        kind = re.search(r'\btype="([^"]*)"', attrs)
+        if kind and kind.group(1).lower() not in ('module', 'text/javascript', 'application/javascript'):
+            continue
+        digest = base64.b64encode(hashlib.sha256(body.encode('utf-8')).digest()).decode()
+        if f"'sha256-{digest}'" not in hashes:
+            hashes.append(f"'sha256-{digest}'")
+    return hashes
+
+
+def csp_policy(text):
+    connect = ' '.join(filter(None, ["'self'", origin(SITE_DATA.get('contactApi'))]))
+    return '; '.join([
+        "default-src 'self'",
+        ' '.join(["script-src 'self'", *script_hashes(text), RECAPTCHA]),
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",   # los atributos style="" de las páginas
+        "font-src 'self' https://fonts.gstatic.com",
+        "img-src 'self' data: blob:",
+        f'connect-src {connect}',
+        f"frame-src 'self' blob: {RECAPTCHA} https://recaptcha.google.com/recaptcha/",   # blob: el PDF del CV
+        "worker-src 'self' blob:",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        *(['upgrade-insecure-requests'] if SITE.startswith('https://') else []),   # en http://localhost rompería la vista local
+    ])
+
+
+def add_csp(rel):
+    path = os.path.join(DIST, rel)
+    with open(path, encoding='utf-8') as f:
+        original = f.read()
+    text = CSP_RE.sub('', original)
+    block = ('\n<!-- csp:start · generado por tools/seo.py -->\n'
+             f'<meta http-equiv="Content-Security-Policy" content="{csp_policy(text).replace(chr(34), "&quot;")}">\n'
+             '<meta name="referrer" content="strict-origin-when-cross-origin">\n'
+             '<!-- csp:end -->')
+    # Justo después de <meta charset>: antes de cualquier script, estilo o fuente.
+    text, n = re.subn(r'(<meta\s+charset=[^>]*>)', lambda m: m.group(1) + block, text, count=1, flags=re.I)
+    if not n:
+        text = re.sub(r'(<head[^>]*>)', lambda m: m.group(1) + block, text, count=1, flags=re.I)
+    if text != original:
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(text)
+    return text != original
+
+
 def main():
     if not os.path.isdir(DIST):
         raise SystemExit('No existe dist/: corre primero `npm run build`.')
@@ -416,9 +484,11 @@ def main():
     count = write_sitemap(pages)
     write_robots()
     rebased = rebase_to_site(all_pages)
+    csp = sum(add_csp(rel) for rel in all_pages)   # al último: las huellas son del HTML final
     private = [p for p in pages if is_private(p)]
     print(f'SEO para {SITE}: {len(pages)} páginas revisadas, {changed} actualizadas, {rebased} con URLs locales.')
     print(f'sitemap.xml: {count} URLs públicas.  noindex: {", ".join(private)}')
+    print(f'CSP: {len(all_pages)} páginas, {csp} actualizadas.')
 
 
 if __name__ == '__main__':

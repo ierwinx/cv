@@ -154,6 +154,10 @@ demás apps y la home enlazan en su pie a `/contacto/?app=<slug>` (muestra la ap
   `robots.txt` bloquea `/CV/img/`.
 - `musica/` es una redirección a `/iconverter/` (está en `REDIRECTS` de `seo.py`).
 - `tools/indexnow.py --send` avisa a Bing; exige un `dist/` compilado con `SITE=https://ierwinx.com`.
+- **CSP:** al final, `seo.py` pone en cada página un `<meta http-equiv="Content-Security-Policy">` (GitHub Pages no
+  deja cabeceras) con la huella SHA-256 de sus scripts en línea, calculada sola. Si agregas algo de **otro dominio**
+  (script, fuente, API, iframe), súmalo en `csp_policy()` o el navegador lo bloquea. `npm run check` verifica que cada
+  página tenga su CSP y que ningún script en línea quede fuera.
 
 ## Descargas (.dmg / .pkg / .zip)
 
