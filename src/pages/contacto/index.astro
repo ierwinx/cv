@@ -1,0 +1,33 @@
+---
+// Contacto general: la usan las apps sin página de soporte (enlace en su pie a /contacto/?app=<slug>).
+// Con ?app= muestra la app y la manda como «origen» al micro; sin él, origen «contacto».
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BrandMark from '../../components/home/BrandMark.astro';
+import ContactForm from '../../components/ui/ContactForm.astro';
+import apps from '../../data/apps.json';
+import '../../styles/pages/contacto.css';
+
+// slug → [nombre, ícono] para que el script muestre la app sin importar apps.json
+const known = Object.fromEntries(apps.map((a) => [a.slug, [a.name, a.home?.logo ?? a.icon]]));
+---
+<BaseLayout title="Contacto · ierwinx" description="¿Algún problema con una app de ierwinx, una duda o una idea? Escríbeme y te respondo lo antes posible."
+            themeColor="#07070c" fonts="Inter:wght@400;500;600;700;800">
+  <Fragment slot="head">
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/assets/favicon-48.png" sizes="48x48" type="image/png">
+  </Fragment>
+  <div class="ct-bg" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <main class="ct" id="contenido" data-apps={JSON.stringify(known)}>
+    <a class="ct-brand" href="/"><BrandMark defs class="ct-mark" />ierwinx</a>
+    <h1>¿En qué te <span class="ct-grad">ayudo?</span></h1>
+    <p class="ct-lead">¿Algún problema con una app, una duda o una idea? Escríbeme y te respondo lo antes posible.</p>
+    <a class="ct-app" id="ctApp" hidden><img alt="" width="28" height="28"><span></span></a>
+    <div class="ct-card">
+      <ContactForm origen="contacto" placeholder="Cuéntame qué pasó: qué app, tu versión de macOS, iOS o Android y qué estabas haciendo." />
+    </div>
+    <p class="ct-back"><a href="/" id="ctBack">← Volver a ierwinx</a></p>
+  </main>
+
+  <script>import '../../scripts/pages/contacto';</script>
+</BaseLayout>
