@@ -1,6 +1,6 @@
 # ierwinx.com
 
-Portafolio y landings de las apps de Erwin (iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iRar, iGit,
+Portafolio y landings de las apps de Erwin (iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iMount, iRar, iGit,
 iTunes, iSpecter, iConverter), su CV privado y un curso de Python. Sitio **estático** en GitHub Pages
 (dominio `ierwinx.com`, repo público `ierwinx/cv`).
 
@@ -44,6 +44,7 @@ src/components/ui      Button, DownloadButton, Icon, ContactForm (formulario de 
 src/components/sections Hero, Marquee, Section, Bento/BentoCard, Steps, Stats, CompareTable, Principles, Faq, DownloadCta
 src/components/mockups AppWindow (ventana 3D del hero)
 src/components/demos   <App>Demo.astro + <app>.css: demos que comparten la página de la app y la home
+                       (IbridgeDemo también es la de iMount con variant="imount": las dos apps comparten interfaz)
 src/components/home    Spot (spotlight genérico), menú/órbita/dock (AppIcon, BrandMark) y los visuales propios de la home
 src/components/<app>   piezas de una sola app: SuperpetsShell, IlegatoShell + StoreButtons, cv/Resume
 src/scripts/init.ts    comportamiento común, activado por clases/atributos (ver abajo)
