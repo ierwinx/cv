@@ -130,7 +130,8 @@ Todo el sitio sale de Astro (`docs/REDISENO.md` §5, fases 0–7 hechas): ya no 
 **El sitio no publica ningún correo**: el contacto es un formulario que envía al microservicio
 `~/Desarrollo/Backierwinx` (FastAPI + Firestore en Render, URL en `site.json → contactApi`). Lo usan el CV (con su
 propio marcado bilingüe) y, con `<ContactForm origen="…">`, el soporte de iLegato y Super Pets, la página de
-eliminar cuenta de Super Pets e iConverter. Las páginas legales enlazan a `support.html#contacto`.
+eliminar cuenta de Super Pets, iConverter y `/contacto/`. Las páginas legales enlazan a `support.html#contacto`; las
+demás apps y la home enlazan en su pie a `/contacto/?app=<slug>` (muestra la app y la manda como `origen`).
 
 - Solo el build de producción envía y pide reCAPTCHA v2; en local el envío se simula (`console.info`).
 - Probar contra el micro local: `PUBLIC_CONTACT_API=http://localhost:8000 npm run dev` (sin reCAPTCHA).
