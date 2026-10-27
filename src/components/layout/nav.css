@@ -1,6 +1,36 @@
-nav.site-nav { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 50; width: min(1100px, calc(100% - 32px)); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 12px 10px 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(var(--panel-rgb), .55); -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%);}
-.site-nav .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -.02em; font-size: 18px }
-.site-nav .brand img, .site-nav .brand svg { width: 30px; height: 30px }
-.site-nav ul { display: flex; gap: 26px; list-style: none; font-size: 14px; color: var(--muted) }
-.site-nav ul a:hover { color: var(--text) }
-@media (max-width: 760px) { .site-nav ul { display: none } }
+/* Nav común de las páginas de app (la de Super Pets). Estados: .is-scrolled (core/nav.ts) y .is-open en móvil. */
+.ui-nav { position: fixed; top: 16px; left: 0; right: 0; z-index: 1000; padding: 0 16px; transition: top .4s var(--ease); font-family: inherit }
+.ui-nav-inner {
+  max-width: 1120px; margin: 0 auto; display: flex; align-items: center; gap: 24px; height: 64px; padding: 0 10px 0 18px;
+  border-radius: 999px; background: rgba(var(--panel-rgb), .55); border: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(20px) saturate(160%); backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .06);
+  transition: height .4s var(--ease), max-width .4s var(--ease), background .4s;
+}
+.ui-nav.is-scrolled { top: 10px }
+.ui-nav.is-scrolled .ui-nav-inner { height: 56px; max-width: 980px; background: rgba(var(--panel-rgb), .8) }
+.ui-nav-logo { display: flex; align-items: center; gap: 10px; margin-right: auto; font-weight: 800; font-size: 1.1rem; letter-spacing: -.02em; color: var(--text); text-decoration: none; white-space: nowrap }
+.ui-nav-logo img, .ui-nav-logo svg { width: 36px; height: 36px; border-radius: 10px; box-shadow: 0 4px 14px color-mix(in srgb, var(--a1) 45%, transparent); transition: transform .5s var(--ease) }
+.ui-nav-logo:hover img, .ui-nav-logo:hover svg { transform: rotate(-12deg) scale(1.08) }
+.ui-nav-links { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0 }
+.ui-nav-links a { display: block; padding: 8px 14px; border-radius: 999px; color: var(--muted); font-size: .92rem; font-weight: 600; text-decoration: none; transition: color .25s, background .25s }
+.ui-nav-links a:hover, .ui-nav-links a.is-active { color: var(--text); background: var(--surface-2) }
+.ui-nav-menu { display: none; position: relative; width: 44px; height: 44px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line); cursor: pointer; padding: 0 }
+.ui-nav-menu span { position: absolute; left: 13px; right: 13px; height: 2px; border-radius: 2px; background: var(--text); transition: transform .35s var(--ease), top .35s var(--ease) }
+.ui-nav-menu span:nth-child(1) { top: 17px }
+.ui-nav-menu span:nth-child(2) { top: 25px }
+.ui-nav-menu.is-open span:nth-child(1) { top: 21px; transform: rotate(45deg) }
+.ui-nav-menu.is-open span:nth-child(2) { top: 21px; transform: rotate(-45deg) }
+
+@media (max-width: 860px) {
+  .ui-nav-inner { gap: 12px }
+  .ui-nav-links {
+    position: absolute; top: 74px; left: 0; right: 0; flex-direction: column; gap: 4px; padding: 14px; border-radius: 26px;
+    background: rgba(var(--panel-rgb), .94); border: 1px solid var(--line); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    opacity: 0; transform: translateY(-10px) scale(.98); pointer-events: none; transition: opacity .3s, transform .3s var(--ease);
+  }
+  .ui-nav-links.is-open { opacity: 1; transform: none; pointer-events: auto }
+  .ui-nav-links a { padding: 14px 18px; font-size: 1.05rem }
+  .ui-nav-menu { display: block }
+}
+@media (max-width: 420px) { .ui-nav-cta { display: none } }

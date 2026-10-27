@@ -1,17 +1,22 @@
 ---
-// Botón/enlace del sistema: primary (gradiente con brillo) o ghost (cristal). Magnético por defecto.
+// Botón/enlace común (el de iLegato): primary (blanco con resplandor del color de la app) o ghost (cristal).
+// ring: borde que gira con los colores de la app. Magnético por defecto.
+import '../../styles/tokens.css';
 import './button.css';
 
 interface Props {
-  href: string;
+  href?: string;
   variant?: 'primary' | 'ghost';
-  size?: 'sm';
+  size?: 'sm' | 'lg';
+  ring?: boolean;
+  external?: boolean;     // abre en otra pestaña (tiendas, GitHub)
   download?: boolean;     // descarga: confeti y aviso (core/celebrate.ts)
+  disabled?: boolean;     // «Próximamente»: se ve, pero no es un enlace
 }
-const { href, variant = 'primary', size, download = false } = Astro.props;
+const { href, variant = 'primary', size, ring = false, external = false, download = false, disabled = false } = Astro.props;
+const classes = ['ui-btn', `ui-btn-${variant}`, size && `ui-btn-${size}`, ring && 'ui-btn-ring', !disabled && 'magnetic'];
 ---
-<a class:list={['btn', `btn-${variant}`, size && `btn-${size}`, 'magnetic']} href={href}
-   download={download || undefined} data-download={download || undefined}>
-  {variant === 'primary' && <span class="shine"></span>}
-  <slot />
-</a>
+{disabled
+  ? <span class:list={[classes, 'is-disabled']} aria-disabled="true"><slot /></span>
+  : <a class:list={classes} href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}
+       download={download || undefined} data-download={download || undefined}><slot /></a>}

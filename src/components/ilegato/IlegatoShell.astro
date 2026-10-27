@@ -2,6 +2,11 @@
 // Estructura común de las páginas de iLegato: fondo, nav, pie, estilos y script.
 // La portada usa variant="home" (anclas de sección); las legales, "legal" con su encabezado.
 import AppPage from '../../layouts/AppPage.astro';
+import Nav from '../layout/Nav.astro';
+import Footer from '../layout/Footer.astro';
+import Button from '../ui/Button.astro';
+import GlyphField from '../ui/GlyphField.astro';
+import { getApp } from '../../lib/apps';
 import '../../styles/pages/ilegato.css';
 
 type Home = { variant: 'home' };
@@ -17,11 +22,11 @@ type Legal = {
 type Props = Home | Legal;
 
 const props = Astro.props;
+const app = getApp('ilegato');
 const home = props.variant === 'home';
 const links: [string, string][] = home
   ? [['#porque', 'Por qué'], ['#recorrido', 'La app'], ['#ecualizador', 'Ecualizador'], ['#android', 'Android'], ['#auto', 'En el auto'], ['#preguntas', 'Preguntas']]
-  : [['./', 'Inicio'], ['privacy.html', 'Privacidad'], ['terms.html', 'Términos'], ['support.html', 'Soporte']];
-const top = home ? '#top' : './';
+  : [['index.html', 'Inicio'], ['privacy.html', 'Privacidad'], ['terms.html', 'Términos'], ['support.html', 'Soporte']];
 ---
 <AppPage slug="ilegato" title={home ? undefined : props.title} description={home ? undefined : props.description} skipTo={home ? 'top' : 'doc'}>
   <slot name="head" slot="head" />
@@ -31,15 +36,14 @@ const top = home ? '#top' : './';
   <div class="grain" aria-hidden="true"></div>
   <div class="progress" aria-hidden="true"></div>
 
-  <header class="nav" id="nav">
-    <a class="brand" href={top}><img src="img/icon-512.png" alt="" width="30" height="30">iLegato</a>
-    <nav class="nav-links" aria-label={home ? 'Secciones' : 'Páginas'}>
-      {links.map(([href, label]) => <a href={href}>{label}</a>)}
-    </nav>
+  <GlyphField app={app} />
+
+  <Nav app={app} links={links} home={home ? '#top' : 'index.html'}>
+    <img slot="logo" src="img/icon-512.png" alt="" width="36" height="36">
     {home
-      ? <a class="btn btn-primary magnetic" href="#descargar">Descargar</a>
-      : <a class="btn btn-primary magnetic" href="support.html#contacto">Contacto</a>}
-  </header>
+      ? <Button slot="cta" href="#descargar" size="sm">Descargar</Button>
+      : <Button slot="cta" href="support.html#contacto" size="sm">Contacto</Button>}
+  </Nav>
 
   {home ? <slot /> : (
     <main class="doc" id="doc">
@@ -52,18 +56,7 @@ const top = home ? '#top' : './';
     </main>
   )}
 
-  <footer>
-    <div class="wrap foot">
-      <a class="brand" href={top}><img src="img/icon-512.png" alt="" width="30" height="30">iLegato</a>
-      <nav aria-label="Legal">
-        <a href="privacy.html">Privacidad</a>
-        <a href="terms.html">Términos</a>
-        <a href="support.html">Soporte</a>
-        <a href="support.html#contacto">Contacto</a>
-      </nav>
-      <span>© {new Date().getFullYear()} <a href="/">ierwinx</a></span>
-    </div>
-  </footer>
+  <Footer app={app} giant={home} tagline="Música sin pérdida para iPhone, iPad, CarPlay, Android y Android Auto. Sin suscripciones, sin cuentas y sin rastreo." />
 
   <script>import '../../scripts/pages/ilegato';</script>
 </AppPage>

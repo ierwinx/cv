@@ -2,10 +2,16 @@
 import { $, $$ } from '../core/dom';
 import { reduceMotion as reduce, sleep as wait } from '../core/motion';
 import { initReveal } from '../core/reveal';
+import { initNav } from '../core/nav';
+import { initGlyphs } from '../core/glyphs';
+import { initMagnetic } from '../core/pointer';
 import { toast } from '../core/celebrate';
 
 document.documentElement.classList.add('js');
-initReveal('.rv', { threshold: .12, stagger: 0 });
+initReveal('.rv, .reveal', { threshold: .12, stagger: 0 });
+initNav();
+initGlyphs();
+initMagnetic();
 
 // Las barras del benchmark crecen al verse.
 const bars = $('#bars')!;

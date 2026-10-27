@@ -1,0 +1,44 @@
+---
+// Páginas de privacidad, términos y soporte de las apps (src/pages/[slug]/…): el documento de iLegato con la
+// nav, el pie, el ambiente (aurora, estrellas, símbolos) y los colores de cada app (apps.json). El texto real sale de data/legal.json.
+import AppPage from '../../layouts/AppPage.astro';
+import Nav from '../layout/Nav.astro';
+import Footer from '../layout/Footer.astro';
+import Ambient from '../layout/Ambient.astro';
+import type { App } from '../../lib/apps';
+import '../../styles/tokens.css';
+import '../../styles/effects.css';   // aurora, foco, grano y barra de progreso del ambiente
+import '../sections/download.css';   // .ui-eyebrow y .ui-grad
+import '../../styles/pages/legal.css';
+
+interface Props {
+  app: App;
+  title: string;
+  description: string;
+  eyebrow: string;
+  heading: string;
+  accent: string;       // remate del título, en degradado
+  updated?: string;
+}
+const { app, title, description, eyebrow, heading, accent, updated } = Astro.props;
+// Letra de la página de la app: la primera familia de Google Fonts que no sea monoespaciada
+const font = (app.theme?.fonts ?? '').split('&family=').map((f) => f.split(':')[0].replace(/\+/g, ' ')).find((f) => f && !/mono/i.test(f));
+// Las apps cuya página tiene cielo de estrellas lo llevan también aquí
+const stars = ['ibridge', 'imount', 'ixml', 'igit'].includes(app.slug);
+const links: [string, string][] = [['index.html', 'Inicio'], ['privacy.html', 'Privacidad'], ['terms.html', 'Términos'], ['support.html', 'Soporte']];
+---
+<AppPage slug={app.slug} title={title} description={description} skipTo="doc">
+  <div class="lg-bg" style={`background-color:${app.theme?.color ?? 'var(--bg)'}`} aria-hidden="true"></div>
+  <Ambient app={app} stars={stars} />
+  <div class="lg" style={font ? `font-family:'${font}', system-ui, -apple-system, sans-serif` : undefined}>
+    <Nav app={app} links={links} home="index.html" />
+    <main class="lg-doc" id="doc">
+      <p class="ui-eyebrow reveal">{eyebrow}</p>
+      <h1>{heading} <span class="ui-grad">{accent}</span></h1>
+      {updated && <p class="lg-updated">Última actualización: {updated}</p>}
+      <slot />
+    </main>
+    <Footer app={app} tagline={app.description ?? ''} />
+  </div>
+  <script>import '../../scripts/pages/legal';</script>
+</AppPage>

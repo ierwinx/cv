@@ -4,48 +4,24 @@ import { reduceMotion as reduced } from '../core/motion';
 import { confetti } from '../core/celebrate';
 import { countUp } from '../core/counters';
 import { initContactForms } from '../core/contact';
+import { initNav } from '../core/nav';
+import { initGlyphs } from '../core/glyphs';
 
 (() => {
     const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
-    // ── Navegación ───────────────────────────
-    const nav = $('.nav');
-    const menuBtn = $('#navMenuBtn');
-    const navLinks = $('#navLinks');
-
-    menuBtn?.addEventListener('click', () => {
-        const open = navLinks!.classList.toggle('active');
-        menuBtn.classList.toggle('is-open', open);
-        menuBtn.setAttribute('aria-expanded', String(open));
-    });
-
-    $$('a', navLinks || document.createElement('div')).forEach((a) => a.addEventListener('click', () => {
-        navLinks!.classList.remove('active');
-        menuBtn?.classList.remove('is-open');
-    }));
+    initNav();
+    initGlyphs();
 
     const progress = $('.scroll-progress');
     const onScroll = () => {
         const y = scrollY;
-        nav?.classList.toggle('is-scrolled', y > 20);
         const max = document.documentElement.scrollHeight - innerHeight;
         progress!.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
     };
     addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-
-    // Enlace activo según la sección visible
-    const sectionLinks = $$('.nav-links a[href^="#"]');
-    if (sectionLinks.length) {
-        const spy = new IntersectionObserver((entries) => {
-            entries.forEach((e) => {
-                if (!e.isIntersecting) return;
-                sectionLinks.forEach((a) => a.classList.toggle('is-active', a.getAttribute('href') === `#${e.target.id}`));
-            });
-        }, { rootMargin: '-45% 0px -50% 0px' });
-        sectionLinks.forEach((a) => { const s = $(a.getAttribute('href')!); if (s) spy.observe(s); });
-    }
 
     // ── Títulos palabra por palabra ──────────
     $$('.split').forEach((el) => {
@@ -294,7 +270,7 @@ import { initContactForms } from '../core/contact';
         }, { threshold: 0.5 }).observe(card);
 
         let last = 0;
-        $('.btn-store', card)?.addEventListener('mouseenter', (e) => {
+        $('.ui-btn', card)?.addEventListener('mouseenter', (e) => {
             if (performance.now() - last < 1200) return;
             last = performance.now();
             const r = card.getBoundingClientRect();

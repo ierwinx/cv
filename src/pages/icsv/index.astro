@@ -1,36 +1,41 @@
 ---
 // iCSV: diseño propio (Inter Tight, teal y naranja). Estilos en styles/pages/icsv.css, comportamiento en scripts/pages/icsv.ts.
 import AppPage from '../../layouts/AppPage.astro';
-import { downloadUrl, getApp } from '../../lib/apps';
+import Nav from '../../components/layout/Nav.astro';
+import Footer from '../../components/layout/Footer.astro';
+import Button from '../../components/ui/Button.astro';
+import DownloadButton from '../../components/ui/DownloadButton.astro';
+import GlyphField from '../../components/ui/GlyphField.astro';
+import Faq from '../../components/sections/Faq.astro';
+import DownloadCta from '../../components/sections/DownloadCta.astro';
+import { getApp } from '../../lib/apps';
 import '../../styles/pages/icsv.css';
 
 const app = getApp('icsv');
-const dl = downloadUrl(app);
 const sha = app.release!.sha256!;
+const FAQ: [string, string][] = [
+  ['¿Qué formatos puedo abrir?', '<p>CSV, TSV, PSV, DSV y en general cualquier texto delimitado: coma, punto y coma, tabulador, barra vertical, dos puntos, <code>^</code>, <code>~</code>, espacio o cualquier carácter ASCII. Entiende comillas dobles o simples, escapes estilo RFC 4180 (<code>""</code>) o MySQL (<code>\\"</code>), y la línea <code>sep=</code> de Excel.</p>'],
+  ['¿Y las codificaciones raras de Windows?', '<p>UTF-8 con o sin BOM, UTF-16 LE/BE (la exportación «Unicode» de Excel), UTF-32 con BOM, Windows-1252, ISO-8859-1 y Mac Roman se detectan automáticamente. Si necesitas otra, puedes reinterpretar el archivo desde el popover de formato.</p>'],
+  ['¿Qué pasa si el archivo está mal formado?', '<p>iCSV nunca lo rechaza. Entra en modo tolerante: una comilla en medio de un campo se toma como literal, y si una comilla nunca se cierra se reinterpreta desde esa línea. Verás un aviso con el número de línea exacto.</p>'],
+  ['¿Cambia mis números o fechas como Excel?', '<p>Jamás. Una celda es texto y se guarda tal cual. <code>00123</code> sigue siendo <code>00123</code>, <code>2026-03-04</code> no se convierte en otra fecha y <code>1E5</code> no se vuelve 100000. Lo que no editas sale byte a byte idéntico.</p>'],
+  ['¿Qué requisitos tiene?', '<p>macOS 26 o posterior, en cualquier Mac con Apple Silicon o Intel. Ocupa unos pocos megas y no necesita conexión a internet.</p>'],
+  ['¿Por qué macOS dice que la descargué de internet?', '<p>Es el aviso normal de Gatekeeper para cualquier app fuera del App Store. iCSV está firmada con Developer ID y notarizada por Apple, así que se abre sin advertencias de seguridad.</p>'],
+];
 ---
 <AppPage slug="icsv">
 <div class="ambient"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 <div class="gridbg"></div>
-<canvas id="particles"></canvas>
 <div class="cursor-glow" id="glow"></div>
 <div class="noise"></div>
 <div class="progress" id="progress"></div>
 <canvas id="confetti"></canvas>
 <div class="toast" id="toast"></div>
 
-<nav class="top" id="nav">
-  <a href="#" class="brand"><img src="assets/icon.png" alt=""><span>iCSV</span></a>
-  <div class="navlinks">
-    <a href="#por-que">Por qué</a>
-    <a href="#fidelidad">Fidelidad</a>
-    <a href="#rendimiento">Rendimiento</a>
-    <a href="#faq">FAQ</a>
-  </div>
-  <a href={dl} download class="btn btn-primary btn-sm magnetic js-download">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16"/></svg>
-    Descargar
-  </a>
-</nav>
+<GlyphField app={app} colors="--a1,--a1,--a1,--a2" />
+
+<Nav app={app} links={[['#por-que', 'Por qué'], ['#fidelidad', 'Fidelidad'], ['#rendimiento', 'Rendimiento'], ['#faq', 'FAQ']]}>
+  <img slot="logo" src="assets/icon.png" alt="" width="36" height="36">
+</Nav>
 
 <!-- ================= HERO ================= -->
 <header class="hero">
@@ -40,11 +45,11 @@ const sha = app.release!.sha256!;
     <h1 id="headline"><span class="word">Tus</span> <span class="word">CSV,</span> <span class="word grad">al</span> <span class="word grad">instante.</span></h1>
     <p class="lead">iCSV es el editor de archivos delimitados para Mac que abre un gigabyte sin pestañear y guarda tus datos <strong>exactamente</strong> como estaban. Sin asistentes de importación. Sin ceros perdidos. Sin esperar.</p>
     <div class="cta-row">
-      <a href={dl} download class="btn btn-primary magnetic js-download">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.47.83-.72 0-1.82-.81-3-.79-1.54.02-2.96.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.15.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.72 1.23-.02 2.01-1.12 2.76-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.4-.92-2.38-3.68ZM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.01.61-2.66 1.37-.58.67-1.09 1.76-.96 2.8 1.02.08 2.05-.51 2.68-1.28Z"/></svg>
+      <DownloadButton app={app}>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.47.83-.72 0-1.82-.81-3-.79-1.54.02-2.96.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.15.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.72 1.23-.02 2.01-1.12 2.76-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.4-.92-2.38-3.68ZM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.01.61-2.66 1.37-.58.67-1.09 1.76-.96 2.8 1.02.08 2.05-.51 2.68-1.28Z"/></svg>
         Descargar para Mac
-      </a>
-      <a href="#por-que" class="btn btn-ghost magnetic">Descubre por qué →</a>
+      </DownloadButton>
+      <Button href="#por-que" variant="ghost">Descubre por qué →</Button>
     </div>
     <div class="meta"><span>Gratis</span><span>2,5 MB</span><span>Apple Silicon + Intel</span><span>macOS 26 o posterior</span></div>
 
@@ -236,43 +241,23 @@ const sha = app.release!.sha256!;
   <div class="wrap">
     <span class="eyebrow reveal">Preguntas frecuentes</span>
     <h2 class="title reveal d1">Lo que quizá te preguntas.</h2>
-    <div class="faq">
-      <details class="reveal"><summary>¿Qué formatos puedo abrir?</summary><p>CSV, TSV, PSV, DSV y en general cualquier texto delimitado: coma, punto y coma, tabulador, barra vertical, dos puntos, <code>^</code>, <code>~</code>, espacio o cualquier carácter ASCII. Entiende comillas dobles o simples, escapes estilo RFC 4180 (<code>""</code>) o MySQL (<code>\"</code>), y la línea <code>sep=</code> de Excel.</p></details>
-      <details class="reveal"><summary>¿Y las codificaciones raras de Windows?</summary><p>UTF-8 con o sin BOM, UTF-16 LE/BE (la exportación «Unicode» de Excel), UTF-32 con BOM, Windows-1252, ISO-8859-1 y Mac Roman se detectan automáticamente. Si necesitas otra, puedes reinterpretar el archivo desde el popover de formato.</p></details>
-      <details class="reveal"><summary>¿Qué pasa si el archivo está mal formado?</summary><p>iCSV nunca lo rechaza. Entra en modo tolerante: una comilla en medio de un campo se toma como literal, y si una comilla nunca se cierra se reinterpreta desde esa línea. Verás un aviso con el número de línea exacto.</p></details>
-      <details class="reveal"><summary>¿Cambia mis números o fechas como Excel?</summary><p>Jamás. Una celda es texto y se guarda tal cual. <code>00123</code> sigue siendo <code>00123</code>, <code>2026-03-04</code> no se convierte en otra fecha y <code>1E5</code> no se vuelve 100000. Lo que no editas sale byte a byte idéntico.</p></details>
-      <details class="reveal"><summary>¿Qué requisitos tiene?</summary><p>macOS 26 o posterior, en cualquier Mac con Apple Silicon o Intel. Ocupa unos pocos megas y no necesita conexión a internet.</p></details>
-      <details class="reveal"><summary>¿Por qué macOS dice que la descargué de internet?</summary><p>Es el aviso normal de Gatekeeper para cualquier app fuera del App Store. iCSV está firmada con Developer ID y notarizada por Apple, así que se abre sin advertencias de seguridad.</p></details>
-    </div>
+    <Faq items={FAQ} />
   </div>
 </section>
 
 <!-- ================= FINAL CTA ================= -->
-<section class="final" id="descargar">
-  <div class="wrap">
-    <div class="final-box reveal">
-      <span class="ring"></span><span class="ring" style="animation-delay:-2s"></span><span class="ring" style="animation-delay:-4s"></span>
-      <img src="assets/icon.png" alt="">
-      <h2>Deja de esperar<br>a tus <span class="grad">datos.</span></h2>
-      <p class="lead">Descarga iCSV y abre ese archivo que tu hoja de cálculo no se atreve a abrir.</p>
-      <div class="cta-row">
-        <a href={dl} download class="btn btn-primary btn-big magnetic js-download">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16"/></svg>
-          Descargar iCSV 1.0
-        </a>
-      </div>
-      <div class="meta"><span>iCSV-1.0.dmg · 2,5 MB</span><span>Universal</span><span>macOS 26+</span></div>
-      <div class="checksum" id="checksum" data-sha={sha} title="Copiar SHA-256">SHA-256 · {sha}</div>
-    </div>
-  </div>
-</section>
+<DownloadCta app={app} icon="assets/icon.png" title="Deja de esperar a tus" accent="datos."
+             sub="Descarga iCSV y abre ese archivo que tu hoja de cálculo no se atreve a abrir."
+             requirements={[`iCSV-${app.version}.dmg · ${app.size}`, 'Universal', 'macOS 26+']}>
+  <DownloadButton app={app} size="lg">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 5-5m-5 5-5-5M4 21h16"/></svg>
+    Descargar iCSV {app.version}
+  </DownloadButton>
+  <Button href="support.html" variant="ghost" size="lg">Soporte</Button>
+  <div slot="extra" class="checksum" id="checksum" data-sha={sha} title="Copiar SHA-256">SHA-256 · {sha}</div>
+</DownloadCta>
 
-<footer>
-  <div class="wrap">
-    <a href="#" class="brand"><img src="assets/icon.png" alt="" style="width:24px;height:24px"> iCSV</a>
-    <span>© 2026 Erwin · Hecho en Swift con ❤️ para Mac · <a href="/contacto/?app=icsv">¿Problemas? Escríbeme</a></span>
-  </div>
-</footer>
+<Footer app={app} giant tagline="Editor de CSV, TSV y PSV para Mac: abre un gigabyte sin pestañear y guarda tus datos exactamente como estaban. Hecho en Swift con ❤️." />
 
 <script>import '../../scripts/pages/icsv';</script>
 </AppPage>

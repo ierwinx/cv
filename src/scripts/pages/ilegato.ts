@@ -6,6 +6,8 @@ import { reduceMotion as reduced } from '../core/motion';
 import { initCounters } from '../core/counters';
 import { initMagnetic, initTilt } from '../core/pointer';
 import { initReveal } from '../core/reveal';
+import { initNav } from '../core/nav';
+import { initGlyphs } from '../core/glyphs';
 import { frameLoop } from '../core/loop';
 import { initContactForms } from '../core/contact';
 
@@ -66,10 +68,9 @@ const watch = (el: Element, on: (visible: boolean) => void, threshold = 0) =>
   if (reduced) draw(0); else frameLoop(draw, { fps: 30 });   // ~30 fps es suficiente para una deriva tan lenta
 })();
 
-// ───────── Luz del cursor, barra de progreso y navegación ─────────
+// ───────── Luz del cursor y barra de progreso ─────────
 (() => {
   const bar = $('.progress');
-  const nav = $('#nav');
   let px = innerWidth / 2, py = innerHeight * .3, queued = false;
   const frame = () => {
     queued = false;
@@ -77,7 +78,6 @@ const watch = (el: Element, on: (visible: boolean) => void, threshold = 0) =>
     root.style.setProperty('--my', py + 'px');
     const max = root.scrollHeight - innerHeight;
     if (bar) bar.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
-    nav?.classList.toggle('scrolled', scrollY > 30);
   };
   const ask = () => { if (!queued) { queued = true; requestAnimationFrame(frame); } };
   addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; ask(); }, { passive: true });
@@ -117,6 +117,8 @@ $$('.split').forEach((el) => {
 });
 
 // ───────── Revelados, contadores, tarjetas con inclinación y botones magnéticos ─────────
+initNav();
+initGlyphs();
 initReveal('.reveal, .split, #compare', { threshold: .18, rootMargin: '0px 0px -8% 0px', stagger: 0 });
 initCounters();
 if (fine) { initTilt(); initMagnetic(); }

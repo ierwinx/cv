@@ -4,6 +4,8 @@ import { reduceMotion } from '../core/motion';
 import { frameLoop } from '../core/loop';
 import { toast } from '../core/celebrate';
 import { countUp as count } from '../core/counters';
+import { initNav } from '../core/nav';
+import { initGlyphs } from '../core/glyphs';
 
 type Opts = { cut?: number; nyq?: number; holes?: boolean };
 
@@ -221,11 +223,12 @@ type Opts = { cut?: number; nyq?: number; holes?: boolean };
     if (reduceMotion) draw(0, 1); else frameLoop(draw, { fps: 30 });   // fondo lento: 30 fps se ven igual
   })();
 
-  // ─── Navegación, barra de progreso y apariciones ───
+  // ─── Barra de progreso y apariciones (la nav es la común: core/nav) ───
+  initNav();
+  initGlyphs();
   addEventListener("scroll", () => {
     const max = document.documentElement.scrollHeight - innerHeight;
     document.documentElement.style.setProperty("--scroll", (scrollY / max).toFixed(4));
-    $("#nav")!.classList.toggle("scrolled", scrollY > 30);
   }, { passive: true });
 
   const io = new IntersectionObserver((entries) => {

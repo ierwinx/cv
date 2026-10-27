@@ -2,6 +2,12 @@
 // Portada de iLegato. La estructura (fondo, nav, pie, script) está en IlegatoShell.
 import IlegatoShell from '../../components/ilegato/IlegatoShell.astro';
 import StoreButtons from '../../components/ilegato/StoreButtons.astro';
+import Faq from '../../components/sections/Faq.astro';
+import DownloadCta from '../../components/sections/DownloadCta.astro';
+import Button from '../../components/ui/Button.astro';
+import { getApp } from '../../lib/apps';
+
+const app = getApp('ilegato');
 
 type Card = { span: number; c: string; d?: string; icon: string; title: string; text: string; extra?: string };
 const card = ({ c, d }: Card) => `--c:${c}` + (d ? `; --d:${d}` : '');
@@ -389,23 +395,16 @@ const icon = (d: string) => `<svg viewBox="0 0 24 24" fill="none" stroke="curren
           <p class="eyebrow reveal">Preguntas</p>
           <h2 class="split">Lo que <span class="grad">querrás saber.</span></h2>
         </div>
-        <div class="faq">
-          {FAQ.map(([q, a]) => <details class="reveal"><summary>{q}</summary><div class="answer" set:html={a} /></details>)}
-        </div>
+        <Faq items={FAQ} />
       </div>
     </section>
 
     <!-- ───────── Llamado final ───────── -->
-    <section class="section final" id="descargar" data-glow="#ec4899">
-      <div class="wrap">
-        <img class="icon-big" src="img/icon-512.png" alt="Ícono de iLegato" width="150" height="150">
-        <svg class="wavemark" viewBox="0 0 120 40" aria-hidden="true" style="margin:0 auto 24px;display:block"><path id="wavePath" d="M4 20 Q 19 4 34 20 T 64 20 T 94 20 T 116 20"/></svg>
-        <h2 class="split">Tu música merece <span class="grad">sonar así.</span></h2>
-        <p class="lead reveal">iLegato para iPhone, iPad, CarPlay, Android y Android Auto.</p>
-        <StoreButtons icons={false} delay="200ms">
-          <a class="btn btn-ghost magnetic" href="support.html">Soporte</a>
-        </StoreButtons>
-      </div>
-    </section>
+    <DownloadCta app={app} icon="img/icon-512.png" data-glow="#ec4899" title="Tu música merece" accent="sonar así."
+                 sub="iLegato para iPhone, iPad, CarPlay, Android y Android Auto.">
+      <svg slot="art" class="wavemark" viewBox="0 0 120 40" aria-hidden="true" style="margin:0 auto 24px;display:block"><path id="wavePath" d="M4 20 Q 19 4 34 20 T 64 20 T 94 20 T 116 20"/></svg>
+      <StoreButtons icons={false} bare />
+      <Button href="support.html" variant="ghost">Soporte</Button>
+    </DownloadCta>
   </main>
 </IlegatoShell>

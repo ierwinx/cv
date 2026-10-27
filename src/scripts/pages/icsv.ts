@@ -1,7 +1,8 @@
 // Página de iCSV: rejilla en vivo, sniffer de delimitadores, demo de fidelidad y confeti de delimitadores.
 import { $, $$ } from '../core/dom';
 import { reduceMotion as reduce, sleep } from '../core/motion';
-import { frameLoop } from '../core/loop';
+import { initNav } from '../core/nav';
+import { initGlyphs } from '../core/glyphs';
 import { confetti, toast } from '../core/celebrate';
 import { countUp as count } from '../core/counters';
 
@@ -10,46 +11,19 @@ import { countUp as count } from '../core/counters';
   /* ---- Headline word stagger ---- */
   $$("#headline .word").forEach((w, i) => w.style.animationDelay = (0.15 + i * 0.12) + "s");
 
-  /* ---- Nav + progress ---- */
-  const nav = $("#nav")!, progress = $("#progress")!;
+  /* ---- Nav (core/nav) + progreso ---- */
+  initNav();
+  initGlyphs();
+  const progress = $("#progress")!;
   const onScroll = () => {
     const h = document.documentElement;
     progress.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
-    nav.classList.toggle("scrolled", h.scrollTop > 20);
   };
   addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
   /* ---- Cursor glow ---- */
   const glow = $("#glow")!;
   addEventListener("pointermove", e => { glow.style.left = e.clientX + "px"; glow.style.top = e.clientY + "px"; }, { passive: true });
-
-  /* ---- Particles: floating delimiters ---- */
-  const pc = $<HTMLCanvasElement>("#particles")!, px = pc.getContext("2d")!;
-  const glyphs = [",", ";", "|", "⇥", "\"", ":"];
-  type Part = { x: number; y: number; s: number; v: number; g: string; a: number; r: number; vr: number; c: string };
-  let parts: Part[] = [], W = 0, H = 0;
-  const resize = () => {
-    W = pc.width = innerWidth * devicePixelRatio; H = pc.height = innerHeight * devicePixelRatio;
-    pc.style.width = innerWidth + "px"; pc.style.height = innerHeight + "px";
-    const n = Math.min(46, Math.floor(innerWidth / 30));
-    parts = Array.from({ length: n }, () => ({
-      x: Math.random() * W, y: Math.random() * H, s: (10 + Math.random() * 18) * devicePixelRatio,
-      v: (0.15 + Math.random() * 0.45) * devicePixelRatio, g: glyphs[Math.random() * glyphs.length | 0],
-      a: 0.05 + Math.random() * 0.12, r: Math.random() * 6.28, vr: (Math.random() - .5) * 0.01,
-      c: Math.random() < .25 ? "255,159,0" : "47,224,189"
-    }));
-  };
-  resize(); addEventListener("resize", resize);
-  const tick = (_: number, k: number) => {
-    px.clearRect(0, 0, W, H);
-    for (const p of parts) {
-      p.y -= p.v * k; p.r += p.vr * k; if (p.y < -40) { p.y = H + 40; p.x = Math.random() * W; }
-      px.save(); px.translate(p.x, p.y); px.rotate(p.r);
-      px.font = `700 ${p.s}px JetBrains Mono, monospace`; px.fillStyle = `rgba(${p.c},${p.a})`;
-      px.fillText(p.g, 0, 0); px.restore();
-    }
-  };
-  if (!reduce) frameLoop(tick, { fps: 30 });   // fondo lento: 30 fps se ven igual
 
   /* ---- Window tilt ---- */
   const win = $("#win")!;
@@ -251,7 +225,7 @@ import { countUp as count } from '../core/counters';
 
   /* ---- Download: ripple + confetti + toast ---- */
   const showToast = (msg: string) => toast(msg, { className: "show", ms: 3200, html: false });
-  $$(".js-download").forEach(b => b.addEventListener("click", e => {
+  $$("[data-download]").forEach(b => b.addEventListener("click", e => {
     const r = b.getBoundingClientRect();
     const rip = document.createElement("span"); const d = Math.max(r.width, r.height);
     rip.className = "ripple"; rip.style.width = rip.style.height = d + "px";

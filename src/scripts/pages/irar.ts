@@ -4,6 +4,9 @@ import { $, $$ } from '../core/dom';
 import { reduceMotion as reduced } from '../core/motion';
 import { frameLoop } from '../core/loop';
 import { countUp } from '../core/counters';
+import { initNav } from '../core/nav';
+import { initGlyphs } from '../core/glyphs';
+import { initMagnetic } from '../core/pointer';
 
 // Fondo «aurora»: manchas de color que se mueven despacio
 (() => {
@@ -41,13 +44,14 @@ import { countUp } from '../core/counters';
   frameLoop(draw, { fps: 30 });   // deriva lenta: 30 fps se ven igual
 })();
 
-// Barra de progreso, navegación compacta y brillo que sigue al cursor
+// Barra de progreso y brillo que sigue al cursor (la nav es la común: core/nav)
+initNav();
+initGlyphs();
 (() => {
-  const nav = $(".nav")!, bar = $(".progress span")!, glow = $(".cursor-glow")!;
+  const bar = $(".progress span")!, glow = $(".cursor-glow")!;
   const onScroll = () => {
     const max = document.documentElement.scrollHeight - innerHeight;
     bar.style.setProperty("--p", String(max > 0 ? scrollY / max : 0));
-    nav.classList.toggle("scrolled", scrollY > 30);
   };
   addEventListener("scroll", onScroll, { passive: true }); onScroll();
   addEventListener("pointermove", (e) => {
@@ -103,15 +107,6 @@ const animateCount = (el: HTMLElement) => countUp(el, {
     const r = el.getBoundingClientRect();
     el.style.setProperty("--gx", `${e.clientX - r.left}px`); el.style.setProperty("--gy", `${e.clientY - r.top}px`);
   }));
-  // Botones magnéticos
-  $$(".magnetic").forEach((el) => {
-    el.addEventListener("pointermove", (e) => {
-      const r = el.getBoundingClientRect();
-      el.style.setProperty("--mx", `${(e.clientX - r.left - r.width / 2) * 0.25}px`);
-      el.style.setProperty("--my", `${(e.clientY - r.top - r.height / 2) * 0.35}px`);
-    });
-    el.addEventListener("pointerleave", () => { el.style.setProperty("--mx", "0px"); el.style.setProperty("--my", "0px"); });
-  });
 })();
 
 // Texto que se «cifra» y descifra
@@ -232,3 +227,5 @@ function runDemo() {
   };
   loop();
 }
+
+initMagnetic();

@@ -2,10 +2,24 @@
 // iGit: diseño propio (Inter + Instrument Serif, terminal). Estilos en styles/pages/igit.css, comportamiento en scripts/pages/igit.ts.
 import AppPage from '../../layouts/AppPage.astro';
 import IgitDemo from '../../components/demos/IgitDemo.astro';
-import { downloadUrl, getApp } from '../../lib/apps';
+import Nav from '../../components/layout/Nav.astro';
+import Footer from '../../components/layout/Footer.astro';
+import Button from '../../components/ui/Button.astro';
+import DownloadButton from '../../components/ui/DownloadButton.astro';
+import GlyphField from '../../components/ui/GlyphField.astro';
+import Faq from '../../components/sections/Faq.astro';
+import DownloadCta from '../../components/sections/DownloadCta.astro';
+import { getApp } from '../../lib/apps';
 import '../../styles/pages/igit.css';
 
-const dl = downloadUrl(getApp('igit'));
+const app = getApp('igit');
+const FAQ: [string, string][] = [
+  ['¿Necesito dejar de usar git en la terminal?', '<p>No. iGit usa tu git real y tu configuración. Puedes alternar entre iGit y la línea de comandos cuando quieras: todo lo que haces en uno aparece al instante en el otro.</p>'],
+  ['¿Funciona en Terminal.app?', '<p>Sí, y con ratón. Se probó a fondo en Terminal.app de macOS; también funciona en cualquier terminal moderna con soporte de ratón SGR.</p>'],
+  ['¿Es seguro con mis credenciales?', '<p>iGit delega en git y en el Llavero de macOS. Las peticiones de contraseña llegan por un socket privado con token efímero y nunca se registran secretos.</p>'],
+  ['¿Puedo usarlo solo con teclado?', '<p>Todo funciona con ratón o con teclado, y cada control muestra su atajo. Pulsa <kbd>?</kbd> para la ayuda o <kbd>⌃P</kbd> para la paleta de comandos.</p>'],
+  ['¿Cuánto cuesta?', '<p>Es gratis para uso personal y no comercial (licencia PolyForm Noncommercial 1.0.0).</p>'],
+];
 ---
 <AppPage slug="igit" skipTo="top" htmlClass="no-js">
   <div class="progress" aria-hidden="true"></div>
@@ -14,24 +28,11 @@ const dl = downloadUrl(getApp('igit'));
   <div class="grain" aria-hidden="true"></div>
   <div class="spot" aria-hidden="true"></div>
 
-  <!-- ───────────── Navegación ───────────── -->
-  <header class="nav">
-    <a class="brand" href="#top" aria-label="iGit, inicio">
-      <img src="favicon.svg" alt="" width="28" height="28">
-      <span>iGit</span>
-    </a>
-    <nav class="links">
-      <a href="#features">Funciones</a>
-      <a href="#speed">Velocidad</a>
-      <a href="#keys">Teclado</a>
-      <a href="#safety">Seguridad</a>
-      <a href="#faq">FAQ</a>
-    </nav>
-    <button class="btn btn-small magnetic" data-download={dl}>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16"/></svg>
-      Descargar
-    </button>
-  </header>
+  <GlyphField app={app} />
+
+  <Nav app={app} links={[['#features', 'Funciones'], ['#speed', 'Velocidad'], ['#keys', 'Teclado'], ['#safety', 'Seguridad'], ['#faq', 'FAQ']]}>
+    <img slot="logo" src="favicon.svg" alt="" width="36" height="36">
+  </Nav>
 
   <main id="top">
     <!-- ───────────── Hero ───────────── -->
@@ -50,15 +51,14 @@ const dl = downloadUrl(getApp('igit'));
         Escrito en Swift 6, sin dependencias y con red de seguridad en cada paso.
       </p>
       <div class="cta reveal">
-        <button class="btn btn-primary magnetic" data-download={dl}>
-          <span class="shine"></span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16"/></svg>
+        <DownloadButton app={app}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16"/></svg>
           Descargar para macOS
-        </button>
-        <a class="btn btn-ghost magnetic" href="#demo">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        </DownloadButton>
+        <Button href="#demo" variant="ghost">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
           Verlo en acción
-        </a>
+        </Button>
       </div>
       <ul class="meta reveal">
         <li><span></span>macOS 15 o posterior</li>
@@ -336,46 +336,26 @@ igit <b>1.0.0</b>
     </section>
 
     <!-- ───────────── Descarga ───────────── -->
-    <section class="section download" id="download">
-      <div class="download-card reveal">
-        <div class="orbit" aria-hidden="true"><span></span><span></span><span></span></div>
-        <img class="download-logo" src="favicon.svg" alt="" width="88" height="88">
-        <h2>Tu próximo commit,<br><span class="gradient-text">más bonito.</span></h2>
-        <p class="lead center">Un binario universal para Apple Silicon e Intel, con su manual y autocompletado para zsh, bash y fish.</p>
-        <div class="cta">
-          <button class="btn btn-primary btn-big magnetic" data-download={dl}>
-            <span class="shine"></span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16"/></svg>
-            Descargar iGit 1.0.0
-          </button>
-        </div>
-      </div>
-    </section>
+    <DownloadCta app={app} icon="favicon.svg" title="Tu próximo commit," accent="más bonito."
+                 sub="Un binario universal para Apple Silicon e Intel, con su manual y autocompletado para zsh, bash y fish."
+                 requirements={['macOS 15 o posterior', 'Apple Silicon e Intel', 'Instalador .pkg', 'Gratis']}>
+      <div slot="bg"><div class="orbit"><span></span><span></span><span></span></div></div>
+      <DownloadButton app={app} size="lg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16"/></svg>
+        Descargar iGit {app.version}
+      </DownloadButton>
+      <Button href="support.html" variant="ghost" size="lg">Soporte</Button>
+    </DownloadCta>
 
     <!-- ───────────── FAQ ───────────── -->
     <section class="section faq" id="faq">
       <p class="eyebrow reveal">Preguntas frecuentes</p>
       <h2 class="reveal">Lo que todos <em class="serif">preguntan.</em></h2>
-      <div class="faq-list">
-        <details class="reveal"><summary>¿Necesito dejar de usar git en la terminal?</summary>
-          <p>No. iGit usa tu git real y tu configuración. Puedes alternar entre iGit y la línea de comandos cuando quieras: todo lo que haces en uno aparece al instante en el otro.</p></details>
-        <details class="reveal"><summary>¿Funciona en Terminal.app?</summary>
-          <p>Sí, y con ratón. Se probó a fondo en Terminal.app de macOS; también funciona en cualquier terminal moderna con soporte de ratón SGR.</p></details>
-        <details class="reveal"><summary>¿Es seguro con mis credenciales?</summary>
-          <p>iGit delega en git y en el Llavero de macOS. Las peticiones de contraseña llegan por un socket privado con token efímero y nunca se registran secretos.</p></details>
-        <details class="reveal"><summary>¿Puedo usarlo solo con teclado?</summary>
-          <p>Todo funciona con ratón o con teclado, y cada control muestra su atajo. Pulsa <kbd>?</kbd> para la ayuda o <kbd>⌃P</kbd> para la paleta de comandos.</p></details>
-        <details class="reveal"><summary>¿Cuánto cuesta?</summary>
-          <p>Es gratis para uso personal y no comercial (licencia PolyForm Noncommercial 1.0.0).</p></details>
-      </div>
+      <Faq items={FAQ} />
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="brand"><img src="favicon.svg" alt="" width="22" height="22"><span>iGit</span></div>
-    <p>Hecho con Swift en México por <a href="https://github.com/ierwinx" target="_blank" rel="noopener">Erwin</a> · © 2026 · <a href="/contacto/?app=igit">¿Problemas? Escríbeme</a></p>
-    <a href="#top" class="totop">Volver arriba ↑</a>
-  </footer>
+  <Footer app={app} giant tagline="Cliente de Git para la terminal, nativo de macOS. Hecho con Swift en México por Erwin." />
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <canvas id="confetti" aria-hidden="true"></canvas>
