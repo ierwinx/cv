@@ -7,6 +7,8 @@
      URL de producción en dist/.
   3. SEO: un solo bloque seo por página pública, con canonical, og:image y JSON-LD
      válido; /CV/ con noindex y fuera del sitemap.
+  4. CSP: todas las páginas llevan su Content-Security-Policy antes de cualquier script o
+     estilo, y la huella de cada script en línea está en ella (si no, el navegador lo bloquea).
 
 Sale con código 1 si algo falla, así que sirve igual en local y en CI.
 """
@@ -15,6 +17,9 @@ import os
 import re
 import subprocess
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from seo import script_hashes  # noqa: E402  (la misma regla con la que se generan)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST = os.path.join(ROOT, 'dist')
@@ -102,6 +107,22 @@ def check_seo(files):
                 errors.append(f'/{rel}: JSON-LD inválido')
 
 
+def check_csp(files):
+    for rel in sorted(f for f in files if f.endswith('.html')):
+        text = read(rel)
+        if text.count('<!-- csp:start') != 1:
+            errors.append(f'/{rel}: debe haber 1 bloque csp')
+            continue
+        policy = re.search(r'<meta http-equiv="Content-Security-Policy" content="([^"]*)"', text)
+        first = re.search(r'<(script|link|style)\b', text)
+        if not policy or (first and first.start() < policy.start()):
+            errors.append(f'/{rel}: la CSP debe ir antes de cualquier script o estilo')
+            continue
+        for h in script_hashes(text):
+            if h not in policy.group(1):
+                errors.append(f'/{rel}: un script en línea no está en la CSP ({h})')
+
+
 def main():
     if not os.path.isdir(DIST):
         sys.exit('No existe dist/: corre primero `npm run build`.')
@@ -109,10 +130,11 @@ def main():
     check_parity(files)
     site = check_local_urls(files)
     check_seo(files)
+    check_csp(files)
     if errors:
         print('\n'.join(errors))
         sys.exit(f'\n✗ {len(errors)} problema(s) en dist/ (SITE={site}).')
-    print(f'✓ dist/ correcto para {site}: {len(files)} archivos, URLs de {LEGACY} intactas, SEO completo.')
+    print(f'✓ dist/ correcto para {site}: {len(files)} archivos, URLs de {LEGACY} intactas, SEO y CSP completos.')
 
 
 if __name__ == '__main__':
