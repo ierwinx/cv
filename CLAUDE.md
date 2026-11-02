@@ -1,6 +1,6 @@
 # ierwinx.com
 
-Portafolio y landings de las apps de Erwin (iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iMount, iRar, iGit,
+Portafolio y landings de las apps de Erwin (iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iMount, iSyntonic, iRar, iGit,
 iTunes, iSpecter, iConverter), su CV privado y un curso de Python. Sitio **estático** en GitHub Pages
 (dominio `ierwinx.com`, repo público `ierwinx/cv`).
 
@@ -32,7 +32,7 @@ src/data/apps.json     FUENTE ÚNICA de cada app: nombre, versión, tamaño, rel
                        ícono, tema y `home` (subtítulo del menú, ícono de la home, «Nuevo»). Su orden es el de la home
                        También `glyphs` (símbolos/emojis que flotan en el fondo) y `theme.vars` (tokens de color)
 src/data/legal.json    datos REALES de cada app de Mac para /<slug>/privacy, terms y support (sacados de su repo:
-                       Info.plist, entitlements, red, dónde guarda datos, licencia, FAQ). Super Pets e iLegato tienen
+                       Info.plist, entitlements, red, dónde guarda datos, licencia, FAQ). Super Pets, iLegato e iSyntonic tienen
                        sus propias páginas
 src/data/home.json     textos de los spotlights de la home (lema, funciones, cifras, botones, colores)
 src/data/cv.json       CV en es/en: la página /CV/ (`web`) y la hoja PDF (`pdf`); los años se calculan al cargar
