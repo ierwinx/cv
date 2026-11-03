@@ -1,6 +1,6 @@
 # ierwinx.com
 
-Portafolio y landings de las apps de Erwin (iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iMount, iSyntonic, iRar, iGit,
+Portafolio y landings de las apps de Erwin (iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iMount, iSyntonic, iRar, WolfGit, iGit,
 iTunes, iSpecter, iConverter), su CV privado y un curso de Python. Sitio **estático** en GitHub Pages
 (dominio `ierwinx.com`, repo público `ierwinx/cv`).
 
@@ -186,6 +186,10 @@ tools/release.sh ibridge-v1.1 ~/Desarrollo/iBridge/build/iBridge-1.1.dmg   # req
 ```
 
 Después actualiza `release`, `version` y `size` en `apps.json`.
+
+**WolfGit se actualiza solo con Sparkle**: además del release, cada versión se agrega a su aviso de versiones
+`public/wolfgit/appcast.xml` con `python3 tools/appcast.py X.Y.Z <dmg> --firma '…' --notas "…"` (la firma la imprime
+`./build.sh` de WolfGit). Versiones siempre `X.Y.Z`; ver `~/Desarrollo/Git/WolfGit/docs/RELEASING.md`.
 
 **Música de prueba de iLegato** (`musicdemo.zip`, ~79 MB): la usan los revisores de Apple para probar iLegato.
 Vive en el release `ilegato-musicdemo` →

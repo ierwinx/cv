@@ -1,0 +1,198 @@
+---
+// WolfGit: cliente de Git nativo para Mac (hermano de iGit). Familia aurora; lo único propio son las capturas reales
+// de la app y el selector de temas sin JS (styles/pages/wolfgit.css).
+import AppLayout from '../../layouts/AppLayout.astro';
+import Footer from '../../components/layout/Footer.astro';
+import DownloadButton from '../../components/ui/DownloadButton.astro';
+import Button from '../../components/ui/Button.astro';
+import Icon from '../../components/ui/Icon.astro';
+import Hero from '../../components/sections/Hero.astro';
+import Marquee from '../../components/sections/Marquee.astro';
+import Section from '../../components/sections/Section.astro';
+import Bento from '../../components/sections/Bento.astro';
+import BentoCard from '../../components/sections/BentoCard.astro';
+import Steps from '../../components/sections/Steps.astro';
+import Principles from '../../components/sections/Principles.astro';
+import Faq from '../../components/sections/Faq.astro';
+import DownloadCta from '../../components/sections/DownloadCta.astro';
+import { getApp } from '../../lib/apps';
+import '../../styles/pages/wolfgit.css';
+
+const app = getApp('wolfgit');
+const IMG = '/wolfgit/img/';
+// Los cuatro pelajes del husky: cada tema cambia colores, lobito e icono de la app.
+const THEMES: [id: string, name: string, note: string][] = [
+  ['classic', 'Clásico', 'Gris y blanco, ojos azul hielo'],
+  ['snow', 'Nieve', 'Blanco y claro, para el día'],
+  ['copper', 'Cobre', 'Pelaje rojizo, tonos cálidos'],
+  ['midnight', 'Medianoche', 'Negro puro para pantallas OLED'],
+];
+---
+<AppLayout slug="wolfgit" stars
+  nav={[['#funciones', 'Funciones'], ['#imagenes', 'Imágenes'], ['#widget', 'Widget'], ['#temas', 'Temas'], ['#lobito', 'El lobito'], ['#preguntas', 'Preguntas']]}
+  toast="🐺 ¡Gracias por descargar WolfGit! Arrástralo a Aplicaciones y abre tu primer repositorio.">
+
+  <Hero icon={app.icon!} iconAlt="Ícono de WolfGit" pill={`WolfGit ${app.version} · nativo para macOS 27`}
+        title="Git nativo para Mac," accent="con su lobito."
+        meta={['Firmado y notarizado por Apple', 'Apple Silicon', 'Gratis para uso personal']}>
+    <Fragment slot="lead">Un cliente de Git <strong>nativo</strong>, hecho en SwiftUI: elige <strong>línea por línea</strong> qué entra en tu commit, compara <strong>imágenes lado a lado</strong>, recorre tu historial con las flechas y <strong>deshaz</strong> lo que no querías. Todo con tu git real y un husky que reacciona a lo que haces.</Fragment>
+    <Fragment slot="cta">
+      <DownloadButton app={app}><Icon name="apple" /> Descargar para macOS</DownloadButton>
+      <Button href="#funciones" variant="ghost">Ver qué hace <Icon name="arrow-down" /></Button>
+    </Fragment>
+    <div class="wg-stage reveal">
+      <figure class="wg-shot wg-hero" data-scroll-tilt>
+        <img src={`${IMG}cambios-classic.webp`} alt="WolfGit: pestaña Cambios con cinco archivos y el diff de RemoteSession.swift, con una casilla por línea" width="2080" height="1300">
+      </figure>
+    </div>
+  </Hero>
+
+  <Marquee items={['Commits por línea', 'Diff de imágenes', 'Diff dividido', 'Historial con archivos', 'Ramas y Pull Requests', 'Merge y rebase', 'Conflictos por bloque', 'Stash', 'Tags', 'Worktrees', 'Deshacer', 'GitHub · GitLab · Bitbucket', 'Paleta ⌘K', 'Widget de commits', 'Se actualiza solo', '4 temas husky']} />
+
+  <main id="contenido">
+    <Section id="funciones" flush eyebrow="funciones" title="Todo lo que haces con git." accent="Sin abrir la terminal."
+             sub="Dos zonas y nada más: a la izquierda tus archivos o tus commits, a la derecha el diff. Lo demás vive en menús, en el clic derecho o en la paleta ⌘K.">
+      <Bento>
+        <BentoCard span={4} title="Elige línea por línea qué entra en tu commit" icon='<path d="M4 6h16M4 12h10M4 18h7"/><path d="m15 16 2 2 4-4"/>'>
+          <Fragment slot="text">Marca archivos completos, bloques o líneas sueltas con su casilla. El commit dice exactamente lo que quieres que diga, y lo que no marcas se queda en tu árbol de trabajo.</Fragment>
+          <div class="wg-mini" aria-hidden="true">
+            <div class="ctx"><b>9</b><span>func send(_ key: RemoteKey) async throws {'{'}</span></div>
+            <div class="add on"><b>10</b><span>+   try await device.channel.write(key.code)</span></div>
+            <div class="add on"><b>11</b><span>+   if vibrates {'{'} await Haptics.tick() {'}'}</span></div>
+            <div class="add off"><b>12</b><span>+   print("debug")</span></div>
+          </div>
+        </BentoCard>
+        <BentoCard title="Nada destructivo sin red" bg="rgba(79,209,160,.14)" stroke="#9fe8c9" icon='<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>'>
+          <Fragment slot="text">Antes de descartar, hacer rebase o reset, WolfGit guarda una copia. <span class="kbd">⇧⌘Z</span> lo deshace.</Fragment>
+        </BentoCard>
+        <BentoCard title="Ratón o teclado" icon='<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>'>
+          <Fragment slot="text">Las flechas recorren archivos y commits; <span class="kbd">←</span> <span class="kbd">→</span> pasan entre paneles. Cada comando tiene su atajo.</Fragment>
+        </BentoCard>
+        <BentoCard title="Diffs que se leen solos" bg="rgba(255,127,166,.14)" stroke="#ffc2d4" icon='<path d="M8 4v16M16 4v16"/><path d="M4 8h4M16 16h4"/>'>
+          <Fragment slot="text">Resaltado de sintaxis, cambios por palabra dentro de cada línea y vista unificada o dividida con <span class="kbd">⇧⌘D</span>.</Fragment>
+        </BentoCard>
+        <BentoCard title="Conflictos sin miedo" icon='<circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M6 8c0 5 6 5 6 8M18 8c0 5-6 5-6 8"/>'>
+          <Fragment slot="text">Merge, rebase, cherry-pick y revert. Resuelve cada bloque eligiendo tu versión, la suya o las dos, y continúa.</Fragment>
+        </BentoCard>
+        <BentoCard span={3} title="GitHub, GitLab y Bitbucket" bg="rgba(169,214,255,.14)" stroke="#d3eaff" icon='<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'>
+          <Fragment slot="text">Agrega tus cuentas en Ajustes: GitHub con un código de dispositivo, GitLab y Bitbucket con un token. Revisa tus Pull Requests con su CI, haz checkout de uno (también de forks) y publica un repo nuevo con un botón.</Fragment>
+        </BentoCard>
+        <BentoCard span={3} title="Cada error trae su arreglo" bg="rgba(79,209,160,.14)" stroke="#9fe8c9" icon='<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>'>
+          <Fragment slot="text">¿Llave SSH rechazada, push rechazado, SSO o firma GPG? WolfGit te dice la causa en palabras y te ofrece el botón que lo arregla.</Fragment>
+        </BentoCard>
+        <BentoCard span={4} title="Todo el poder, cuando lo necesitas" icon='<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>'>
+          <Fragment slot="text">Lo avanzado no estorba: aparece en el menú Git, en el clic derecho de un commit o en la paleta.</Fragment>
+          <div class="wg-chips"><span>Stash</span><span>Amend</span><span>Deshacer commit</span><span>Squash</span><span>Reordenar commits</span><span>Tags</span><span>Worktrees</span><span>Coautores</span><span>Reset suave</span><span>Rama desde un commit</span><span>.gitignore</span><span>Clonar</span><span>Fetch de todos los repos</span><span>Español e inglés</span></div>
+        </BentoCard>
+        <BentoCard span={2} title="Suelta una carpeta" icon='<path d="M3 7h6l2 2h10v10H3z"/><path d="M12 12v5M9.5 14.5 12 17l2.5-2.5"/>'>
+          <Fragment slot="text">Arrastra a la ventana una o varias carpetas de tus proyectos y WolfGit las agrega a tu lista de repositorios.</Fragment>
+        </BentoCard>
+      </Bento>
+    </Section>
+
+    <Section id="imagenes" flush eyebrow="nuevo · diff de imágenes" title="Antes y después," accent="lado a lado."
+             sub="Elige un PNG, JPEG, GIF, WebP, HEIC o TIFF y WolfGit te muestra la versión anterior a la izquierda y la nueva a la derecha, con sus medidas y su peso. También en el historial.">
+      <figure class="wg-shot wg-wide reveal">
+        <img src={`${IMG}imagenes-classic.webp`} alt="Diff de imágenes de WolfGit: a la izquierda la captura anterior con el botón azul, a la derecha la nueva con el botón naranja y un teclado" width="2080" height="1300" loading="lazy">
+      </figure>
+      <ul class="wg-points reveal">
+        <li><b>Fondo de cuadros</b> para ver las transparencias.</li>
+        <li><b>«No existía» o «Eliminada»</b> cuando la imagen es nueva o se borró.</li>
+        <li><b>Cuánto cambió, de un vistazo</b>PNG · 1290 × 2796 · 512 KB → 498 KB</li>
+      </ul>
+    </Section>
+
+    <Section id="historial" flush center eyebrow="historial" title="Recorre tu historia" accent="con las flechas."
+             sub="A la izquierda los commits, en medio sus archivos y a la derecha el diff. ↑ ↓ recorren la lista; → y ← pasan de los commits a sus archivos y de vuelta.">
+      <figure class="wg-shot wg-wide reveal">
+        <img src={`${IMG}historial-classic.webp`} alt="Historial de WolfGit: lista de commits, columna de archivos del commit elegido y su diff" width="2080" height="1300" loading="lazy">
+      </figure>
+    </Section>
+
+    <Section id="widget" flush center eyebrow="nuevo · widget" title="Tus commits del mes," accent="en tu escritorio."
+             sub="Ponlo en el escritorio o en el Centro de notificaciones: cuántos commits llevas, tu racha, cómo vas contra el mes pasado y en qué repos trabajaste. El lobito celebra los buenos meses y se duerme si no hubo ninguno.">
+      <figure class="wg-widgets reveal">
+        <img src={`${IMG}widget-clasico.webp`} alt="Widget de WolfGit en sus tres tamaños: 90 commits en octubre, +32 % frente a septiembre, calendario del mes y commits por repositorio" width="1600" height="708" loading="lazy">
+      </figure>
+      <ul class="wg-points reveal">
+        <li><b>Tres tamaños</b>Pequeño, mediano y grande, con el calendario del mes.</li>
+        <li><b>Se viste con tu tema</b>Clásico, Nieve, Cobre o Medianoche, igual que la app.</li>
+        <li><b>Nada en segundo plano</b>Se actualiza cuando abres WolfGit y tras cada commit.</li>
+      </ul>
+    </Section>
+
+    <Section id="temas" flush center eyebrow="cuatro pelajes" title="Elige tu husky." accent="La app se viste igual."
+             sub="Cada tema cambia los colores, el pelaje del lobito y hasta el icono de la app en el Dock.">
+      <div class="wg-themes reveal">
+        {THEMES.map(([id], i) => <input type="radio" name="wg-theme" id={`wg-theme-${id}`} class="wg-theme-input" checked={i === 0}>)}
+        <div class="wg-theme-tabs" role="group" aria-label="Temas de WolfGit">
+          {THEMES.map(([id, name, note]) => (
+            <label for={`wg-theme-${id}`} class={`wg-theme-tab wg-tab-${id}`}>
+              <img src={`${IMG}icono-${id}.webp`} alt="" width="56" height="56" loading="lazy">
+              <span><b>{name}</b><small>{note}</small></span>
+            </label>
+          ))}
+        </div>
+        <div class="wg-theme-shots">
+          {THEMES.map(([id, name]) => (
+            <figure class={`wg-shot wg-theme-shot wg-shot-${id}`}>
+              <img src={`${IMG}cambios-${id}.webp`} alt={`WolfGit con el tema ${name}`} width="2080" height="1300" loading="lazy">
+            </figure>
+          ))}
+        </div>
+      </div>
+    </Section>
+
+    <Section id="lobito" flush eyebrow="el lobito" title="Un husky que vive" accent="en tu barra lateral."
+             sub="Camina, come, persigue su cola y aúlla de noche. Celebra tus commits, se preocupa cuando algo falla y se duerme cuando todo está al día.">
+      <div class="wg-duo">
+        <figure class="wg-shot reveal">
+          <img src={`${IMG}sin-cambios-classic.webp`} alt="Sin cambios por confirmar: el lobito duerme y dice «Todo al día en main»" width="2080" height="1300" loading="lazy">
+        </figure>
+        <ul class="wg-points wg-points--stack reveal">
+          <li><b>Reacciona a git:</b> un commit, un push o un conflicto cambian su ánimo.</li>
+          <li><b>Nunca estorba:</b> no intercepta clics y con la ventana inactiva no gasta CPU.</li>
+          <li><b>Modo tranquilo:</b> en Ajustes lo dejas reaccionar solo a git, sin vida propia.</li>
+          <li><b>Respeta «Reducir movimiento»</b> y los efectos de temporada se pueden apagar.</li>
+        </ul>
+      </div>
+    </Section>
+
+    <Section flush center eyebrow="red de seguridad" title="Experimenta." accent="Siempre hay vuelta atrás.">
+      <Steps items={[
+        ['Antes de descartar, guarda', 'Descartar cambios crea una copia en <code class="kbd">refs/wolfgit</code>, sin tocar tu stash ni tu índice.'],
+        ['Un respaldo por operación', 'Rebase, reset, squash y borrar ramas o tags dejan su copia para poder volver.'],
+        ['Deshacer con un atajo', '<span class="kbd">⇧⌘Z</span> restaura el último descarte o deshace un commit que aún no subiste.'],
+      ]} />
+    </Section>
+
+    <Section flush eyebrow="ingeniería" title="Hecho para el Mac." accent="Y para tus repos.">
+      <Principles items={[
+        ['Tu git, de verdad', 'Usa el git que tú instalaste (nunca el atajo de <code class="kbd">/usr/bin/git</code>), tu configuración, tus llaves SSH y tus hooks, aunque abras la app desde el Finder.'],
+        ['Rápido por diseño', 'Lanza git con <code class="kbd">posix_spawn</code>, lee en paralelo, escribe en orden y en reposo no consume CPU.'],
+        ['Credenciales en el Llavero', 'Los tokens viven cifrados en el Llavero de macOS y las contraseñas de git llegan por un socket privado. Nunca se registra un secreto.'],
+        ['Swift 6 y SwiftUI', 'App nativa para Apple Silicon, con arquitectura en capas que se verifica sola y cientos de pruebas con git real.'],
+      ]} />
+    </Section>
+
+    <Section id="preguntas" flush center eyebrow="preguntas" title="Antes de" accent="tu primer commit.">
+      <Faq items={[
+        ['¿Necesito dejar de usar git en la terminal?', 'No. WolfGit usa tu git real y tu configuración. Todo lo que haces en uno aparece al instante en el otro.'],
+        ['¿En qué se diferencia de iGit?', 'Son hermanos: iGit vive en la terminal y WolfGit es una app de Mac con ventana, diff de imágenes, temas y su lobito. Los dos usan tu git y la misma red de seguridad.'],
+        ['¿Qué cuentas puedo usar?', 'GitHub (con un código de dispositivo), GitLab (gitlab.com o tu propia instancia) y Bitbucket (con un token personal). Se agregan en Ajustes › Cuentas.'],
+        ['¿Funciona en Macs con Intel?', 'No. WolfGit está hecho solo para Macs con Apple Silicon (M1 o posterior) y macOS 27 o posterior.'],
+        ['¿Cómo se actualiza?', 'Solo: WolfGit busca una versión nueva cada día y te ofrece instalarla con un clic. También puedes buscarla en WolfGit › Buscar actualizaciones… Cada versión va firmada, y la app comprueba la firma antes de instalarla.'],
+        ['¿Por qué el widget no ve un commit que hice en la terminal?', 'El widget no ejecuta git ni deja nada corriendo con la app cerrada. Abre WolfGit y se pone al día en un momento.'],
+        ['¿Cuánto cuesta?', 'Es gratis para uso personal y no comercial (licencia PolyForm Noncommercial 1.0.0).'],
+      ]} />
+    </Section>
+
+    <DownloadCta app={app} eyebrow="abre tu repo" title="Tu próximo commit," accent="con compañía."
+                 sub="Descarga WolfGit, arrástralo a Aplicaciones y suelta la carpeta de tu proyecto en la ventana."
+                 requirements={['macOS 27 o posterior', 'Solo Apple Silicon', app.size!, 'Firmado con Developer ID', 'Notarizado por Apple']}>
+      <DownloadButton app={app}><Icon name="download" /> Descargar WolfGit {app.version} (.dmg)</DownloadButton>
+    </DownloadCta>
+  </main>
+
+  <Footer slot="footer" app={app} giant tagline="Git nativo para Mac, con un husky de compañía. Hecho con Swift en México por Erwin." />
+</AppLayout>
