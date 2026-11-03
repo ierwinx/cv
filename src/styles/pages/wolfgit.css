@@ -1,0 +1,70 @@
+/* WolfGit: lo exclusivo de su página. Capturas reales de la app (ya traen su propio marco de ventana de macOS),
+   la mini-diff del bento y el selector de temas, que funciona sin JS con radios y :checked. */
+
+/* Capturas: sombra y resplandor con los colores del tema; la ventana del hero se endereza al hacer scroll. */
+.wg-stage { perspective: 1600px; margin-top: 70px }
+.wg-shot { margin: 0; border-radius: 12px; box-shadow: 0 50px 120px -40px rgba(0, 0, 0, .9), 0 0 0 1px var(--line),
+  0 0 110px -30px color-mix(in srgb, var(--a1) 45%, transparent) }
+.wg-shot img { display: block; width: 100%; height: auto; border-radius: 12px }
+.wg-hero { max-width: 1040px; margin: 0 auto; transform: rotateX(14deg) scale(.96); transform-style: preserve-3d; transition: transform .2s ease-out }
+.wg-wide { max-width: 1040px; margin: 48px auto 0 }
+@media (prefers-reduced-motion: reduce) { .wg-hero { transform: none } }
+
+/* Widget: los tres tamaños sobre fondo transparente, sin marco propio. */
+.wg-widgets { max-width: 1040px; margin: 48px auto 0 }
+.wg-widgets img { display: block; width: 100%; height: auto; filter: drop-shadow(0 30px 60px rgba(0, 0, 0, .45)) }
+
+/* Tres puntos clave bajo una captura, o en columna al lado de ella. */
+.wg-points { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; max-width: 1040px; margin: 28px auto 0; padding: 0; list-style: none }
+.wg-points li { padding: 18px 20px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 15px }
+.wg-points b { display: block; color: var(--text); margin-bottom: 4px }
+.wg-points--stack { grid-template-columns: 1fr; margin: 0 }
+.wg-duo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: center; gap: clamp(24px, 4vw, 48px); margin-top: 48px }
+
+/* Mini-diff del bento: casillas por línea, la tachada se queda fuera del commit. */
+.wg-mini { margin-top: 18px; padding: 10px 0; border-radius: 14px; border: 1px solid var(--line); background: rgba(var(--panel-rgb), .7); font: 500 13px var(--mono); overflow-x: auto }
+.wg-mini div { display: flex; gap: 12px; padding: 3px 14px; white-space: pre }
+.wg-mini b { width: 22px; flex: none; text-align: right; color: var(--muted); font-weight: 500 }
+.wg-mini .add { color: var(--a2); background: color-mix(in srgb, var(--a2) 12%, transparent) }
+.wg-mini .add::before { content: "☑"; color: var(--a1) }
+.wg-mini .off::before { content: "☐"; color: var(--muted) }
+.wg-mini .off { opacity: .6 }
+.wg-mini .ctx::before { content: " "; width: 1ch }
+
+.wg-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px }
+.wg-chips span { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 13px; color: var(--text) }
+
+/* Temas: los radios van antes de las pestañas y de las capturas para que :checked ~ los alcance. */
+.wg-themes { max-width: 1040px; margin: 48px auto 0 }
+.wg-theme-input { position: absolute; opacity: 0; pointer-events: none }
+.wg-theme-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 28px; text-align: left }
+.wg-theme-tab { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 18px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; transition: border-color .2s, background .2s, transform .2s }
+.wg-theme-tab:hover { border-color: var(--line-2); transform: translateY(-2px) }
+.wg-theme-tab img { width: 48px; height: 48px; flex: none }
+.wg-theme-tab b { display: block; color: var(--text); font-size: 15px }
+.wg-theme-tab small { display: block; color: var(--muted); font-size: 12px; line-height: 1.35 }
+.wg-theme-shot { display: none }
+#wg-theme-classic:checked ~ .wg-theme-shots .wg-shot-classic,
+#wg-theme-snow:checked ~ .wg-theme-shots .wg-shot-snow,
+#wg-theme-copper:checked ~ .wg-theme-shots .wg-shot-copper,
+#wg-theme-midnight:checked ~ .wg-theme-shots .wg-shot-midnight { display: block; animation: wg-fade .35s ease-out }
+#wg-theme-classic:checked ~ .wg-theme-tabs .wg-tab-classic,
+#wg-theme-snow:checked ~ .wg-theme-tabs .wg-tab-snow,
+#wg-theme-copper:checked ~ .wg-theme-tabs .wg-tab-copper,
+#wg-theme-midnight:checked ~ .wg-theme-tabs .wg-tab-midnight { border-color: color-mix(in srgb, var(--a1) 70%, transparent); background: color-mix(in srgb, var(--a1) 14%, transparent) }
+#wg-theme-classic:focus-visible ~ .wg-theme-tabs .wg-tab-classic,
+#wg-theme-snow:focus-visible ~ .wg-theme-tabs .wg-tab-snow,
+#wg-theme-copper:focus-visible ~ .wg-theme-tabs .wg-tab-copper,
+#wg-theme-midnight:focus-visible ~ .wg-theme-tabs .wg-tab-midnight { outline: 2px solid var(--a1); outline-offset: 3px }
+@keyframes wg-fade { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+@media (prefers-reduced-motion: reduce) { .wg-theme-shot { animation: none !important } }
+
+@media (max-width: 900px) {
+  .wg-points { grid-template-columns: 1fr }
+  .wg-duo { grid-template-columns: 1fr }
+  .wg-theme-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+}
+@media (max-width: 520px) {
+  .wg-theme-tab small { display: none }
+  .wg-theme-tab img { width: 36px; height: 36px }
+}
