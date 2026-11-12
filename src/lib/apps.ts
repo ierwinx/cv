@@ -6,6 +6,7 @@ export type App = (typeof apps)[number] & {
   size?: string;               // tamaño del instalador, p. ej. "3.5 MB"
   install?: string;            // App Store (apps móviles)
   play?: string;               // Google Play; sin él, los botones dicen «Próximamente»
+  desktop?: { mac?: string; windows?: string; deb?: string; rpm?: string };   // instaladores de escritorio (URL); sin ellos, «Próximamente»
   home?: { tagline: string; logo: string; new?: boolean; round?: boolean };   // menú, órbita y dock de la home
   theme?: { color: string; fonts?: string; vars?: Record<string, string> };
   title?: string;
