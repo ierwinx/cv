@@ -1,6 +1,6 @@
 # ierwinx.com
 
-Portafolio y landings de las apps de Erwin (iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, iMount, iSyntonic, iRar, WolfGit, iGit,
+Portafolio y landings de las apps de Erwin (iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, La Baraja, iMount, iSyntonic, iRar, WolfGit, iGit,
 iTunes, iSpecter, iConverter), su CV privado y un curso de Python. Sitio **estático** en GitHub Pages
 (dominio `ierwinx.com`, repo público `ierwinx/cv`).
 
@@ -32,7 +32,7 @@ src/data/apps.json     FUENTE ÚNICA de cada app: nombre, versión, tamaño, rel
                        ícono, tema y `home` (subtítulo del menú, ícono de la home, «Nuevo»). Su orden es el de la home
                        También `glyphs` (símbolos/emojis que flotan en el fondo) y `theme.vars` (tokens de color)
 src/data/legal.json    datos REALES de cada app de Mac para /<slug>/privacy, terms y support (sacados de su repo:
-                       Info.plist, entitlements, red, dónde guarda datos, licencia, FAQ). Super Pets, iLegato e iSyntonic tienen
+                       Info.plist, entitlements, red, dónde guarda datos, licencia, FAQ). Super Pets, iLegato, iSyntonic y La Baraja tienen
                        sus propias páginas
 src/data/home.json     textos de los spotlights de la home (lema, funciones, cifras, botones, colores)
 src/data/cv.json       CV en es/en: la página /CV/ (`web`) y la hoja PDF (`pdf`); los años se calculan al cargar
@@ -40,11 +40,13 @@ src/data/site.json     marca, URL de producción, base de GitHub Releases, descr
 src/lib/apps.ts        getApp(slug), downloadUrl(app)
 src/lib/contact.ts     contactAttrs(): a dónde envía el formulario de contacto y si pide reCAPTCHA (al compilar)
 src/styles/            tokens.css (nombres canónicos) · base.css · effects.css (aurora, reveal, toast, keyframes)
+                       · devices.css (marcos de iPhone y iPad con capturas: iSyntonic y La Baraja)
 src/styles/pages/      lo que es exclusivo de una página (home.css, ilegato.css, cv.css…)
 src/layouts/           BaseLayout (head, favicon, fuentes, seasonal, «saltar al contenido») · AppPage (head de una
                        app desde apps.json, banner de App Store) · AppLayout (AppPage + tema, ambiente, nav y toast)
 src/components/layout  Ambient, Nav (la de Super Pets), Footer (columnas App/Legal y nombre gigante), Toast
-src/components/ui      Button (el de iLegato), DownloadButton, GlyphField (símbolos flotantes de iJson), Icon,
+src/components/ui      Button (el de iLegato), DownloadButton, StoreButtons (App Store y Google Play de una app, o
+                       «Próximamente»), GlyphField (símbolos flotantes de iJson), Icon,
                        ContactForm (formulario de contacto → micro Backierwinx)
 src/components/legal   LegalShell: documento de privacidad/términos/soporte de src/pages/[slug]/*.astro
 src/components/sections Hero, Marquee, Section, Bento/BentoCard, Steps, Stats, CompareTable, Principles, Faq, DownloadCta
@@ -52,7 +54,7 @@ src/components/mockups AppWindow (ventana 3D del hero)
 src/components/demos   <App>Demo.astro + <app>.css: demos que comparten la página de la app y la home
                        (IbridgeDemo también es la de iMount con variant="imount": las dos apps comparten interfaz)
 src/components/home    Spot (spotlight genérico), menú/órbita/dock (AppIcon, BrandMark) y los visuales propios de la home
-src/components/<app>   piezas de una sola app: SuperpetsShell, IlegatoShell + StoreButtons, cv/Resume
+src/components/<app>   piezas de una sola app: SuperpetsShell, IlegatoShell, cv/Resume
 src/scripts/init.ts    comportamiento común, activado por clases/atributos (ver abajo)
 src/scripts/core/      dom ($, $$, esc), motion (sleep, reduceMotion, whileVisible), loop (frameLoop), ambient,
                        reveal, counters (countUp, initCounters), pointer (tilt, magnetic), celebrate (confetti, toast),
@@ -186,6 +188,10 @@ tools/release.sh ibridge-v1.1 ~/Desarrollo/iBridge/build/iBridge-1.1.dmg   # req
 ```
 
 Después actualiza `release`, `version` y `size` en `apps.json`.
+
+**La Baraja** tiene varios instaladores de escritorio (DMG de Mac, MSI de Windows, DEB y RPM de Linux): sus URL van en
+`apps.json → desktop {mac, windows, deb, rpm}`; mientras falte una, su botón de `/labaraja/#plataformas` dice
+«Próximamente». Sus enlaces de tienda, en `install` (App Store) y `play` (Google Play).
 
 **WolfGit se actualiza solo con Sparkle**: además del release, cada versión se agrega a su aviso de versiones
 `public/wolfgit/appcast.xml` con `python3 tools/appcast.py X.Y.Z <dmg> --firma '…' --notas "…"` (la firma la imprime
