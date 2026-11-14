@@ -11,18 +11,24 @@ interface Props {
   title: string;      // primera línea del h1
   accent: string;     // segunda línea, en gradiente
   glitch?: boolean;   // efecto de interferencia sobre el remate
+  scramble?: boolean; // la primera línea se «descifra» como código al abrir (core/scramble)
   meta?: string[];
 }
-const { icon, iconAlt = '', badge = 'NUEVO', pill, title, accent, glitch = false, meta = [] } = Astro.props;
+const { icon, iconAlt = '', badge = 'NUEVO', pill, title, accent, glitch = false, scramble = false, meta = [] } = Astro.props;
 ---
 <header class="hero" id="top">
   <div class="wrap">
     {icon && <img class="hero-icon reveal" src={icon} alt={iconAlt} width="120" height="120">}
     <div class="pill reveal"><b>{badge}</b> {pill}</div>
-    <h1 class="reveal">{title}<br><span class:list={['grad-text', { glitch }]} data-text={glitch ? accent : undefined}>{accent}</span></h1>
+    <h1 class="reveal">{scramble ? <span class="scramble" data-text={title}>{title}</span> : title}<br><span class:list={['grad-text', { glitch }]} data-text={glitch ? accent : undefined}>{accent}</span></h1>
     <p class="lead reveal"><slot name="lead" /></p>
     <div class="cta reveal"><slot name="cta" /></div>
     {meta.length > 0 && <div class="meta reveal">{meta.map((m) => <span>{m}</span>)}</div>}
     <slot />
   </div>
 </header>
+<script>
+  // Sin `.scramble` en la página no hace nada.
+  import { initScramble } from '../../scripts/core/scramble';
+  initScramble();
+</script>
