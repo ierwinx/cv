@@ -3,6 +3,7 @@
 import { $, $$ } from '../core/dom';
 import { reduceMotion, sleep, whileVisible } from '../core/motion';
 import { initCounters } from '../core/counters';
+import { initGlyphs } from '../core/glyphs';
 import { initMagnetic } from '../core/pointer';
 import { initReveal } from '../core/reveal';
 import { mount as igit } from '../demos/igit';
@@ -32,6 +33,7 @@ for (const [selector, mount] of DEMOS) $$(selector).forEach(mount);
 $$('[data-since]').forEach((el) => { el.dataset.count = String(new Date().getFullYear() - +el.dataset.since!); });
 $$('.hero-title .word').forEach((w, i) => w.style.setProperty('--i', String(i)));
 requestAnimationFrame(() => document.body.classList.add('loaded'));
+initGlyphs();   // símbolos de código flotando en el fondo (home.json → glyphs)
 
 // ── Nav y barra de progreso ──
 (() => {
@@ -49,9 +51,19 @@ requestAnimationFrame(() => document.body.classList.add('loaded'));
   };
   addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
+  // Enlace activo según la sección visible (como core/nav.ts en las apps)
+  const anchors = $$<HTMLAnchorElement>('.nav-links > a[href^="#"]', nav);
+  const spy = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      anchors.forEach((a) => a.classList.toggle('is-active', a.getAttribute('href') === `#${e.target.id}`));
+    }
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  anchors.forEach((a) => { const s = document.getElementById(a.getAttribute('href')!.slice(1)); if (s) spy.observe(s); });
 })();
 
-// ── Menú «Apps»: se cierra al elegir; en teléfonos se abre con un toque ──
+// ── Menú «Apps»: se cierra al elegir; en pantallas táctiles se abre con un toque ──
 (() => {
   const dd = $('.dd')!, trigger = $('.dd-trigger', dd)!;
   $$('.dd-panel a', dd).forEach((link) => link.addEventListener('click', () => {
@@ -60,10 +72,11 @@ requestAnimationFrame(() => document.body.classList.add('loaded'));
     dd.classList.add('closing');
     setTimeout(() => dd.classList.remove('closing'), 600);
   }));
-  const phone = matchMedia('(max-width: 680px)');
+  // Con un toque en teléfonos y en pantallas sin hover (iPad); con el mouse se abre al pasar por encima
+  const tap = matchMedia('(max-width: 680px), (hover: none)');
   trigger.setAttribute('aria-expanded', 'false');
   trigger.addEventListener('click', (e) => {
-    if (!phone.matches) return;
+    if (!tap.matches) return;
     e.preventDefault();
     trigger.setAttribute('aria-expanded', String(dd.classList.toggle('open')));
   });

@@ -108,12 +108,6 @@ import { countUp as count } from '../core/counters';
   };
   if (!reduce) script();
 
-  /* ---- Marquee ---- */
-  const items = ["CSV", "TSV", "PSV", "UTF-8", "UTF-16 LE", "Windows-1252", "sep=;", "CRLF", "RFC 4180", "ISO-8859-1", "Mac Roman", "\\\"escape\\\"", "BOM", "DSV", "LF", "UTF-32", "CR"];
-  const track = $("#marquee")!;
-  const html = items.map((t, i) => `<span class="${i % 3 === 1 ? "alt" : ""}">${t}</span><span style="color:#ff9f00">✦</span>`).join("");
-  track.innerHTML = html + html;
-
   /* ---- Reveal + one-shot triggers ---- */
   const once = new Map<Element, () => void>();
   const io = new IntersectionObserver(es => es.forEach(e => {
