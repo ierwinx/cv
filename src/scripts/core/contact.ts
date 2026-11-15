@@ -1,4 +1,4 @@
-// Formulario de contacto → microservicio Backierwinx (FastAPI + Firestore en Render).
+// Formulario de contacto → Backierwinx (función Go en Cloud Run functions + Firestore).
 // La página decide al compilar (lib/contact.ts): data-api (a dónde enviar; vacío = envío simulado),
 // data-captcha (reCAPTCHA v2, solo producción) y data-origen (qué página lo envía).
 import { $$ } from './dom';
@@ -14,7 +14,7 @@ export const ES: ContactTexts = {
   captcha: 'Marca la casilla «No soy un robot».',
 };
 
-const TIMEOUT = 90_000;   // Render gratis tarda hasta un minuto en despertar
+const TIMEOUT = 30_000;   // igual al timeout de la función; normalmente responde en menos de 1 s
 
 let captchaLoaded = false;
 function loadCaptcha() {
@@ -46,12 +46,11 @@ export function initContactForm(form: HTMLFormElement, { texts = () => ES, onErr
     status.textContent = text;
   });
 
-  // Al acercarse a la pantalla carga reCAPTCHA y despierta el micro, que en Render gratis duerme tras 15 min
+  // Al acercarse a la pantalla carga reCAPTCHA
   const io = new IntersectionObserver(([e]) => {
     if (!e.isIntersecting) return;
     io.disconnect();
     if (captcha) loadCaptcha();
-    if (api) fetch(`${api}/salud`).catch(() => {});
   }, { rootMargin: '600px' });
   io.observe(form);
 

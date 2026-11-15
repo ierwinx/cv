@@ -147,16 +147,16 @@ Todo el sitio sale de Astro (`docs/REDISENO.md` §5, fases 0–7 hechas): ya no 
 ## Formulario de contacto
 
 **El sitio no publica ningún correo**: el contacto es un formulario que envía al microservicio
-`~/Desarrollo/Backierwinx` (FastAPI + Firestore en Render, URL en `site.json → contactApi`). Lo usan el CV (con su
+`~/Desarrollo/Backierwinx` (función Go en Cloud Run functions + Firestore, URL en `site.json → contactApi`). Lo usan el CV (con su
 propio marcado bilingüe) y, con `<ContactForm origen="…">`, el soporte de cada app (`origen` = slug), la página de
 eliminar cuenta de Super Pets, iConverter y `/contacto/`. El pie de cada app y sus páginas legales enlazan a
 `support.html#contacto`; la home y lo que no es de una app usan `/contacto/?app=<slug>` (muestra la app y la manda como
 `origen`).
 
 - Solo el build de producción envía y pide reCAPTCHA v2; en local el envío se simula (`console.info`).
-- Probar contra el micro local: `PUBLIC_CONTACT_API=http://localhost:8000 npm run dev` (sin reCAPTCHA).
+- Probar contra el micro local: `PUBLIC_CONTACT_API=http://localhost:8080 npm run dev` (sin reCAPTCHA).
 - El script de la página llama a `initContactForms()` (o `initContactForm(form, opciones)` en el CV). Al acercarse
-  el formulario a la pantalla carga reCAPTCHA y llama a `GET /salud` para despertar el micro (Render gratis duerme).
+  el formulario a la pantalla carga reCAPTCHA. La función solo acepta `POST` (ya no hay `GET /salud`).
 - `origen` identifica la página en Firestore (`cv`, `ilegato`, `superpets`, `superpets-eliminar-cuenta`, `iconverter`).
 
 ## SEO (`tools/seo.py`)
