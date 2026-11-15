@@ -41,6 +41,9 @@ const style = Object.entries(vars).map(([k, v]) => `${k}:${v}`).join(';');
 </head>
 <body class={bodyClass}>
 {skipTo && <a class="skip-link" href={`#${skipTo}`}>Saltar al contenido</a>}
+<!-- Cursor personalizado: un punto que sigue al ratón y cambia de color sobre enlaces y botones -->
+<div class="custom-cursor" id="custom-cursor"></div>
+<div class="custom-cursor--trail" id="custom-cursor-trail"></div>
 <slot />
 {seasonal && <script is:inline src="/assets/seasonal.js" defer></script>}
 <!-- Pausa las animaciones CSS de los bloques que no se ven (órbitas, brillos…): el navegador deja de
@@ -49,6 +52,36 @@ const style = Object.entries(vars).map(([k, v]) => `${k}:${v}`).join(';');
   (() => {
     const io = new IntersectionObserver((es) => { for (const e of es) e.target.toggleAttribute('data-offscreen', !e.isIntersecting); }, { rootMargin: '200px 0px' });
     document.querySelectorAll('body > :not(script):not(main), main > *').forEach((el) => io.observe(el));
+  })();
+</script>
+<!-- Cursor personalizado: anima el punto y el rastro que siguen al ratón. Inline para que funcione en todas las páginas. -->
+<script is:inline>
+  (() => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const cursor = document.getElementById('custom-cursor');
+    const trail = document.getElementById('custom-cursor-trail');
+    if (!cursor || !trail) return;
+    const HOVERABLES = 'a, button, [role="button"], [data-download], input, select, textarea, [tabindex]';
+    let mx = 0, my = 0, tx = 0, ty = 0;
+    document.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    });
+    const anim = () => {
+      tx += (mx - tx) * 0.15; ty += (my - ty) * 0.15;
+      trail.style.left = tx + 'px'; trail.style.top = ty + 'px';
+      requestAnimationFrame(anim);
+    };
+    anim();
+    const hover = (on) => (e) => {
+      const t = e.target.closest?.(HOVERABLES);
+      if (!t) return;
+      cursor.classList.toggle('custom-cursor--hover', on);
+      trail.classList.toggle('custom-cursor--trail--hover', on);
+    };
+    document.addEventListener('mouseover', hover(true));
+    document.addEventListener('mouseout', hover(false));
   })();
 </script>
 </body>

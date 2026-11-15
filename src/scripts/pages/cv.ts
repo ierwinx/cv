@@ -198,34 +198,6 @@ function initTopbarName() {
   new IntersectionObserver(([e]) => name.classList.toggle('visible', !e.isIntersecting)).observe(hero);
 }
 
-function initCursor() {
-  const cursor = $('#cursor');
-  const trail = $('#cursorTrail');
-  if (!cursor || !trail) return;
-  let mouseX = 0, mouseY = 0, trailX = 0, trailY = 0;
-  document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX; mouseY = e.clientY;
-    cursor.style.left = mouseX + 'px';
-    cursor.style.top = mouseY + 'px';
-  });
-  const animateTrail = () => {
-    trailX += (mouseX - trailX) * 0.15;
-    trailY += (mouseY - trailY) * 0.15;
-    trail.style.left = trailX + 'px';
-    trail.style.top = trailY + 'px';
-    requestAnimationFrame(animateTrail);
-  };
-  animateTrail();
-  // Delegación: también cubre las tarjetas que se regeneran al cambiar de idioma.
-  const hoverables = 'a, button, .cert-item, .project-card, .topbar-btn, .ref-toggle, .social-link, .form-submit';
-  const hover = (on: boolean) => (e: Event) => {
-    if (!(e.target as Element).closest?.(hoverables)) return;
-    cursor.classList.toggle('custom-cursor--hover', on);
-    trail.classList.toggle('custom-cursor--trail--hover', on);
-  };
-  document.addEventListener('mouseover', hover(true));
-  document.addEventListener('mouseout', hover(false));
-}
 
 /** Subtítulo del hero que se escribe y se borra solo. */
 function typeEffect() {
@@ -256,5 +228,4 @@ $('#langBtn')!.addEventListener('click', () => setLang(lang === 'en' ? 'es' : 'e
 $('#themeBtn')!.addEventListener('click', toggleTheme);
 initScrollTop();
 initTopbarName();
-initCursor();
 setTimeout(typeEffect, 600);
