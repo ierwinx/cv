@@ -9,7 +9,7 @@ export type Legal = {
   saves: string[];
   permissions: [title: string, text: string][];
   thirdParty?: string;
-  license?: 'gpl';                // por omisión, PolyForm Noncommercial 1.0.0
+  license?: 'gpl' | 'propietaria'; // por omisión, PolyForm Noncommercial 1.0.0; propietaria = código cerrado
   requirements: string;
   install?: 'pkg';                // por omisión, .dmg
   uninstall: string;
