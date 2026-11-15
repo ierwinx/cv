@@ -202,7 +202,8 @@ Después actualiza `release`, `version` y `size` en `apps.json`.
 **Música de prueba de iLegato** (`musicdemo.zip`, ~79 MB): la usan los revisores de Apple para probar iLegato.
 Va en el release `ilegato-musicdemo` →
 `https://github.com/ierwinx/descargas/releases/download/ilegato-musicdemo/musicdemo.zip`. Esa es la URL que va en las
-notas de revisión de App Store Connect. **Pendiente (15-nov-2026):** el archivo se borró y aún no se vuelve a subir.
+notas de revisión de App Store Connect (y de Google Play). Es *The Slip* de Nine Inch Nails (Creative Commons
+BY-NC-SA, la licencia va dentro del zip). La copia local está en `releases/musicdemo.zip`.
 Para cambiar el contenido: `tools/release.sh ilegato-musicdemo musicdemo.zip` (reemplaza el archivo, misma URL).
 
 `releases/` (ignorada por git) es solo una carpeta
