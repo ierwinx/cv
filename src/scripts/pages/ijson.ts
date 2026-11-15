@@ -173,12 +173,6 @@ if (!reduce && matchMedia("(pointer: fine)").matches) {
   win.parentElement!.addEventListener("pointerleave", () => { win.style.setProperty("--ry", "0deg"); win.style.setProperty("--rx", "0deg"); });
 }
 
-/* ---------- marquesina ---------- */
-const items: [Kind, string][] = [["object", "Objetos"], ["array", "Arreglos"], ["string", "Textos"], ["number", "Números exactos"], ["bool", "Booleanos"], ["null", "Nulos"],
-  ["object", "Árbol ⌘1"], ["string", "Texto ⌘2"], ["number", "100 MB en 0,42 s"], ["array", "Deshacer sin límite"], ["bool", "Validación en vivo"], ["null", "Cero dependencias"]];
-const strip = items.map(([k, l]) => `<span><span class="badge k-${k}">${BADGE[k]}</span>${l}</span>`).join("");
-$("#track")!.innerHTML = strip + strip;
-
 /* ---------- laboratorio de fidelidad ---------- */
 const LAB = `{
   "pedido": "A-1042",

@@ -126,13 +126,6 @@ type Opts = { cut?: number; nyq?: number; holes?: boolean };
     setInterval(() => { items[i].classList.remove("on"); i = (i + 1) % items.length; items[i].classList.add("on"); }, 2600);
   })();
 
-  // ─── Marquesina de formatos (duplicada para bucle continuo) ───
-  (function marquee() {
-    const fmts = ["FLAC", "ALAC", "WAV", "AIFF", "CAF", "MP3", "AAC", "M4A", "Opus", "Ogg Vorbis", "WavPack", "Monkey's Audio", "Musepack", "TTA", "Shorten", "DSD · DSF", "DFF", "W64", "RF64", "WMA", "WMA Lossless", "MKA", "MKV", "DTS", "TrueHD", "AC-3", "E-AC-3", "MP2", "TAK", "AU"];
-    const html = fmts.map((f) => `<span>${f}</span>`).join("");
-    $("#track")!.innerHTML = html + html;
-  })();
-
   // ─── Comparador antes/después ───
   (function compare() {
     const box = $("#compare")!, real = $<HTMLCanvasElement>("#cmpReal")!, lossy = $<HTMLCanvasElement>("#cmpLossy")!;

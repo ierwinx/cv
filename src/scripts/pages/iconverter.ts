@@ -97,13 +97,6 @@ if (finePointer && !reduce) {
   if (reduce) draw(0, 1); else frameLoop(draw, { fps: 30, visible: c });
 })();
 
-/* ── Marquee ── */
-(() => {
-  const items: [name: string, tag?: string, highlight?: boolean][] = [['FLAC', 'lossless', true], ['→'], ['M4A', 'AAC', true], ['WAV', 'lossless'], ['AIFF', 'lossless'], ['MP3', 'copia'], ['OGG', 'copia'], ['Opus', 'copia'], ['WMA', 'copia'], ['Apple Music', 'auto', true], ['320 kbps', 'máx']];
-  const html = items.map(([n, t, hl]) => `<div class="marquee-item${hl ? ' hl' : ''}">${n}${t ? `<em>${t}</em>` : ''}</div>`).join('');
-  $('#marquee')!.innerHTML = html + html;
-})();
-
 /* ── Botones magnéticos ── */
 if (finePointer) initMagnetic();
 

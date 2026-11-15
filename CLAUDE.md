@@ -49,7 +49,7 @@ src/components/ui      Button (el de iLegato), DownloadButton, StoreButtons (App
                        «Próximamente»), GlyphField (símbolos flotantes de iJson), Icon,
                        ContactForm (formulario de contacto → micro Backierwinx)
 src/components/legal   LegalShell: documento de privacidad/términos/soporte de src/pages/[slug]/*.astro
-src/components/sections Hero, Marquee, Section, Bento/BentoCard, Steps, Stats, CompareTable, Principles, Faq, DownloadCta
+src/components/sections Hero, Section, Bento/BentoCard, Steps, Stats, CompareTable, Principles, Faq, DownloadCta
 src/components/mockups AppWindow (ventana 3D del hero)
 src/components/demos   <App>Demo.astro + <app>.css: demos que comparten la página de la app y la home
                        (IbridgeDemo también es la de iMount con variant="imount": las dos apps comparten interfaz)
