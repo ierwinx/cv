@@ -180,8 +180,10 @@ eliminar cuenta de Super Pets, iConverter y `/contacto/`. El pie de cada app y s
 
 ## Descargas (.dmg / .pkg / .zip)
 
-**Nunca van en git.** Viven en **GitHub Releases** de `ierwinx/cv`, con un tag por app y versión (`ibridge-v1.0`,
-`igit-v1.0.0`…). El enlace sale de `apps.json → release {tag, file}`.
+**Nunca van en git.** Viven en **GitHub Releases** de `ierwinx/descargas` (`~/Desarrollo/Descargas`), un repo público con
+solo un README, con un tag por app y versión (`ibridge-v1.0`, `igit-v1.0.0`…). **Nunca en `ierwinx/cv`**: GitHub agrega a
+cada release un «Source code (zip)» con el código del repo, y aquí traería el sitio (y `cv.json`). El enlace sale de
+`site.json → releases` + `apps.json → release {tag, file}`.
 
 ```sh
 tools/release.sh ibridge-v1.1 ~/Desarrollo/iBridge/build/iBridge-1.1.dmg   # requiere gh (brew install gh)
@@ -198,9 +200,9 @@ Después actualiza `release`, `version` y `size` en `apps.json`.
 `./build.sh` de WolfGit). Versiones siempre `X.Y.Z`; ver `~/Desarrollo/Git/WolfGit/docs/RELEASING.md`.
 
 **Música de prueba de iLegato** (`musicdemo.zip`, ~79 MB): la usan los revisores de Apple para probar iLegato.
-Vive en el release `ilegato-musicdemo` →
-`https://github.com/ierwinx/cv/releases/download/ilegato-musicdemo/musicdemo.zip`. Esa es la URL que va en las
-notas de revisión de App Store Connect (antes era `https://ierwinx.com/ilegato/musicdemo.zip`, que ya no existe).
+Va en el release `ilegato-musicdemo` →
+`https://github.com/ierwinx/descargas/releases/download/ilegato-musicdemo/musicdemo.zip`. Esa es la URL que va en las
+notas de revisión de App Store Connect. **Pendiente (15-nov-2026):** el archivo se borró y aún no se vuelve a subir.
 Para cambiar el contenido: `tools/release.sh ilegato-musicdemo musicdemo.zip` (reemplaza el archivo, misma URL).
 
 `releases/` (ignorada por git) es solo una carpeta
