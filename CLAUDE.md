@@ -1,7 +1,7 @@
 # ierwinx.com
 
 Portafolio y landings de las apps de Erwin (iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, La Baraja, iMount, iSyntonic, iRar, WolfGit, iGit,
-iTunes, iSpecter, iConverter) y su CV privado. Sitio **estático** en GitHub Pages
+iTunes, iSpecter, iConverter, LiveWallpapers) y su CV privado. Sitio **estático** en GitHub Pages
 (dominio `ierwinx.com`, repo público `ierwinx/cv`).
 
 El plan completo y su porqué están en `docs/REDISENO.md`. Este archivo es la guía de trabajo.
@@ -64,7 +64,7 @@ src/scripts/core/      dom ($, $$, esc), motion (sleep, reduceMotion, finePointe
                        (onScrollProgress, initScrollProgress, initScrollVar, initNavScrolled), cursor (initCursorGlow),
                        counters (countUp, initCounters), pointer (tilt, initTilt, initMagnetic), celebrate (confetti,
                        toast), nav (initNav, initSectionSpy), contact (initContactForm, initContactForms)
-src/scripts/demos/     <app>.ts → export function mount(root)  (ibridge, ixml, igit, iconverter) · itunes/: tema,
+src/scripts/demos/     <app>.ts → export function mount(root)  (ibridge, ixml, igit, iconverter, livewallpapers) · itunes/: tema,
                        búfer de celdas, biblioteca y atajos de la TUI de iTunes (la usan /itunes/ y la home)
 src/scripts/home/      visuales de la home → mount(root) (editores, iTunes, espectrograma, iRar)
 src/scripts/pages/     el script de cada página con diseño propio (home.ts, itunes.ts, cv.ts…)
@@ -90,7 +90,7 @@ tools/                 seo.py, check_site.py, release.sh, indexnow.py, og-maker.
 - **Demos:** `mount(root)` busca todo dentro de `root` (nunca en `document`) y en cada vuelta hace
   `await visible()` (`whileVisible`), así no gastan CPU fuera de pantalla; con movimiento reducido pintan un cuadro
   fijo. Si la página de la app y la home muestran lo mismo, es **una sola demo** en `components/demos` +
-  `scripts/demos` (iGit, iConverter); lo que solo existe en la home va en `components/home` + `scripts/home`.
+  `scripts/demos` (iGit, iConverter, LiveWallpapers); lo que solo existe en la home va en `components/home` + `scripts/home`.
 - **Un script de entrada por página:** los componentes de demo de la home y los compartidos (IgitDemo,
   IconverterDemo) solo traen marcado y CSS; los monta el script de la página (`home.ts` tiene la lista `DEMOS`).
   Así una página carga 2–4 archivos JS. `scripts/core` va junto en un solo chunk `core` (`astro.config.mjs`).

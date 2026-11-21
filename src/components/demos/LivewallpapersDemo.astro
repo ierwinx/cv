@@ -1,0 +1,71 @@
+---
+// Demo de LiveWallpapers: escritorio de macOS con la ventana real de la app (carpeta, cuadrícula de videos y barra
+// inferior con sus botones), el menú de la barra y la pantalla de bloqueo. Los «videos» son escenas en CSS.
+// La anima scripts/demos/livewallpapers.ts; la monta el script de cada página (la de la app y la home).
+import './livewallpapers.css';
+
+// [escena, nombre del archivo, matiz opcional]: seis videos, tres columnas, como la ventana real.
+const SCENES: [cls: string, name: string, tint?: string][] = [
+  ['sunset', 'Atardecer'],
+  ['ocean', 'oceano_amanecer (02m15s)'],
+  ['aurora', 'Aurora boreal'],
+  ['city', 'ciudad_noche'],
+  ['sunset', 'montanas_noche', 'brightness(.62) saturate(1.25)'],
+  ['aurora', 'Nebulosa', 'hue-rotate(120deg)'],
+];
+const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3.5" fill="currentColor"/><path d="M10 8.5v7l6-3.5z" fill="var(--lw-menubar)"/></svg>';
+
+// Una escena: capas que se mueven solas con CSS (cielo, sol, montañas, olas, auroras, ciudad).
+const scene = (cls: string, tint?: string) => `<div class="lw-scene lw-scene--${cls}"${tint ? ` style="filter:${tint}"` : ''}><i class="lw-l1"></i><i class="lw-l2"></i><i class="lw-l3"></i><i class="lw-l4"></i></div>`;
+---
+<div class="lw-demo" data-lw role="img" aria-label="Simulación de LiveWallpapers: eliges un video y se vuelve el fondo del escritorio y de la pantalla de bloqueo">
+  <div class="lw-wall" data-lw-wall>
+    {SCENES.map(([cls, , tint], i) => <div class:list={['lw-layer', { on: i === 0 }]} set:html={scene(cls, tint)} />)}
+  </div>
+
+  <div class="lw-menubar">
+    <span class="lw-apple"></span><b>Finder</b><span>Archivo</span><span>Edición</span><span>Ver</span>
+    <span class="lw-right"><span class="lw-extra" data-lw-extra set:html={PLAY} /><span>sáb 21 nov 9:41</span></span>
+  </div>
+
+  <div class="lw-menu" data-lw-menu>
+    <div class="lw-mi lw-mi--dim">En escritorio: <span data-lw-current>Atardecer</span></div>
+    <div class="lw-mi">Detener video en escritorio</div>
+    <div class="lw-mi">Abrir LiveWallpapers…</div>
+    <hr>
+    <div class="lw-mi"><span class="lw-check">✓</span>Abrir al iniciar sesión</div>
+    <hr>
+    <div class="lw-mi">Salir <kbd>⌘Q</kbd></div>
+  </div>
+
+  <div class="lw-win" data-lw-win>
+    <div class="lw-title"><i></i><i></i><i></i><span>LiveWallpapers</span></div>
+    <div class="lw-tool">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <span class="lw-path">~/Movies/LiveWallpapers</span>
+      <span class="lw-btn">Cambiar carpeta…</span><span class="lw-btn">Recargar</span>
+    </div>
+    <div class="lw-grid">
+      {SCENES.map(([cls, name, tint], i) => (
+        <div class:list={['lw-card', { sel: i === 0 }]} data-lw-card>
+          <div class="lw-thumb" set:html={scene(cls, tint)} />
+          <span>{name}</span>
+        </div>
+      ))}
+    </div>
+    <div class="lw-foot">
+      <span class="lw-spin" data-lw-spin></span>
+      <span class="lw-status" data-lw-status>En escritorio: Atardecer</span>
+      <span class="lw-btn lw-btn--wide">Detener video en escritorio</span>
+      <span class="lw-btn lw-btn--main" data-lw-apply>Poner como fondo y pantalla de bloqueo</span>
+    </div>
+  </div>
+
+  <div class="lw-lock" data-lw-lock>
+    <span class="lw-date">sábado, 21 de noviembre</span>
+    <span class="lw-clock">9:41</span>
+    <span class="lw-pass">Ingresa la contraseña</span>
+  </div>
+
+  <span class="lw-cursor" data-lw-cursor></span>
+</div>
