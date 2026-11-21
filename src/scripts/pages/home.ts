@@ -11,6 +11,7 @@ import { initSectionSpy } from '../core/nav';
 import { initCursorGlow } from '../core/cursor';
 import { mount as igit } from '../demos/igit';
 import { mount as iconverter } from '../demos/iconverter';
+import { mount as livewallpapers } from '../demos/livewallpapers';
 import { mount as irar } from '../home/irar';
 import { mount as itunes } from '../home/itunes';
 import { mount as spectrogram } from '../home/spectrogram';
@@ -24,7 +25,7 @@ const root = document.documentElement;
 // ── Demos: cada visual de la home con su mount(root) ──
 const DEMOS: [selector: string, mount: (root: HTMLElement) => void][] = [
   ['[data-irar]', irar], ['[data-tui]', (tui) => igit(tui.parentElement!)], ['[data-itunes]', itunes],
-  ['.window--spec', spectrogram], ['[data-iconverter]', iconverter], ['.window--plist', plist],
+  ['.window--spec', spectrogram], ['[data-iconverter]', iconverter], ['[data-lw]', livewallpapers], ['.window--plist', plist],
   ['.window--json', json], ['.window--csv', csv], ['.window--xml', xml],
 ];
 for (const [selector, mount] of DEMOS) $$(selector).forEach(mount);
