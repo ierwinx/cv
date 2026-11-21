@@ -38,7 +38,7 @@ import { initMagnetic, tilt } from '../core/pointer';
                     frag.appendChild(/\s/.test(part) ? document.createTextNode(' ') : wrap(document.createTextNode(part)));
                 });
                 node.replaceWith(frag);
-            } else {
+            } else if (!(node instanceof Element && node.classList.contains('sr-only'))) {
                 // Un <em> con degradado se anima como una sola pieza para conservar el degradado
                 const placeholder = document.createComment('');
                 node.replaceWith(placeholder);
