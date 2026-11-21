@@ -18,13 +18,11 @@
 <div id="out">Generando…</div>
 <script>
 const W = 1200, H = 630;
-const PY = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path fill="#3776ab" d="M31.6 4c-14 0-13.1 6.1-13.1 6.1v6.3h13.3v1.9H13.2S4 17.2 4 31.7s8 14 8 14h4.8v-6.7s-.3-8 7.9-8h13.2s7.7.1 7.7-7.4V11.3S46.8 4 31.6 4zm-7.3 4.2a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8z"/><path fill="#ffd43b" d="M32.4 60c14 0 13.1-6.1 13.1-6.1v-6.3H32.2v-1.9h18.6S60 46.8 60 32.3s-8-14-8-14h-4.8v6.7s.3 8-7.9 8H26.1s-7.7-.1-7.7 7.4v12.3S17.2 60 32.4 60zm7.3-4.2a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"/></svg>`;
-const PY_URL = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(PY);
 
 const ICONS = {
   iplist: '/iplist/icon.png', ijson: '/ijson/app-icon.png', icsv: '/icsv/assets/icon.png', ixml: '/ixml/app-icon.png',
   superpets: '/superpets/img/app-icon.png', irar: '/irar/assets/icono-256.png', igit: '/igit/favicon.svg', itunes: '/itunes/favicon.svg',
-  ispecter: '/ispecter/assets/icon.png', iconverter: '/iconverter/assets/icon.png', ibridge: '/ibridge/app-icon.png', imount: '/imount/app-icon.png', isyntonic: '/isyntonic/img/icon-512.png', wolfgit: '/wolfgit/app-icon.png', labaraja: '/labaraja/img/icon-512.png', python: PY_URL
+  ispecter: '/ispecter/assets/icon.png', iconverter: '/iconverter/assets/icon.png', ibridge: '/ibridge/app-icon.png', imount: '/imount/app-icon.png', isyntonic: '/isyntonic/img/icon-512.png', wolfgit: '/wolfgit/app-icon.png', labaraja: '/labaraja/img/icon-512.png'
 };
 
 const CARDS = [
@@ -43,7 +41,6 @@ const CARDS = [
   { file: 'wolfgit.png',    icon: 'wolfgit',    c1: '#6bb8ff', c2: '#4fd1a0', name: 'WolfGit',    tag: ['Git con alma de Mac,', 'y un lobito de compañía.'], chips: ['macOS 27', 'Apple Silicon', 'GitHub · GitLab · Bitbucket', 'Gratis'], url: 'ierwinx.com/wolfgit' },
   { file: 'isyntonic.png',  icon: 'isyntonic',  c1: '#7329d0', c2: '#d7ff3e', name: 'iSyntonic',  tag: ['Tu TV,', 'en la palma de tu mano.'], chips: ['Google TV · Fire TV', 'iPhone · iPad', 'Gratis'], url: 'ierwinx.com/isyntonic' },
   { file: 'labaraja.png',   icon: 'labaraja',   c1: '#6c4bd1', c2: '#f5b841', name: 'La Baraja',  tag: ['La baraja española,', 'siempre a la mano.'], chips: ['7 juegos', 'Móvil · Tablet · Computadora', 'Gratis'], url: 'ierwinx.com/labaraja' },
-  { file: 'python.png',     icon: 'python',     c1: '#3776ab', c2: '#ffd43b', name: 'Curso de Python', tag: ['De cero a apps de escritorio,', 'webs con Django y APIs REST.'], chips: ['220 lecciones', 'En español', 'Gratis'], url: 'ierwinx.com/python', small: true }
 ];
 
 const load = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
@@ -112,9 +109,8 @@ async function appCard(card) {
   const S = 300, ix = 90, iy = (H - S) / 2;
   ctx.save();
   ctx.shadowColor = card.c1; ctx.shadowBlur = 90;
-  if (card.round || card.icon === 'python') { roundRect(ctx, ix, iy, S, S, S * 0.23); ctx.clip(); }
-  if (card.icon === 'python') { ctx.fillStyle = '#12121c'; ctx.fillRect(ix, iy, S, S); ctx.drawImage(icon, ix + 45, iy + 45, S - 90, S - 90); }
-  else ctx.drawImage(icon, ix, iy, S, S);
+  if (card.round) { roundRect(ctx, ix, iy, S, S, S * 0.23); ctx.clip(); }
+  ctx.drawImage(icon, ix, iy, S, S);
   ctx.restore();
 
   const tx = 470;

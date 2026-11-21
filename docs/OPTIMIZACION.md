@@ -70,7 +70,7 @@ reducido) antes y después, y el usuario lo valida. Ningún paso cambia el dise�
 
 ### 1.5 Imágenes y peso
 
-- `public/` pesa 60 MB (23 MB el curso). Certificados del CV en JPG de 1–3 MB (`html5.jpg` 2,9 MB,
+- `public/` pesa 60 MB. Certificados del CV en JPG de 1–3 MB (`html5.jpg` 2,9 MB,
   `Titulo.jpg` 2,8 MB). Íconos PNG de 921 KB (`superpets/img/app-icon.png`) y 583 KB (`ijson/app-icon.png`).
   Capturas de iTunes en PNG de 350–510 KB. Super Pets usa `.PNG` en mayúsculas.
 - **Ninguna imagen pasa por `astro:assets`**: no hay `width`/`height` en ~70 `<img>` (salto de diseño, CLS), ni
@@ -190,11 +190,34 @@ Recomendado: **A → C.1/C.2 → B (una página por commit) → G → E → D �
 
 ## 4. Seguimiento
 
-- [ ] A · `finePointer`, `onceVisible`, `initReveal` ampliado, `initScrollProgress`, `initCursorGlow`
-- [ ] C · keyframes con prefijo, `.reveal` único, `Grain`, hex fuera de componentes compartidos
-- [ ] B · iConverter · iGit · iCSV · iSpecter · iRar · iPlist · iJson · iTunes · Super Pets · iLegato · home · CV
-- [ ] G · imágenes con `astro:assets`, certificados, íconos, medición Lighthouse
-- [ ] E · legales de iLegato, iSyntonic, La Baraja y Super Pets en `[slug]`
-- [ ] D · `SectionHead`, `Window`, `Icon`, `PhoneGallery`, FAQ en todas, shells
-- [ ] F · TUI de iTunes compartida, versión de iGit desde `apps.json`
-- [ ] H · comprobaciones en `check_site.py`, `CLAUDE.md` actualizado
+Hecho el 21 de noviembre de 2026. Cada fase se comparó con capturas del sitio anterior (1440 y 390 px, movimiento
+reducido) y con una prueba de comportamiento sin movimiento reducido (reveals, contadores, foco, errores de consola).
+
+- [x] A · `core/motion` (`finePointer`, `coarsePointer`, `hoverPointer`), `core/reveal` (`initReveal` con
+  `className`/`group`/`delayVar`/`batchDelay`/`onEnter` y respaldo al volver a la pestaña; `onceVisible`),
+  `core/scroll` (`onScrollProgress`, `initScrollProgress`, `initScrollVar`, `initNavScrolled`), `core/cursor`
+  (`initCursorGlow`, con suavizado independiente de los fps), `core/pointer` (`tilt` con opciones), `initSectionSpy`.
+- [x] B · las 12 páginas propias usan `core`. iGit e iCSV toman la versión del aviso de descarga de `apps.json`
+  (`data-app-version`).
+- [x] C · keyframes con prefijo (no había choques reales en ninguna página, ahora no puede haberlos); `.reveal` único en
+  `document.css` con variables; `ui/Grain.astro` en las 8 páginas; paletas de las demos en variables `--ib-…`,
+  `--ic-…`, `--tui-…`, `--ix-…`. Se quitó una animación `dash` de iSpecter que no existía en su CSS.
+- [x] G · certificados del CV en WebP sin espacios (17 MB → 3,7 MB), capturas de Super Pets (9,6 → 1,5 MB) e iTunes
+  (miniatura de 1 400 px + original), íconos de página en WebP, favicon de 64 px y `apple-touch-icon` de 180 px para
+  las apps que usaban un PNG de 512, `width`/`height` en 59 `<img>`. No se usó `astro:assets`: muchas rutas las
+  leen el SEO, `apps.json`, scripts y `og-maker`; se convirtieron los archivos y se mantuvieron las URLs públicas
+  (`check_site.py` acepta `foto6.PNG` → `foto6.webp`). Falta: medir con Lighthouse.
+- [~] E · iLegato y Super Pets tienen diseño propio de páginas legales: unirlas a `[slug]` cambiaría su aspecto. Se
+  sacaron a componentes los bloques que se repiten en todas (`PrivacyOwner`, `PrivacyClosing`, `SupportContact`); el
+  HTML generado es idéntico.
+- [~] D · `Window` única (`mockups/Window.astro`, la de la home y la del hero); `Icon` como fuente del logo de Apple,
+  Google Play y la flecha de descarga (15 copias quitadas; StoreButtons e iSyntonic incluidos); capturas de Super
+  Pets declaradas una vez; FAQ en iJson, iPlist, iRar, iTunes, iXML (de `legal.json`) y Super Pets.
+  No se hizo `SectionHead`: cada página escribe sus encabezados con etiquetas y clases distintas y unificarlos
+  obliga a reescribir su CSS (cambia el diseño). Las ventanas hechas a mano de iJson, iPlist, iCSV e iConverter
+  siguen siendo propias por lo mismo. Los *shells* ya solo combinan `AppPage`, `Nav`, `Footer`, `GlyphField` y
+  `Grain`; un `AppShell` genérico no puede importar el script de cada página.
+- [x] F · TUI de iTunes en `scripts/demos/itunes/` (tema, búfer, biblioteca, atajos): la página y la home usan el
+  mismo código; `pages/itunes.ts` bajó de 1 397 a ~1 140 líneas.
+- [x] H · `check_site.py` revisa `src/`: keyframes sin prefijo, hex sueltos en componentes y reimplementaciones de
+  `core`. `CLAUDE.md` actualizado.

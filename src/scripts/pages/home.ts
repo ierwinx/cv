@@ -1,11 +1,14 @@
 // Home (/): nav, menú de apps, órbita del hero, rotador, color ambiente por sección, pestañas de los
 // editores, carrusel de capturas y dock. Es el único script de la página: también monta las demos.
 import { $, $$ } from '../core/dom';
-import { reduceMotion, sleep, whileVisible } from '../core/motion';
+import { finePointer, reduceMotion, sleep, whileVisible } from '../core/motion';
 import { initCounters } from '../core/counters';
 import { initGlyphs } from '../core/glyphs';
 import { initMagnetic } from '../core/pointer';
 import { initReveal } from '../core/reveal';
+import { initNavScrolled, initScrollProgress } from '../core/scroll';
+import { initSectionSpy } from '../core/nav';
+import { initCursorGlow } from '../core/cursor';
 import { mount as igit } from '../demos/igit';
 import { mount as iconverter } from '../demos/iconverter';
 import { mount as irar } from '../home/irar';
@@ -15,16 +18,14 @@ import { mount as plist } from '../home/plist';
 import { mount as json } from '../home/json';
 import { mount as csv } from '../home/csv';
 import { mount as xml } from '../home/xml';
-import { mount as academy } from '../home/academy';
 
-const finePointer = matchMedia('(pointer: fine)').matches;
 const root = document.documentElement;
 
 // ── Demos: cada visual de la home con su mount(root) ──
 const DEMOS: [selector: string, mount: (root: HTMLElement) => void][] = [
   ['[data-irar]', irar], ['[data-tui]', (tui) => igit(tui.parentElement!)], ['[data-itunes]', itunes],
   ['.window--spec', spectrogram], ['[data-iconverter]', iconverter], ['.window--plist', plist],
-  ['.window--json', json], ['.window--csv', csv], ['.window--xml', xml], ['#code', academy],
+  ['.window--json', json], ['.window--csv', csv], ['.window--xml', xml],
 ];
 for (const [selector, mount] of DEMOS) $$(selector).forEach(mount);
 
@@ -36,32 +37,10 @@ requestAnimationFrame(() => document.body.classList.add('loaded'));
 initGlyphs();   // símbolos de código flotando en el fondo (home.json → glyphs)
 
 // ── Nav y barra de progreso ──
-(() => {
-  const nav = $('#nav')!, progress = $('.progress')!;
-  let ticking = false;
-  const onScroll = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const max = root.scrollHeight - innerHeight;
-      progress.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
-      nav.classList.toggle('scrolled', scrollY > 30);
-      ticking = false;
-    });
-  };
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-  // Enlace activo según la sección visible (como core/nav.ts en las apps)
-  const anchors = $$<HTMLAnchorElement>('.nav-links > a[href^="#"]', nav);
-  const spy = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (!e.isIntersecting) continue;
-      anchors.forEach((a) => a.classList.toggle('is-active', a.getAttribute('href') === `#${e.target.id}`));
-    }
-  }, { rootMargin: '-45% 0px -50% 0px' });
-  anchors.forEach((a) => { const s = document.getElementById(a.getAttribute('href')!.slice(1)); if (s) spy.observe(s); });
-})();
+const nav = $('#nav')!;
+initScrollProgress($('.progress'));
+initNavScrolled(nav, 30, 'scrolled');
+initSectionSpy($$<HTMLAnchorElement>('.nav-links > a[href^="#"]', nav));
 
 // ── Menú «Apps»: se cierra al elegir; en pantallas táctiles se abre con un toque ──
 (() => {
@@ -89,11 +68,9 @@ initGlyphs();   // símbolos de código flotando en el fondo (home.json → glyp
 })();
 
 // ── Foco del cursor y paralaje de la órbita ──
-if (finePointer && !reduceMotion) {
+if (initCursorGlow({ fineOnly: true, respectReduce: true })) {
   const orbit = $('#orbit')!;
   addEventListener('pointermove', (e) => {
-    root.style.setProperty('--mx', e.clientX + 'px');
-    root.style.setProperty('--my', e.clientY + 'px');
     if (scrollY < innerHeight) {
       const x = e.clientX / innerWidth - 0.5, y = e.clientY / innerHeight - 0.5;
       orbit.style.transform = `rotateX(${y * -18}deg) rotateY(${x * 22}deg)`;
@@ -102,11 +79,7 @@ if (finePointer && !reduceMotion) {
 }
 
 // ── Aparición escalonada entre hermanos, contadores y botones magnéticos ──
-$$('.reveal').forEach((el) => {
-  const siblings = [...el.parentElement!.children].filter((c) => c.classList.contains('reveal'));
-  el.style.setProperty('--delay', Math.min(siblings.indexOf(el) * 80, 480) + 'ms');
-});
-initReveal('.reveal', { threshold: 0.12, rootMargin: '0px 0px -40px 0px', stagger: 0 });
+initReveal('.reveal', { threshold: 0.12, rootMargin: '0px 0px -40px 0px', group: true, stagger: 80, maxDelay: 480, delayVar: '--d' });
 initCounters();
 if (finePointer) initMagnetic();
 

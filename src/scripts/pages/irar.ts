@@ -1,12 +1,15 @@
 // Página de iRar: aurora en canvas, formatos en órbita y demo de compresión.
 // Los enlaces de descarga ya traen la URL de apps.json en el HTML.
 import { $, $$ } from '../core/dom';
-import { reduceMotion as reduced } from '../core/motion';
+import { coarsePointer, reduceMotion as reduced } from '../core/motion';
 import { frameLoop } from '../core/loop';
 import { countUp } from '../core/counters';
 import { initNav } from '../core/nav';
 import { initGlyphs } from '../core/glyphs';
-import { initMagnetic } from '../core/pointer';
+import { initMagnetic, tilt } from '../core/pointer';
+import { initReveal } from '../core/reveal';
+import { onScrollProgress } from '../core/scroll';
+import { initCursorGlow } from '../core/cursor';
 
 // Fondo «aurora»: manchas de color que se mueven despacio
 (() => {
@@ -47,17 +50,9 @@ import { initMagnetic } from '../core/pointer';
 // Barra de progreso y brillo que sigue al cursor (la nav es la común: core/nav)
 initNav();
 initGlyphs();
-(() => {
-  const bar = $(".progress span")!, glow = $(".cursor-glow")!;
-  const onScroll = () => {
-    const max = document.documentElement.scrollHeight - innerHeight;
-    bar.style.setProperty("--p", String(max > 0 ? scrollY / max : 0));
-  };
-  addEventListener("scroll", onScroll, { passive: true }); onScroll();
-  addEventListener("pointermove", (e) => {
-    glow.style.setProperty("--x", `${e.clientX}px`); glow.style.setProperty("--y", `${e.clientY}px`);
-  }, { passive: true });
-})();
+const progressBar = $(".progress span")!;
+onScrollProgress((p) => progressBar.style.setProperty("--p", String(p)));
+initCursorGlow({ el: $<HTMLElement>(".cursor-glow")!, x: "--x", y: "--y" });
 
 // Contadores animados: data-decimals y data-suffix, formato es-MX
 const animateCount = (el: HTMLElement) => countUp(el, {
@@ -66,48 +61,22 @@ const animateCount = (el: HTMLElement) => countUp(el, {
 });
 
 // Aparición al hacer scroll (con escalonado por grupo)
-(() => {
-  const groups = new Map<Element | null, number>();
-  $$(".reveal").forEach((el) => {
-    const parent = el.parentElement; const index = groups.get(parent) || 0;
-    el.style.setProperty("--d", `${Math.min(index, 6) * 0.08}s`); groups.set(parent, index + 1);
-  });
-  const show = (el: HTMLElement) => {
-    if (el.classList.contains("visible")) return;
-    el.classList.add("visible");
+initReveal(".reveal", {
+  className: "visible", threshold: 0.18, group: true, stagger: 80, maxIndex: 6, delayVar: "--d",
+  onEnter: (el) => {
     $$("[data-count]", el).forEach(animateCount);
     $$(".meter-bar i", el).forEach((i) => { i.style.width = `${i.dataset.width}%`; });
     if (el.id === "race") runRace();
     if (el.id === "terminal") typeTerminal();
     if (el.id === "demo") runDemo();
-    if (el.classList.contains("shield")) el.classList.add("visible");
-  };
-  const observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) if (entry.isIntersecting) { show(entry.target as HTMLElement); observer.unobserve(entry.target); }
-  }, { threshold: 0.18 });
-  $$(".reveal").forEach((el) => observer.observe(el));
-  // Safety net: if the observer is late (background tab, old browser), show what is already on screen.
-  setInterval(() => $$(".reveal:not(.visible)").forEach((el) => {
-    const r = el.getBoundingClientRect();
-    if (r.top < innerHeight && r.bottom > 0) show(el);
-  }), 1500);
-})();
+  },
+});
 
 // Inclinación 3D y brillo en tarjetas
-(() => {
-  if (reduced || matchMedia("(pointer: coarse)").matches) return;
-  $$(".tilt").forEach((el) => {
-    el.addEventListener("pointermove", (e) => {
-      const r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
-      el.style.transform = `perspective(900px) rotateX(${-py * 10}deg) rotateY(${px * 12}deg) translateZ(0)`;
-    });
-    el.addEventListener("pointerleave", () => { el.style.transform = ""; });
-  });
-  $$("[data-glow]").forEach((el) => el.addEventListener("pointermove", (e) => {
-    const r = el.getBoundingClientRect();
-    el.style.setProperty("--gx", `${e.clientX - r.left}px`); el.style.setProperty("--gy", `${e.clientY - r.top}px`);
-  }));
-})();
+if (!reduced && !coarsePointer) {
+  $$(".tilt").forEach((el) => tilt(el, { degX: 10, degY: 12, x: null, y: null, extra: "translateZ(0)" }));
+  $$("[data-glow]").forEach((el) => tilt(el, { rotate: false, x: "--gx", y: "--gy", unit: "px" }));
+}
 
 // Texto que se «cifra» y descifra
 (() => {
@@ -196,7 +165,8 @@ function runDemo() {
   const name = $("#demo-name")!, kind = $("#demo-kind")!, sel = $("#demo-sel")!, comp = $("#demo-comp")!, extract = $("#demo-extract")!;
   const status = $("#demo-op")!, op = $("#demo-op-text")!, bar = $("#demo-bar")!, pct = $("#demo-pct")!, tool = $("#demo-tool-add")!;
   let list: Item[] = [];
-  const sleep = (ms: number) => new Promise((r) => setTimeout(r, reduced ? 0 : ms));
+  // Como core/sleep, pero sin esperas con movimiento reducido
+  const pause = (ms: number) => new Promise((r) => setTimeout(r, reduced ? 0 : ms));
   const rowHTML = (f: Item) => `${'<span class="nm">'}${f.dir ? FOLDER : DOC}<span>${f.name}</span></span><span>${f.dir ? "—" : fmt(f.mb)}</span><span>${f.dir ? "—" : fmt(f.comp)}</span>`;
   const summary = () => {
     const mb = list.reduce((t, f) => t + f.mb, 0);
@@ -224,10 +194,10 @@ function runDemo() {
   // Barra de estado: indicador, título, progreso, porcentaje y Cancelar; al terminar, palomita verde y mensaje
   const work = async (label: string, ms: number) => {
     status.classList.add("on"); status.classList.remove("done"); op.textContent = label;
-    for (let i = 0; i <= 20; i++) { bar.style.width = `${i * 5}%`; pct.textContent = `${i * 5} %`; await sleep(ms / 20); }
+    for (let i = 0; i <= 20; i++) { bar.style.width = `${i * 5}%`; pct.textContent = `${i * 5} %`; await pause(ms / 20); }
   };
   const done = (message: string) => { status.classList.add("done"); op.textContent = message; };
-  const press = async (el: Element) => { el.classList.add("hit"); await sleep(260); el.classList.remove("hit"); };
+  const press = async (el: Element) => { el.classList.add("hit"); await pause(260); el.classList.remove("hit"); };
   const flyOut = (row: Element) => {
     if (reduced) return;
     const from = row.getBoundingClientRect(), box = demo.getBoundingClientRect();
@@ -241,16 +211,16 @@ function runDemo() {
     }
   };
   const loop = async () => {
-    show(); await sleep(1500);
-    select(4); await sleep(900);
-    await work("Preparando vista previa…", 900); done("Vista previa de informe-2026.pdf"); await sleep(1300);
-    select(6); await sleep(700); await press(extract);
-    flyOut(rows.children[6]); await work("Extrayendo 1 elemento…", 1300); done("1 elemento extraído en Descargas"); await sleep(1300);
+    show(); await pause(1500);
+    select(4); await pause(900);
+    await work("Preparando vista previa…", 900); done("Vista previa de informe-2026.pdf"); await pause(1300);
+    select(6); await pause(700); await press(extract);
+    flyOut(rows.children[6]); await work("Extrayendo 1 elemento…", 1300); done("1 elemento extraído en Descargas"); await pause(1300);
     select(null); await press(tool);
     await work("Añadiendo 1 elemento a Proyecto-final.7z…", 1100); await work("Verificando el 7z antes de reemplazarlo…", 900);
     list.push(added);
     const row = document.createElement("div"); row.className = "mac-row"; row.innerHTML = rowHTML(added); rows.appendChild(row);
-    summary(); select(list.length - 1); done("Proyecto-final.7z actualizado y verificado"); await sleep(2800);
+    summary(); select(list.length - 1); done("Proyecto-final.7z actualizado y verificado"); await pause(2800);
     if (!reduced) loop();
   };
   loop();

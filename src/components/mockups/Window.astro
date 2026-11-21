@@ -1,0 +1,22 @@
+---
+// Ventana de macOS, la única del sitio. Dos variantes:
+//   bar  (por omisión): barra con semáforo y título (`title` o slot "title"); el contenido va en el slot. La usa la home.
+//   hero: marco de la demo del hero en las páginas aurora, dentro de su escenario; se endereza al hacer scroll
+//         ([data-scroll-tilt]). Va con mockups/window.css: úsala con AppWindow.astro, que importa ese CSS.
+interface Props {
+  class?: string;
+  variant?: 'bar' | 'hero';
+  title?: string;
+  id?: string;
+  label?: string;       // hero: descripción para lectores de pantalla
+}
+const { class: cls, variant = 'bar', title, id, label } = Astro.props;
+---
+{variant === 'hero'
+  ? <div class="stage reveal">
+      <div class:list={['window', cls]} id={id} data-scroll-tilt aria-label={label} role="img"><slot /></div>
+    </div>
+  : <div class:list={['window', cls]} id={id}>
+      <div class="window-bar"><i></i><i></i><i></i>{(title || Astro.slots.has('title')) && <span><slot name="title">{title}</slot></span>}</div>
+      <slot />
+    </div>}

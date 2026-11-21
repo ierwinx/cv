@@ -3,10 +3,53 @@
 import SuperpetsShell from '../../components/superpets/SuperpetsShell.astro';
 import Button from '../../components/ui/Button.astro';
 import DownloadCta from '../../components/sections/DownloadCta.astro';
+import Faq from '../../components/sections/Faq.astro';
+import { FAQ } from '../../components/superpets/faq';
 import { getApp } from '../../lib/apps';
+import Icon from '../../components/ui/Icon.astro';
 
 const app = getApp('superpets');
 const install = app.install!;
+// Capturas (public/superpets/img/fotoN.webp): tamaño real, para width/height. Se declaran una vez y alimentan el
+// teléfono del hero, el recorrido y la galería.
+const SHOTS: Record<string, [number, number]> = {
+  foto1: [800, 1739],
+  foto2: [460, 996],
+  foto3: [800, 1739],
+  foto4: [800, 1739],
+  foto5: [800, 1739],
+  foto6: [800, 1739],
+  foto7: [800, 1739],
+  foto8: [800, 1739],
+  foto9: [800, 1739],
+  foto10: [460, 996],
+  foto11: [460, 996],
+  foto12: [460, 996],
+};
+const TOUR = [
+  { shot: 'foto2', alt: 'Lista de mascotas', title: 'Toda tu manada', text: 'Agrega tantas mascotas como necesites. Cada una tiene su propio perfil con fotos, cartilla de vacunación y toda su información independiente.' },
+  { shot: 'foto3', alt: 'Editar mascota', title: 'Perfiles a detalle', text: 'Tipo, raza, fecha de nacimiento, peso y foto. Todo lo importante de cada compañero en un solo perfil.' },
+  { shot: 'foto4', alt: 'Recetas médicas', title: 'Ninguna toma olvidada', text: 'Registra medicamentos con su dosis, frecuencia y duración. El modo estricto te avisa incluso de madrugada.' },
+  { shot: 'foto6', alt: 'Mapa de servicios', title: 'El mundo pet-friendly', text: 'Parques, veterinarias, hospitales, entrenadores, guarderías, tiendas, restaurantes y cafeterías cerca de ti.' },
+  { shot: 'foto11', alt: 'Gráficas de paseos', title: 'Cada paseo cuenta', text: 'Gráficas semanales de duración y distancia por día para ver cuánto caminan tus perros, con el total de paseos, minutos y kilómetros de la semana.' },
+  { shot: 'foto12', alt: 'Clicker de entrenamiento', title: 'Entrena como se debe', text: 'Un clicker de entrenamiento siempre a la mano. Úsalo justo cuando tu mascota haga algo bien: click + premio = aprendizaje rápido.' },
+  { shot: 'foto7', alt: 'Temas', title: 'Hazla tuya', text: '37 temas personalizables: adaptables, claros, oscuros y especiales con degradados. Del clásico Nebular a Aurora, Océano o Galaxia.' },
+  { shot: 'foto10', alt: 'Logros', title: 'Cuidar también se gana', text: 'Desbloquea 22 logros mientras cuidas a tu mascota y suma puntos hasta llegar a los 1,000.' },
+];
+const GALLERY: [shot: string, alt: string, caption: string][] = [
+  ['foto9', 'Inicio de sesión', 'Inicio de sesión'],
+  ['foto1', 'Inicio', 'Inicio'],
+  ['foto2', 'Mascotas', 'Mascotas'],
+  ['foto3', 'Detalle de mascota', 'Detalle de mascota'],
+  ['foto4', 'Recetas', 'Recetas'],
+  ['foto5', 'Editar receta', 'Editar receta'],
+  ['foto6', 'Mapas', 'Mapas'],
+  ['foto11', 'Gráficas de paseos', 'Gráficas de paseos'],
+  ['foto12', 'Clicker', 'Clicker'],
+  ['foto7', 'Temas', 'Temas'],
+  ['foto8', 'Perfil', 'Perfil'],
+  ['foto10', 'Logros', 'Logros'],
+];
 ---
 <SuperpetsShell variant="home">
 <!-- ── HERO ────────────────────────────── -->
@@ -18,7 +61,7 @@ const install = app.install!;
             <p class="hero-lead reveal" style="--d:.35s">Vacunas, recetas, cumpleaños, veterinarias cercanas y mucho más. Super Pets te ayuda a ser el mejor dueño para tus compañeros peludos.</p>
             <div class="hero-actions reveal" style="--d:.5s">
                 <Button href={install} ring external>
-                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 21.99 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09997 21.99C7.78997 22.03 6.79997 20.68 5.95997 19.47C4.24997 17 2.93997 12.45 4.69997 9.39C5.56997 7.87 7.12997 6.91 8.81997 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+                    <Icon name="apple" />
                     <span class="store-label"><small>Descárgala en el</small>App Store</span>
                 </Button>
                 <Button href="#features" variant="ghost">Explorar funciones <span aria-hidden="true">→</span></Button>
@@ -32,13 +75,13 @@ const install = app.install!;
             <div class="orbit orbit--1" aria-hidden="true"></div>
             <div class="orbit orbit--2" aria-hidden="true"></div>
             <div class="phone phone--back phone--left" data-depth="0.5">
-                <img src="img/foto2.PNG" alt="Lista de mascotas" decoding="async">
+                <img src="img/foto2.webp" width="460" height="996" alt="Lista de mascotas" decoding="async">
             </div>
             <div class="phone phone--back phone--right" data-depth="0.5">
-                <img src="img/foto10.PNG" alt="Sistema de logros" decoding="async">
+                <img src="img/foto10.webp" width="460" height="996" alt="Sistema de logros" decoding="async">
             </div>
             <div class="phone phone--front" data-depth="1">
-                <img src="img/foto1.PNG" alt="Pantalla de inicio celebrando un cumpleaños" decoding="async">
+                <img src="img/foto1.webp" width="800" height="1739" alt="Pantalla de inicio celebrando un cumpleaños" decoding="async">
             </div>
             <div class="chip chip--1" data-depth="1.6"><span>💉</span><div><b>Vacuna antirrábica</b><small>Mañana · 10:00</small></div></div>
             <div class="chip chip--2" data-depth="1.9"><span>🎂</span><div><b>¡Caramelo cumple 8!</b><small>Hoy</small></div></div>
@@ -91,7 +134,7 @@ const install = app.install!;
                 <div class="card-icon">💊</div>
                 <h3>Recetas médicas</h3>
                 <p>Controla medicamentos con dosis, frecuencia y duración. Recibe notificaciones puntuales para no olvidar ninguna toma.</p>
-                <div class="notif" aria-hidden="true"><img src="img/app-icon.png" alt=""><div><b>Gotas Oídos</b><small>Es hora de la toma · 30 ml</small></div><time>ahora</time></div>
+                <div class="notif" aria-hidden="true"><img src="img/app-icon.webp" width="512" height="512" alt=""><div><b>Gotas Oídos</b><small>Es hora de la toma · 30 ml</small></div><time>ahora</time></div>
             </article>
 
             <article class="card card--map reveal" style="--d:.2s">
@@ -192,67 +235,20 @@ const install = app.install!;
         <div class="tour-grid">
             <div class="tour-sticky">
                 <div class="phone phone--tour">
-                    <img class="tour-screen is-active" src="img/foto2.PNG" alt="Lista de mascotas" loading="lazy" decoding="async">
-                    <img class="tour-screen" src="img/foto3.PNG" alt="Editar mascota" loading="lazy" decoding="async">
-                    <img class="tour-screen" src="img/foto4.PNG" alt="Recetas médicas" loading="lazy" decoding="async">
-                    <img class="tour-screen" src="img/foto6.PNG" alt="Mapa de servicios" loading="lazy" decoding="async">
-                    <img class="tour-screen" src="img/foto11.png" alt="Gráficas de paseos" loading="lazy" decoding="async">
-                    <img class="tour-screen" src="img/foto12.png" alt="Clicker de entrenamiento" loading="lazy" decoding="async">
-                    <img class="tour-screen" src="img/foto7.PNG" alt="Temas" loading="lazy" decoding="async">
-                    <img class="tour-screen" src="img/foto10.PNG" alt="Logros" loading="lazy" decoding="async">
+                    {TOUR.map((t, i) => <img class:list={['tour-screen', { 'is-active': i === 0 }]} src={`img/${t.shot}.webp`} width={SHOTS[t.shot][0]} height={SHOTS[t.shot][1]} alt={t.alt} loading="lazy" decoding="async">)}
                 </div>
                 <div class="tour-glow" aria-hidden="true"></div>
             </div>
 
             <ol class="tour-steps">
-                <li class="tour-step" data-step="0">
-                    <span class="step-num">01</span>
-                    <h3>Toda tu manada</h3>
-                    <p>Agrega tantas mascotas como necesites. Cada una tiene su propio perfil con fotos, cartilla de vacunación y toda su información independiente.</p>
-                    <img class="step-shot" src="img/foto2.PNG" alt="" loading="lazy" decoding="async">
-                </li>
-                <li class="tour-step" data-step="1">
-                    <span class="step-num">02</span>
-                    <h3>Perfiles a detalle</h3>
-                    <p>Tipo, raza, fecha de nacimiento, peso y foto. Todo lo importante de cada compañero en un solo perfil.</p>
-                    <img class="step-shot" src="img/foto3.PNG" alt="" loading="lazy" decoding="async">
-                </li>
-                <li class="tour-step" data-step="2">
-                    <span class="step-num">03</span>
-                    <h3>Ninguna toma olvidada</h3>
-                    <p>Registra medicamentos con su dosis, frecuencia y duración. El modo estricto te avisa incluso de madrugada.</p>
-                    <img class="step-shot" src="img/foto4.PNG" alt="" loading="lazy" decoding="async">
-                </li>
-                <li class="tour-step" data-step="3">
-                    <span class="step-num">04</span>
-                    <h3>El mundo pet-friendly</h3>
-                    <p>Parques, veterinarias, hospitales, entrenadores, guarderías, tiendas, restaurantes y cafeterías cerca de ti.</p>
-                    <img class="step-shot" src="img/foto6.PNG" alt="" loading="lazy" decoding="async">
-                </li>
-                <li class="tour-step" data-step="4">
-                    <span class="step-num">05</span>
-                    <h3>Cada paseo cuenta</h3>
-                    <p>Gráficas semanales de duración y distancia por día para ver cuánto caminan tus perros, con el total de paseos, minutos y kilómetros de la semana.</p>
-                    <img class="step-shot" src="img/foto11.png" alt="" loading="lazy" decoding="async">
-                </li>
-                <li class="tour-step" data-step="5">
-                    <span class="step-num">06</span>
-                    <h3>Entrena como se debe</h3>
-                    <p>Un clicker de entrenamiento siempre a la mano. Úsalo justo cuando tu mascota haga algo bien: click + premio = aprendizaje rápido.</p>
-                    <img class="step-shot" src="img/foto12.png" alt="" loading="lazy" decoding="async">
-                </li>
-                <li class="tour-step" data-step="6">
-                    <span class="step-num">07</span>
-                    <h3>Hazla tuya</h3>
-                    <p>37 temas personalizables: adaptables, claros, oscuros y especiales con degradados. Del clásico Nebular a Aurora, Océano o Galaxia.</p>
-                    <img class="step-shot" src="img/foto7.PNG" alt="" loading="lazy" decoding="async">
-                </li>
-                <li class="tour-step" data-step="7">
-                    <span class="step-num">08</span>
-                    <h3>Cuidar también se gana</h3>
-                    <p>Desbloquea 22 logros mientras cuidas a tu mascota y suma puntos hasta llegar a los 1,000.</p>
-                    <img class="step-shot" src="img/foto10.PNG" alt="" loading="lazy" decoding="async">
-                </li>
+                {TOUR.map((t, i) => (
+                    <li class="tour-step" data-step={i}>
+                        <span class="step-num">{String(i + 1).padStart(2, '0')}</span>
+                        <h3>{t.title}</h3>
+                        <p>{t.text}</p>
+                        <img class="step-shot" src={`img/${t.shot}.webp`} width={SHOTS[t.shot][0]} height={SHOTS[t.shot][1]} alt="" loading="lazy" decoding="async">
+                    </li>
+                ))}
             </ol>
         </div>
     </div>
@@ -271,25 +267,28 @@ const install = app.install!;
     <div class="gallery reveal">
         <button class="gallery-btn gallery-btn--prev" aria-label="Anterior">←</button>
         <div class="gallery-track" id="galleryTrack">
-            <figure class="shot"><div class="phone"><img src="img/foto9.PNG" alt="Inicio de sesión" loading="lazy" decoding="async"></div><figcaption>Inicio de sesión</figcaption></figure>
-            <figure class="shot"><div class="phone"><img src="img/foto1.PNG" alt="Inicio" loading="lazy" decoding="async"></div><figcaption>Inicio</figcaption></figure>
-            <figure class="shot"><div class="phone"><img src="img/foto2.PNG" alt="Mascotas" loading="lazy" decoding="async"></div><figcaption>Mascotas</figcaption></figure>
-            <figure class="shot"><div class="phone"><img src="img/foto3.PNG" alt="Detalle de mascota" loading="lazy" decoding="async"></div><figcaption>Detalle de mascota</figcaption></figure>
-            <figure class="shot"><div class="phone"><img src="img/foto4.PNG" alt="Recetas" loading="lazy" decoding="async"></div><figcaption>Recetas</figcaption></figure>
-            <figure class="shot"><div class="phone"><img src="img/foto5.PNG" alt="Editar receta" loading="lazy" decoding="async"></div><figcaption>Editar receta</figcaption></figure>
-            <figure class="shot"><div class="phone"><img src="img/foto6.PNG" alt="Mapas" loading="lazy" decoding="async"></div><figcaption>Mapas</figcaption></figure>
-            <figure class="shot"><div class="phone"><img src="img/foto11.png" alt="Gráficas de paseos" loading="lazy" decoding="async"></div><figcaption>Gráficas de paseos</figcaption></figure>
-            <figure class="shot"><div class="phone"><img src="img/foto12.png" alt="Clicker" loading="lazy" decoding="async"></div><figcaption>Clicker</figcaption></figure>
-            <figure class="shot"><div class="phone"><img src="img/foto7.PNG" alt="Temas" loading="lazy" decoding="async"></div><figcaption>Temas</figcaption></figure>
-            <figure class="shot"><div class="phone"><img src="img/foto8.PNG" alt="Perfil" loading="lazy" decoding="async"></div><figcaption>Perfil</figcaption></figure>
-            <figure class="shot"><div class="phone"><img src="img/foto10.PNG" alt="Logros" loading="lazy" decoding="async"></div><figcaption>Logros</figcaption></figure>
+            {GALLERY.map(([shot, alt, caption]) => (
+                <figure class="shot"><div class="phone"><img src={`img/${shot}.webp`} width={SHOTS[shot][0]} height={SHOTS[shot][1]} alt={alt} loading="lazy" decoding="async"></div><figcaption>{caption}</figcaption></figure>
+            ))}
         </div>
         <button class="gallery-btn gallery-btn--next" aria-label="Siguiente">→</button>
     </div>
 </section>
 
+<!-- ── PREGUNTAS ───────────────────────── -->
+<section class="tour" id="preguntas">
+    <div class="section-inner">
+        <div class="section-title reveal">
+            <span class="eyebrow">Preguntas</span>
+            <h2>Lo que más <em class="gradient-text">se pregunta</em></h2>
+            <p>¿Tienes otra duda? Todas las respuestas están en el <a href="support.html">centro de soporte</a>.</p>
+        </div>
+        <Faq items={FAQ.slice(0, 6)} />
+    </div>
+</section>
+
 <!-- ── CTA ─────────────────────────────── -->
-<DownloadCta app={app} id="ctaCard" icon="img/app-icon.png" title="Descarga Super Pets" accent="gratis"
+<DownloadCta app={app} id="ctaCard" icon="img/app-icon.webp" title="Descarga Super Pets" accent="gratis"
              sub="Disponible para iPhone y iPad. Compatible con Apple Watch, Widget y sincronización automática con iCloud.">
     <div slot="bg">
         <canvas class="cta-confetti" id="ctaConfetti"></canvas>
@@ -299,7 +298,7 @@ const install = app.install!;
         <span class="float-pet float-pet--4">🦜</span>
     </div>
     <Button href={install} size="lg" ring external>
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 21.99 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09997 21.99C7.78997 22.03 6.79997 20.68 5.95997 19.47C4.24997 17 2.93997 12.45 4.69997 9.39C5.56997 7.87 7.12997 6.91 8.81997 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+        <Icon name="apple" />
         <span class="store-label"><small>Descárgala en el</small>App Store</span>
     </Button>
     <Button href="support.html" variant="ghost" size="lg">Soporte</Button>

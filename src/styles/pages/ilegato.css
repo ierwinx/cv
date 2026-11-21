@@ -60,18 +60,6 @@ a { color: inherit; text-decoration: none; }
   background: radial-gradient(600px circle at var(--mx) var(--my), color-mix(in srgb, var(--glow) 16%, transparent), transparent 60%);
   transition: background 0.2s;
 }
-.grain {
-  position: fixed; inset: -50%; z-index: 100; pointer-events: none; opacity: 0.06; mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  animation: grain 1.2s steps(6) infinite;
-}
-@keyframes grain {
-  0%, 100% { transform: translate(0, 0); }
-  20% { transform: translate(-3%, 2%); }
-  40% { transform: translate(2%, -3%); }
-  60% { transform: translate(-2%, -1%); }
-  80% { transform: translate(3%, 3%); }
-}
 .progress {
   position: fixed; top: 0; left: 0; height: 3px; width: 100%; z-index: 60;
   background: var(--brand); transform-origin: 0 50%; transform: scaleX(0);
@@ -85,9 +73,9 @@ a { color: inherit; text-decoration: none; }
 .eyebrow .gold { background: linear-gradient(120deg, var(--gold), #fff1c1, var(--gold)); -webkit-background-clip: text; background-clip: text; }
 .grad {
   background: var(--brand); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
-  animation: shimmer 8s linear infinite;
+  animation: ilegato-shimmer 8s linear infinite;
 }
-@keyframes shimmer { to { background-position: -200% 0; } }
+@keyframes ilegato-shimmer { to { background-position: -200% 0; } }
 h1, h2, h3 { margin: 0; letter-spacing: -0.035em; line-height: 1.02; font-weight: 800; }
 h2 { font-size: clamp(40px, 6vw, 76px); }
 h3 { font-size: clamp(22px, 2.4vw, 28px); letter-spacing: -0.02em; line-height: 1.15; }
@@ -102,8 +90,7 @@ h3 { font-size: clamp(22px, 2.4vw, 28px); letter-spacing: -0.02em; line-height: 
 .split.in .w > span { transform: none; }
 
 /* Revelado general al hacer scroll */
-.reveal { opacity: 0; transform: translateY(40px) scale(0.98); filter: blur(8px); transition: opacity 1s var(--ease), transform 1s var(--ease), filter 1s var(--ease); transition-delay: var(--d, 0ms); }
-.reveal.in { opacity: 1; transform: none; filter: none; }
+.reveal { --reveal-from: translateY(40px) scale(0.98); --reveal-dur: 1s; --reveal-ease: var(--ease); --reveal-filter-ease: var(--ease); }   /* la regla está en document.css */
 
 /* ───────── Hero ───────── */
 .hero { min-height: 100svh; display: grid; align-items: center; padding: 130px 0 80px; }
@@ -144,10 +131,10 @@ h3 { font-size: clamp(22px, 2.4vw, 28px); letter-spacing: -0.02em; line-height: 
 .phones .p1 { left: 50%; top: 50%; transform: translate(-50%, -50%) translateZ(80px); z-index: 3; }
 .phones .p2 { --w: min(260px, 27vw); left: 4%; top: 52%; transform: translateY(-50%) rotate(-9deg) translateZ(-40px); z-index: 2; }
 .phones .p3 { --w: min(260px, 27vw); right: 4%; top: 48%; transform: translateY(-50%) rotate(9deg) translateZ(-40px); z-index: 2; }
-.float { animation: float 7s ease-in-out infinite; }
+.float { animation: ilegato-float 7s ease-in-out infinite; }
 .float.b { animation-delay: -2.3s; }
 .float.c { animation-delay: -4.6s; }
-@keyframes float { 50% { translate: 0 -16px; } }
+@keyframes ilegato-float { 50% { translate: 0 -16px; } }
 @media (max-width: 960px) { .phones { height: 120vw; max-height: 720px; } .phone { --w: 44vw; } .phones .p2, .phones .p3 { --w: 36vw; } }
 
 /* ───────── Tarjetas (bento) con brillo que sigue al cursor ───────── */
@@ -264,10 +251,10 @@ h3 { font-size: clamp(22px, 2.4vw, 28px); letter-spacing: -0.02em; line-height: 
 .ipad-dots button:hover, .ipad-dots button.on { color: var(--text); }
 .ipad-dots i { position: relative; display: block; height: 3px; border-radius: 3px; background: var(--border-2); overflow: hidden; }
 .ipad-dots i::after { content: ''; position: absolute; inset: 0; background: var(--brand); transform-origin: left; transform: scaleX(0); }
-.ipad-dots .on i::after { animation: fill var(--every) linear forwards; }
+.ipad-dots .on i::after { animation: ilegato-fill var(--every) linear forwards; }
 .ipad-dots.paused .on i::after { animation-play-state: paused; }
 .ipad-dots.still .on i::after { animation: none; transform: none; }
-@keyframes fill { to { transform: scaleX(1); } }
+@keyframes ilegato-fill { to { transform: scaleX(1); } }
 @media (max-width: 700px) { .ipad-dots { gap: 6px; } .ipad-dots button { min-width: 0; flex: 1; font-size: 11px; } }
 
 /* ───────── CarPlay y Siri ───────── */
@@ -356,26 +343,26 @@ h3 { font-size: clamp(22px, 2.4vw, 28px); letter-spacing: -0.02em; line-height: 
 .aa-btn { display: block; width: 4.4cqw; height: 4.4cqw; padding: 1.1cqw; border-radius: 50%; background: #8ab4f8; color: #062e6f; }
 .aa-progress { position: absolute; left: 0; bottom: 0; height: 0.35cqw; width: 38%; background: #8ab4f8; }
 .eqbars { display: inline-flex; gap: 3px; align-items: end; height: 18px; }
-.eqbars i { width: 4px; border-radius: 2px; background: var(--mint); animation: eqb 0.9s ease-in-out infinite; }
+.eqbars i { width: 4px; border-radius: 2px; background: var(--mint); animation: ilegato-eqb 0.9s ease-in-out infinite; }
 .eqbars i:nth-child(2) { animation-delay: -0.3s; } .eqbars i:nth-child(3) { animation-delay: -0.6s; } .eqbars i:nth-child(4) { animation-delay: -0.15s; }
-@keyframes eqb { 0%, 100% { height: 25%; } 50% { height: 100%; } }
+@keyframes ilegato-eqb { 0%, 100% { height: 25%; } 50% { height: 100%; } }
 
 .siri { display: grid; place-items: center; text-align: center; gap: 22px; min-height: 300px; }
 .orb { position: relative; width: 150px; height: 150px; }
-.orb i { position: absolute; inset: 0; border-radius: 50%; mix-blend-mode: screen; filter: blur(14px); animation: orb 6s ease-in-out infinite; }
+.orb i { position: absolute; inset: 0; border-radius: 50%; mix-blend-mode: screen; filter: blur(14px); animation: ilegato-orb 6s ease-in-out infinite; }
 .orb i:nth-child(1) { background: var(--pink); animation-delay: 0s; inset: 0 30% 30% 0; }
 .orb i:nth-child(2) { background: var(--violet); animation-delay: -1.5s; inset: 0 0 30% 30%; }
 .orb i:nth-child(3) { background: var(--blue); animation-delay: -3s; inset: 30% 0 0 30%; }
 .orb i:nth-child(4) { background: var(--mint); animation-delay: -4.5s; inset: 30% 30% 0 0; }
-@keyframes orb {
+@keyframes ilegato-orb {
   0%, 100% { transform: translate(0, 0) scale(0.75); }
   25% { transform: translate(18px, -10px) scale(0.9); }
   50% { transform: translate(-6px, 16px) scale(0.7); }
   75% { transform: translate(-16px, -12px) scale(0.85); }
 }
 .siri-say { font-size: clamp(20px, 2.4vw, 28px); font-weight: 700; letter-spacing: -0.02em; min-height: 2.6em; }
-.siri-say .caret { display: inline-block; width: 3px; height: 1em; margin-left: 4px; background: var(--text); vertical-align: -0.12em; animation: blink 1s steps(2) infinite; }
-@keyframes blink { 50% { opacity: 0; } }
+.siri-say .caret { display: inline-block; width: 3px; height: 1em; margin-left: 4px; background: var(--text); vertical-align: -0.12em; animation: ilegato-blink 1s steps(2) infinite; }
+@keyframes ilegato-blink { 50% { opacity: 0; } }
 
 /* ───────── Números ───────── */
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
@@ -400,6 +387,6 @@ h3 { font-size: clamp(22px, 2.4vw, 28px); letter-spacing: -0.02em; line-height: 
 /* ───────── Accesibilidad y rendimiento ───────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
-  .reveal, .split .w > span, .compare tbody tr { opacity: 1; transform: none; filter: none; }
+  .split .w > span, .compare tbody tr { opacity: 1; transform: none; filter: none; }
 }
 :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 8px; }

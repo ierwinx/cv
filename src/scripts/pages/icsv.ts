@@ -5,6 +5,10 @@ import { initNav } from '../core/nav';
 import { initGlyphs } from '../core/glyphs';
 import { confetti, toast } from '../core/celebrate';
 import { countUp as count } from '../core/counters';
+import { initReveal, onceVisible } from '../core/reveal';
+import { initScrollProgress } from '../core/scroll';
+import { initCursorGlow } from '../core/cursor';
+import { initMagnetic, tilt } from '../core/pointer';
 
 (() => {
 
@@ -14,16 +18,10 @@ import { countUp as count } from '../core/counters';
   /* ---- Nav (core/nav) + progreso ---- */
   initNav();
   initGlyphs();
-  const progress = $("#progress")!;
-  const onScroll = () => {
-    const h = document.documentElement;
-    progress.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
-  };
-  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  initScrollProgress($("#progress"), "width");
 
   /* ---- Cursor glow ---- */
-  const glow = $("#glow")!;
-  addEventListener("pointermove", e => { glow.style.left = e.clientX + "px"; glow.style.top = e.clientY + "px"; }, { passive: true });
+  initCursorGlow({ el: $<HTMLElement>("#glow")!, mode: "position" });
 
   /* ---- Window tilt ---- */
   const win = $("#win")!;
@@ -109,15 +107,10 @@ import { countUp as count } from '../core/counters';
   if (!reduce) script();
 
   /* ---- Reveal + one-shot triggers ---- */
-  const once = new Map<Element, () => void>();
-  const io = new IntersectionObserver(es => es.forEach(e => {
-    if (!e.isIntersecting) return;
-    e.target.classList.add("in");
-    once.get(e.target)?.(); once.delete(e.target);
-    io.unobserve(e.target);
-  }), { threshold: .15, rootMargin: "0px 0px -40px 0px" });
-  $$(".reveal").forEach(el => io.observe(el));
-  const when = (el: Element, fn: () => void) => { once.set(el, fn); io.observe(el); };
+  const rootMargin = "0px 0px -40px 0px";
+  initReveal(".reveal", { stagger: 0, rootMargin });
+  // Al verse una vez: recibe .in (el CSS lo usa) y arranca su animación
+  const when = (el: Element | null, fn: () => void) => onceVisible(el, (e) => { e.classList.add("in"); fn(); }, { rootMargin });
 
   // Contadores de las cifras
   when($(".stats")!, () => $$(".count").forEach((el) => count(el, { duration: 1800, power: 3, format: thin })));
@@ -201,21 +194,10 @@ import { countUp as count } from '../core/counters';
   });
 
   /* ---- Card spotlight ---- */
-  $$(".card").forEach(c => c.addEventListener("pointermove", e => {
-    const r = c.getBoundingClientRect();
-    c.style.setProperty("--x", (e.clientX - r.left) + "px"); c.style.setProperty("--y", (e.clientY - r.top) + "px");
-  }));
+  $$(".card").forEach(c => tilt(c, { rotate: false, unit: "px" }));
 
   /* ---- Magnetic buttons + highlight ---- */
-  $$(".magnetic").forEach(b => {
-    b.addEventListener("pointermove", e => {
-      const r = b.getBoundingClientRect();
-      const x = e.clientX - r.left, y = e.clientY - r.top;
-      b.style.setProperty("--mx", x + "px"); b.style.setProperty("--my", y + "px");
-      if (!reduce) b.style.transform = `translate(${(x - r.width / 2) * .18}px, ${(y - r.height / 2) * .28}px)`;
-    });
-    b.addEventListener("pointerleave", () => b.style.transform = "");
-  });
+  initMagnetic(".magnetic", { fx: .18, fy: .28, vars: true });
 
   /* ---- Download: ripple + confetti + toast ---- */
   const showToast = (msg: string) => toast(msg, { className: "show", ms: 3200, html: false });
@@ -229,7 +211,7 @@ import { countUp as count } from '../core/counters';
       count: 90, colors: ["#2fe0bd", "#1c9e86", "#ff9f00", "#ffc35c", "#ffffff"], spread: "radial",
       gravity: .35, drag: .985, decay: .009, spin: .3, width: [5, 11], glyphs: [",", ";", "|", "\""],
     });
-    showToast("🎉 Descargando iCSV 1.0 — ábrelo y arrastra iCSV a Aplicaciones");
+    showToast(`🎉 Descargando iCSV ${b.dataset.appVersion ?? ""} — ábrelo y arrastra iCSV a Aplicaciones`);
   }));
 
   /* ---- Copy checksum ---- */

@@ -1,10 +1,11 @@
 // Página de iJson: ventana interactiva del héroe, laboratorio de fidelidad, atajos y campo de símbolos.
 import { $, $$, esc } from '../core/dom';
-import { reduceMotion as reduce } from '../core/motion';
+import { finePointer, reduceMotion as reduce } from '../core/motion';
 import { initCounters } from '../core/counters';
 import { initGlyphs } from '../core/glyphs';
 import { initNav } from '../core/nav';
-import { initMagnetic } from '../core/pointer';
+import { initMagnetic, tilt } from '../core/pointer';
+import { onceVisible } from '../core/reveal';
 
 type Kind = 'object' | 'array' | 'string' | 'number' | 'bool' | 'null';
 type Node = { k: Kind; raw?: string; v?: unknown; kids?: { key: string | null; node: Node }[] };
@@ -161,7 +162,7 @@ if (!reduce) setInterval(() => { if (!userTouched) setMode(mode === "tree" ? "te
 
 /* inclinación 3D de la ventana */
 const win = $("#win")!;
-if (!reduce && matchMedia("(pointer: fine)").matches) {
+if (!reduce && finePointer) {
   win.parentElement!.addEventListener("pointermove", e => {
     const b = win.getBoundingClientRect();
     const x = (e.clientX - b.left) / b.width, y = (e.clientY - b.top) / b.height;
@@ -257,10 +258,7 @@ const KEYS: [string[], string][] = [[["⌘", "1"], "Ver como árbol"], [["⌘", 
 $("#keys")!.innerHTML = KEYS.map(([caps, l]) => `<div class="key"><div class="caps">${caps.map(c => `<kbd class="cap">${c}</kbd>`).join("")}</div><span>${l}</span></div>`).join("");
 
 /* ---------- tarjetas con foco de luz; botones magnéticos y contadores comunes ---------- */
-$$(".card").forEach(c => c.addEventListener("pointermove", e => {
-  const b = c.getBoundingClientRect();
-  c.style.setProperty("--mx", e.clientX - b.left + "px"); c.style.setProperty("--my", e.clientY - b.top + "px");
-}));
+$$(".card").forEach(c => tilt(c, { rotate: false, x: "--mx", y: "--my", unit: "px" }));
 initMagnetic();
 // Cifras como en la app: miles con espacio y decimales con coma (100 000 · 0,42)
 const fmtNum = (v: number, el: HTMLElement) => {
@@ -270,14 +268,9 @@ const fmtNum = (v: number, el: HTMLElement) => {
 initCounters('[data-count]', { duration: 1300, power: 3, threshold: .35, format: fmtNum });
 
 /* ---------- barras: el valor final ya está a la vista; al entrar en pantalla se reanima ---------- */
-if (!reduce) {
-  const io = new IntersectionObserver(entries => entries.forEach(en => {
-    if (!en.isIntersecting) return;
-    io.unobserve(en.target);
-    $$(".fill", en.target).forEach(f => { f.classList.remove("grow"); void f.offsetWidth; f.classList.add("grow"); });
-  }), { threshold: .35 });
-  document.querySelectorAll(".perf").forEach(el => io.observe(el));
-}
+if (!reduce) $$(".perf").forEach(el => onceVisible(el, () => {
+  $$(".fill", el).forEach(f => { f.classList.remove("grow"); void f.offsetWidth; f.classList.add("grow"); });
+}, { threshold: .35 }));
 
 /* ---------- campo de símbolos JSON en el fondo (core/glyphs) ---------- */
 initNav();

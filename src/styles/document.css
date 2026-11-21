@@ -4,6 +4,21 @@
 /* Bloques fuera de pantalla: animaciones CSS en pausa (el script inline de BaseLayout). */
 [data-offscreen], [data-offscreen] * { animation-play-state: paused !important }
 
+/* Aparición al hacer scroll (core/reveal: .in, .visible o .is-in). Cada página ajusta las variables, no la regla:
+   --reveal-from (transform inicial) · --reveal-filter · --reveal-dur · --reveal-ease · --reveal-filter-ease ·
+   --reveal-opacity (opacidad inicial) · --d (retraso). */
+.reveal {
+  opacity: var(--reveal-opacity, 0);
+  transform: var(--reveal-from, translateY(40px));
+  filter: var(--reveal-filter, blur(8px));
+  transition: opacity var(--reveal-dur, .9s) var(--reveal-ease, cubic-bezier(.2, .8, .2, 1)),
+    transform var(--reveal-dur, .9s) var(--reveal-ease, cubic-bezier(.2, .8, .2, 1)),
+    filter var(--reveal-dur, .9s) var(--reveal-filter-ease, ease);
+  transition-delay: var(--d, 0s);
+}
+.reveal:is(.in, .visible, .is-in), .no-js .reveal { opacity: 1; transform: none; filter: none }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; filter: none; transition: none } }
+
 /* ── Cursor: el del sistema queda visible; un aro lo sigue con ligera demora (script en BaseLayout) ── */
 .custom-cursor--trail {
   position: fixed;

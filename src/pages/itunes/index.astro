@@ -9,11 +9,15 @@ import GlyphField from '../../components/ui/GlyphField.astro';
 import DownloadCta from '../../components/sections/DownloadCta.astro';
 import { getApp } from '../../lib/apps';
 import '../../styles/pages/itunes.css';
+import Grain from '../../components/ui/Grain.astro';
+import Icon from '../../components/ui/Icon.astro';
+import Faq from '../../components/sections/Faq.astro';
+import { getLegal } from '../../lib/legal';
 
 const app = getApp('itunes');
 ---
 <AppPage slug="itunes" skipTo="top">
-  <div class="grain" aria-hidden="true"></div>
+  <Grain opacity={0.05} z={100} inset="-50%" dur="1s" move={['-5%, 3%', '3%, -6%', '-7%, -2%', '5%, 6%']} />
   <div class="scroll-progress" aria-hidden="true"></div>
   <div class="cursor-glow" aria-hidden="true"></div>
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
@@ -41,7 +45,7 @@ const app = getApp('itunes');
         </p>
         <div class="hero-cta reveal">
           <DownloadButton app={app}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16" /></svg>
+            <Icon name="download-tray" stroke={2.4} />
             Descargar para macOS
             <small>.pkg · Apple Silicon · {app.size}</small>
           </DownloadButton>
@@ -215,32 +219,32 @@ const app = getApp('itunes');
         <p>Toca cualquier captura para verla en grande.</p>
       </div>
       <div class="gallery">
-        <figure class="shot shot-hero reveal" data-full="assets/screens/real-biblioteca.jpg">
-          <img src="assets/screens/real-biblioteca.jpg" alt="Captura real: biblioteca de Insite con carátulas y la barra de reproducción" loading="lazy">
+        <figure class="shot shot-hero reveal" data-full="assets/screens/real-biblioteca.webp">
+          <img src="assets/screens/real-biblioteca-1400.webp" width="1400" height="769" alt="Captura real: biblioteca de Insite con carátulas y la barra de reproducción" loading="lazy">
           <figcaption><b>Captura real</b> Biblioteca con carátulas, artistas por letra y la barra de reproducción.</figcaption>
         </figure>
-        <figure class="shot reveal" data-full="assets/screens/editar-tags.png">
-          <img src="assets/screens/editar-tags.png" alt="Formulario de edición de tags abierto con la tecla e" loading="lazy">
+        <figure class="shot reveal" data-full="assets/screens/editar-tags.webp">
+          <img src="assets/screens/editar-tags-1400.webp" width="1400" height="904" alt="Formulario de edición de tags abierto con la tecla e" loading="lazy">
           <figcaption><kbd>e</kbd> Editar tags: los campos modificados se pintan en ámbar.</figcaption>
         </figure>
-        <figure class="shot reveal" data-full="assets/screens/ecualizador.png">
-          <img src="assets/screens/ecualizador.png" alt="Ecualizador de 10 bandas con el preset Rock" loading="lazy">
+        <figure class="shot reveal" data-full="assets/screens/ecualizador.webp">
+          <img src="assets/screens/ecualizador-1400.webp" width="1400" height="904" alt="Ecualizador de 10 bandas con el preset Rock" loading="lazy">
           <figcaption><kbd>=</kbd> Ecualizador de 10 bandas con preset Rock.</figcaption>
         </figure>
-        <figure class="shot reveal" data-full="assets/screens/pausa.png">
-          <img src="assets/screens/pausa.png" alt="Reproductor en pausa con el botón play enfocado" loading="lazy">
+        <figure class="shot reveal" data-full="assets/screens/pausa.webp">
+          <img src="assets/screens/pausa-1400.webp" width="1400" height="904" alt="Reproductor en pausa con el botón play enfocado" loading="lazy">
           <figcaption><kbd>Espacio</kbd> Pausa: el botón cambia de ❚❚ a ▶.</figcaption>
         </figure>
-        <figure class="shot reveal" data-full="assets/screens/ayuda.png">
-          <img src="assets/screens/ayuda.png" alt="Ventana de ayuda con todos los atajos" loading="lazy">
+        <figure class="shot reveal" data-full="assets/screens/ayuda.webp">
+          <img src="assets/screens/ayuda-1400.webp" width="1400" height="904" alt="Ventana de ayuda con todos los atajos" loading="lazy">
           <figcaption><kbd>?</kbd> Ayuda generada desde la tabla de atajos.</figcaption>
         </figure>
-        <figure class="shot reveal" data-full="assets/screens/buscar.png">
-          <img src="assets/screens/buscar.png" alt="Búsqueda de artista escribiendo en el panel izquierdo" loading="lazy">
+        <figure class="shot reveal" data-full="assets/screens/buscar.webp">
+          <img src="assets/screens/buscar-1400.webp" width="1400" height="904" alt="Búsqueda de artista escribiendo en el panel izquierdo" loading="lazy">
           <figcaption><kbd>/</kbd> Busca artistas mientras escribes.</figcaption>
         </figure>
-        <figure class="shot reveal" data-full="assets/screens/letra.png">
-          <img src="assets/screens/letra.png" alt="Letra de la canción en el panel de biblioteca" loading="lazy">
+        <figure class="shot reveal" data-full="assets/screens/letra.webp">
+          <img src="assets/screens/letra-1400.webp" width="1400" height="904" alt="Letra de la canción en el panel de biblioteca" loading="lazy">
           <figcaption><kbd>l</kbd> Letra de la canción en el panel principal.</figcaption>
         </figure>
       </div>
@@ -260,11 +264,19 @@ const app = getApp('itunes');
     </section>
 
     <!-- ============ INSTALAR ============ -->
+    <section id="preguntas" class="section">
+      <div class="section-head reveal">
+        <p class="eyebrow">Preguntas</p>
+        <h2>Lo que más<br><span class="gradient-text">se pregunta.</span></h2>
+      </div>
+      <Faq items={getLegal('itunes').faq} />
+    </section>
+
     <DownloadCta app={app} eyebrow="Instalar" title="Listo en" accent="30 segundos."
                  sub="El instalador trae TagLib incluido: no necesitas Homebrew. Instala itunes en /usr/local/bin."
                  requirements={['✓ Developer ID', '✓ Notarizado', '✓ Apple Silicon', '✓ macOS 27+']}>
       <DownloadButton app={app} size="lg">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16" /></svg>
+        <Icon name="download-tray" stroke={2.4} />
         Descargar {app.release!.file}
       </DownloadButton>
       <Button href="support.html" variant="ghost" size="lg">Soporte</Button>

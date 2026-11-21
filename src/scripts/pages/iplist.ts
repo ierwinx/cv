@@ -1,10 +1,11 @@
 // Página de iPlist: editor en vivo del héroe, barras de rendimiento y nodos que se materializan.
 import { $, $$ } from '../core/dom';
 import { reduceMotion as reduce, sleep as wait } from '../core/motion';
-import { initReveal } from '../core/reveal';
+import { initReveal, onceVisible } from '../core/reveal';
+import { initCursorGlow } from '../core/cursor';
 import { initNav } from '../core/nav';
 import { initGlyphs } from '../core/glyphs';
-import { initMagnetic } from '../core/pointer';
+import { initMagnetic, tilt } from '../core/pointer';
 import { toast } from '../core/celebrate';
 
 document.documentElement.classList.add('js');
@@ -14,21 +15,11 @@ initGlyphs();
 initMagnetic();
 
 // Las barras del benchmark crecen al verse.
-const bars = $('#bars')!;
-new IntersectionObserver((es, o) => es.forEach((e) => {
-  if (e.isIntersecting) { bars.classList.remove('armed'); o.disconnect(); }
-}), { threshold: .3 }).observe(bars);
+onceVisible($('#bars'), (bars) => bars.classList.remove('armed'), { threshold: .3 });
 
 // Foco del cursor y luz de las tarjetas.
-const spot = $('#spot')!;
-addEventListener('pointermove', (e) => {
-  spot.style.left = e.clientX + 'px'; spot.style.top = e.clientY + 'px';
-}, { passive: true });
-$$('.card').forEach((c) => c.addEventListener('pointermove', (e) => {
-  const r = c.getBoundingClientRect();
-  c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-  c.style.setProperty('--my', (e.clientY - r.top) + 'px');
-}));
+initCursorGlow({ el: $<HTMLElement>('#spot')!, mode: 'position' });
+$$('.card').forEach((c) => tilt(c, { rotate: false, x: '--mx', y: '--my', unit: 'px' }));
 
 // Inclinación 3D de la ventana del editor.
 const stage = $('#stage')!, win = $('#win')!;

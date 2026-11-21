@@ -33,8 +33,8 @@ NOT_PUBLISHED = re.compile(
     r'|\.(dmg|pkg|zip)$'          # binarios: ahora viven en GitHub Releases
     r'|(^|/)\.DS_Store$'
     # CSS/JS propios de cada página: Astro los empaqueta en /_astro/. Se conservan los que
-    # enlaza algo de fuera del build (el seasonal y el curso de Python).
-    r'|^(?!assets/seasonal\.|python/).*\.(js|css)$')
+    # enlaza algo de fuera del build (el seasonal).
+    r'|^(?!assets/seasonal\.).*\.(js|css)$')
 TEXT = ('.html', '.js', '.css', '.json', '.xml', '.txt')
 
 errors = []
@@ -62,9 +62,29 @@ def read(rel):
         return f.read()
 
 
+IMAGES = re.compile(r'\.(png|jpe?g)$', re.I)
+
+
+def converted(p, files):
+    """Imagen pasada a WebP en la misma carpeta (nombre en minúsculas y sin espacios): foto6.PNG → foto6.webp."""
+    if not IMAGES.search(p):
+        return False
+    folder, name = os.path.split(p)
+    stem = re.sub(r'\s+', '-', os.path.splitext(name)[0].lower())
+    return f'{folder}/{stem}.webp'.lstrip('/') in files
+
+
 def check_parity(files):
-    missing = [p for p in legacy_files() if p not in files]
-    for p in missing:
+    legacy = legacy_files()
+    # Una sección completa (carpeta raíz) que ya no está en dist/ se retiró a propósito, junto con su
+    # imagen para redes (assets/og/<sección>.jpg). Un archivo suelto que falte sí es un error.
+    tops = {p.split('/')[0] for p in files}
+    retired = {p.split('/')[0] for p in legacy if '/' in p} - tops
+    for p in legacy:
+        if p in files or converted(p, files):
+            continue
+        if p.split('/')[0] in retired or re.fullmatch(r'assets/og/(.+)\.jpg', p) and p[10:-4] in retired:
+            continue
         errors.append(f'Falta en dist/ (existía en {LEGACY}): /{p}')
 
 
@@ -123,10 +143,54 @@ def check_csp(files):
                 errors.append(f'/{rel}: un script en línea no está en la CSP ({h})')
 
 
+SRC = os.path.join(ROOT, 'src')
+KEYFRAMES = re.compile(r'@keyframes\s+([\w-]+)')
+HEX = re.compile(r'#[0-9a-fA-F]{3,8}\b')
+# Lo que ya resuelve scripts/core y no debe volver a escribirse en una página (ver CLAUDE.md).
+REIMPLEMENTED = [
+    (re.compile(r"new IntersectionObserver\([^;]{0,300}?classList\.add\(\s*['\"](in|visible|is-in)['\"]", re.S), 'reveal a mano: usa initReveal / onceVisible (core/reveal)'),
+    (re.compile(r'scrollHeight\s*-\s*(innerHeight|\w+\.clientHeight)'), 'progreso de lectura a mano: usa onScrollProgress / initScrollProgress (core/scroll)'),
+    (re.compile(r"documentElement\.style\.setProperty\(\s*['\"]--m[xy]|root\.style\.setProperty\(\s*['\"]--m[xy]"), 'foco del cursor a mano: usa initCursorGlow (core/cursor)'),
+    (re.compile(r"matchMedia\(\s*['\"]\((pointer|hover|prefers-reduced-motion)"), 'matchMedia de puntero o movimiento: usa finePointer / reduceMotion (core/motion)'),
+    (re.compile(r'^\s*const (\$|\$\$|esc|sleep) = ', re.M), 'helper local: impórtalo de core/dom o core/motion'),
+]
+
+
+def src_files(folder, ext):
+    for dirpath, _, names in os.walk(os.path.join(SRC, folder)):
+        for name in names:
+            if name.endswith(ext):
+                path = os.path.join(dirpath, name)
+                yield os.path.relpath(path, ROOT), open(path, encoding='utf-8').read()
+
+
+def check_source():
+    """Reglas para no volver a duplicar (CLAUDE.md): keyframes con prefijo, colores de componentes con tokens y
+    nada de reimplementar lo que ya está en scripts/core."""
+    for rel, css in src_files('', '.css'):
+        for name in KEYFRAMES.findall(css):
+            if '-' not in name:
+                errors.append(f'{rel}: @keyframes {name} sin prefijo (fx- en effects.css, <página>- o <demo>- en las demás)')
+    for rel, css in src_files('components', '.css'):
+        for n, line in enumerate(css.splitlines(), 1):
+            # Se permiten en declaraciones de variables (--ib-…: #…): es la paleta propia de la demo, declarada a la vista.
+            code = re.sub(r'--[\w-]+\s*:\s*#[0-9a-fA-F]{3,8}', '', line)
+            if HEX.search(code):
+                errors.append(f'{rel}:{n}: color hex suelto en un componente compartido (usa tokens, color-mix o una variable)')
+    for rel, ts in src_files('scripts', '.ts'):
+        if rel.startswith(os.path.join('src', 'scripts', 'core')):
+            continue
+        for rx, msg in REIMPLEMENTED:
+            m = rx.search(ts)
+            if m:
+                errors.append(f'{rel}:{ts.count(chr(10), 0, m.start()) + 1}: {msg}')
+
+
 def main():
     if not os.path.isdir(DIST):
         sys.exit('No existe dist/: corre primero `npm run build`.')
     files = dist_files()
+    check_source()
     check_parity(files)
     site = check_local_urls(files)
     check_seo(files)

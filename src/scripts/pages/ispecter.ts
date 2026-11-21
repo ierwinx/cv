@@ -6,6 +6,10 @@ import { toast } from '../core/celebrate';
 import { countUp as count } from '../core/counters';
 import { initNav } from '../core/nav';
 import { initGlyphs } from '../core/glyphs';
+import { initReveal } from '../core/reveal';
+import { initScrollVar } from '../core/scroll';
+import { initCursorGlow } from '../core/cursor';
+import { initMagnetic, tilt } from '../core/pointer';
 
 type Opts = { cut?: number; nyq?: number; holes?: boolean };
 
@@ -191,11 +195,8 @@ type Opts = { cut?: number; nyq?: number; holes?: boolean };
       pts = Array.from({ length: n }, () => ({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25, r: Math.random() * 1.6 + .4, hue: Math.random() }));
     }
     resize(); addEventListener("resize", resize);
-    addEventListener("pointermove", (e) => {
-      mouse.x = e.clientX; mouse.y = e.clientY;
-      document.documentElement.style.setProperty("--mx", e.clientX + "px");
-      document.documentElement.style.setProperty("--my", e.clientY + "px");
-    });
+    addEventListener("pointermove", (e) => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
+    initCursorGlow();
     const draw = (_: number, k: number) => {
       ctx.clearRect(0, 0, w, h);
       const damp = Math.pow(.985, k);
@@ -219,43 +220,22 @@ type Opts = { cut?: number; nyq?: number; holes?: boolean };
   // ─── Barra de progreso y apariciones (la nav es la común: core/nav) ───
   initNav();
   initGlyphs();
-  addEventListener("scroll", () => {
-    const max = document.documentElement.scrollHeight - innerHeight;
-    document.documentElement.style.setProperty("--scroll", (scrollY / max).toFixed(4));
-  }, { passive: true });
+  initScrollVar();
 
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) if (e.isIntersecting) {
-      e.target.classList.add("in");
-      $$("[data-count]", e.target).forEach(countUp);
-      if (e.target.matches("[data-count]")) countUp(e.target as HTMLElement);
-      io.unobserve(e.target);
-    }
-  }, { threshold: .18, rootMargin: "0px 0px -40px 0px" });
-  $$(".reveal").forEach((el) => io.observe(el));
+  initReveal(".reveal", {
+    stagger: 0, threshold: .18, rootMargin: "0px 0px -40px 0px",
+    onEnter: (el) => { $$("[data-count]", el).forEach(countUp); if (el.matches("[data-count]")) countUp(el); },
+  });
 
   // Cifras con decimales y formato español (1.234,5)
   const countUp = (el: HTMLElement) => count(el, { duration: 1800, format: (v, e) => v.toLocaleString("es", { minimumFractionDigits: +(e.dataset.dec || 0), maximumFractionDigits: +(e.dataset.dec || 0) }) });
 
   // ─── Tarjetas: brillo que sigue al puntero + inclinación 3D ───
-  $$(".tilt").forEach((card) => {
-    card.addEventListener("pointermove", (e) => {
-      const r = card.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-      card.style.setProperty("--x", x + "px"); card.style.setProperty("--y", y + "px");
-      if (!reduceMotion) card.style.transform = `perspective(900px) rotateX(${(y / r.height - .5) * -7}deg) rotateY(${(x / r.width - .5) * 7}deg) translateY(-4px)`;
-    });
-    card.addEventListener("pointerleave", () => { card.style.transform = ""; });
-  });
+  $$(".tilt").forEach((card) => tilt(card, { deg: 7, unit: "px", extra: "translateY(-4px)" }));
 
   // ─── Botones magnéticos y onda al hacer clic ───
+  initMagnetic(".magnetic", { fx: .22, fy: .3 });
   $$(".magnetic").forEach((b) => {
-    if (!reduceMotion) {
-      b.addEventListener("pointermove", (e) => {
-        const r = b.getBoundingClientRect();
-        b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .22}px, ${(e.clientY - r.top - r.height / 2) * .3}px)`;
-      });
-      b.addEventListener("pointerleave", () => { b.style.transform = ""; });
-    }
     b.addEventListener("click", (e) => {
       const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height), ink = document.createElement("span");
       ink.className = "ripple"; ink.style.cssText = `width:${s}px;height:${s}px;left:${e.clientX - r.left - s / 2}px;top:${e.clientY - r.top - s / 2}px`;

@@ -1,0 +1,21 @@
+/* Ruido de fondo (ui/Grain.astro). Los valores de cada página llegan como variables en el atributo style. */
+.fx-grain {
+  position: fixed;
+  inset: var(--grain-inset, 0);
+  z-index: var(--grain-z, 1);
+  pointer-events: none;
+  opacity: var(--grain-opacity, .07);
+  mix-blend-mode: var(--grain-blend, normal);
+  background-image: var(--grain-img);
+}
+/* Con `move`: el ruido salta entre cinco posiciones (--grain-k1…k5) en 6 pasos para que no se vea fijo */
+.fx-grain[data-move] { animation: fx-grain var(--grain-dur, 1.2s) steps(6) infinite }
+@keyframes fx-grain {
+  0% { transform: translate(0, 0) }
+  20% { transform: var(--grain-k1) }
+  40% { transform: var(--grain-k2) }
+  60% { transform: var(--grain-k3) }
+  80% { transform: var(--grain-k4) }
+  100% { transform: var(--grain-k5, translate(0, 0)) }
+}
+@media (prefers-reduced-motion: reduce) { .fx-grain { animation: none } }

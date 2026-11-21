@@ -12,11 +12,12 @@ interface Props {
   external?: boolean;     // abre en otra pestaña (tiendas, GitHub)
   download?: boolean;     // descarga: confeti y aviso (core/celebrate.ts)
   disabled?: boolean;     // «Próximamente»: se ve, pero no es un enlace
+  version?: string;       // versión del instalador (data-app-version: el aviso de descarga la muestra)
 }
-const { href, variant = 'primary', size, ring = false, external = false, download = false, disabled = false } = Astro.props;
+const { href, variant = 'primary', size, ring = false, external = false, download = false, disabled = false, version } = Astro.props;
 const classes = ['ui-btn', `ui-btn-${variant}`, size && `ui-btn-${size}`, ring && 'ui-btn-ring', !disabled && 'magnetic'];
 ---
 {disabled
   ? <span class:list={[classes, 'is-disabled']} aria-disabled="true"><slot /></span>
   : <a class:list={classes} href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}
-       download={download || undefined} data-download={download || undefined}><slot /></a>}
+       download={download || undefined} data-download={download || undefined} data-app-version={version}><slot /></a>}

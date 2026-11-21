@@ -11,7 +11,7 @@
 | 4 · Home | ✅ Menú, órbita, dock y pie desde `apps.json`; spotlights desde `home.json` con un componente `Spot`; cada visual es un componente con su `mount(root)`. `assets/app.js` y `assets/styles.css` desaparecieron. |
 | 5 · Apps móviles | ✅ Super Pets (`SuperpetsShell`) e iLegato (`IlegatoShell`, legales con encabezado común); enlaces de tienda y banner de App Store desde `apps.json`. |
 | 6 · CV | ✅ `cv.json` es la única fuente de `/CV/` y `/CV/pdf/` (las dos hojas del PDF se generan al compilar); EmailJS y reCAPTCHA solo en el build de producción; html2canvas, jsPDF y EmailJS van por npm. `musica/` en Astro. |
-| 7 · Curso y limpieza | ✅ `tools/sync_curso.py`; `astro check` en `npm run check`. Pendiente opcional: cargar `indice-busqueda.js` del curso solo al enfocar el buscador (en su repo). |
+| 7 · Limpieza | ✅ `astro check` en `npm run check`. |
 
 Descargas: los `.dmg`/`.pkg`/`.zip` salieron del repo y se publican en **GitHub Releases** (ver §4 bis).
 La guía de trabajo diaria está en `CLAUDE.md`.
@@ -27,7 +27,6 @@ El sitio creció página por página, y cada página nueva se armó copiando la 
 5. Mantener GitHub Pages, el SEO actual y **todas las URLs exactas**.
 
 Decisiones ya tomadas con el usuario:
-- El curso de Python **mantiene su generador** en `~/Desarrollo/curso`. Aquí solo se copia lo que genera.
 - **Base común + tema por app**: un solo sistema de componentes y tokens; cada app define su paleta, sus fuentes y sus secciones únicas.
 
 ---
@@ -45,7 +44,6 @@ Decisiones ya tomadas con el usuario:
 | Catálogo de apps | Nombre, versión, descarga, tienda e icono de cada app están repetidos en `tools/seo.py` (dict `APPS`), en el HTML de la home (tarjetas, dropdown, dock) y en cada página. |
 | Nav y footer | Cada app tiene los suyos y no son consistentes: unas enlazan a la home y otras no. Las páginas legales de `superpets` copian el mismo nav y footer en 5 archivos, y las de `ilegato` en 4. |
 | CV | Los datos del CV están **3 veces**: `CV/js/app.js` (`TRANSLATIONS`), `CV/pdf/index.html` (`DATA`) y `CV/lang/*.json`, que **ningún archivo usa** (código muerto). EmailJS envía correos reales también en local. |
-| Curso de Python | Está bien hecho en su propio repo, pero `indice-busqueda.js` (**1,4 MB**) se carga en cada lección. El SEO y el seasonal se le inyectan a mano después de copiarlo. |
 | Build | `build.js` copia todo a `dist/` y solo minifica `CV/`. No hay plantillas ni componentes. |
 | URLs de producción | Casi todas salen de `seo.py` (canonical, og:*, JSON-LD, sitemap, robots), que tiene `SITE = 'https://ierwinx.com'` fijo. Hay además algunas a mano en `CV/index.html` y `musica/index.html`. |
 | Lo que ya está bien | `assets/seasonal.{js,css}` ya es compartido. `seo.py` es idempotente y completo. `serve.py` resuelve el detalle de IPv6 en Safari. `whileVisible()` de la home (las demos solo corren mientras se ven en pantalla). |
@@ -116,13 +114,11 @@ cv/
 │     └─ CV/index.astro, CV/pdf/index.astro  (mayúsculas: GitHub Pages distingue mayúsculas)
 ├─ public/   se copia tal cual y con las mismas rutas
 │  ├─ CNAME, BingSiteAuth.xml, <clave IndexNow>.txt
-│  ├─ assets/ favicons, logo, og/*.jpg, icons/, seasonal.js, seasonal.css (URL estable, la usa también el curso)
+│  ├─ assets/ favicons, logo, og/*.jpg, icons/, seasonal.js, seasonal.css
 │  ├─ <app>/  imágenes de cada app (los instaladores van a GitHub Releases, ver §4 bis)
-│  ├─ python/ salida del curso (la escribe tools/sync_curso.py)
 │  └─ CV/img/
 └─ tools/
    ├─ seo.py          SE CONSERVA (ver §4)
-   ├─ sync_curso.py   NUEVO: corre ~/Desarrollo/curso/build.py, copia salida/ → public/python/ e inyecta seasonal
    ├─ check_site.py   NUEVO: verificaciones del build (ver §6)
    ├─ indexnow.py     lee dist/sitemap.xml
    └─ og-maker.html, og-receiver.py   sin cambios
@@ -143,7 +139,6 @@ cv/
 | Super Pets / iLegato: footer con legales y enlace a la home | Footer único y consistente en todas las apps. |
 | Super Pets: `Tour` (teléfono fijo) y `Gallery` (coverflow) | Disponibles para iLegato y futuras apps móviles. |
 | iBridge / iCSV / iConverter / iSpecter: FAQ | Componente `Faq` para cualquier app. |
-| Curso: «saltar al contenido» | Incluido en `BaseLayout`. |
 | La mayoría: `prefers-reduced-motion` | Aplicado de forma central en `motion.ts` y en `effects.css`. |
 | `seasonal.js` | Se queda igual (ya era compartido). |
 
@@ -198,7 +193,7 @@ archivos de hasta 2 GB, no cuenta para el tamaño del repo y da URLs estables:
 4. **Home.** Tarjetas, dropdown y dock generados desde `apps.json`. Las demos se reutilizan en modo `compact` y `assets/app.js` y `assets/styles.css` desaparecen.
 5. **Apps móviles:** Super Pets e iLegato, con `LegalLayout`, `Tour` y `Gallery`.
 6. **CV:** `cv.json` como única fuente para `/CV/` y `/CV/pdf/`, EmailJS protegido y borrado de `CV/lang/*.json`. Redirección de `musica`.
-7. **Curso y limpieza:** `tools/sync_curso.py`, borrar lo que quede del legado y actualizar el `README`. Opcional, en el repo del curso: cargar `indice-busqueda.js` solo al enfocar el buscador.
+7. **Limpieza:** borrar lo que quede del legado y actualizar el `README`.
 
 Cada fase termina en un commit desplegable.
 
