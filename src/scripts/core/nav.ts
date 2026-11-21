@@ -1,6 +1,7 @@
 // Nav común de las páginas de app (components/layout/Nav.astro): se encoge al hacer scroll, abre el menú
 // en móvil y marca el enlace de la sección visible.
 import { $, $$ } from './dom';
+import { initNavScrolled } from './scroll';
 
 export function initNav() {
   const nav = $('[data-ui-nav]');
@@ -16,12 +17,13 @@ export function initNav() {
   menu.addEventListener('click', () => setOpen(!links.classList.contains('is-open')));
   $$('a', links).forEach((a) => a.addEventListener('click', () => setOpen(false)));
 
-  const onScroll = () => nav.classList.toggle('is-scrolled', scrollY > 20);
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  initNavScrolled(nav);
 
-  // Enlace activo según la sección visible
-  const anchors = $$<HTMLAnchorElement>('a[href^="#"]', links);
+  initSectionSpy($$<HTMLAnchorElement>('a[href^="#"]', links));
+}
+
+/** Enlace activo (.is-active) según la sección visible. */
+export function initSectionSpy(anchors: HTMLAnchorElement[]) {
   if (!anchors.length) return;
   const spy = new IntersectionObserver((entries) => {
     for (const e of entries) {

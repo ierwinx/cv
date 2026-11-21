@@ -3,15 +3,17 @@
 import { initNav } from '../core/nav';
 import { initGlyphs } from '../core/glyphs';
 import { $, $$ } from '../core/dom';
-import { reduceMotion as reduce } from '../core/motion';
-import { initMagnetic } from '../core/pointer';
+import { finePointer, reduceMotion as reduce } from '../core/motion';
+import { initMagnetic, tilt } from '../core/pointer';
+import { initReveal } from '../core/reveal';
+import { initScrollProgress } from '../core/scroll';
+import { initCursorGlow } from '../core/cursor';
 import { frameLoop } from '../core/loop';
 import { toast } from '../core/celebrate';
 import { initCounters, plainCount } from '../core/counters';
 import { mount as mountDemo } from '../demos/iconverter';
 import { initContactForms } from '../core/contact';
 
-const finePointer = matchMedia('(pointer: fine)').matches;
 $$('[data-iconverter]').forEach(mountDemo);
 
 /* ── Aviso al descargar ── */
@@ -22,20 +24,11 @@ $$('[data-download]').forEach((b) => {
 /* ── Barra de scroll (la nav es la común: core/nav) ── */
 initNav();
 initGlyphs();
-const sbar = $('.scroll-bar')!;
-function onScroll() {
-  const y = scrollY, h = document.documentElement.scrollHeight - innerHeight;
-  sbar.style.transform = `scaleX(${h > 0 ? y / h : 0})`;
-}
-addEventListener('scroll', onScroll, { passive: true }); onScroll();
+initScrollProgress($('.scroll-bar'));
 
 /* ── Brillo que sigue al cursor ── */
 const glow = $('.cursor-glow')!;
-if (finePointer && !reduce) {
-  let gx = 0, gy = 0, tx = 0, ty = 0;
-  addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; });
-  (function loop() { gx += (tx - gx) * .12; gy += (ty - gy) * .12; glow.style.left = gx + 'px'; glow.style.top = gy + 'px'; requestAnimationFrame(loop); })();
-} else glow.remove();
+if (!initCursorGlow({ el: glow, mode: 'position', ease: .12, fineOnly: true, respectReduce: true })) glow.remove();
 
 /* ── Rotador de palabras ── */
 (() => {
@@ -101,25 +94,14 @@ if (finePointer && !reduce) {
 if (finePointer) initMagnetic();
 
 /* ── Spotlight + tilt en tarjetas ── */
-if (finePointer && !reduce) $$('.tilt').forEach((c) => {
-  c.addEventListener('pointermove', (e) => {
-    const r = c.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-    c.style.setProperty('--mx', x + 'px'); c.style.setProperty('--my', y + 'px');
-    c.style.transform = `perspective(900px) rotateX(${(y / r.height - .5) * -5}deg) rotateY(${(x / r.width - .5) * 5}deg)`;
-  });
-  c.addEventListener('pointerleave', () => { c.style.transform = ''; });
-});
+if (finePointer && !reduce) $$('.tilt').forEach((c) => tilt(c, { deg: 5, x: '--mx', y: '--my', unit: 'px' }));
 
 /* ── Visuales de las tarjetas ── */
 $('#cores')!.innerHTML = Array.from({ length: 20 }, (_, i) => `<i style="animation-delay:${(i % 10) * .12 + Math.floor(i / 10) * .5}s"></i>`).join('');
 $('#eq')!.innerHTML = Array.from({ length: 22 }, () => `<i style="animation-delay:${-Math.random()}s;animation-duration:${.6 + Math.random() * .8}s"></i>`).join('');
 
 /* ── Reveal al hacer scroll ── */
-const io = new IntersectionObserver((es) => es.forEach((e) => {
-  if (!e.isIntersecting) return;
-  e.target.classList.add('in'); io.unobserve(e.target);
-}), { threshold: .15, rootMargin: '0px 0px -60px 0px' });
-$$('.reveal').forEach((el) => io.observe(el));
+initReveal('.reveal', { stagger: 0, rootMargin: '0px 0px -60px 0px' });
 
 /* ── Contadores ── */
 initCounters('[data-count]', { duration: 1600, threshold: .5, format: plainCount });

@@ -1,27 +1,22 @@
 // Super Pets · animaciones e interacción de todas sus páginas (las monta components/superpets/SuperpetsShell).
 import { $, $$ } from '../core/dom';
-import { reduceMotion as reduced } from '../core/motion';
+import { hoverPointer as finePointer, reduceMotion as reduced } from '../core/motion';
 import { confetti } from '../core/celebrate';
 import { countUp } from '../core/counters';
 import { initContactForms } from '../core/contact';
 import { initNav } from '../core/nav';
 import { initGlyphs } from '../core/glyphs';
+import { initReveal, onceVisible } from '../core/reveal';
+import { initScrollProgress } from '../core/scroll';
+import { initMagnetic, tilt } from '../core/pointer';
 
 (() => {
-    const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
     initNav();
     initGlyphs();
 
-    const progress = $('.scroll-progress');
-    const onScroll = () => {
-        const y = scrollY;
-        const max = document.documentElement.scrollHeight - innerHeight;
-        progress!.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
-    };
-    addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    initScrollProgress($('.scroll-progress'));
 
     // ── Títulos palabra por palabra ──────────
     $$('.split').forEach((el) => {
@@ -60,26 +55,20 @@ import { initGlyphs } from '../core/glyphs';
         format: (v, e) => (e.dataset.format === 'es' ? Math.round(v).toLocaleString('en-US') : String(Math.round(v))),
     });
 
-    const revealObs = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-            if (!e.isIntersecting) return;
-            const el = e.target as HTMLElement;
-            el.classList.add('is-in');
-            $$('[data-count]', el).forEach(runCounter);
-            if (el.matches('[data-count]')) runCounter(el);
-            // Quita el retraso de entrada para que el hover responda al instante
-            setTimeout(() => { el.style.transitionDelay = '0s'; }, 1400);
-            revealObs.unobserve(el);
-        });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
-    $$('.reveal').forEach((el) => revealObs.observe(el));
-
     // Páginas legales y de soporte: los bloques también aparecen con scroll
     $$('.legal > *, .support > *').forEach((el, i) => {
         el.classList.add('reveal');
         el.style.setProperty('--d', `${Math.min(i, 6) * 0.05}s`);
-        revealObs.observe(el);
+    });
+
+    initReveal('.reveal', {
+        className: 'is-in', stagger: 0, rootMargin: '0px 0px -40px 0px',
+        onEnter: (el) => {
+            $$('[data-count]', el).forEach(runCounter);
+            if (el.matches('[data-count]')) runCounter(el);
+            // Quita el retraso de entrada para que el hover responda al instante
+            setTimeout(() => { el.style.transitionDelay = '0s'; }, 1400);
+        },
     });
 
     // ── Hero: parallax con el mouse ──────────
@@ -99,33 +88,15 @@ import { initGlyphs } from '../core/glyphs';
 
     // ── Tarjetas: brillo que sigue al cursor + inclinación 3D ──
     if (finePointer) {
-        $$('.card, .support-card').forEach((card) => {
-            card.addEventListener('mousemove', (e) => {
-                const r = card.getBoundingClientRect();
-                const px = (e.clientX - r.left) / r.width;
-                const py = (e.clientY - r.top) / r.height;
-                card.style.setProperty('--mx', `${px * 100}%`);
-                card.style.setProperty('--my', `${py * 100}%`);
-                if (!reduced && card.classList.contains('card') && card.classList.contains('is-in')) {
-                    card.style.transform = `perspective(900px) rotateX(${(0.5 - py) * 7}deg) rotateY(${(px - 0.5) * 9}deg) translateY(-4px)`;
-                }
-            });
-            card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-        });
+        // Solo las .card ya aparecidas se inclinan; .support-card solo lleva el brillo
+        $$('.card, .support-card').forEach((card) => tilt(card, {
+            degX: 7, degY: 9, x: '--mx', y: '--my', extra: 'translateY(-4px)',
+            rotate: (el) => !reduced && el.classList.contains('card') && el.classList.contains('is-in'),
+        }));
     }
 
     // ── Botones magnéticos ───────────────────
-    if (finePointer && !reduced) {
-        $$('.magnetic').forEach((el) => {
-            el.addEventListener('mousemove', (e) => {
-                const r = el.getBoundingClientRect();
-                const x = e.clientX - r.left - r.width / 2;
-                const y = e.clientY - r.top - r.height / 2;
-                el.style.transform = `translate(${x * 0.22}px, ${y * 0.32}px)`;
-            });
-            el.addEventListener('mouseleave', () => { el.style.transform = ''; });
-        });
-    }
+    if (finePointer) initMagnetic('.magnetic', { fx: 0.22, fy: 0.32 });
 
     // ── Huellitas que siguen al cursor ───────
     if (finePointer && !reduced) {
@@ -260,14 +231,10 @@ import { initGlyphs } from '../core/glyphs';
         });
 
         const card = $('#ctaCard')!;
-        new IntersectionObserver((entries, obs) => {
-            if (!entries[0].isIntersecting) return;
-            setTimeout(() => {
-                burst(canvas.offsetWidth * 0.2, canvas.offsetHeight * 0.6, 90);
-                burst(canvas.offsetWidth * 0.8, canvas.offsetHeight * 0.6, 90);
-            }, 400);
-            obs.disconnect();
-        }, { threshold: 0.5 }).observe(card);
+        onceVisible(card, () => setTimeout(() => {
+            burst(canvas.offsetWidth * 0.2, canvas.offsetHeight * 0.6, 90);
+            burst(canvas.offsetWidth * 0.8, canvas.offsetHeight * 0.6, 90);
+        }, 400), { threshold: 0.5 });
 
         let last = 0;
         $('.ui-btn', card)?.addEventListener('mouseenter', (e) => {

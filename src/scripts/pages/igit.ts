@@ -1,7 +1,10 @@
 // iGit · landing. Efectos de la página; la demo de la terminal es components/demos/IgitDemo.
 import { $, $$ } from '../core/dom';
-import { reduceMotion as reduced } from '../core/motion';
-import { initMagnetic } from '../core/pointer';
+import { finePointer, reduceMotion as reduced } from '../core/motion';
+import { initMagnetic, tilt } from '../core/pointer';
+import { initReveal } from '../core/reveal';
+import { initScrollVar } from '../core/scroll';
+import { initCursorGlow } from '../core/cursor';
 import { initNav } from '../core/nav';
 import { initGlyphs } from '../core/glyphs';
 import { frameLoop } from '../core/loop';
@@ -10,62 +13,29 @@ import { countUp, plainCount } from '../core/counters';
 import { initScramble } from '../core/scramble';
 import { mount as mountDemo } from '../demos/igit';
 
-const finePointer = matchMedia('(pointer: fine)').matches;
-const root = document.documentElement;
-root.classList.remove('no-js');
+document.documentElement.classList.remove('no-js');
 $$('[data-tui]').forEach((tui) => mountDemo(tui.parentElement!));
 
 /* ───────────── Aparición al hacer scroll ───────────── */
-const io = new IntersectionObserver((entries) => {
-  for (const e of entries) {
-    if (!e.isIntersecting) continue;
-    e.target.classList.add('in');
-    io.unobserve(e.target);
-  }
-}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-$$('.reveal').forEach((el, i) => {
-  el.style.transitionDelay = `${Math.min((i % 6) * 70, 350)}ms`;
-  io.observe(el);
-});
+initReveal('.reveal', { stagger: 70, every: 6, maxDelay: 350, rootMargin: '0px 0px -40px 0px' });
 
 // Anillos, barras y contadores
-const statsIO = new IntersectionObserver((entries) => {
-  for (const e of entries) {
-    if (!e.isIntersecting) continue;
-    e.target.classList.add('in');
-    $$('[data-count]', e.target).forEach((el) => countUp(el, { duration: 1600, format: plainCount }));
-    statsIO.unobserve(e.target);
-  }
-}, { threshold: 0.4 });
-$$('.stat, .race').forEach((el) => statsIO.observe(el));
+initReveal('.stat, .race', {
+  stagger: 0, threshold: 0.4,
+  onEnter: (el) => $$('[data-count]', el).forEach((n) => countUp(n, { duration: 1600, format: plainCount })),
+});
 
 /* ───────────── Barra de progreso (la nav es la común: core/nav) ───────────── */
-const onScroll = () => {
-  const max = root.scrollHeight - innerHeight;
-  root.style.setProperty('--scroll', max > 0 ? (scrollY / max).toFixed(4) : '0');
-};
-addEventListener('scroll', onScroll, { passive: true });
-onScroll();
+initScrollVar();
 
 /* ───────────── Foco de luz que sigue al ratón ───────────── */
-if (finePointer && !reduced) {
-  addEventListener('pointermove', (e) => {
-    root.style.setProperty('--mx', `${e.clientX}px`);
-    root.style.setProperty('--my', `${e.clientY}px`);
-  }, { passive: true });
-}
+initCursorGlow({ fineOnly: true, respectReduce: true });
 
 /* ───────────── Inclinación 3D y brillo de tarjetas ───────────── */
 $$('.tilt').forEach((el) => {
-  const strength = el.classList.contains('term') ? 4 : 7;
-  el.addEventListener('pointermove', (e) => {
-    const r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width;
-    const y = (e.clientY - r.top) / r.height;
-    el.style.setProperty('--cx', `${x * 100}%`);
-    el.style.setProperty('--cy', `${y * 100}%`);
-    if (!finePointer || reduced) return;
-    el.style.transform = `rotateX(${(0.5 - y) * strength}deg) rotateY(${(x - 0.5) * strength}deg) translateZ(0)`;
+  tilt(el, {
+    deg: el.classList.contains('term') ? 4 : 7, perspective: 0, x: '--cx', y: '--cy', extra: 'translateZ(0)',
+    rotate: finePointer && !reduced,
   });
   el.addEventListener('pointerleave', () => {
     el.style.transition = 'transform .6s cubic-bezier(.2,.8,.2,1)';
@@ -128,7 +98,7 @@ $$('[data-download]').forEach((btn) => btn.addEventListener('click', (e) => {
   const a = document.createElement('a');
   a.href = (btn as HTMLAnchorElement).href; a.setAttribute('download', '');
   document.body.appendChild(a); a.click(); a.remove();
-  toast('✨ <b>¡Gracias!</b> Tu descarga de iGit 1.0.0 ha comenzado.', { ms: 3800 });
+  toast(`✨ <b>¡Gracias!</b> Tu descarga de iGit ${btn.dataset.appVersion ?? ''} ha comenzado.`, { ms: 3800 });
 }));
 
 /* ───────────── Teclado interactivo ───────────── */

@@ -82,15 +82,6 @@ def download_url(app):
 # Reference used inside other entities: self-contained, so each page stands on its own.
 ORG_REF = {'@type': 'Organization', '@id': SITE + '/#organization', 'name': 'ierwinx', 'url': SITE + '/'}
 
-PYTHON_MODULES = {
-    'primeros-pasos': 'Primeros pasos',
-    'fundamentos': 'Fundamentos de Python',
-    'terminal': 'Aplicaciones de terminal',
-    'tkinter': 'Aplicaciones con Tkinter',
-    'django': 'Webs con Django',
-    'apis': 'APIs REST',
-}
-
 
 # ── helpers ──────────────────────────────────────────────────────────────
 
@@ -170,7 +161,7 @@ def page_meta(rel, text):
                 '@type': 'ItemList', 'name': 'Apps de ierwinx',
                 'itemListElement': [
                     {'@type': 'ListItem', 'position': i, 'name': n, 'url': u}
-                    for i, (n, u) in enumerate(apps + [('Curso de Python', SITE + '/python/')], 1)
+                    for i, (n, u) in enumerate(apps, 1)
                 ],
             },
         ]
@@ -188,49 +179,6 @@ def page_meta(rel, text):
         crumbs = [('ierwinx', SITE + '/'), (app['name'], url_for(rel.split('/')[0] + '/index.html')),
                   (title.split(' — ')[0], url)]
         return title, description, app['image'], 'website', [breadcrumb(crumbs)], None
-
-    if rel == 'python/index.html':
-        course = {
-            '@type': 'Course',
-            'name': 'Curso de Python',
-            'description': description,
-            'url': url,
-            'image': OG + 'python.jpg',
-            'inLanguage': 'es',
-            'isAccessibleForFree': True,
-            'provider': ORG_REF,
-            'offers': {'@type': 'Offer', 'category': 'Free', 'price': '0', 'priceCurrency': 'USD'},
-            'hasCourseInstance': {'@type': 'CourseInstance', 'courseMode': 'Online', 'inLanguage': 'es'},
-            'teaches': ['Python', 'Aplicaciones de terminal', 'Tkinter', 'Django', 'APIs REST'],
-        }
-        return title, description, 'python.jpg', 'website', [course, BRAND,
-                breadcrumb([('ierwinx', SITE + '/'), ('Curso de Python', url)])], None
-
-    if rel.startswith('python/'):
-        parts = rel.split('/')
-        crumbs = [('ierwinx', SITE + '/'), ('Curso de Python', SITE + '/python/')]
-        module = parts[1] if len(parts) > 2 else None
-        if module:
-            crumbs.append((PYTHON_MODULES.get(module, module.replace('-', ' ').capitalize()),
-                           f'{SITE}/python/{module}/'))
-        if not rel.endswith('/index.html'):
-            crumbs.append((title.split(' · ')[0], url))
-        graph = [breadcrumb(crumbs)]
-        og_type = 'website'
-        if not rel.endswith('/index.html'):
-            og_type = 'article'
-            graph.append({
-                '@type': 'LearningResource',
-                'name': title.split(' · ')[0],
-                'description': description,
-                'url': url,
-                'inLanguage': 'es',
-                'isAccessibleForFree': True,
-                'learningResourceType': 'Lección',
-                'isPartOf': {'@type': 'Course', 'name': 'Curso de Python', 'url': SITE + '/python/'},
-                'provider': ORG_REF,
-            })
-        return title, description, 'python.jpg', og_type, graph, None
 
     return title, description, 'home.jpg', 'website', None, None
 
@@ -353,10 +301,8 @@ def write_sitemap(pages):
     def priority(rel):
         if rel == 'index.html':
             return '1.0'
-        if rel in APPS or rel == 'python/index.html':
+        if rel in APPS:
             return '0.9'
-        if rel.startswith('python/') and rel.endswith('/index.html'):
-            return '0.7'
         return '0.5'
 
     dates = commit_dates()

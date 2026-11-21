@@ -1,6 +1,7 @@
 // Demo de iGit: recreación de su pantalla real. Elige archivos y líneas, escribe el mensaje, hace commit
 // y sube a GitHub, con las teclas en pantalla. La usan /igit/ y la home (components/demos/IgitDemo.astro).
 import { reduceMotion, sleep, whileVisible } from '../core/motion';
+import { esc } from '../core/dom';
 
 const COLS = 96;
 const SPIN = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏';
@@ -48,7 +49,6 @@ const FILES: File[] = [
   ] },
 ];
 
-const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const swift = (code: string) => esc(code)
   .replace(/("[^"]*")/g, '<span class="str">$1</span>')
   .replace(/\b(package|static|let|var|func|return|guard|else|init|struct|enum|try|await|if|for|in|case)\b/g, '<span class="kw">$1</span>')

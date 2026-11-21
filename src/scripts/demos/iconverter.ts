@@ -10,9 +10,9 @@ const n2 = (i: number) => String(i + 1).padStart(2, '0');
 
 export function mount(root: HTMLElement) {
   // Ganchos data-ic-*: no chocan con [data-count] ni con otros atributos que usan las páginas.
-  const $ = (k: string) => root.querySelector<HTMLElement>(`[data-ic-${k}]`)!;
-  const log = $('log'), fill = $('fill'), count = $('count'), state = $('state'), go = $('go'), bit = $('bit');
-  const segs = [...$('seg').children] as HTMLElement[];
+  const hook = (k: string) => root.querySelector<HTMLElement>(`[data-ic-${k}]`)!;
+  const log = hook('log'), fill = hook('fill'), count = hook('count'), state = hook('state'), go = hook('go'), bit = hook('bit');
+  const segs = [...hook('seg').children] as HTMLElement[];
   const visible = whileVisible(root);
 
   const add = (text: string) => {

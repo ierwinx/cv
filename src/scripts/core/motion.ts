@@ -1,4 +1,10 @@
 export const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+/** Ratón o trackpad (no pantalla táctil). */
+export const finePointer = matchMedia('(pointer: fine)').matches;
+/** Pantalla táctil como puntero principal. */
+export const coarsePointer = matchMedia('(pointer: coarse)').matches;
+/** Puntero fino que además puede pasar por encima (hover) de los elementos. */
+export const hoverPointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 export const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 

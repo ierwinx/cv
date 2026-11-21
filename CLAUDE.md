@@ -1,7 +1,7 @@
 # ierwinx.com
 
 Portafolio y landings de las apps de Erwin (iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, La Baraja, iMount, iSyntonic, iRar, WolfGit, iGit,
-iTunes, iSpecter, iConverter), su CV privado y un curso de Python. Sitio **estático** en GitHub Pages
+iTunes, iSpecter, iConverter) y su CV privado. Sitio **estático** en GitHub Pages
 (dominio `ierwinx.com`, repo público `ierwinx/cv`).
 
 El plan completo y su porqué están en `docs/REDISENO.md`. Este archivo es la guía de trabajo.
@@ -37,33 +37,39 @@ src/data/legal.json    datos REALES de cada app de Mac para /<slug>/privacy, ter
 src/data/home.json     textos de los spotlights de la home (lema, funciones, cifras, botones, colores)
 src/data/cv.json       CV en es/en: la página /CV/ (`web`) y la hoja PDF (`pdf`); los años se calculan al cargar
 src/data/site.json     marca, URL de producción, base de GitHub Releases, descripción de la home
-src/lib/apps.ts        getApp(slug), downloadUrl(app)
+src/lib/apps.ts        getApp(slug), downloadUrl(app) · src/lib/legal.ts: getLegal(slug), legalPaths()
 src/lib/contact.ts     contactAttrs(): a dónde envía el formulario de contacto y si pide reCAPTCHA (al compilar)
-src/styles/            tokens.css (nombres canónicos) · base.css · effects.css (aurora, reveal, toast, keyframes)
+src/styles/            tokens.css (nombres canónicos) · base.css · document.css (en todas: .reveal, aro del cursor)
+                       · effects.css (aurora, toast y keyframes fx-* de las páginas aurora)
                        · devices.css (marcos de iPhone y iPad con capturas: iSyntonic y La Baraja)
 src/styles/pages/      lo que es exclusivo de una página (home.css, ilegato.css, cv.css…)
 src/layouts/           BaseLayout (head, favicon, fuentes, seasonal, «saltar al contenido») · AppPage (head de una
                        app desde apps.json, banner de App Store) · AppLayout (AppPage + tema, ambiente, nav y toast)
 src/components/layout  Ambient, Nav (la de Super Pets), Footer (columnas App/Legal y nombre gigante), Toast
 src/components/ui      Button (el de iLegato), DownloadButton, StoreButtons (App Store y Google Play de una app, o
-                       «Próximamente»), GlyphField (símbolos flotantes de iJson), Icon,
-                       ContactForm (formulario de contacto → micro Backierwinx)
-src/components/legal   LegalShell: documento de privacidad/términos/soporte de src/pages/[slug]/*.astro
+                       «Próximamente»), GlyphField (símbolos flotantes de iJson), Grain (ruido de fondo con props),
+                       Icon (ÚNICA fuente de SVG: apple, android, google-play, flechas…), ContactForm (→ micro Backierwinx)
+src/components/legal   LegalShell: documento de privacidad/términos/soporte de src/pages/[slug]/*.astro ·
+                       PrivacyOwner, PrivacyClosing y SupportContact: bloques que se repiten en todas las legales
 src/components/sections Hero, Section, Bento/BentoCard, Steps, Stats, CompareTable, Principles, Faq, DownloadCta
-src/components/mockups AppWindow (ventana 3D del hero)
+src/components/mockups Window: la ventana de macOS (variante bar de la home; hero: escenario 3D) · AppWindow = Window
+                       hero + window.css (páginas aurora)
 src/components/demos   <App>Demo.astro + <app>.css: demos que comparten la página de la app y la home
                        (IbridgeDemo también es la de iMount con variant="imount": las dos apps comparten interfaz)
 src/components/home    Spot (spotlight genérico), menú/órbita/dock (AppIcon, BrandMark) y los visuales propios de la home
 src/components/<app>   piezas de una sola app: SuperpetsShell, IlegatoShell, cv/Resume
 src/scripts/init.ts    comportamiento común, activado por clases/atributos (ver abajo)
-src/scripts/core/      dom ($, $$, esc), motion (sleep, reduceMotion, whileVisible), loop (frameLoop), ambient,
-                       reveal, counters (countUp, initCounters), pointer (tilt, magnetic), celebrate (confetti, toast),
-                       contact (initContactForm, initContactForms)
-src/scripts/demos/     <app>.ts → export function mount(root)  (ibridge, ixml, igit, iconverter)
-src/scripts/home/      visuales de la home → mount(root) (editores, iTunes, espectrograma, iRar, Academia)
+src/scripts/core/      dom ($, $$, esc), motion (sleep, reduceMotion, finePointer, coarsePointer, hoverPointer,
+                       whileVisible), loop (frameLoop), ambient, reveal (initReveal, onceVisible), scroll
+                       (onScrollProgress, initScrollProgress, initScrollVar, initNavScrolled), cursor (initCursorGlow),
+                       counters (countUp, initCounters), pointer (tilt, initTilt, initMagnetic), celebrate (confetti,
+                       toast), nav (initNav, initSectionSpy), contact (initContactForm, initContactForms)
+src/scripts/demos/     <app>.ts → export function mount(root)  (ibridge, ixml, igit, iconverter) · itunes/: tema,
+                       búfer de celdas, biblioteca y atajos de la TUI de iTunes (la usan /itunes/ y la home)
+src/scripts/home/      visuales de la home → mount(root) (editores, iTunes, espectrograma, iRar)
 src/scripts/pages/     el script de cada página con diseño propio (home.ts, itunes.ts, cv.ts…)
-public/                se copia tal cual a dist/: imágenes, CNAME, verificaciones, assets/seasonal.* y el curso
-tools/                 seo.py, check_site.py, sync_curso.py, release.sh, indexnow.py, og-maker.html, og-receiver.py
+public/                se copia tal cual a dist/: imágenes, CNAME, verificaciones y assets/seasonal.*
+tools/                 seo.py, check_site.py, release.sh, indexnow.py, og-maker.html, og-receiver.py
 ```
 
 ### Reglas para no volver a duplicar
@@ -101,7 +107,24 @@ tools/                 seo.py, check_site.py, sync_curso.py, release.sh, indexno
 - **Los scripts del navegador no importan `cv.json` ni `site.json`:** el primero pesa 11 KB y el segundo trae la
   URL de producción. Si un script necesita un dato, la página lo pone en un atributo `data-*` al compilar.
 - **TypeScript estricto** en todo `src/scripts` (`astro check` lo valida en `npm run check` y en el deploy). Nada
-  de `$`/`$$`/`sleep` locales: impórtalos de `scripts/core`.
+  de `$`/`$$`/`esc`/`sleep` locales: impórtalos de `scripts/core`.
+- **Las páginas con diseño propio también usan `core`**, con opciones para conservar su estilo:
+  `initReveal(selector, {className, stagger, group, delayVar, batchDelay, onEnter})` (aparición y lo que arranca al
+  verse), `onceVisible(el, fn)`, `initScrollProgress(bar, 'scaleX'|'width')` / `onScrollProgress(fn)`,
+  `initCursorGlow({el, mode, x, y, ease, fineOnly})`, `tilt(el, {deg, unit, x, y, extra, rotate})`,
+  `initMagnetic(selector, {fx, fy, vars})`, `finePointer`/`reduceMotion`. `npm run check` avisa si una página vuelve
+  a escribir a mano el reveal, la barra de progreso, `--mx/--my` o un `matchMedia` de puntero o movimiento.
+- **Un solo `.reveal`** (en `document.css`): cada página ajusta variables (`--reveal-from`, `--reveal-filter`,
+  `--reveal-dur`, `--reveal-ease`, `--reveal-filter-ease`, `--reveal-opacity`, `--d` para el retraso), no la regla.
+- **`@keyframes` siempre con prefijo:** `fx-` en `effects.css`, `<página>-` en `styles/pages/<página>.css`
+  (`home-float`, `itunes-blink`) y el de la demo en las demos (`ib-`, `ix-`, `tui-`). Todo el CSS es global; dos
+  `@keyframes float` distintos en la misma página se pisan. `npm run check` lo verifica.
+- **Hex solo en declaraciones de variables** dentro de `components/`: la paleta propia de una demo va al principio de
+  su hoja (`:root { --ib-gray-95: #f2f2f4 }`) y las reglas usan `var(--ib-…)`. `npm run check` lo verifica.
+- **Imágenes en WebP** con `width`/`height` reales en el `<img>` (evita saltos de diseño): capturas a lo más al
+  doble de su tamaño en pantalla, íconos de página a 512 px. Los PNG grandes solo para favicon/`apple-touch-icon`
+  (`apps.json → icon`, `touchIcon`) y para `tools/og-maker.html`. El ícono que se ve en las páginas es
+  `apps.json → home.logo`.
 - **Datos al compilar, no en el navegador:** versiones, tamaños, enlaces de tienda, años y textos repetidos salen de
   `src/data/*.json` en el `.astro`. El JS solo anima.
 - Comentarios y textos en español, como el resto del proyecto.
@@ -209,14 +232,6 @@ Para cambiar el contenido: `tools/release.sh ilegato-musicdemo musicdemo.zip` (r
 `releases/` (ignorada por git) es solo una carpeta
 local de paso. `public/ispecter/downloads/latest.json` sí está en el repo: la página de iSpecter lo lee para
 mostrar versión, tamaño y SHA-256.
-
-## Curso de Python
-
-Se escribe y se genera en **otro repo**: `~/Desarrollo/curso` (Markdown → `build.py` → `salida/`, con
-`verificar.py` y `comprobar.py`). Aquí solo vive su salida en `public/python/`, con el `<link>` y el `<script>` de
-`/assets/seasonal.*` añadidos. **No edites a mano `public/python/`**: cambia el curso allá y copia con
-`python3 tools/sync_curso.py` (corre su `build.py`, reemplaza `public/python/` e inyecta el seasonal;
-`--sin-build` usa `salida/` tal cual).
 
 ## Otros repos que apuntan aquí
 

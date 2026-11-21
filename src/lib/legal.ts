@@ -16,6 +16,9 @@ export type Legal = {
   faq: [question: string, answer: string][];
 };
 
+/** Datos de legal.json de una app (sus preguntas frecuentes también salen en su página). */
+export const getLegal = (slug: string) => (legal.apps as unknown as Record<string, Legal>)[slug];
+
 /** getStaticPaths de las páginas legales: una por app con datos en legal.json. */
 export function legalPaths() {
   return Object.entries(legal.apps as unknown as Record<string, Legal>).map(([slug, data]) => ({

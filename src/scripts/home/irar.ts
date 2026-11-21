@@ -1,6 +1,7 @@
 // Home · iRar: los formatos orbitan el ícono y laten al azar mientras se ven.
 import { $$ } from '../core/dom';
 import { reduceMotion, sleep, whileVisible } from '../core/motion';
+import { onceVisible } from '../core/reveal';
 
 export function mount(root: HTMLElement) {
   const formats = $$('.formats span', root);
@@ -10,11 +11,7 @@ export function mount(root: HTMLElement) {
     f.style.setProperty('--y', (Math.sin(angle) * 40).toFixed(2) + '%');
     f.style.setProperty('--d', i * 60 + 'ms');
   });
-  new IntersectionObserver(([entry], obs) => {
-    if (!entry.isIntersecting) return;
-    root.classList.add('in');
-    obs.disconnect();
-  }, { threshold: 0.3 }).observe(root);
+  onceVisible(root, () => root.classList.add('in'), { threshold: 0.3 });
   if (reduceMotion) return;
 
   const visible = whileVisible(root);

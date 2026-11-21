@@ -3,6 +3,7 @@
 import cv from '../../data/cv.json';
 import { $, $$ } from '../core/dom';
 import { initContactForm } from '../core/contact';
+import { initReveal } from '../core/reveal';
 
 type Lang = 'en' | 'es';
 type Texts = (typeof cv.web)['en'];
@@ -125,7 +126,7 @@ function initModal() {
 
   const degree = $('#degreeContent')!;
   degree.style.cursor = 'pointer';
-  degree.addEventListener('click', () => openCertificate(`<img src="img/certificados/Titulo.jpg" alt="${t.education.certificateAlt}">`));
+  degree.addEventListener('click', () => openCertificate(`<img src="img/certificados/titulo.webp" alt="${t.education.certificateAlt}">`));
 
   // Delegación: las tarjetas se regeneran al cambiar de idioma.
   $('#certsGrid')!.addEventListener('click', (e) => {
@@ -134,7 +135,7 @@ function initModal() {
     const { img, pdf } = item.dataset;
     openCertificate(pdf
       ? `<iframe class="cert-pdf" src="img/certificados/${pdf}.pdf#toolbar=0&view=FitH" title="${t.education.certificateAlt}"></iframe>`
-      : `<img src="img/certificados/${img}.jpg" alt="${t.education.certificateAlt}">`);
+      : `<img src="img/certificados/${img}.webp" alt="${t.education.certificateAlt}">`);
   });
 }
 
@@ -175,12 +176,7 @@ function initForm() {
 
 // ── Efectos ──
 function initScrollAnimations() {
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) setTimeout(() => entry.target.classList.add('visible'), i * 80);
-    });
-  }, { threshold: 0.05 });
-  $$('.card').forEach((card) => io.observe(card));
+  initReveal('.card', { className: 'visible', threshold: 0.05, stagger: 0, batchDelay: 80 });
 }
 
 function initScrollTop() {

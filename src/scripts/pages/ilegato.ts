@@ -2,7 +2,7 @@
 // Todo se pausa fuera de pantalla y respeta "Reducir movimiento". Lo monta components/ilegato/IlegatoShell.
 // Los enlaces del App Store y de Google Play salen de apps.json al compilar.
 import { $, $$ } from '../core/dom';
-import { reduceMotion as reduced } from '../core/motion';
+import { finePointer as fine, reduceMotion as reduced } from '../core/motion';
 import { initCounters } from '../core/counters';
 import { initMagnetic, initTilt } from '../core/pointer';
 import { initReveal } from '../core/reveal';
@@ -10,9 +10,9 @@ import { initNav } from '../core/nav';
 import { initGlyphs } from '../core/glyphs';
 import { frameLoop } from '../core/loop';
 import { initContactForms } from '../core/contact';
+import { initCursorGlow } from '../core/cursor';
+import { initScrollProgress } from '../core/scroll';
 
-const fine = matchMedia('(pointer: fine)').matches;
-const root = document.documentElement;
 const body = document.body;
 
 /** Observa la visibilidad de `el` y llama a `on` en cada cambio. */
@@ -69,21 +69,8 @@ const watch = (el: Element, on: (visible: boolean) => void, threshold = 0) =>
 })();
 
 // ───────── Luz del cursor y barra de progreso ─────────
-(() => {
-  const bar = $('.progress');
-  let px = innerWidth / 2, py = innerHeight * .3, queued = false;
-  const frame = () => {
-    queued = false;
-    root.style.setProperty('--mx', px + 'px');
-    root.style.setProperty('--my', py + 'px');
-    const max = root.scrollHeight - innerHeight;
-    if (bar) bar.style.transform = `scaleX(${max > 0 ? scrollY / max : 0})`;
-  };
-  const ask = () => { if (!queued) { queued = true; requestAnimationFrame(frame); } };
-  addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; ask(); }, { passive: true });
-  addEventListener('scroll', ask, { passive: true });
-  frame();
-})();
+initCursorGlow({ initial: [innerWidth / 2, innerHeight * .3] });
+initScrollProgress($('.progress'));
 
 // ───────── Títulos palabra por palabra ─────────
 // El degradado va en cada palabra: background-clip no cruza los inline-block.

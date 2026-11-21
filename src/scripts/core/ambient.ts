@@ -1,22 +1,11 @@
 import { $ } from './dom';
 import { reduceMotion } from './motion';
 import { frameLoop } from './loop';
+import { initCursorGlow } from './cursor';
+import { initScrollProgress } from './scroll';
 
-/** Foco que sigue al cursor (.spot usa --mx/--my) y barra de progreso de lectura. */
-export function initSpotlight() {
-  const root = document.documentElement.style;
-  addEventListener('pointermove', (e) => {
-    root.setProperty('--mx', e.clientX + 'px');
-    root.setProperty('--my', e.clientY + 'px');
-  });
-}
-
-export function initProgress(bar: HTMLElement) {
-  addEventListener('scroll', () => {
-    const h = document.documentElement;
-    bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100 + '%';
-  }, { passive: true });
-}
+/** Foco que sigue al cursor (.spot usa --mx/--my). */
+export const initSpotlight = () => initCursorGlow();
 
 /** Ventana del hero que se endereza al hacer scroll ([data-scroll-tilt]). */
 export function initScrollTilt(el: HTMLElement) {
@@ -56,7 +45,7 @@ export function initStars(canvas: HTMLCanvasElement) {
 export function initAmbient() {
   initSpotlight();
   const bar = $('#progress');
-  if (bar) initProgress(bar);
+  initScrollProgress(bar, 'width');
   const stars = $<HTMLCanvasElement>('#stars');
   if (stars) initStars(stars);
   const tilt = $('[data-scroll-tilt]');

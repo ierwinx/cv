@@ -4,7 +4,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/pages/home.css';
 import BrandMark from '../components/home/BrandMark.astro';
-import PythonLogo from '../components/home/PythonLogo.astro';
 import AppIcon from '../components/home/AppIcon.astro';
 import Spot from '../components/home/Spot.astro';
 import PhoneShowcase from '../components/home/PhoneShowcase.astro';
@@ -20,17 +19,17 @@ import EditorPlist from '../components/home/EditorPlist.astro';
 import EditorJson from '../components/home/EditorJson.astro';
 import EditorCsv from '../components/home/EditorCsv.astro';
 import EditorXml from '../components/home/EditorXml.astro';
-import CodeWindow from '../components/home/CodeWindow.astro';
 import GlyphField from '../components/ui/GlyphField.astro';
 import apps from '../data/apps.json';
 import home from '../data/home.json';
 import site from '../data/site.json';
 import cv from '../data/cv.json';
 import { getApp, type App } from '../lib/apps';
+import Grain from '../components/ui/Grain.astro';
 
 const all = apps as App[];
 const PHONES: Record<string, { shots: [string, string][]; cards: [string, string, string][]; background?: string }> = {
-  superpets: { shots: [['/superpets/img/foto1.PNG', 'Super Pets: felicitación de cumpleaños de Caramelo'], ['/superpets/img/foto2.PNG', ''], ['/superpets/img/foto10.PNG', '']],
+  superpets: { shots: [['/superpets/img/foto1.webp', 'Super Pets: felicitación de cumpleaños de Caramelo'], ['/superpets/img/foto2.webp', ''], ['/superpets/img/foto10.webp', '']],
     cards: [['💉', 'Vacuna antirrábica', 'Mañana · 10:00'], ['🎂', '¡Caramelo cumple 8!', 'Hoy'], ['🏆', '+25 puntos', 'Perfil completo']] },
   ilegato: { shots: [['/ilegato/img/iphone-reproductor.webp', 'iLegato: reproductor con FLAC de 24 bits'], ['/ilegato/img/iphone-artista.webp', ''], ['/ilegato/img/iphone-ecualizador.webp', ''], ['/ilegato/img/iphone-letras.webp', '']],
     cards: [['🎧', 'FLAC · 24 bit', 'Sin pérdida'], ['🎚️', 'Metalcore', 'Ecualizador · 10 bandas'], ['🚗', 'CarPlay y Android Auto', 'Tu música en el auto']], background: '#07070c' },
@@ -50,7 +49,6 @@ const RING1: [string, number][] = [['wolfgit', 0], ['ilegato', 72], ['labaraja',
 const RING2: [string, number][] = [['irar', 30], ['ispecter', 90], ['igit', 150], ['itunes', 210], ['iplist', 270], ['superpets', 330]];
 const CHIPS: [string, number][] = [['Swift 6', 30], ['SwiftUI', 120], ['Metal', 210], ['Storyboards', 300]];
 const CLIENTS = ['Banco Azteca', 'Super App BAZ', 'STP', 'Grupo Proyectos', 'Grupo Salinas', 'Secretaría de Gobernación'];
-const MODULES = ['Primeros pasos', 'Fundamentos de Python', 'Aplicaciones de terminal', 'Apps de escritorio con Tkinter', 'Webs con Django', 'APIs REST con FastAPI y DRF'];
 const editorsDesc = 'Cuatro editores nativos que hacen una sola cosa cada uno, muy rápido, y guardan tu archivo exactamente como estaba.';
 ---
 <BaseLayout title="ierwinx · Software nativo, hecho con obsesión" description={site.description} themeColor="#07070c"
@@ -64,7 +62,7 @@ const editorsDesc = 'Cuatro editores nativos que hacen una sola cosa cada uno, m
 
   <div class="aurora" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
   <div class="spotlight" aria-hidden="true"></div>
-  <div class="grain" aria-hidden="true"></div>
+  <Grain opacity={0.06} z={100} freq={0.85} />
   <GlyphField glyphs={home.glyphs} colors="--violet,--blue,--mint,--violet,--muted" density={1.2} />
   <div class="progress" aria-hidden="true"></div>
 
@@ -90,15 +88,10 @@ const editorsDesc = 'Cuatro editores nativos que hacen una sola cosa cada uno, m
                 <span><b>{app.name}{app.home?.new && <> <em>Nuevo</em></>}</b><small>{app.home?.tagline}</small></span>
               </a>
             ))}
-            <a class="dd-item" href="#academia">
-              <PythonLogo />
-              <span><b>Curso de Python</b><small>220 lecciones gratis</small></span>
-            </a>
           </div>
           <a class="dd-all" href="#suite">Ver toda la suite →</a>
         </div>
       </div>
-      <a href="#academia">Academia</a>
     </nav>
   </header>
 
@@ -184,20 +177,6 @@ const editorsDesc = 'Cuatro editores nativos que hacen una sola cosa cada uno, m
       })}
     </section>
 
-    <!-- ── Academia ── -->
-    <section class="section" id="academia" data-accent="#3776ab">
-      <div class="academy tilt-soft reveal">
-        <div class="academy-copy">
-          <p class="eyebrow eyebrow--py">ierwinx Academia</p>
-          <h2 class="section-title">Curso de Python.<br><span class="muted">De cero a producción.</span></h2>
-          <p class="spot-desc">Gratis y en español. Una idea por lección, de cinco a quince minutos, con ejemplos para copiar, ejecutar y romper. Hasta las cuatro cosas que la gente construye de verdad con Python.</p>
-          <ol class="modules">{MODULES.map((m, i) => <li><span>{i}</span>{m}</li>)}</ol>
-          <a class="btn btn--py magnetic" href="/python/">Empezar el curso gratis →</a>
-        </div>
-        <CodeWindow />
-      </div>
-    </section>
-
     <!-- ── Experiencia ── -->
     <section class="section" data-accent="#7c5cff">
       <p class="trusted reveal">Experiencia construyendo para</p>
@@ -210,7 +189,6 @@ const editorsDesc = 'Cuatro editores nativos que hacen una sola cosa cada uno, m
       <p class="spot-desc reveal">Nativa, ligera y sin rastreo. Elige por dónde empezar.</p>
       <div class="dock reveal" id="dock">
         {all.map((app) => <a href={`/${app.slug}/`} data-label={app.name}><AppIcon app={app} alt={app.name} /></a>)}
-        <a href="/python/" data-label="Python" class="dock-py"><PythonLogo /></a>
       </div>
     </section>
   </main>
@@ -221,7 +199,7 @@ const editorsDesc = 'Cuatro editores nativos que hacen una sola cosa cada uno, m
       <span>ierwinx</span>
     </div>
     <nav class="footer-links" aria-label="Productos">
-      {all.map((app) => <a href={`/${app.slug}/`}>{app.name}</a>)}<a href="/python/">Python</a>
+      {all.map((app) => <a href={`/${app.slug}/`}>{app.name}</a>)}
     </nav>
     <p>© {new Date().getFullYear()} ierwinx · Hecho a mano en Ciudad de México · <a href="/contacto/">Contacto</a> · <a class="footer-creator" href="/CV/">Conoce al creador</a></p>
   </footer>

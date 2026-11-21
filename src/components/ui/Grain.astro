@@ -1,0 +1,34 @@
+---
+// Grano (ruido) de fondo: un SVG con feTurbulence en mosaico. Cada página lo ajusta con props para conservar su textura.
+// move: hasta cinco posiciones ('-3%, 2%'…) por las que salta el ruido (sin move queda fijo).
+import './grain.css';
+
+interface Props {
+  opacity?: number;
+  z?: number;
+  inset?: string;
+  freq?: number;        // baseFrequency del ruido
+  octaves?: number;
+  size?: number;        // lado del mosaico en px
+  stitch?: boolean;     // stitchTiles: sin costuras entre mosaicos
+  light?: boolean;      // ruido blanco (para mix-blend-mode: overlay)
+  blend?: string;
+  move?: string[];
+  dur?: string;
+}
+const {
+  opacity = .07, z = 1, inset = '0', freq = .9, octaves = 3, size = 160, stitch = true, light = false, blend, move, dur,
+} = Astro.props;
+
+const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'><filter id='n'>`
+  + `<feTurbulence type='fractalNoise' baseFrequency='${freq}' numOctaves='${octaves}'${stitch ? " stitchTiles='stitch'" : ''}/>`
+  + (light ? "<feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/>" : '')
+  + `</filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`;
+
+const style: Record<string, string | number | undefined> = {
+  '--grain-img': `url("data:image/svg+xml,${encodeURIComponent(svg)}")`,
+  '--grain-opacity': opacity, '--grain-z': z, '--grain-inset': inset, '--grain-blend': blend, '--grain-dur': dur,
+};
+move?.forEach((m, i) => { style[`--grain-k${i + 1}`] = `translate(${m})`; });
+---
+<div class="fx-grain" data-move={move ? '' : undefined} style={style} aria-hidden="true"></div>
