@@ -93,7 +93,7 @@ $$('.split').forEach((el) => {
           frag.append(w);
         });
         child.replaceWith(frag);
-      } else if (child instanceof Element) {
+      } else if (child instanceof Element && !child.classList.contains('sr-only')) {
         const isGrad = grad || child.classList.contains('grad');
         child.classList.remove('grad');
         wrap(child, isGrad);
