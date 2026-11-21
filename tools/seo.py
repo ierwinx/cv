@@ -14,6 +14,8 @@ Qué hace:
     LinkedIn), Twitter Card y JSON-LD para Google.
   * /CV/ y todo lo que hay dentro: `noindex, nofollow` y fuera del sitemap,
     para que no aparezcan en buscadores.
+  * privacy.html y terms.html de cada app: `noindex, follow` y fuera del sitemap,
+    para que no compitan con la página principal de la app (soporte sí se indexa).
   * Genera sitemap.xml y robots.txt en la raíz de dist/.
   * Si SITE no es producción, cambia las URLs de producción que queden en el HTML
     por SITE, para que una compilación local nunca enlace a ierwinx.com.
@@ -58,6 +60,15 @@ REDIRECTS = {'musica/index.html': '/iconverter/'}
 def is_private(rel):
     # macOS no distingue mayúsculas; GitHub Pages sí. Comparamos sin importar mayúsculas.
     return rel.lower().startswith(PRIVATE_DIR.lower() + '/')
+
+
+# Privacidad y términos de cada app: públicos (las tiendas piden su URL), pero `noindex, follow` y fuera del
+# sitemap para que no compitan en buscadores con la página de la app. Soporte sí se indexa.
+LEGAL_RE = re.compile(r'[^/]+/(?:privacy|terms)\.html')
+
+
+def is_legal(rel):
+    return bool(LEGAL_RE.fullmatch(rel))
 
 BRAND = {
     '@type': 'Organization',
@@ -206,7 +217,8 @@ def build_block(rel, text):
     lines = [
         '<!-- seo:start · generado por tools/seo.py -->',
         f'<link rel="canonical" href="{url}">',
-        '<meta name="robots" content="index, follow, max-image-preview:large">',
+        '<meta name="robots" content="noindex, follow">' if is_legal(rel)
+        else '<meta name="robots" content="index, follow, max-image-preview:large">',
         f'<meta property="og:type" content="{og_type}">',
         '<meta property="og:site_name" content="ierwinx">',
         '<meta property="og:locale" content="es_MX">',
@@ -293,8 +305,13 @@ def commit_dates():
 
 
 def source_of(rel):
-    """Archivo fuente que genera dist/<rel>: una página de Astro o un archivo de public/."""
-    return [f'src/pages/{rel[:-len(".html")]}.astro', f'public/{rel}']
+    """Archivos fuente que generan dist/<rel>: su página de Astro o su archivo de public/. Si la página sale de
+    la plantilla src/pages/[slug]/ (privacidad, términos y soporte de las apps de Mac), la plantilla y legal.json."""
+    own = [f'src/pages/{rel[:-len(".html")]}.astro', f'public/{rel}']
+    if any(os.path.exists(os.path.join(ROOT, s)) for s in own):
+        return own
+    name = os.path.basename(rel)[:-len('.html')]
+    return [f'src/pages/[slug]/{name}.astro', 'src/data/legal.json']
 
 
 def write_sitemap(pages):
@@ -309,10 +326,10 @@ def write_sitemap(pages):
     today = datetime.date.today().isoformat()
     entries = []
     for rel in pages:
-        if is_private(rel):
+        if is_private(rel) or is_legal(rel):
             continue
-        # La fecha del build no sirve (todo saldría modificado hoy): usamos la del commit de su fuente.
-        lastmod = next((dates[s] for s in source_of(rel) if s in dates), today)
+        # La fecha del build no sirve (todo saldría modificado hoy): usamos la del último commit de sus fuentes.
+        lastmod = max((dates[s] for s in source_of(rel) if s in dates), default=today)
         entries.append(
             f'  <url>\n    <loc>{url_for(rel)}</loc>\n    <lastmod>{lastmod}</lastmod>\n'
             f'    <priority>{priority(rel)}</priority>\n  </url>')

@@ -113,6 +113,11 @@ def check_seo(files):
             if f'/{rel}'.replace('index.html', '') in sitemap:
                 errors.append(f'/{rel} no debe estar en el sitemap')
             continue
+        if re.fullmatch(r'[^/]+/(?:privacy|terms)\.html', rel):
+            if 'content="noindex, follow"' not in text:
+                errors.append(f'/{rel} debe llevar noindex, follow (privacidad y términos no compiten con la app)')
+            if f'/{rel}<' in sitemap:
+                errors.append(f'/{rel} no debe estar en el sitemap')
         blocks = text.count('<!-- seo:start')
         if blocks != 1:
             errors.append(f'/{rel}: {blocks} bloques seo (debe haber 1)')

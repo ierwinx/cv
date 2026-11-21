@@ -192,6 +192,9 @@ eliminar cuenta de Super Pets, iConverter y `/contacto/`. El pie de cada app y s
   `npm run check` lo comprueba.
 - `lastmod` = fecha del último commit del archivo fuente (`src/pages/…astro` o `public/…`). Por eso el workflow
   usa `fetch-depth: 0`.
+- **Privacidad y términos de cada app** (`<slug>/privacy.html`, `terms.html`): `noindex, follow` y fuera del sitemap,
+  para que no le ganen en buscadores a la página de la app. Siguen públicas (las tiendas piden la URL). Soporte sí se
+  indexa. `lastmod` de las páginas de `src/pages/[slug]/` = último commit de la plantilla o de `legal.json`.
 - **`/CV/` va en mayúsculas** (GitHub Pages distingue mayúsculas): siempre `noindex`, fuera del sitemap, y
   `robots.txt` bloquea `/CV/img/`.
 - `musica/` es una redirección a `/iconverter/` (está en `REDIRECTS` de `seo.py`).
