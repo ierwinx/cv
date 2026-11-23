@@ -1,6 +1,6 @@
 ---
-// WolfGit: cliente de Git nativo para Mac (hermano de iGit). Familia aurora; lo único propio son las capturas reales
-// de la app y el selector de temas sin JS (styles/pages/wolfgit.css).
+// WolfGit: cliente de Git nativo para Mac (hermano de iGit). Familia aurora; lo propio son las capturas reales de la
+// app, los selectores sin JS (temas y vistas de cada comparación) y las filas de funciones (styles/pages/wolfgit.css).
 import AppLayout from '../../layouts/AppLayout.astro';
 import Footer from '../../components/layout/Footer.astro';
 import DownloadButton from '../../components/ui/DownloadButton.astro';
@@ -12,6 +12,7 @@ import Bento from '../../components/sections/Bento.astro';
 import BentoCard from '../../components/sections/BentoCard.astro';
 import Steps from '../../components/sections/Steps.astro';
 import Principles from '../../components/sections/Principles.astro';
+import CompareTable from '../../components/sections/CompareTable.astro';
 import Faq from '../../components/sections/Faq.astro';
 import DownloadCta from '../../components/sections/DownloadCta.astro';
 import { getApp } from '../../lib/apps';
@@ -26,42 +27,163 @@ const THEMES: [id: string, name: string, note: string][] = [
   ['copper', 'Cobre', 'Pelaje rojizo, tonos cálidos'],
   ['midnight', 'Medianoche', 'Negro puro para pantallas OLED'],
 ];
+// Vistas de cada comparación con selector: [id, pestaña, imagen, texto alternativo].
+type View = [id: string, tab: string, img: string, alt: string];
+const IMAGE_VIEWS: View[] = [
+  ['slider', 'Deslizador', 'imagenes-deslizador', 'Comparación de una foto con deslizador: a la izquierda de la línea la versión anterior, a la derecha la nueva con nieve en la montaña'],
+  ['onion', 'Papel cebolla', 'imagenes-cebolla', 'Comparación en papel cebolla: la versión nueva encima de la anterior, con un control de transparencia abajo'],
+];
+const MARKDOWN_VIEWS: View[] = [
+  ['blocks', 'Cambios por bloque', 'markdown-classic', 'README renderizado con sus cambios marcados por bloque y por palabra, y el aviso de imágenes de internet'],
+  ['diagrams', 'Mermaid y fórmulas', 'diagramas-classic', 'Documento con un diagrama de flujo de Mermaid y una fórmula dibujados dentro de la app'],
+];
+// Lo que se ve al revisar antes de subir: [imagen, etiqueta, título, texto, texto alternativo].
+const REVIEW: [img: string, kicker: string, title: string, text: string, alt: string][] = [
+  ['secretos-classic', 'Detector de secretos', 'Un secreto no llega a tu historial', 'Antes de cada commit revisa solo las líneas que entran. Si ve una llave privada, un token de GitHub o de Slack, una llave de AWS o de API, o un archivo <code class="kbd">.env</code>, te avisa con el secreto enmascarado.', 'Aviso «Esto parece un secreto» con una llave de AWS enmascarada en Config/Cloud.swift'],
+  ['blame-classic', 'Blame', '¿Quién cambió cada línea?', 'Blame con autor, fecha y commit de cada línea. Un clic en un commit te lleva a él en el Historial.', 'Blame de RemoteSession.swift: cada línea con su commit y su autora'],
+  ['conflictos-classic', 'Conflictos', 'Conflictos de tres vías', 'Elige bloque por bloque tu versión, la suya, las dos o edita el resultado, y salta de un conflicto al siguiente.', 'Editor de conflictos: la línea de main y la de la otra rama, con los botones para elegir'],
+  ['buscar-classic', 'Historial', 'Busca en tu historia', 'Por mensaje o SHA, por autor o por código. También el historial de un solo archivo, aunque haya cambiado de nombre.', 'Búsqueda por código en el historial: un commit coincide con «channel»'],
+];
 ---
 <AppLayout slug="wolfgit" stars
-  nav={[['#funciones', 'Funciones'], ['#imagenes', 'Imágenes'], ['#widget', 'Widget'], ['#temas', 'Temas'], ['#lobito', 'El lobito'], ['#preguntas', 'Preguntas']]}
+  nav={[['#comparar', 'Comparar'], ['#revisar', 'Revisar'], ['#funciones', 'Funciones'], ['#widget', 'Widget'], ['#temas', 'Temas'], ['#lobito', 'El lobito'], ['#preguntas', 'Preguntas']]}
   toast="🐺 ¡Gracias por descargar WolfGit! Arrástralo a Aplicaciones y abre tu primer repositorio.">
 
   <Hero name={app.name} icon={app.home!.logo} iconAlt="Ícono de WolfGit" pill={`WolfGit ${app.version} · nativo para macOS 27`}
         title="Git nativo para Mac," accent="con su lobito." scramble
         meta={['Firmado y notarizado por Apple', 'Apple Silicon', 'Gratis para uso personal']}>
-    <Fragment slot="lead">Un cliente de Git <strong>nativo</strong>, hecho en SwiftUI: elige <strong>línea por línea</strong> qué entra en tu commit, compara <strong>imágenes lado a lado</strong>, recorre tu historial con las flechas y <strong>deshaz</strong> lo que no querías. Todo con tu git real y un husky que reacciona a lo que haces.</Fragment>
+    <Fragment slot="lead">Un cliente de Git <strong>nativo</strong>, hecho en SwiftUI, que abre lo que otros llaman «archivo binario»: compara <strong>imágenes</strong> con deslizador, <strong>Markdown</strong> renderizado, <strong>PDF</strong> página por página y <strong>audio</strong> con su forma de onda. Elige línea por línea qué entra en tu commit y frena un secreto antes de que llegue a tu historial. Con tu git real y un husky que reacciona a lo que haces.</Fragment>
     <Fragment slot="cta">
       <DownloadButton app={app}><Icon name="apple" /> Descargar para macOS</DownloadButton>
-      <Button href="#funciones" variant="ghost">Ver qué hace <Icon name="arrow-down" /></Button>
+      <Button href="#comparar" variant="ghost">Ver qué compara <Icon name="arrow-down" /></Button>
     </Fragment>
     <div class="wg-stage reveal">
       <figure class="wg-shot wg-hero" data-scroll-tilt>
-        <img src={`${IMG}cambios-classic.webp`} alt="WolfGit: pestaña Cambios con cinco archivos y el diff de RemoteSession.swift, con una casilla por línea" width="2080" height="1300">
+        <img src={`${IMG}cambios-classic.webp`} alt="WolfGit: pestaña Cambios con el diff de RemoteSession.swift, una casilla por línea, cambios por palabra y el botón Stash en la barra" width="2080" height="1300">
       </figure>
     </div>
   </Hero>
 
 
   <main id="contenido">
+    <Section id="comparar" flush center eyebrow="lo que nos hace distintos" title="Lo que otros llaman" accent="«archivo binario»."
+             sub="Para git, una imagen, un PDF o un audio que cambió son solo bytes distintos. WolfGit te enseña qué cambió de verdad, en Cambios y en el historial.">
+      <CompareTable columns={['WolfGit', 'Diff de texto de git']} rows={[
+        ['Imágenes', 'Lado a lado, deslizador y papel cebolla', '«Binary files differ»'],
+        ['Markdown', 'Renderizado, con cambios por bloque y por palabra', 'Líneas con + y −'],
+        ['Diagramas Mermaid y fórmulas', 'Dibujados', 'Código'],
+        ['PDF', 'Página por página, con salto entre cambios', '«Binary files differ»'],
+        ['Audio', 'Resumen, forma de onda y A/B en el mismo segundo', '«Binary files differ»'],
+      ]} />
+
+      <div class="wg-row reveal">
+        <div class="wg-switch">
+          {IMAGE_VIEWS.map(([id], i) => <input type="radio" name="wg-img" id={`wg-img-${id}`} class="wg-switch-input" checked={i === 0}>)}
+          <div class="wg-switch-tabs" role="group" aria-label="Formas de comparar imágenes">
+            {IMAGE_VIEWS.map(([id, tab]) => <label for={`wg-img-${id}`} class="wg-switch-tab">{tab}</label>)}
+          </div>
+          <div class="wg-switch-shots">
+            {IMAGE_VIEWS.map(([, , img, alt]) => <figure class="wg-shot"><img src={`${IMG}${img}.webp`} alt={alt} width="2080" height="1300" loading="lazy"></figure>)}
+          </div>
+        </div>
+        <div class="wg-row-text">
+          <p class="wg-kicker">Imágenes</p>
+          <h3>Arrastra la línea y mira qué cambió.</h3>
+          <p>PNG, JPEG, GIF, WebP, HEIC, AVIF, TIFF y más, antes y después de tres formas: <b>lado a lado</b>, con un <b>deslizador</b> que arrastras sobre la imagen o en <b>papel cebolla</b>, una encima de la otra con transparencia.</p>
+          <ul class="wg-list">
+            <li><span class="kbd">⌥⌘1</span> <span class="kbd">⌥⌘2</span> <span class="kbd">⌥⌘3</span> cambian de forma, y WolfGit la recuerda.</li>
+            <li>Medidas y peso de cada versión: 800 × 500 · 17 KB → 18 KB.</li>
+            <li>«No existía» o «Eliminada» cuando la imagen es nueva o se borró.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="wg-row wg-row--flip reveal">
+        <div class="wg-switch">
+          {MARKDOWN_VIEWS.map(([id], i) => <input type="radio" name="wg-md" id={`wg-md-${id}`} class="wg-switch-input" checked={i === 0}>)}
+          <div class="wg-switch-tabs" role="group" aria-label="Vistas del Markdown">
+            {MARKDOWN_VIEWS.map(([id, tab]) => <label for={`wg-md-${id}`} class="wg-switch-tab">{tab}</label>)}
+          </div>
+          <div class="wg-switch-shots">
+            {MARKDOWN_VIEWS.map(([, , img, alt]) => <figure class="wg-shot"><img src={`${IMG}${img}.webp`} alt={alt} width="2080" height="1300" loading="lazy"></figure>)}
+          </div>
+        </div>
+        <div class="wg-row-text">
+          <p class="wg-kicker">Markdown</p>
+          <h3>Tu README como en GitHub, con sus cambios marcados.</h3>
+          <p>Lee el documento renderizado y ve qué bloque cambió y qué palabras dentro de él, en una sola columna o antes y después lado a lado. <span class="kbd">⌥⌘P</span> alterna con el texto.</p>
+          <ul class="wg-list">
+            <li>Avisos, tablas, tareas, notas al pie, <code class="kbd">&lt;details&gt;</code> plegables y teclas <span class="kbd">⌘</span>.</li>
+            <li><b>Diagramas Mermaid y fórmulas</b> dibujados dentro de la app, sin internet.</li>
+            <li>Las imágenes de internet solo se descargan si pulsas <b>«Cargar imágenes»</b>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="wg-row reveal">
+        <figure class="wg-shot">
+          <img src={`${IMG}pdf-classic.webp`} alt="PDF comparado por páginas: miniaturas a la izquierda con un punto en las que cambiaron, y la página elegida antes y después" width="2080" height="1300" loading="lazy">
+        </figure>
+        <div class="wg-row-text">
+          <p class="wg-kicker">PDF</p>
+          <h3>Página por página, directo a lo que cambió.</h3>
+          <p>Miniaturas con un punto en cada página cambiada, añadida o quitada, y la página elegida antes y después. También con deslizador o en papel cebolla.</p>
+          <ul class="wg-list">
+            <li><span class="kbd">⌃⌥↓</span> <span class="kbd">⌃⌥↑</span> saltan a la siguiente o anterior página cambiada.</li>
+            <li>Empareja las páginas aunque se agreguen o quiten otras en medio.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="wg-row wg-row--flip reveal">
+        <figure class="wg-shot">
+          <img src={`${IMG}audio-classic.webp`} alt="Audio comparado: resumen con Estéreo → 5.1 resaltado, forma de onda del antes y del después y barra de reproducción con A/B" width="2080" height="1300" loading="lazy">
+        </figure>
+        <div class="wg-row-text">
+          <p class="wg-kicker">Audio</p>
+          <h3>Escucha el antes y el después en el mismo segundo.</h3>
+          <p>Para m4a, AAC, ALAC, AIFF, CAF, MP3, WAV y FLAC: un resumen con lo que cambió, la forma de onda de las dos versiones en la misma escala de tiempo y un reproductor con <b>A/B</b>.</p>
+          <ul class="wg-list">
+            <li>Duración, formato, canales (de estéreo a 5.1), frecuencia y tamaño, de un vistazo.</li>
+            <li><span class="kbd">⌥⌘R</span> reproduce y <span class="kbd">⌥⌘B</span> cambia de lado sin perder el segundo.</li>
+            <li>Un clic en la onda escucha desde ese punto. Nada suena al cambiar de archivo.</li>
+          </ul>
+        </div>
+      </div>
+    </Section>
+
+    <Section id="revisar" flush center eyebrow="antes de subir" title="Revisa tu código." accent="Y tu historia."
+             sub="Lo que en la terminal pide recordar comandos y opciones, aquí está a un clic o en la paleta ⌘K.">
+      {REVIEW.map(([img, kicker, title, text, alt], i) => (
+        <div class={`wg-row reveal${i % 2 ? ' wg-row--flip' : ''}`}>
+          <figure class="wg-shot">
+            <img src={`${IMG}${img}.webp`} alt={alt} width="2080" height="1300" loading="lazy">
+          </figure>
+          <div class="wg-row-text">
+            <p class="wg-kicker">{kicker}</p>
+            <h3>{title}</h3>
+            <p set:html={text} />
+          </div>
+        </div>
+      ))}
+    </Section>
+
     <Section id="funciones" flush eyebrow="funciones" title="Todo lo que haces con git." accent="Sin abrir la terminal."
-             sub="Dos zonas y nada más: a la izquierda tus archivos o tus commits, a la derecha el diff. Lo demás vive en menús, en el clic derecho o en la paleta ⌘K.">
+             sub="Dos zonas y nada más: a la izquierda tus archivos o tus commits, a la derecha el diff. Arriba, stash, rama y sincronizar. Lo demás vive en menús, en el clic derecho o en la paleta ⌘K.">
       <Bento>
         <BentoCard span={4} title="Elige línea por línea qué entra en tu commit" icon='<path d="M4 6h16M4 12h10M4 18h7"/><path d="m15 16 2 2 4-4"/>'>
           <Fragment slot="text">Marca archivos completos, bloques o líneas sueltas con su casilla. El commit dice exactamente lo que quieres que diga, y lo que no marcas se queda en tu árbol de trabajo.</Fragment>
           <div class="wg-mini" aria-hidden="true">
-            <div class="ctx"><b>9</b><span>func send(_ key: RemoteKey) async throws {'{'}</span></div>
-            <div class="add on"><b>10</b><span>+   try await device.channel.write(key.code)</span></div>
-            <div class="add on"><b>11</b><span>+   if vibrates {'{'} await Haptics.tick() {'}'}</span></div>
-            <div class="add off"><b>12</b><span>+   print("debug")</span></div>
+            <div class="ctx"><b>21</b><span>try await device.channel.write(key.code)</span></div>
+            <div class="add on"><b>22</b><span>+   if vibrates {'{'} await Haptics.tick() {'}'}</span></div>
+            <div class="add off"><b>23</b><span>+   print("debug: \(key)")</span></div>
           </div>
         </BentoCard>
         <BentoCard title="Nada destructivo sin red" bg="rgba(79,209,160,.14)" stroke="#9fe8c9" icon='<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>'>
-          <Fragment slot="text">Antes de descartar, hacer rebase o reset, WolfGit guarda una copia. <span class="kbd">⇧⌘Z</span> lo deshace.</Fragment>
+          <Fragment slot="text">Antes de descartar, hacer rebase, reset o borrar ramas, WolfGit guarda una copia. <span class="kbd">⇧⌘Z</span> lo deshace.</Fragment>
+        </BentoCard>
+        <BentoCard title="Stash a un clic" icon='<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/>'>
+          <Fragment slot="text">Guarda tus cambios desde la barra con <span class="kbd">⌥⌘S</span>; la flecha de al lado lista tus stashes para restaurarlos o borrarlos.</Fragment>
         </BentoCard>
         <BentoCard title="Ratón o teclado" icon='<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>'>
           <Fragment slot="text">Las flechas recorren archivos y commits; <span class="kbd">←</span> <span class="kbd">→</span> pasan entre paneles. Cada comando tiene su atajo.</Fragment>
@@ -69,8 +191,8 @@ const THEMES: [id: string, name: string, note: string][] = [
         <BentoCard title="Diffs que se leen solos" bg="rgba(255,127,166,.14)" stroke="#ffc2d4" icon='<path d="M8 4v16M16 4v16"/><path d="M4 8h4M16 16h4"/>'>
           <Fragment slot="text">Resaltado de sintaxis, cambios por palabra dentro de cada línea y vista unificada o dividida con <span class="kbd">⇧⌘D</span>.</Fragment>
         </BentoCard>
-        <BentoCard title="Conflictos sin miedo" icon='<circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M6 8c0 5 6 5 6 8M18 8c0 5-6 5-6 8"/>'>
-          <Fragment slot="text">Merge, rebase, cherry-pick y revert. Resuelve cada bloque eligiendo tu versión, la suya o las dos, y continúa.</Fragment>
+        <BentoCard span={2} title="Limpia tus ramas" icon='<path d="M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9c0 6-12 3-12 9"/>'>
+          <Fragment slot="text">Encuentra las ramas ya fusionadas y las que perdieron su remoto (como tras un PR con squash) y bórralas juntas, con copia para deshacerlo.</Fragment>
         </BentoCard>
         <BentoCard span={3} title="GitHub, GitLab y Bitbucket" bg="rgba(169,214,255,.14)" stroke="#d3eaff" icon='<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'>
           <Fragment slot="text">Agrega tus cuentas en Ajustes: GitHub con un código de dispositivo, GitLab y Bitbucket con un token. Revisa tus Pull Requests con su CI, haz checkout de uno (también de forks) y publica un repo nuevo con un botón.</Fragment>
@@ -80,7 +202,7 @@ const THEMES: [id: string, name: string, note: string][] = [
         </BentoCard>
         <BentoCard span={4} title="Todo el poder, cuando lo necesitas" icon='<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>'>
           <Fragment slot="text">Lo avanzado no estorba: aparece en el menú Git, en el clic derecho de un commit o en la paleta.</Fragment>
-          <div class="wg-chips"><span>Stash</span><span>Amend</span><span>Deshacer commit</span><span>Squash</span><span>Reordenar commits</span><span>Tags</span><span>Worktrees</span><span>Coautores</span><span>Reset suave</span><span>Rama desde un commit</span><span>.gitignore</span><span>Clonar</span><span>Fetch de todos los repos</span><span>Español e inglés</span></div>
+          <div class="wg-chips"><span>Merge, rebase y cherry-pick</span><span>Amend</span><span>Deshacer commit</span><span>Squash</span><span>Reordenar commits</span><span>Tags</span><span>Worktrees</span><span>Coautores</span><span>Reset suave</span><span>Rama desde un commit</span><span>Historial de un archivo</span><span>.gitignore</span><span>Clonar</span><span>Fetch de todos los repos</span><span>Español e inglés</span></div>
         </BentoCard>
         <BentoCard span={2} title="Suelta una carpeta" icon='<path d="M3 7h6l2 2h10v10H3z"/><path d="M12 12v5M9.5 14.5 12 17l2.5-2.5"/>'>
           <Fragment slot="text">Arrastra a la ventana una o varias carpetas de tus proyectos y WolfGit las agrega a tu lista de repositorios.</Fragment>
@@ -88,26 +210,14 @@ const THEMES: [id: string, name: string, note: string][] = [
       </Bento>
     </Section>
 
-    <Section id="imagenes" flush eyebrow="nuevo · diff de imágenes" title="Antes y después," accent="lado a lado."
-             sub="Elige un PNG, JPEG, GIF, WebP, HEIC o TIFF y WolfGit te muestra la versión anterior a la izquierda y la nueva a la derecha, con sus medidas y su peso. También en el historial.">
-      <figure class="wg-shot wg-wide reveal">
-        <img src={`${IMG}imagenes-classic.webp`} alt="Diff de imágenes de WolfGit: a la izquierda la captura anterior con el botón azul, a la derecha la nueva con el botón naranja y un teclado" width="2080" height="1300" loading="lazy">
-      </figure>
-      <ul class="wg-points reveal">
-        <li><b>Fondo de cuadros</b> para ver las transparencias.</li>
-        <li><b>«No existía» o «Eliminada»</b> cuando la imagen es nueva o se borró.</li>
-        <li><b>Cuánto cambió, de un vistazo</b>PNG · 1290 × 2796 · 512 KB → 498 KB</li>
-      </ul>
-    </Section>
-
     <Section id="historial" flush center eyebrow="historial" title="Recorre tu historia" accent="con las flechas."
              sub="A la izquierda los commits, en medio sus archivos y a la derecha el diff. ↑ ↓ recorren la lista; → y ← pasan de los commits a sus archivos y de vuelta.">
       <figure class="wg-shot wg-wide reveal">
-        <img src={`${IMG}historial-classic.webp`} alt="Historial de WolfGit: lista de commits, columna de archivos del commit elegido y su diff" width="2080" height="1300" loading="lazy">
+        <img src={`${IMG}historial-classic.webp`} alt="Historial de WolfGit: lista de commits de tres autores, columna de archivos del commit elegido y su diff con el cambio marcado por palabra" width="2080" height="1300" loading="lazy">
       </figure>
     </Section>
 
-    <Section id="widget" flush center eyebrow="nuevo · widget" title="Tus commits del mes," accent="en tu escritorio."
+    <Section id="widget" flush center eyebrow="widget" title="Tus commits del mes," accent="en tu escritorio."
              sub="Ponlo en el escritorio o en el Centro de notificaciones: cuántos commits llevas, tu racha, cómo vas contra el mes pasado y en qué repos trabajaste. El lobito celebra los buenos meses y se duerme si no hubo ninguno.">
       <figure class="wg-widgets reveal">
         <img src={`${IMG}widget-clasico.webp`} alt="Widget de WolfGit en sus tres tamaños: 90 commits en octubre, +32 % frente a septiembre, calendario del mes y commits por repositorio" width="1600" height="708" loading="lazy">
@@ -167,8 +277,8 @@ const THEMES: [id: string, name: string, note: string][] = [
     <Section flush eyebrow="ingeniería" title="Hecho para el Mac." accent="Y para tus repos.">
       <Principles items={[
         ['Tu git, de verdad', 'Usa el git que tú instalaste (nunca el atajo de <code class="kbd">/usr/bin/git</code>), tu configuración, tus llaves SSH y tus hooks, aunque abras la app desde el Finder.'],
-        ['Rápido por diseño', 'Lanza git con <code class="kbd">posix_spawn</code>, lee en paralelo, escribe en orden y en reposo no consume CPU.'],
-        ['Credenciales en el Llavero', 'Los tokens viven cifrados en el Llavero de macOS y las contraseñas de git llegan por un socket privado. Nunca se registra un secreto.'],
+        ['Rápido por diseño', 'Lanza git con <code class="kbd">posix_spawn</code>, lee en paralelo, escribe en orden y en reposo no consume CPU, aunque tengas un audio en pausa.'],
+        ['Privado por defecto', 'Los tokens viven cifrados en el Llavero de macOS. Al ver un archivo, nada sale a internet: los diagramas se dibujan dentro de la app y las imágenes remotas esperan tu permiso.'],
         ['Swift 6 y SwiftUI', 'App nativa para Apple Silicon, con arquitectura en capas que se verifica sola y cientos de pruebas con git real.'],
       ]} />
     </Section>
@@ -176,7 +286,9 @@ const THEMES: [id: string, name: string, note: string][] = [
     <Section id="preguntas" flush center eyebrow="preguntas" title="Antes de" accent="tu primer commit.">
       <Faq items={[
         ['¿Necesito dejar de usar git en la terminal?', 'No. WolfGit usa tu git real y tu configuración. Todo lo que haces en uno aparece al instante en el otro.'],
-        ['¿En qué se diferencia de iGit?', 'Son hermanos: iGit vive en la terminal y WolfGit es una app de Mac con ventana, diff de imágenes, temas y su lobito. Los dos usan tu git y la misma red de seguridad.'],
+        ['¿Qué archivos compara además del código?', 'Imágenes (PNG, JPEG, GIF, WebP, HEIC, AVIF, TIFF y más), Markdown renderizado con sus diagramas Mermaid y fórmulas, PDF página por página y audio (m4a, AAC, ALAC, AIFF, CAF, MP3, WAV y FLAC). Todo en Cambios y en el historial.'],
+        ['¿WolfGit descarga algo al abrir un archivo?', 'No por su cuenta. Los diagramas y las fórmulas se dibujan dentro de la app, sin red, y las imágenes de internet de un Markdown solo se descargan cuando pulsas «Cargar imágenes».'],
+        ['¿En qué se diferencia de iGit?', 'Son hermanos: iGit vive en la terminal y WolfGit es una app de Mac con ventana, comparaciones visuales, temas y su lobito. Los dos usan tu git y la misma red de seguridad.'],
         ['¿Qué cuentas puedo usar?', 'GitHub (con un código de dispositivo), GitLab (gitlab.com o tu propia instancia) y Bitbucket (con un token personal). Se agregan en Ajustes › Cuentas.'],
         ['¿Funciona en Macs con Intel?', 'No. WolfGit está hecho solo para Macs con Apple Silicon (M1 o posterior) y macOS 27 o posterior.'],
         ['¿Cómo se actualiza?', 'Solo: WolfGit busca una versión nueva cada día y te ofrece instalarla con un clic. También puedes buscarla en WolfGit › Buscar actualizaciones… Cada versión va firmada, y la app comprueba la firma antes de instalarla.'],
