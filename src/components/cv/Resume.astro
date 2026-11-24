@@ -6,7 +6,11 @@ import cv from '../../data/cv.json';
 interface Props { lang: 'en' | 'es' }
 const d = cv.pdf[Astro.props.lang];
 const contact = [d.email, d.phone, d.location];
-const links = [d.linkedin, d.github, d.website];
+const links = [
+  { label: 'GitHub', text: 'ierwinx', url: d.github },
+  { label: 'LinkedIn', text: 'ierwinx', url: d.linkedin },
+  { label: 'Web', text: 'ierwinx.com', url: d.website },
+];
 ---
 <div class="cv-header">
   <div class="cv-photo"></div>
@@ -14,8 +18,18 @@ const links = [d.linkedin, d.github, d.website];
     <div class="cv-name">{d.name}</div>
     <div class="cv-title">{d.title}</div>
     <div class="cv-contact">
-      {contact.map((c) => <>{' '}<span class="cv-contact-item">{c}</span></>)}
-      {links.map((l) => <>{' '}<span class="cv-contact-item"><a href={`https://${l}`}>{l}</a></span></>)}
+      {contact.map((c, index) => (
+        <>
+          <span class="cv-contact-item">{c}</span>
+          {index < contact.length - 1 && <span class="cv-contact-separator" aria-hidden="true">|</span>}
+        </>
+      ))}
+      {links.map((l, index) => (
+        <>
+          <span class="cv-contact-item">{l.label}:{' '}<a href={`https://${l.url}`}>{l.text}</a></span>
+          {index < links.length - 1 && <span class="cv-contact-separator" aria-hidden="true">|</span>}
+        </>
+      ))}
     </div>
   </div>
 </div>

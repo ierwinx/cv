@@ -73,10 +73,21 @@ async function render() {
   doc.setProperties({ title: `Erwin-cv-${lang.toUpperCase()}` });
   doc.addImage(canvas.toDataURL('image/jpeg', 0.99), 'JPEG', 0, 0, widthMM, heightMM);
 
+  const pxToMM = widthMM / el.offsetWidth;
+  const box = el.getBoundingClientRect();
+  el.querySelectorAll<HTMLAnchorElement>('.cv-contact a[href]').forEach((anchor) => {
+    const link = anchor.getBoundingClientRect();
+    doc.link(
+      (link.left - box.left) * pxToMM,
+      (link.top - box.top) * pxToMM,
+      link.width * pxToMM,
+      link.height * pxToMM,
+      { url: anchor.href },
+    );
+  });
+
   if (photoData) {
-    const pxToMM = widthMM / el.offsetWidth;
     const photo = $('.cv-photo', el)!.getBoundingClientRect();
-    const box = el.getBoundingClientRect();
     doc.addImage(photoData, 'JPEG',
       (photo.left - box.left) * pxToMM, (photo.top - box.top) * pxToMM,
       photo.width * pxToMM, photo.height * pxToMM);
