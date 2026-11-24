@@ -1,12 +1,13 @@
 ---
 // Spotlight de una app en la home: ficha (plataformas, lema, funciones, cifras, botones) y su visual en el slot.
+// `ctaHref`: apps multiplataforma; el botón principal lleva a la sección de descargas de su página, sin elegir tienda.
 // Textos en src/data/home.json; enlaces e ícono en apps.json. `panel`: pestaña de los editores (sin número ni reveal).
 import AppIcon from './AppIcon.astro';
 import { downloadUrl, getApp } from '../../lib/apps';
 
 export type SpotData = {
   slug: string; accent: string; c1: string; c2: string; platforms: string; lead: string; accentText: string;
-  desc: string; features: string[]; cta: string; soon?: string;
+  desc: string; features: string[]; cta: string; ctaHref?: string; soon?: string;
   stats: { count?: number; dec?: number; prefix?: string; suffix?: string; text?: string; label: string }[];
 };
 interface Props { spot: SpotData; index?: number; total?: number; flip?: boolean; panel?: boolean; active?: boolean }
@@ -41,7 +42,9 @@ const APPLE = '<path fill="currentColor" d="M16.4 12.6c0-2.5 2-3.7 2.1-3.7-1.2-1
       ))}
     </div>
     <div class:list={['spot-ctas', reveal]}>
-      {store
+      {spot.ctaHref
+        ? <a class="btn btn--accent magnetic" href={spot.ctaHref}>{spot.cta}</a>
+        : store
         ? <a class="btn btn--accent magnetic" href={store} target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" set:html={APPLE} />{spot.cta}</a>
         : app.release
           ? <a class="btn btn--accent magnetic" href={downloadUrl(app)} download>{spot.cta}</a>
