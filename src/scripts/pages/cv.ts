@@ -4,6 +4,7 @@ import cv from '../../data/cv.json';
 import { $, $$ } from '../core/dom';
 import { initContactForm } from '../core/contact';
 import { initReveal } from '../core/reveal';
+import { lightDismiss } from '../core/dialog';
 
 type Lang = 'en' | 'es';
 type Texts = (typeof cv.web)['en'];
@@ -82,22 +83,25 @@ function renderExperience() {
 
 function renderDegree() {
   const d = t.education.degree;
+  // <button>: el título se abre con Tab + Enter y el foco vuelve aquí al cerrar el modal.
   $('#degreeContent')!.innerHTML = `
-      <div class="degree-institution">${d.institution}</div>
-      <div class="degree-career">${d.career}</div>
-      <div class="degree-specialty">${d.specialtyLabel}: ${d.specialty}</div>
-      <div class="degree-period">${d.period}</div>`;
+      <button type="button" class="degree-open" aria-haspopup="dialog">
+        <span class="degree-institution">${d.institution}</span>
+        <span class="degree-career">${d.career}</span>
+        <span class="degree-specialty">${d.specialtyLabel}: ${d.specialty}</span>
+        <span class="degree-period">${d.period}</span>
+      </button>`;
 }
 
 function renderCerts() {
   $('#certsGrid')!.innerHTML = t.education.certs.map((c) => `
-      <div class="cert-item" data-img="${'img' in c ? c.img : ''}" data-pdf="${'pdf' in c ? c.pdf : ''}">
+      <button type="button" class="cert-item" aria-haspopup="dialog" data-img="${'img' in c ? c.img : ''}" data-pdf="${'pdf' in c ? c.pdf : ''}">
         <span class="cert-year">${c.year}</span>
-        <div>
-          <div class="cert-name">${c.name}</div>
-          <div class="cert-inst">${c.institution}</div>
-        </div>
-      </div>`).join('');
+        <span>
+          <span class="cert-name">${c.name}</span>
+          <span class="cert-inst">${c.institution}</span>
+        </span>
+      </button>`).join('');
 }
 
 function renderReferences() {
@@ -111,21 +115,20 @@ function renderReferences() {
 }
 
 // ── Certificados y título: se abren en el modal ──
+// <dialog> nativo: Esc, foco atrapado y regreso del foco los da el navegador; el botón cierra con <form method="dialog">.
 function openCertificate(html: string) {
   $('#certModalTitle')!.textContent = t.education.certificateAlt;
   $('#certModalBody')!.innerHTML = html;
-  $('#certModal')!.classList.add('active');
+  $<HTMLDialogElement>('#certModal')!.showModal();
 }
 
 function initModal() {
-  const modal = $('#certModal')!;
-  const close = () => modal.classList.remove('active');
-  $('#certModalClose')!.addEventListener('click', close);
-  modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  const modal = $<HTMLDialogElement>('#certModal')!;
+  lightDismiss(modal);
+  // Al cerrar se vacía: un PDF en un <iframe> oculto seguiría ocupando memoria.
+  modal.addEventListener('close', () => $('#certModalBody')!.replaceChildren());
 
   const degree = $('#degreeContent')!;
-  degree.style.cursor = 'pointer';
   degree.addEventListener('click', () => openCertificate(`<img src="img/certificados/titulo.webp" alt="${t.education.certificateAlt}">`));
 
   // Delegación: las tarjetas se regeneran al cambiar de idioma.
@@ -150,6 +153,8 @@ function toggleTheme() {
   if (dark) document.documentElement.dataset.theme = 'dark';
   else delete document.documentElement.dataset.theme;
   localStorage.setItem('theme', dark ? 'dark' : 'light');
+  // El navegador pinta sus controles (inputs, scroll, autocompletado) con el tema elegido.
+  $<HTMLMetaElement>('meta[name="color-scheme"]')!.content = dark ? 'dark' : 'light';
   updateThemeIcon();
 }
 

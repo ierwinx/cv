@@ -127,6 +127,9 @@ tools/                 seo.py, check_site.py, release.sh, indexnow.py, og-maker.
   `apps.json → home.logo`.
 - **Datos al compilar, no en el navegador:** versiones, tamaños, enlaces de tienda, años y textos repetidos salen de
   `src/data/*.json` en el `.astro`. El JS solo anima.
+- **`<Bento>` sin huecos:** la cuadrícula es de 6 columnas y una tarjeta mide 2 si no lleva `span` (3 o 4). Cada
+  fila debe sumar 6 (p. ej. `4+2`, `2+2+2`, `3+3`); si no, queda un espacio vacío en escritorio. `npm run check` lo
+  verifica.
 - Comentarios y textos en español, como el resto del proyecto.
 
 ### Página de una app

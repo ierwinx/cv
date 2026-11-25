@@ -23,15 +23,20 @@ const SOCIAL: Record<string, string> = {
   GitHub: '<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>',
   LinkedIn: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>',
 };
-const FIELDS: [id: string, key: keyof typeof t.contact, type?: 'text' | 'email'][] = [
-  ['nombre', 'name', 'text'], ['apellido', 'lastName', 'text'], ['empresa', 'company', 'text'], ['email', 'email', 'email'], ['mensaje', 'message'],
+// id, texto, tipo (sin tipo = textarea), autocompletado y límites (los mismos que ContactForm y el micro).
+type Field = [id: string, key: keyof typeof t.contact, type: 'text' | 'email' | undefined, auto: string, max: number, min?: number];
+const FIELDS: Field[] = [
+  ['nombre', 'name', 'text', 'given-name', 80], ['apellido', 'lastName', 'text', 'family-name', 80],
+  ['empresa', 'company', 'text', 'organization', 120], ['email', 'email', 'email', 'email', 160],
+  ['mensaje', 'message', undefined, 'off', 4000, 5],
 ];
 ---
 <BaseLayout title="Erwin De La Luz - Mobile Software Engineer" lang="en"
             description="Software Engineer with over 10 years of experience in native mobile development, scalable architectures, and DevSecOps."
             icon="/CV/img/icono.png" fonts="Inter:wght@400;500;600;700">
   <Fragment slot="head">
-    <script is:inline>if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark';</script>
+    <meta name="color-scheme" content="light">
+    <script is:inline>if (localStorage.getItem('theme') === 'dark') { document.documentElement.dataset.theme = 'dark'; document.querySelector('meta[name="color-scheme"]').content = 'dark'; }</script>
     <meta property="og:type" content="website">
     <meta property="og:title" content={ogTitle}>
     <meta property="og:description" content={ogDescription}>
@@ -65,7 +70,7 @@ const FIELDS: [id: string, key: keyof typeof t.contact, type?: 'text' | 'email']
 
     <section class="card card--photo">
       <div class="photo-wrapper">
-        <img src={cv.person.photo} alt="Erwin De La Luz">
+        <img src={`/CV/${cv.person.photoWebp}`} alt="Erwin De La Luz" width="772" height="772" fetchpriority="high">
         <div class="availability-badge">
           <span class="availability-dot"></span>
           <span data-i18n="hero.available">{t.hero.available}</span>
@@ -142,20 +147,21 @@ const FIELDS: [id: string, key: keyof typeof t.contact, type?: 'text' | 'email']
     <section class="card card--contact">
       <h2 class="card-heading" data-i18n="contact.heading">{t.contact.heading}</h2>
       <form class="contact-form" id="contactForm" {...contact}>
-        {FIELDS.map(([id, key, type]) => (
+        {FIELDS.map(([id, key, type, auto, max, min]) => (
           <div class="form-group">
             <label for={id} data-i18n={`contact.${key}`}>{t.contact[key]}</label>
-            {type ? <input type={type} id={id} name={id} required> : <textarea id={id} name={id} required></textarea>}
+            {type ? <input type={type} id={id} name={id} autocomplete={auto} maxlength={max} required>
+                  : <textarea id={id} name={id} autocomplete={auto} maxlength={max} minlength={min} required></textarea>}
           </div>
         ))}
         <label class="cf-hp" aria-hidden="true">Website<input name="web" tabindex="-1" autocomplete="off"></label>
         <div class="form-group">
           {contact['data-captcha'] === 'true' && <div class="g-recaptcha" data-sitekey={RECAPTCHA_KEY}></div>}
-          <span class="form-error" id="errorRecaptcha"></span>
+          <span class="form-error" id="errorRecaptcha" role="alert"></span>
         </div>
         <button type="submit" class="form-submit" data-i18n="contact.send">{t.contact.send}</button>
       </form>
-      <div class="form-status" id="formStatus" style="display:none;"></div>
+      <div class="form-status" id="formStatus" role="status" style="display:none;"></div>
     </section>
 
     <section class="card card--testimonial">
@@ -178,17 +184,18 @@ const FIELDS: [id: string, key: keyof typeof t.contact, type?: 'text' | 'email']
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
   </button>
 
-  <div class="modal-overlay" id="certModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="certModalTitle">Certificate</h3>
+  <dialog class="modal-content" id="certModal" closedby="any" aria-labelledby="certModalTitle">
+    <div class="modal-header">
+      <h1 id="certModalTitle">Certificate</h1>
+      <form method="dialog">
         <button class="modal-close" id="certModalClose">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <span class="sr-only" data-i18n="education.close">{t.education.close}</span>
         </button>
-      </div>
-      <div class="modal-body" id="certModalBody"></div>
+      </form>
     </div>
-  </div>
+    <div class="modal-body" id="certModalBody"></div>
+  </dialog>
 
   <script>import '../../scripts/pages/cv';</script>
 </BaseLayout>

@@ -13,6 +13,7 @@ import { initReveal } from "../core/reveal";
 import { initScrollProgress } from "../core/scroll";
 import { initCursorGlow } from "../core/cursor";
 import { initMagnetic, tilt } from "../core/pointer";
+import { lightDismiss } from "../core/dialog";
 import { T, St, type Rect, type Style } from "../demos/itunes/theme";
 import { Buffer, toHtml } from "../demos/itunes/buffer";
 import { ARTISTS, LIBRARY, fmt } from "../demos/itunes/library";
@@ -1077,15 +1078,16 @@ type Step = { key?: string; say?: string; wait: number; do?: () => void };
     $("#commands-list")!.innerHTML = COMMANDS.map(([c, d]) => `<div><code>${c.replace(/</g, "&lt;")}</code>${d}</div>`).join("");
   }
 
-  // Lightbox de capturas
-  const lb = $("#lightbox")!, lbImg = $<HTMLImageElement>("img", lb)!;
+  // Lightbox de capturas: <dialog> nativo (Esc, foco y fondo inerte los da el navegador; closedby="any" cierra al
+  // tocar fuera y, como antes, tocar la imagen también lo cierra)
+  const lb = $<HTMLDialogElement>("#lightbox")!, lbImg = $<HTMLImageElement>("img", lb)!;
+  lightDismiss(lb);
   $$(".shot").forEach((s) => s.addEventListener("click", () => {
     lbImg.src = s.dataset.full!;
     lbImg.alt = $<HTMLImageElement>("img", s)!.alt;
-    lb.hidden = false;
+    lb.showModal();
   }));
-  lb.addEventListener("click", () => { lb.hidden = true; });
-  addEventListener("keydown", (e) => { if (e.key === "Escape") lb.hidden = true; });
+  lbImg.addEventListener("click", () => lb.close());
 
   if (REDUCED) return;
 

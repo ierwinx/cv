@@ -170,8 +170,8 @@ def src_files(folder, ext):
 
 
 def check_source():
-    """Reglas para no volver a duplicar (CLAUDE.md): keyframes con prefijo, colores de componentes con tokens y
-    nada de reimplementar lo que ya está en scripts/core."""
+    """Reglas para no volver a duplicar (CLAUDE.md): keyframes con prefijo, colores de componentes con tokens,
+    nada de reimplementar lo que ya está en scripts/core y ningún <Bento> con filas incompletas."""
     for rel, css in src_files('', '.css'):
         for name in KEYFRAMES.findall(css):
             if '-' not in name:
@@ -189,6 +189,50 @@ def check_source():
             m = rx.search(ts)
             if m:
                 errors.append(f'{rel}:{ts.count(chr(10), 0, m.start()) + 1}: {msg}')
+    for rel, astro in src_files('', '.astro'):
+        errors.extend(bento_gaps(rel, astro))
+
+
+BENTO = re.compile(r'<Bento\b[^>]*>(.*?)</Bento>', re.S)
+BENTO_CARD = re.compile(r'<BentoCard\b')
+ATTR = re.compile(r'\s+([\w-]+)=("[^"]*"|\'[^\']*\'|\{[^}]*\})')
+BENTO_COLUMNS = 6   # components/sections/bento.css: repeat(6, 1fr); la tarjeta mide 2 si no lleva span
+
+
+def bento_gaps(rel, astro):
+    """Huecos en un <Bento>: las tarjetas se acomodan en filas de 6 columnas y la que no cabe baja a la siguiente.
+    Si una fila no suma 6, queda un espacio vacío a la derecha (en escritorio; en móvil van una por fila)."""
+    found = []
+    for bento in BENTO.finditer(astro):
+        spans = []
+        for card in BENTO_CARD.finditer(bento.group(1)):
+            pos, span = card.end(), '2'
+            while True:   # atributos uno por uno: el SVG del ícono trae «>» dentro de sus comillas
+                attr = ATTR.match(bento.group(1), pos)
+                if not attr:
+                    break
+                if attr.group(1) == 'span':
+                    span = attr.group(2).strip('{}"\'')
+                pos = attr.end()
+            if not span.isdigit():
+                spans = None   # span calculado: no se puede saber al leer el archivo
+                break
+            spans.append(int(span))
+        if not spans:
+            continue
+        rows, row = [], []
+        for span in spans:
+            if sum(row) + span > BENTO_COLUMNS:
+                rows.append(row)
+                row = []
+            row.append(span)
+        rows.append(row)
+        line = astro.count('\n', 0, bento.start()) + 1
+        for n, row in enumerate(rows, 1):
+            if sum(row) != BENTO_COLUMNS:
+                found.append(f'{rel}:{line}: <Bento> con hueco en la fila {n}: sus tarjetas suman {sum(row)} de '
+                             f'{BENTO_COLUMNS} columnas (spans {"+".join(map(str, row))}); cambia el orden o el span')
+    return found
 
 
 def main():

@@ -184,7 +184,7 @@ function runDemo() {
     extract.lastChild!.textContent = f ? "Extraer selección…" : "Extraer todo…";
   };
   const show = () => {
-    list = [...files]; rows.innerHTML = "";
+    list = [...files]; rows.replaceChildren();
     list.forEach((f, i) => {
       const row = document.createElement("div"); row.className = "mac-row"; row.style.animationDelay = `${i * 0.06}s`;
       row.innerHTML = rowHTML(f); rows.appendChild(row);
