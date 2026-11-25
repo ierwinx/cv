@@ -69,16 +69,23 @@ function renderProjects() {
   $('#projectsGrid')!.innerHTML = t.projects.list.map(projectCard).join('');
 }
 
+// El texto de cada puesto sale de la hoja PDF (cv.pdf, la fuente de la verdad): mismo orden de empresas en ambas listas.
+// Un logro por párrafo cuando es una lista; un solo párrafo cuando es texto corrido.
 function renderExperience() {
-  $('#experienceTimeline')!.innerHTML = t.experience.jobs.map((job) => `
+  const texts = cv.pdf[lang].experience.jobs;
+  $('#experienceTimeline')!.innerHTML = t.experience.jobs.map((job, i) => {
+    const desc = texts[i].description;
+    const paragraphs = (Array.isArray(desc) ? desc : [desc]).map((p) => `<p class="timeline-desc">${p}</p>`).join('');
+    return `
       <div class="timeline-item">
         <div class="timeline-period">${job.period}</div>
         <div>
           <div class="timeline-company">${job.company}</div>
           <div class="timeline-roles">${job.roles.map((r) => `<span class="timeline-role">${r}</span>`).join('')}</div>
-          <p class="timeline-desc">${job.description}</p>
+          ${paragraphs}
         </div>
-      </div>`).join('');
+      </div>`;
+  }).join('');
 }
 
 function renderDegree() {
