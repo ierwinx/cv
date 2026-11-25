@@ -7,7 +7,7 @@ export type App = (typeof apps)[number] & {
   install?: string;            // App Store (apps móviles)
   play?: string;               // Google Play; sin él, los botones dicen «Próximamente»
   desktop?: { mac?: string; windows?: string; deb?: string; rpm?: string };   // instaladores de escritorio (URL); sin ellos, «Próximamente»
-  home?: { tagline: string; logo: string; new?: boolean; round?: boolean };   // menú, órbita y dock de la home
+  home?: { tagline: string; logo: string; fill?: number; new?: boolean; round?: boolean };   // menú, órbita y dock de la home (fill: fracción del cuadro que ocupa el dibujo; el dock iguala el dibujo de todos al 90 % del cuadro)
   theme?: { color: string; fonts?: string; vars?: Record<string, string> };
   title?: string;
   description?: string;
