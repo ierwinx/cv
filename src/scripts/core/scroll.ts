@@ -1,5 +1,7 @@
 // Barra de progreso de lectura y nav que cambia al hacer scroll, para las páginas con marcado propio.
 
+import { reduceMotion } from './motion';
+
 /** Llama a `fn(p)` con el avance de lectura (0–1) al hacer scroll o cambiar el tamaño, una vez por cuadro. */
 export function onScrollProgress(fn: (p: number) => void) {
   let queued = false;
@@ -14,9 +16,16 @@ export function onScrollProgress(fn: (p: number) => void) {
   frame();
 }
 
-/** Barra de progreso: 'scaleX' (transform) o 'width' (porcentaje). */
+/** Barra de progreso: 'scaleX' (transform) o 'width' (porcentaje).
+ *  Donde hay `animation-timeline: scroll()` la mueve el CSS (`.doc-scroll-progress` en document.css), sin escuchar
+ *  el scroll; si no, o con movimiento reducido (algunas páginas apagan todas las animaciones), lo hace este JS. */
 export function initScrollProgress(bar: HTMLElement | null, mode: 'scaleX' | 'width' = 'scaleX') {
   if (!bar) return;
+  if (!reduceMotion && CSS.supports('animation-timeline: scroll()')) {
+    bar.dataset.progress = mode;
+    bar.classList.add('doc-scroll-progress');
+    return;
+  }
   onScrollProgress((p) => {
     if (mode === 'width') bar.style.width = p * 100 + '%';
     else bar.style.transform = `scaleX(${p})`;

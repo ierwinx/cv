@@ -131,7 +131,7 @@ import { initMagnetic, tilt } from '../core/pointer';
   const term = $("#term")!;
   const runTerm = async () => {
     while (true) {
-      term.innerHTML = "";
+      term.replaceChildren();
       for (const [l] of termLines) {
         await sleep(420);
         const d = document.createElement("div"); d.innerHTML = l;

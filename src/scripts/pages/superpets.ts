@@ -9,6 +9,7 @@ import { initGlyphs } from '../core/glyphs';
 import { initReveal, onceVisible } from '../core/reveal';
 import { initScrollProgress } from '../core/scroll';
 import { initMagnetic, tilt } from '../core/pointer';
+import { lightDismiss } from '../core/dialog';
 
 (() => {
     const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
@@ -200,24 +201,22 @@ import { initMagnetic, tilt } from '../core/pointer';
             nearest?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         });
 
-        // Lightbox
-        const lightbox = $('#lightbox')!;
+        // Lightbox: <dialog> nativo (Esc, foco y fondo inerte los da el navegador; closedby="any" cierra al tocar fuera)
+        const lightbox = $<HTMLDialogElement>('#lightbox')!;
         const lightboxImg = $<HTMLImageElement>('#lightboxImg')!;
-        const close = () => { lightbox.hidden = true; document.body.style.overflow = ''; };
+        lightDismiss(lightbox);
         shots.forEach((s) => s.addEventListener('click', () => {
             if (moved) return;
             const img = $<HTMLImageElement>('img', s)!;
             lightboxImg.src = img.src;
             lightboxImg.alt = img.alt;
-            lightbox.hidden = false;
-            document.body.style.overflow = 'hidden';
+            lightbox.showModal();
         }));
-        lightbox.addEventListener('click', (e) => { if (e.target === lightbox || (e.target as Element).closest('.lightbox-close')) close(); });
         addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !lightbox.hidden) close();
+            if (lightbox.open) return;
             if (document.activeElement === document.body || track.contains(document.activeElement)) {
-                if (e.key === 'ArrowRight' && lightbox.hidden) track.scrollBy({ left: step(), behavior: 'smooth' });
-                if (e.key === 'ArrowLeft' && lightbox.hidden) track.scrollBy({ left: -step(), behavior: 'smooth' });
+                if (e.key === 'ArrowRight') track.scrollBy({ left: step(), behavior: 'smooth' });
+                if (e.key === 'ArrowLeft') track.scrollBy({ left: -step(), behavior: 'smooth' });
             }
         });
     }

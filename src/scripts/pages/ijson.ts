@@ -193,7 +193,7 @@ let labIndent = "  ";
 function genericOutput(tree: Node, value: unknown) {
   // Recorre el valor que devuelve JSON.parse y marca lo que ya no coincide con el original.
   let numbers = 0, moved = 0;
-  const lookup = (n: Node | undefined, key: string | number) => n && n.k === "object" ? [...n.kids!].reverse().find(k => k.key === key)?.node : n?.kids?.[key as number]?.node;
+  const lookup = (n: Node | undefined, key: string | number) => n && n.k === "object" ? n.kids!.findLast(k => k.key === key)?.node : n?.kids?.[key as number]?.node;
   function go(v: unknown, n: Node | undefined, d: number): string {
     const pad = "  ".repeat(d + 1), end = "  ".repeat(d);
     if (Array.isArray(v)) {

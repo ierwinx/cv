@@ -515,6 +515,7 @@ em.gradient-text,
     background: radial-gradient(260px circle at var(--mx) var(--my), rgba(255, 138, 216, .9), transparent 50%);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     mask-composite: exclude;
     opacity: 0;
     transition: opacity .4s;
@@ -1042,6 +1043,9 @@ em.gradient-text,
 }
 
 .shot img { pointer-events: none; -webkit-user-drag: none; }
+/* La captura es un <button>: se abre con Tab + Enter y el foco vuelve a ella al cerrar el lightbox */
+.shot-open { display: block; width: 100%; border: 0; font: inherit; color: inherit; cursor: inherit; }
+.shot-open:focus-visible { outline: 2px solid var(--a1); outline-offset: 6px; }
 
 .shot figcaption {
     margin-top: 18px;
@@ -1075,23 +1079,25 @@ em.gradient-text,
 
 /* ── LIGHTBOX ────────────────────────────── */
 
+/* <dialog> con showModal(): el contenido es el teléfono; el fondo oscuro es su ::backdrop */
 .lightbox {
-    position: fixed;
-    inset: 0;
-    z-index: 4000;
-    display: grid;
-    place-items: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    overflow: visible;
+    max-width: none;
+    max-height: none;
+}
+.lightbox::backdrop {
     background: rgba(6, 3, 14, .82);
     -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
     animation: fade-in .35s var(--ease);
 }
 
-.lightbox[hidden] { display: none; }
-
 .phone--lightbox { height: min(86vh, 820px); animation: superpets-pop .5s var(--ease); }
 
 .lightbox-close {
-    position: absolute;
+    position: fixed; /* esquina de la pantalla, no del teléfono */
     top: 24px;
     right: 24px;
     width: 48px;

@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light; /* tema claro por omisión: controles, scroll y autocompletado claros */
   --bg-primary: #f5f5f7;
   --bg-card: #ffffff;
   --bg-card-alt: #f0f1f5;
@@ -21,6 +22,7 @@
 }
 
 [data-theme="dark"] {
+  color-scheme: dark;
   --bg-primary: #0a0a14;
   --bg-card: #14142a;
   --bg-card-alt: #1c1c3a;
@@ -665,6 +667,36 @@ a.project-card {
   margin-top: 8px;
 }
 
+/* El título y cada certificado son <button>: se abren con teclado y el foco vuelve a ellos al cerrar el modal */
+.degree-open,
+.cert-item {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  background: none;
+}
+
+.degree-open {
+  display: block;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+}
+
+.degree-open > span,
+.cert-name,
+.cert-inst {
+  display: block;
+}
+
+.degree-open:focus-visible,
+.cert-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
 /* Certifications */
 .certs-grid {
   display: grid;
@@ -673,20 +705,18 @@ a.project-card {
   max-height: 400px;
   overflow-y: auto;
   padding-right: 8px;
+  /* Barra fina con el acento: estándar (Chrome 121, Firefox 64, Safari 26.2) */
+  --certs-thumb: var(--accent);
+  --certs-track: transparent;
+  scrollbar-width: thin;
+  scrollbar-color: var(--certs-thumb) var(--certs-track);
 }
 
-.certs-grid::-webkit-scrollbar {
-  width: 3px;
-}
-
-.certs-grid::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.certs-grid::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 4px;
-  opacity: 0.5;
+/* Respaldo para WebKit/Blink antiguos sin scrollbar-color */
+@supports not (scrollbar-color: auto) {
+  .certs-grid::-webkit-scrollbar { width: 3px; }
+  .certs-grid::-webkit-scrollbar-track { background: var(--certs-track); }
+  .certs-grid::-webkit-scrollbar-thumb { background: var(--certs-thumb); border-radius: 4px; }
 }
 
 .cert-item {
@@ -834,9 +864,34 @@ a.project-card {
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
+/* Error solo después de que la persona tocó el campo (:user-invalid), no al cargar la página */
+.form-group input:user-invalid,
+.form-group textarea:user-invalid { border-color: #e03131; }
+
 .form-group textarea {
   resize: vertical;
   min-height: 90px;
+}
+
+/* La tarjeta mide lo mismo que Referencias (misma fila de la cuadrícula): el campo Mensaje crece hasta llenar el
+   espacio que sobra. En una sola columna (móvil) no sobra nada y se queda en su min-height. */
+.card--contact {
+  display: flex;
+  flex-direction: column;
+}
+
+.card--contact .contact-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card--contact .form-group:has(textarea) {
+  flex: 1;
+}
+
+.card--contact .form-group textarea {
+  flex: 1;
 }
 
 .form-submit {
@@ -883,33 +938,25 @@ a.project-card {
   color: #e03131;
 }
 
-/* Modal */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.modal-overlay.active {
-  display: flex;
-}
-
+/* Modal: <dialog> abierto con showModal(); el fondo oscuro es su ::backdrop */
 .modal-content {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  width: calc(100% - 40px);
   background: var(--bg-card);
   border-radius: var(--radius);
   max-width: 600px;
-  width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
   animation: cv-modalIn 0.25s ease;
+}
+
+.modal-content::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
 @keyframes cv-modalIn {
@@ -931,7 +978,7 @@ a.project-card {
   border-bottom: 1px solid var(--border);
 }
 
-.modal-header h3 {
+.modal-header h1 {
   font-size: 0.95rem;
   font-weight: 700;
 }

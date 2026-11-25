@@ -254,7 +254,7 @@ kbd {
   content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
   background: radial-gradient(400px circle at var(--x, 50%) var(--y, 50%), rgba(122, 162, 247, .8), transparent 40%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity .3s;
+  -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; opacity: 0; transition: opacity .3s;
 }
 .card:hover::before { opacity: 1; }
 .card-glow { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s; background: radial-gradient(500px circle at var(--x, 50%) var(--y, 50%), rgba(122, 162, 247, .12), transparent 45%); }
@@ -300,6 +300,9 @@ kbd {
 .shot:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 30px 80px -20px rgba(122, 162, 247, .45); }
 .shot img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9.2; object-fit: cover; object-position: top left; transition: transform .8s cubic-bezier(.2, .8, .2, 1); }
 .shot:hover img { transform: scale(1.04); }
+/* La captura es un <button>: se abre con Tab + Enter y el foco vuelve a ella al cerrar el lightbox */
+.shot-open { display: block; width: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: inherit; }
+.shot:has(.shot-open:focus-visible) { outline: 2px solid var(--accent); outline-offset: 4px; }
 .shot-hero { grid-column: span 3; }
 .shot-hero img { aspect-ratio: auto; }
 .shot figcaption {
@@ -308,10 +311,12 @@ kbd {
 }
 .shot figcaption b { color: var(--bright); margin-right: 6px; }
 .shot:not(.shot-hero) figcaption { position: static; margin: 0; border: 0; border-top: 1px solid rgba(255, 255, 255, .08); border-radius: 0; background: var(--surface); }
-.lightbox { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 24px; background: rgba(5, 6, 9, .9); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); animation: itunes-fadein .3s; }
-.lightbox[hidden] { display: none; }
+/* <dialog> con showModal(): el contenido es la imagen; el fondo oscuro es su ::backdrop */
+.lightbox { padding: 0; border: 0; background: none; overflow: visible; max-width: calc(100% - 48px); max-height: none; }
+.lightbox::backdrop { background: rgba(5, 6, 9, .9); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); animation: itunes-fadein .3s; }
+.lightbox img { cursor: zoom-out; }
 .lightbox img { max-width: 100%; max-height: 90vh; border-radius: 14px; box-shadow: 0 40px 120px rgba(0, 0, 0, .8); animation: itunes-zoomin .4s cubic-bezier(.2, .8, .2, 1); }
-.lightbox-close { position: absolute; top: 18px; right: 22px; font-size: 36px; line-height: 1; color: var(--bright); background: none; border: 0; cursor: pointer; }
+.lightbox-close { position: fixed; top: 18px; right: 22px; font-size: 36px; line-height: 1; color: var(--bright); background: none; border: 0; cursor: pointer; }
 @keyframes itunes-fadein { from { opacity: 0; } }
 @keyframes itunes-zoomin { from { opacity: 0; transform: scale(.9); } }
 

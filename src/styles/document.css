@@ -51,3 +51,25 @@
 @media (max-width: 900px), (pointer: coarse), (prefers-reduced-motion: reduce) {
   .custom-cursor--trail { display: none !important; }
 }
+
+/* Modales nativos (<dialog> con showModal): que la rueda o el dedo sobre el fondo no desplacen la página de atrás */
+dialog:modal { overscroll-behavior: contain; }
+dialog::backdrop { overflow: hidden; overscroll-behavior: contain; }
+
+/* Barra de progreso de lectura movida por el scroll, sin JS (core/scroll → initScrollProgress la activa donde hay
+   soporte; si no, el script la mueve como antes). Doble clase para ganarle a [data-offscreen].
+   animation-timeline va en otra regla: en la misma, el minificador la mete en el atajo `animation` y Chrome la ignora. */
+@supports (animation-timeline: scroll()) {
+  .doc-scroll-progress.doc-scroll-progress { animation: doc-progress-x linear both !important }
+  .doc-scroll-progress.doc-scroll-progress[data-progress] { animation-timeline: scroll(root) !important; animation-play-state: running !important }
+  .doc-scroll-progress.doc-scroll-progress[data-progress="width"] { animation-name: doc-progress-w !important }
+}
+@keyframes doc-progress-x { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes doc-progress-w { from { width: 0 } to { width: 100% } }
+
+/* Transición entre páginas del sitio (mismo origen): un fundido sin JS. Chrome 126+ y Safari 18.2+; los demás
+   navegan como siempre. Solo si la persona no pidió menos movimiento. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto }
+  ::view-transition-group(root) { animation-duration: .25s }
+}

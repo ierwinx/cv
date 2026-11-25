@@ -20,6 +20,11 @@ import '../../styles/pages/wolfgit.css';
 
 const app = getApp('wolfgit');
 const IMG = '/wolfgit/img/';
+// Cada captura tiene dos tamaños: 2080 px y 1200 px (el móvil y las pantallas 1x bajan la chica).
+const srcset = (img: string) => `${IMG}${img}-1200.webp 1200w, ${IMG}${img}.webp 2080w`;
+// Ancho en pantalla: las filas (captura + texto) llegan a ~708 px; las anchas (hero, historial, temas) a 1040 px.
+const ROW = '(max-width: 900px) calc(100vw - 36px), min(708px, 60vw)';
+const WIDE = '(max-width: 1100px) calc(100vw - 36px), 1040px';
 // Los cuatro pelajes del husky: cada tema cambia colores, lobito e icono de la app.
 const THEMES: [id: string, name: string, note: string][] = [
   ['classic', 'Clásico', 'Gris y blanco, ojos azul hielo'],
@@ -59,7 +64,7 @@ const REVIEW: [img: string, kicker: string, title: string, text: string, alt: st
     </Fragment>
     <div class="wg-stage reveal">
       <figure class="wg-shot wg-hero" data-scroll-tilt>
-        <img src={`${IMG}cambios-classic.webp`} alt="WolfGit: pestaña Cambios con el diff de RemoteSession.swift, una casilla por línea, cambios por palabra y el botón Stash en la barra" width="2080" height="1300">
+        <img src={`${IMG}cambios-classic.webp`} srcset={srcset('cambios-classic')} sizes={WIDE} alt="WolfGit: pestaña Cambios con el diff de RemoteSession.swift, una casilla por línea, cambios por palabra y el botón Stash en la barra" width="2080" height="1300">
       </figure>
     </div>
   </Hero>
@@ -77,15 +82,16 @@ const REVIEW: [img: string, kicker: string, title: string, text: string, alt: st
       ]} />
 
       <div class="wg-row reveal">
-        <div class="wg-switch">
+        <fieldset class="wg-switch">
+          <legend class="sr-only">Formas de comparar imágenes</legend>
           {IMAGE_VIEWS.map(([id], i) => <input type="radio" name="wg-img" id={`wg-img-${id}`} class="wg-switch-input" checked={i === 0}>)}
-          <div class="wg-switch-tabs" role="group" aria-label="Formas de comparar imágenes">
+          <div class="wg-switch-tabs">
             {IMAGE_VIEWS.map(([id, tab]) => <label for={`wg-img-${id}`} class="wg-switch-tab">{tab}</label>)}
           </div>
           <div class="wg-switch-shots">
-            {IMAGE_VIEWS.map(([, , img, alt]) => <figure class="wg-shot"><img src={`${IMG}${img}.webp`} alt={alt} width="2080" height="1300" loading="lazy"></figure>)}
+            {IMAGE_VIEWS.map(([, , img, alt]) => <figure class="wg-shot"><img src={`${IMG}${img}.webp`} srcset={srcset(img)} sizes={ROW} alt={alt} width="2080" height="1300" loading="lazy"></figure>)}
           </div>
-        </div>
+        </fieldset>
         <div class="wg-row-text">
           <p class="wg-kicker">Imágenes</p>
           <h3>Arrastra la línea y mira qué cambió.</h3>
@@ -99,15 +105,16 @@ const REVIEW: [img: string, kicker: string, title: string, text: string, alt: st
       </div>
 
       <div class="wg-row wg-row--flip reveal">
-        <div class="wg-switch">
+        <fieldset class="wg-switch">
+          <legend class="sr-only">Vistas del Markdown</legend>
           {MARKDOWN_VIEWS.map(([id], i) => <input type="radio" name="wg-md" id={`wg-md-${id}`} class="wg-switch-input" checked={i === 0}>)}
-          <div class="wg-switch-tabs" role="group" aria-label="Vistas del Markdown">
+          <div class="wg-switch-tabs">
             {MARKDOWN_VIEWS.map(([id, tab]) => <label for={`wg-md-${id}`} class="wg-switch-tab">{tab}</label>)}
           </div>
           <div class="wg-switch-shots">
-            {MARKDOWN_VIEWS.map(([, , img, alt]) => <figure class="wg-shot"><img src={`${IMG}${img}.webp`} alt={alt} width="2080" height="1300" loading="lazy"></figure>)}
+            {MARKDOWN_VIEWS.map(([, , img, alt]) => <figure class="wg-shot"><img src={`${IMG}${img}.webp`} srcset={srcset(img)} sizes={ROW} alt={alt} width="2080" height="1300" loading="lazy"></figure>)}
           </div>
-        </div>
+        </fieldset>
         <div class="wg-row-text">
           <p class="wg-kicker">Markdown</p>
           <h3>Tu README como en GitHub, con sus cambios marcados.</h3>
@@ -122,7 +129,7 @@ const REVIEW: [img: string, kicker: string, title: string, text: string, alt: st
 
       <div class="wg-row reveal">
         <figure class="wg-shot">
-          <img src={`${IMG}pdf-classic.webp`} alt="PDF comparado por páginas: miniaturas a la izquierda con un punto en las que cambiaron, y la página elegida antes y después" width="2080" height="1300" loading="lazy">
+          <img src={`${IMG}pdf-classic.webp`} srcset={srcset('pdf-classic')} sizes={ROW} alt="PDF comparado por páginas: miniaturas a la izquierda con un punto en las que cambiaron, y la página elegida antes y después" width="2080" height="1300" loading="lazy">
         </figure>
         <div class="wg-row-text">
           <p class="wg-kicker">PDF</p>
@@ -137,7 +144,7 @@ const REVIEW: [img: string, kicker: string, title: string, text: string, alt: st
 
       <div class="wg-row wg-row--flip reveal">
         <figure class="wg-shot">
-          <img src={`${IMG}audio-classic.webp`} alt="Audio comparado: resumen con Estéreo → 5.1 resaltado, forma de onda del antes y del después y barra de reproducción con A/B" width="2080" height="1300" loading="lazy">
+          <img src={`${IMG}audio-classic.webp`} srcset={srcset('audio-classic')} sizes={ROW} alt="Audio comparado: resumen con Estéreo → 5.1 resaltado, forma de onda del antes y del después y barra de reproducción con A/B" width="2080" height="1300" loading="lazy">
         </figure>
         <div class="wg-row-text">
           <p class="wg-kicker">Audio</p>
@@ -157,7 +164,7 @@ const REVIEW: [img: string, kicker: string, title: string, text: string, alt: st
       {REVIEW.map(([img, kicker, title, text, alt], i) => (
         <div class={`wg-row reveal${i % 2 ? ' wg-row--flip' : ''}`}>
           <figure class="wg-shot">
-            <img src={`${IMG}${img}.webp`} alt={alt} width="2080" height="1300" loading="lazy">
+            <img src={`${IMG}${img}.webp`} srcset={srcset(img)} sizes={ROW} alt={alt} width="2080" height="1300" loading="lazy">
           </figure>
           <div class="wg-row-text">
             <p class="wg-kicker">{kicker}</p>
@@ -179,7 +186,7 @@ const REVIEW: [img: string, kicker: string, title: string, text: string, alt: st
             <div class="add off"><b>23</b><span>+   print("debug: \(key)")</span></div>
           </div>
         </BentoCard>
-        <BentoCard title="Nada destructivo sin red" bg="rgba(79,209,160,.14)" stroke="#9fe8c9" icon='<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>'>
+        <BentoCard title="Nada destructivo sin red" bg="color-mix(in srgb, var(--a2) 14%, transparent)" stroke="#9fe8c9" icon='<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>'>
           <Fragment slot="text">Antes de descartar, hacer rebase, reset o borrar ramas, WolfGit guarda una copia. <span class="kbd">⇧⌘Z</span> lo deshace.</Fragment>
         </BentoCard>
         <BentoCard title="Stash a un clic" icon='<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/>'>
@@ -188,24 +195,24 @@ const REVIEW: [img: string, kicker: string, title: string, text: string, alt: st
         <BentoCard title="Ratón o teclado" icon='<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>'>
           <Fragment slot="text">Las flechas recorren archivos y commits; <span class="kbd">←</span> <span class="kbd">→</span> pasan entre paneles. Cada comando tiene su atajo.</Fragment>
         </BentoCard>
-        <BentoCard title="Diffs que se leen solos" bg="rgba(255,127,166,.14)" stroke="#ffc2d4" icon='<path d="M8 4v16M16 4v16"/><path d="M4 8h4M16 16h4"/>'>
+        <BentoCard title="Diffs que se leen solos" bg="color-mix(in srgb, var(--a4) 14%, transparent)" stroke="#ffc2d4" icon='<path d="M8 4v16M16 4v16"/><path d="M4 8h4M16 16h4"/>'>
           <Fragment slot="text">Resaltado de sintaxis, cambios por palabra dentro de cada línea y vista unificada o dividida con <span class="kbd">⇧⌘D</span>.</Fragment>
         </BentoCard>
-        <BentoCard span={2} title="Limpia tus ramas" icon='<path d="M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9c0 6-12 3-12 9"/>'>
+        <BentoCard title="Limpia tus ramas" icon='<path d="M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9c0 6-12 3-12 9"/>'>
           <Fragment slot="text">Encuentra las ramas ya fusionadas y las que perdieron su remoto (como tras un PR con squash) y bórralas juntas, con copia para deshacerlo.</Fragment>
         </BentoCard>
-        <BentoCard span={3} title="GitHub, GitLab y Bitbucket" bg="rgba(169,214,255,.14)" stroke="#d3eaff" icon='<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'>
-          <Fragment slot="text">Agrega tus cuentas en Ajustes: GitHub con un código de dispositivo, GitLab y Bitbucket con un token. Revisa tus Pull Requests con su CI, haz checkout de uno (también de forks) y publica un repo nuevo con un botón.</Fragment>
-        </BentoCard>
-        <BentoCard span={3} title="Cada error trae su arreglo" bg="rgba(79,209,160,.14)" stroke="#9fe8c9" icon='<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>'>
+        <BentoCard title="Cada error trae su arreglo" bg="color-mix(in srgb, var(--a2) 14%, transparent)" stroke="#9fe8c9" icon='<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>'>
           <Fragment slot="text">¿Llave SSH rechazada, push rechazado, SSO o firma GPG? WolfGit te dice la causa en palabras y te ofrece el botón que lo arregla.</Fragment>
         </BentoCard>
-        <BentoCard span={4} title="Todo el poder, cuando lo necesitas" icon='<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>'>
+        <BentoCard title="Suelta una carpeta" icon='<path d="M3 7h6l2 2h10v10H3z"/><path d="M12 12v5M9.5 14.5 12 17l2.5-2.5"/>'>
+          <Fragment slot="text">Arrastra a la ventana una o varias carpetas de tus proyectos y WolfGit las agrega a tu lista de repositorios.</Fragment>
+        </BentoCard>
+        <BentoCard span={3} title="GitHub, GitLab y Bitbucket" bg="color-mix(in srgb, var(--a3) 14%, transparent)" stroke="#d3eaff" icon='<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'>
+          <Fragment slot="text">Agrega tus cuentas en Ajustes: GitHub con un código de dispositivo, GitLab y Bitbucket con un token. Revisa tus Pull Requests con su CI, haz checkout de uno (también de forks) y publica un repo nuevo con un botón.</Fragment>
+        </BentoCard>
+        <BentoCard span={3} title="Todo el poder, cuando lo necesitas" icon='<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>'>
           <Fragment slot="text">Lo avanzado no estorba: aparece en el menú Git, en el clic derecho de un commit o en la paleta.</Fragment>
           <div class="wg-chips"><span>Merge, rebase y cherry-pick</span><span>Amend</span><span>Deshacer commit</span><span>Squash</span><span>Reordenar commits</span><span>Tags</span><span>Worktrees</span><span>Coautores</span><span>Reset suave</span><span>Rama desde un commit</span><span>Historial de un archivo</span><span>.gitignore</span><span>Clonar</span><span>Fetch de todos los repos</span><span>Español e inglés</span></div>
-        </BentoCard>
-        <BentoCard span={2} title="Suelta una carpeta" icon='<path d="M3 7h6l2 2h10v10H3z"/><path d="M12 12v5M9.5 14.5 12 17l2.5-2.5"/>'>
-          <Fragment slot="text">Arrastra a la ventana una o varias carpetas de tus proyectos y WolfGit las agrega a tu lista de repositorios.</Fragment>
         </BentoCard>
       </Bento>
     </Section>
@@ -213,7 +220,7 @@ const REVIEW: [img: string, kicker: string, title: string, text: string, alt: st
     <Section id="historial" flush center eyebrow="historial" title="Recorre tu historia" accent="con las flechas."
              sub="A la izquierda los commits, en medio sus archivos y a la derecha el diff. ↑ ↓ recorren la lista; → y ← pasan de los commits a sus archivos y de vuelta.">
       <figure class="wg-shot wg-wide reveal">
-        <img src={`${IMG}historial-classic.webp`} alt="Historial de WolfGit: lista de commits de tres autores, columna de archivos del commit elegido y su diff con el cambio marcado por palabra" width="2080" height="1300" loading="lazy">
+        <img src={`${IMG}historial-classic.webp`} srcset={srcset('historial-classic')} sizes={WIDE} alt="Historial de WolfGit: lista de commits de tres autores, columna de archivos del commit elegido y su diff con el cambio marcado por palabra" width="2080" height="1300" loading="lazy">
       </figure>
     </Section>
 
@@ -231,9 +238,10 @@ const REVIEW: [img: string, kicker: string, title: string, text: string, alt: st
 
     <Section id="temas" flush center eyebrow="cuatro pelajes" title="Elige tu husky." accent="La app se viste igual."
              sub="Cada tema cambia los colores, el pelaje del lobito y hasta el icono de la app en el Dock.">
-      <div class="wg-themes reveal">
+      <fieldset class="wg-themes reveal">
+        <legend class="sr-only">Temas de WolfGit</legend>
         {THEMES.map(([id], i) => <input type="radio" name="wg-theme" id={`wg-theme-${id}`} class="wg-theme-input" checked={i === 0}>)}
-        <div class="wg-theme-tabs" role="group" aria-label="Temas de WolfGit">
+        <div class="wg-theme-tabs">
           {THEMES.map(([id, name, note]) => (
             <label for={`wg-theme-${id}`} class={`wg-theme-tab wg-tab-${id}`}>
               <img src={`${IMG}icono-${id}.webp`} alt="" width="56" height="56" loading="lazy">
@@ -244,18 +252,18 @@ const REVIEW: [img: string, kicker: string, title: string, text: string, alt: st
         <div class="wg-theme-shots">
           {THEMES.map(([id, name]) => (
             <figure class={`wg-shot wg-theme-shot wg-shot-${id}`}>
-              <img src={`${IMG}cambios-${id}.webp`} alt={`WolfGit con el tema ${name}`} width="2080" height="1300" loading="lazy">
+              <img src={`${IMG}cambios-${id}.webp`} srcset={srcset(`cambios-${id}`)} sizes={WIDE} alt={`WolfGit con el tema ${name}`} width="2080" height="1300" loading="lazy">
             </figure>
           ))}
         </div>
-      </div>
+      </fieldset>
     </Section>
 
     <Section id="lobito" flush eyebrow="el lobito" title="Un husky que vive" accent="en tu barra lateral."
              sub="Camina, come, persigue su cola y aúlla de noche. Celebra tus commits, se preocupa cuando algo falla y se duerme cuando todo está al día.">
       <div class="wg-duo">
         <figure class="wg-shot reveal">
-          <img src={`${IMG}sin-cambios-classic.webp`} alt="Sin cambios por confirmar: el lobito duerme y dice «Todo al día en main»" width="2080" height="1300" loading="lazy">
+          <img src={`${IMG}sin-cambios-classic.webp`} srcset={srcset('sin-cambios-classic')} sizes={ROW} alt="Sin cambios por confirmar: el lobito duerme y dice «Todo al día en main»" width="2080" height="1300" loading="lazy">
         </figure>
         <ul class="wg-points wg-points--stack reveal">
           <li><b>Reacciona a git:</b> un commit, un push o un conflicto cambian su ánimo.</li>
