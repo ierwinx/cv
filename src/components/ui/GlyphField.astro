@@ -1,12 +1,14 @@
 ---
 // Símbolos de la app flotando en el fondo (el efecto de iJson). Sale de apps.json → glyphs (o de `glyphs`, como
 // en la home); lo anima core/glyphs.ts (initGlyphs) desde el script de la página. colors: variables CSS, separadas por comas.
+// icons: íconos de relleno de lib/icons.ts (apple, android…) que flotan junto a los símbolos (o solos, como en el CV).
 import './glyph-field.css';
 import type { App } from '../../lib/apps';
+import { iconPath, type FilledIcon } from '../../lib/icons';
 
-interface Props { app?: App; glyphs?: string[]; colors?: string; density?: number; id?: string }
-const { app, colors, density, id } = Astro.props;
-const glyphs = Astro.props.glyphs ?? app?.glyphs;
+interface Props { app?: App; glyphs?: string[]; icons?: FilledIcon[]; colors?: string; density?: number; id?: string }
+const { app, colors, density, id, icons = [] } = Astro.props;
+const glyphs = [...(Astro.props.glyphs ?? app?.glyphs ?? []), ...icons.map((n) => `path:${iconPath(n)}`)];
 ---
 {glyphs?.length && <canvas id={id} class="ui-glyphs" data-glyph-field data-glyphs={JSON.stringify(glyphs)}
         data-colors={colors} data-density={density} aria-hidden="true"></canvas>}
