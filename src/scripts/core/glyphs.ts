@@ -1,5 +1,6 @@
 // Campo de símbolos que flotan en el fondo (nació en iJson): suben despacio, giran, se apartan del cursor
 // y siguen el scroll con parallax. Los símbolos y colores los pone ui/GlyphField.astro en data-*.
+// Un símbolo «path:<d>» es un ícono SVG (viewBox 24×24) que se rellena con Path2D en vez de escribirse como texto.
 import { $$ } from './dom';
 import { reduceMotion as reduce } from './motion';
 import { frameLoop } from './loop';
@@ -12,6 +13,8 @@ function mountField(cv: HTMLCanvasElement) {
   const vars = (cv.dataset.colors || '--a1,--a2,--a3,--a4,--muted').split(',');
   const density = +(cv.dataset.density || 1);
   if (!glyphs.length) return;
+  const PATH = 'path:';
+  const paths = new Map(glyphs.filter((g) => g.startsWith(PATH)).map((g) => [g, new Path2D(g.slice(PATH.length))]));
   let W = 0, H = 0, parts: Glyph[] = [], colors: string[] = [];
   const mouse = { x: -999, y: -999 };
   const readColors = () => {
@@ -41,8 +44,14 @@ function mountField(cv: HTMLCanvasElement) {
       ctx.rotate(p.r);
       ctx.globalAlpha = .08 + .1 * p.z + near * .5;
       ctx.fillStyle = colors[p.c];
-      ctx.font = `${Math.round(12 + 16 * p.z)}px "JetBrains Mono", ui-monospace, monospace`;
-      ctx.fillText(p.g, 0, 0);
+      const icon = paths.get(p.g);
+      if (icon) {   // ícono: un poco más grande que el texto, centrado en su punto
+        const s = (18 + 22 * p.z) / 24;
+        ctx.scale(s, s); ctx.translate(-12, -12); ctx.fill(icon);
+      } else {
+        ctx.font = `${Math.round(12 + 16 * p.z)}px "JetBrains Mono", ui-monospace, monospace`;
+        ctx.fillText(p.g, 0, 0);
+      }
       ctx.restore();
     }
   };

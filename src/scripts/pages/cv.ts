@@ -5,6 +5,7 @@ import { $, $$ } from '../core/dom';
 import { initContactForm } from '../core/contact';
 import { initReveal } from '../core/reveal';
 import { lightDismiss } from '../core/dialog';
+import { initGlyphs } from '../core/glyphs';
 
 type Lang = 'en' | 'es';
 type Texts = (typeof cv.web)['en'];
@@ -235,5 +236,6 @@ initModal();
 $('#langBtn')!.addEventListener('click', () => setLang(lang === 'en' ? 'es' : 'en'));
 $('#themeBtn')!.addEventListener('click', toggleTheme);
 initScrollTop();
+initGlyphs();
 initTopbarName();
 setTimeout(typeEffect, 600);
