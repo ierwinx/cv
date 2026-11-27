@@ -15,11 +15,12 @@ function mountField(cv: HTMLCanvasElement) {
   if (!glyphs.length) return;
   const PATH = 'path:';
   const paths = new Map(glyphs.filter((g) => g.startsWith(PATH)).map((g) => [g, new Path2D(g.slice(PATH.length))]));
-  let W = 0, H = 0, parts: Glyph[] = [], colors: string[] = [];
+  let W = 0, H = 0, parts: Glyph[] = [], colors: string[] = [], opacity = 1;
   const mouse = { x: -999, y: -999 };
   const readColors = () => {
     const cs = getComputedStyle(cv);
     colors = vars.map((v) => cs.getPropertyValue(v.trim()).trim() || '#fff');
+    opacity = +cs.getPropertyValue('--glyph-opacity') || 1;   // la página puede subirla (p. ej. por tema)
   };
   const resize = () => {
     const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -42,7 +43,7 @@ function mountField(cv: HTMLCanvasElement) {
       ctx.save();
       ctx.translate(p.x + (near ? dx / dist * near * 18 : 0), y + (near ? dy / dist * near * 18 : 0));
       ctx.rotate(p.r);
-      ctx.globalAlpha = .08 + .1 * p.z + near * .5;
+      ctx.globalAlpha = Math.min(1, (.08 + .1 * p.z) * opacity + near * .5);
       ctx.fillStyle = colors[p.c];
       const icon = paths.get(p.g);
       if (icon) {   // ícono: un poco más grande que el texto, centrado en su punto
@@ -59,10 +60,10 @@ function mountField(cv: HTMLCanvasElement) {
   if (reduce) draw(); else frameLoop(draw, { fps: 30 });   // fondo lento: 30 fps se ven igual
   addEventListener('resize', () => { resize(); if (reduce) draw(); });
   addEventListener('pointermove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
-  // Si la página cambia de tema (claro/oscuro), se releen los colores
+  // Si la página cambia de tema (claro/oscuro), se releen los colores (data-tema: el botón de los cursos)
   const recolor = () => { readColors(); if (reduce) draw(); };
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', recolor);
-  new MutationObserver(recolor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+  new MutationObserver(recolor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-tema', 'class'] });
 }
 
 export function initGlyphs(selector = '[data-glyph-field]') {

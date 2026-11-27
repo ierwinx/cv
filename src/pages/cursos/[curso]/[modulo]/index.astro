@@ -1,0 +1,56 @@
+---
+// Presentación de un módulo: /cursos/<curso>/<modulo>/. Cabecera y lista de lecciones salen de los datos; la
+// presentación (lo que aprenderás…), del cuerpo de <curso>/<modulo>.md.
+import { render } from 'astro:content';
+import CursoLayout from '../../../../layouts/CursoLayout.astro';
+import Navegacion from '../../../../components/cursos/Navegacion.astro';
+import { conCodigo, getCursos, modulosVecinos, sinCodigo } from '../../../../lib/cursos';
+
+export async function getStaticPaths() {
+  return (await getCursos()).flatMap((curso) =>
+    curso.modulos.map((modulo) => ({ params: { curso: curso.slug, modulo: modulo.slug }, props: { curso, modulo } })),
+  );
+}
+
+const { curso, modulo } = Astro.props;
+const datos = modulo.entrada.data;
+const { Content } = await render(modulo.entrada);
+const { anterior, siguiente } = modulosVecinos(curso, modulo);
+const enlace = (m?: typeof modulo) => m && { url: m.url, titulo: m.entrada.data.titulo };
+---
+<CursoLayout curso={curso} modulo={modulo} pagina="modulo" title={`${datos.titulo} · ${curso.entrada.data.nombre}`}
+             description={sinCodigo(datos.resumen)}>
+  <article class="pagina-modulo">
+    <nav class="migas" aria-label="Ruta de navegación">
+      <a href={curso.url}>Inicio</a>
+      <span aria-hidden="true">/</span>
+      <span>{datos.titulo}</span>
+    </nav>
+
+    <header class="cabecera-modulo">
+      <p class="etiqueta-modulo">Módulo {modulo.numero}</p>
+      <h1><span class="icono-modulo" aria-hidden="true">{datos.icono}</span> {datos.titulo}</h1>
+      <p class="resumen-leccion" set:html={conCodigo(datos.resumen)} />
+      <div class="datos-leccion">
+        <span class="dato">&#128218; {modulo.lecciones.length} lecciones</span>
+        <span class="dato">&#9201; {modulo.minutos} min en total</span>
+      </div>
+    </header>
+
+    <Content />
+
+    <ol class="tarjetas-lecciones">
+      {modulo.lecciones.map((l) => (
+        <li>
+          <a class="tarjeta-leccion" href={l.url} data-leccion={l.clave}>
+            <span class="numero-leccion">{l.numero}</span>
+            <span class="texto-tarjeta"><strong>{l.entrada.data.titulo}</strong><span set:html={conCodigo(l.entrada.data.resumen)} /></span>
+            <span class="minutos-tarjeta">{l.entrada.data.minutos} min</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+
+    <Navegacion anterior={enlace(anterior)} siguiente={enlace(siguiente)} etiqueta="Módulo anterior y siguiente" />
+  </article>
+</CursoLayout>

@@ -1,0 +1,52 @@
+---
+// Documento de cualquier página de un curso (/cursos/<curso>/…): cabecera con buscador y tema, índice lateral
+// con el progreso, pie y el script del curso. La página pone su contenido en el <main>.
+// El diseño (liquid glass) está en styles/pages/curso.css; los colores salen del curso (src/content/cursos/<curso>.md).
+import BaseLayout from './BaseLayout.astro';
+import CursoCabecera from '../components/cursos/CursoCabecera.astro';
+import CursoLateral from '../components/cursos/CursoLateral.astro';
+import TemaInicial from '../components/cursos/TemaInicial.astro';
+import GlyphField from '../components/ui/GlyphField.astro';
+import site from '../data/site.json';
+import { varsCurso, type Curso, type Leccion, type Modulo } from '../lib/cursos';
+import { SIMBOLOS_COLORES } from '../lib/cursos';
+import '../styles/pages/curso.css';
+
+interface Props {
+  curso: Curso;
+  title: string;
+  description: string;
+  pagina: 'portada' | 'modulo' | 'leccion';
+  leccion?: Leccion; // la que se está leyendo: se marca en el índice lateral
+  modulo?: Modulo;   // el módulo que el índice lateral deja abierto
+}
+const { curso, title, description, pagina, leccion, modulo = leccion?.modulo } = Astro.props;
+const { icono, nombre, colores } = curso.entrada.data;
+const favicon = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${icono}</text></svg>`;
+---
+<BaseLayout title={title} description={description} vars={varsCurso(curso)} themeColor={colores.primarioHondo}
+            bodyClass={`curso-${pagina}`}>
+  <Fragment slot="head">
+    <link rel="icon" href={favicon}>
+    <TemaInicial />
+  </Fragment>
+
+  <GlyphField glyphs={curso.entrada.data.simbolos} colors={SIMBOLOS_COLORES} density={0.8} />
+  <div class="curso" data-curso={curso.slug} data-raiz={curso.url} data-buscador={`${curso.url}buscar.json`}
+       data-leccion={leccion?.clave}>
+    <CursoCabecera curso={curso} />
+    <div class="velo" hidden></div>
+    <div class="disposicion">
+      <CursoLateral curso={curso} actual={leccion} abierto={modulo} />
+      <main id="contenido" class="contenido">
+        <slot />
+      </main>
+    </div>
+    <footer class="pie">
+      <p>{nombre} &middot; {site.founder}</p>
+      <p class="pie-nota"><a href="/cursos/">Todos los cursos</a> &middot; <a href="/">{site.name}</a></p>
+    </footer>
+  </div>
+
+  <script>import '../scripts/pages/curso';</script>
+</BaseLayout>

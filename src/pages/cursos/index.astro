@@ -1,0 +1,138 @@
+---
+// /cursos/: página principal de los cursos. Cada curso publicado (src/content/cursos/<curso>.md) aparece aquí solo,
+// con sus colores, sus módulos y el progreso que el lector lleve (scripts/pages/cursos.ts).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TemaInicial from '../../components/cursos/TemaInicial.astro';
+import GlyphField from '../../components/ui/GlyphField.astro';
+import site from '../../data/site.json';
+import { SIMBOLOS_COLORES, conCodigo, getCursos, varsCurso } from '../../lib/cursos';
+import '../../styles/pages/curso.css';
+
+const cursos = await getCursos();
+const estilo = (vars: Record<string, string>) => Object.entries(vars).map(([k, v]) => `${k}:${v}`).join(';');
+const horas = (min: number) => Math.round(min / 60);
+const totalLecciones = cursos.reduce((s, c) => s + c.lecciones.length, 0);
+const totalHoras = horas(cursos.reduce((s, c) => s + c.minutos, 0));
+// En el fondo flotan los símbolos de todos los cursos juntos.
+const simbolos = cursos.flatMap((c) => c.entrada.data.simbolos);
+
+// Lo que comparten todos los cursos (lo da la plantilla: CursoLayout, curso.ts y los avisos del Markdown).
+const funciones = [
+  ['🎯', 'Una idea por lección', 'Lecciones cortas, de cinco a quince minutos, que explican un solo tema y no dan nada por sabido.'],
+  ['▶️', 'Ejemplos que puedes ejecutar', 'Cada bloque de código está completo y lleva debajo la salida que verás en pantalla.'],
+  ['✍️', 'Ejercicios al final', 'Para aprender a programar hay que programar: cada lección termina con práctica.'],
+  ['✅', 'Tu progreso se guarda', 'Marca las lecciones completadas y retoma donde lo dejaste. Se queda en tu navegador, sin cuentas.'],
+  ['🔎', 'Buscador y atajos', 'Pulsa / para buscar en todo el curso y las flechas del teclado para pasar de lección.'],
+  ['🆓', 'Gratis y en español', 'Sin registro, sin anuncios y sin muros de pago. Solo el curso.'],
+];
+---
+<BaseLayout title={`Cursos de programación · ${site.name}`} themeColor="#2c3f8f" bodyClass="curso-indice"
+            description="Cursos de programación gratuitos y en español: de cero a construir aplicaciones reales, paso a paso y sin saltarte nada.">
+  <Fragment slot="head">
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/assets/favicon-48.png" sizes="48x48" type="image/png">
+    <TemaInicial />
+  </Fragment>
+
+  <GlyphField glyphs={simbolos} colors={SIMBOLOS_COLORES} density={0.8} />
+
+  <header class="cabecera">
+    <a class="marca" href="/cursos/">
+      <span class="marca-icono"><img src="/assets/favicon.svg" alt="" width="22" height="22"></span>
+      <span class="marca-texto">Cursos</span>
+    </a>
+    <nav class="cabecera-enlaces" aria-label="Sitio">
+      <a href="#cursos">Cursos</a>
+      <a href="/">{site.name}</a>
+    </nav>
+    <button class="boton-icono boton-tema" type="button" aria-label="Cambiar entre tema claro y oscuro">
+      <span class="icono-claro">&#9788;</span><span class="icono-oscuro">&#9789;</span>
+    </button>
+  </header>
+
+  <main id="contenido" class="indice-cursos">
+    <section class="heroe heroe-cursos">
+      <p class="etiqueta-heroe">Gratis, en español y sin registro</p>
+      <h1>Aprende a programar <span class="degradado">construyendo</span></h1>
+      <p class="subtitulo-heroe">Cursos completos que te llevan de cero a hacer aplicaciones reales, paso a paso y sin saltarte nada. Tu progreso se guarda en tu navegador.</p>
+      <div class="acciones-heroe">
+        <a class="boton-principal" href="#cursos">Ver los cursos</a>
+        <a class="boton-secundario" href="#como-son">Cómo son</a>
+      </div>
+      <ul class="cifras-heroe">
+        <li><strong>{cursos.length}</strong> {cursos.length === 1 ? 'curso' : 'cursos'}</li>
+        <li><strong>{totalLecciones}</strong> lecciones</li>
+        <li><strong>{totalHoras}</strong> horas de lectura</li>
+      </ul>
+    </section>
+
+    <section id="cursos" class="seccion-cursos" aria-labelledby="titulo-cursos">
+      <h2 id="titulo-cursos">Cursos disponibles</h2>
+
+      {cursos.map((c) => {
+        const d = c.entrada.data;
+        const primera = c.lecciones.find((l) => l.clave === d.primeraLeccion)!;
+        return (
+          <article class="ficha-curso" style={estilo(varsCurso(c))} data-curso={c.slug} data-total={c.lecciones.length}
+                   data-raiz={c.url}>
+            <div class="ficha-cabeza">
+              <span class="ficha-icono" aria-hidden="true">{d.icono}</span>
+              <div>
+                <p class="ficha-lenguaje">{d.lenguaje}</p>
+                <h3><a href={c.url}>{d.nombre}</a></h3>
+              </div>
+            </div>
+            <p class="ficha-lema">{d.lema}</p>
+            <ul class="ficha-datos">
+              <li>{c.modulos.length} módulos</li>
+              <li>{c.lecciones.length} lecciones</li>
+              <li>{horas(c.minutos)} h</li>
+            </ul>
+
+            <ol class="ficha-modulos" aria-label={`Módulos de ${d.nombre}`}>
+              {c.modulos.map((m) => (
+                <li>
+                  <a href={m.url} title={m.entrada.data.resumen.replace(/`/g, '')}>
+                    <span aria-hidden="true">{m.entrada.data.icono}</span>
+                    <span><span class="ficha-num">{m.numero}</span> {m.entrada.data.titulo}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+
+            <div class="ficha-progreso" hidden>
+              <div class="progreso-texto"><span class="ficha-hechas">0</span> de {c.lecciones.length} lecciones completadas</div>
+              <div class="barra-progreso"><div class="relleno-progreso"></div></div>
+            </div>
+
+            <div class="ficha-acciones">
+              <a class="boton-principal ficha-continuar" href={primera.url} hidden>Continuar donde lo dejaste</a>
+              <a class="boton-principal ficha-empezar" href={primera.url}>Empezar desde cero</a>
+              <a class="boton-secundario" href={c.url}>Ver el temario</a>
+            </div>
+          </article>
+        );
+      })}
+    </section>
+
+    <section id="como-son" class="seccion-funciones" aria-labelledby="titulo-funciones">
+      <h2 id="titulo-funciones">Cómo son los cursos</h2>
+      <div class="rejilla-funciones">
+        {funciones.map(([icono, titulo, texto]) => (
+          <div class="funcion">
+            <span class="icono-tarjeta" aria-hidden="true">{icono}</span>
+            <h3>{titulo}</h3>
+            <p set:html={conCodigo(texto)} />
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>Cursos &middot; {site.founder}</p>
+    <p class="pie-nota"><a href="/">{site.name}</a></p>
+  </footer>
+
+  <script>import '../../scripts/pages/cursos';</script>
+</BaseLayout>

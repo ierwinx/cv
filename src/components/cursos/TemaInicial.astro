@@ -1,0 +1,13 @@
+---
+// En el <head> de las páginas de /cursos/: pone el tema guardado (o el del sistema) antes de pintar, para que no
+// destelle. Sin la barra final (/cursos/python) los enlaces relativos del contenido apuntarían fuera del curso:
+// se la añade. El botón de tema (scripts/pages/curso.ts) guarda la elección en la misma clave.
+---
+<script is:inline>
+  if (!/(\/|\.html)$/.test(location.pathname)) location.replace(location.pathname + '/' + location.search + location.hash);
+  try {
+    var tema = localStorage.getItem('curso-tema');
+    if (!tema) tema = matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+    document.documentElement.dataset.tema = tema;
+  } catch (e) {}
+</script>

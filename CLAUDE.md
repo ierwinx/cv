@@ -1,7 +1,7 @@
 # ierwinx.com
 
 Portafolio y landings de las apps de Erwin (iBridge, iPlist, iJson, iCSV, iXML, Super Pets, iLegato, La Baraja, iMount, iSyntonic, iRar, WolfGit, iGit,
-iTunes, iSpecter, iConverter, LiveWallpapers) y su CV privado. Sitio **estático** en GitHub Pages
+iTunes, iSpecter, iConverter, LiveWallpapers), sus cursos de programación (`/cursos/`) y su CV privado. Sitio **estático** en GitHub Pages
 (dominio `ierwinx.com`, repo público `ierwinx/cv`).
 
 El plan completo y su porqué están en `docs/REDISENO.md`. Este archivo es la guía de trabajo.
@@ -169,6 +169,37 @@ Todo el sitio sale de Astro (`docs/REDISENO.md` §5, fases 0–7 hechas): ya no 
 `git worktree add <tmp> legacy-v1`, sírvelo con `python3 -m http.server 8101 --directory <tmp>` y compara capturas a
 1440 px y 390 px con movimiento reducido. El usuario valida visualmente antes de dar algo por bueno. Al terminar,
 `git worktree remove <tmp>`.
+
+## Cursos (`/cursos/`)
+
+Cursos en línea escritos en **Markdown**: una sola plantilla genera las páginas de todos. Hoy está el de Python
+(220 lecciones). Para uno nuevo (Swift, Kotlin…) no se toca código, solo `src/content/cursos/`:
+
+```
+src/content/cursos/<curso>.md                     nombre, icono, lema, primeraLeccion, orden, `colores` (paleta) y
+                                                  `simbolos` (lo que flota en el fondo: GlyphField);
+                                                  el cuerpo es el texto de la portada
+src/content/cursos/<curso>/<modulo>.md            titulo, icono, orden (= su número), resumen; el cuerpo es su presentación
+src/content/cursos/<curso>/<modulo>/<leccion>.md  titulo, resumen, minutos, orden
+```
+
+El esquema (y qué significa cada color) está en `src/content.config.ts`. La URL sale del nombre del archivo:
+`python/fundamentos/variables.md` → `/cursos/python/fundamentos/variables.html`. **No renombres lecciones publicadas:**
+el progreso del lector se guarda por `<modulo>/<leccion>`. `borrador: true` en `<curso>.md` lo deja sin publicar.
+
+En las lecciones, además de Markdown normal (GFM: tablas, listas…):
+- ` ```python title="saludo.py" ` → bloque de código con su nombre en la barra y botón «Copiar» (Shiki colorea
+  cualquier lenguaje; `consola` = sesión de terminal, `texto` = sin colorear).
+- ` ```salida ` justo debajo → «Salida en pantalla» pegada al bloque.
+- `> [!consejo] Título` + `>` + texto → aviso: `nota`, `consejo`, `aviso`, `error`, `ejercicio`, `resumen`, `objetivo`.
+- Los `##`/`###` llevan id sin acentos (`para-que-sirven`) y forman el índice «En esta lección».
+- En `resumen` del frontmatter, `` `código` `` se pinta como código.
+
+Piezas: `src/lib/cursos.ts` (arma el curso: orden, URLs, anterior/siguiente), `src/lib/cursos-markdown.mjs` (plugins de
+Sätteri para avisos, código, tablas y anclas; los carga `astro.config.mjs`), `layouts/CursoLayout.astro`,
+`components/cursos/`, `pages/cursos/` (portada, módulo, lección, `buscar.json` del buscador e índice `/cursos/`),
+`styles/pages/curso.css` (liquid glass con los tokens del curso) y `scripts/pages/curso.ts`. Tras cambiar los plugins de
+Markdown, borra `node_modules/.astro/data-store.json`: Astro guarda en caché las lecciones ya procesadas.
 
 ## Formulario de contacto
 
