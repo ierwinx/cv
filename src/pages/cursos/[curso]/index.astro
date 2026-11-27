@@ -1,0 +1,53 @@
+---
+// Portada de un curso: /cursos/<curso>/. Héroe y cifras salen de los datos; el texto, del cuerpo de <curso>.md.
+import { render } from 'astro:content';
+import CursoLayout from '../../../layouts/CursoLayout.astro';
+import { conCodigo, getCurso, getCursos } from '../../../lib/cursos';
+
+export async function getStaticPaths() {
+  return (await getCursos()).map((c) => ({ params: { curso: c.slug } }));
+}
+
+const curso = await getCurso(Astro.params.curso);
+const datos = curso.entrada.data;
+const { Content } = await render(curso.entrada);
+const primera = curso.lecciones.find((l) => l.clave === datos.primeraLeccion)!;
+const horas = Math.round(curso.minutos / 60);
+---
+<CursoLayout curso={curso} pagina="portada" title={`${datos.nombre} · ${datos.lema}`} description={datos.descripcion}>
+  <article class="portada">
+    <header class="heroe">
+      <p class="etiqueta-heroe">{datos.etiqueta}</p>
+      <h1>{datos.nombre}</h1>
+      <p class="subtitulo-heroe">{datos.lema}</p>
+      <div class="acciones-heroe">
+        <a class="boton-principal" href={primera.url}>Empezar desde cero</a>
+        <a class="boton-secundario" href="#temario">Ver el temario</a>
+        <a class="boton-secundario" id="continuar-curso" href="#temario" hidden>Continuar donde lo dejaste</a>
+      </div>
+      <ul class="cifras-heroe">
+        <li><strong>{curso.modulos.length}</strong> módulos</li>
+        <li><strong>{curso.lecciones.length}</strong> lecciones</li>
+        <li><strong>{horas}</strong> horas de lectura</li>
+      </ul>
+    </header>
+
+    <section class="texto-portada">
+      <Content />
+    </section>
+
+    <section id="temario" class="temario">
+      <h2>Temario completo</h2>
+      <div class="rejilla-modulos">
+        {curso.modulos.map((m) => (
+          <a class="tarjeta-modulo" href={m.url}>
+            <span class="icono-tarjeta" aria-hidden="true">{m.entrada.data.icono}</span>
+            <h3>{m.numero}. {m.entrada.data.titulo}</h3>
+            <p set:html={conCodigo(m.entrada.data.resumen)} />
+            <span class="pie-tarjeta"><span>{m.lecciones.length} lecciones</span><span>{m.minutos} min</span></span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </article>
+</CursoLayout>

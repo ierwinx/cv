@@ -1,0 +1,63 @@
+---
+// Una lección: /cursos/<curso>/<modulo>/<leccion>.html. El cuerpo es el Markdown de
+// src/content/cursos/<curso>/<modulo>/<leccion>.md (avisos, código y anclas: src/lib/cursos-markdown.mjs).
+import { render } from 'astro:content';
+import CursoLayout from '../../../../layouts/CursoLayout.astro';
+import Navegacion from '../../../../components/cursos/Navegacion.astro';
+import { conCodigo, getCursos, sinCodigo, vecinas } from '../../../../lib/cursos';
+
+export async function getStaticPaths() {
+  return (await getCursos()).flatMap((curso) =>
+    curso.lecciones.map((leccion) => ({
+      params: { curso: curso.slug, modulo: leccion.modulo.slug, leccion: leccion.slug },
+      props: { curso, leccion },
+    })),
+  );
+}
+
+const { curso, leccion } = Astro.props;
+const datos = leccion.entrada.data;
+const modulo = leccion.modulo;
+const { Content, headings } = await render(leccion.entrada);
+const indice = headings
+  .filter((h) => h.depth === 2 || h.depth === 3)
+  .map((h) => ({ ...h, text: h.text.replace(/#$/, '').trim() })); // sin el «#» del enlace de la sección
+const { anterior, siguiente } = vecinas(curso, leccion);
+const enlace = (l?: typeof leccion) => l && { url: l.url, titulo: l.entrada.data.titulo };
+---
+<CursoLayout curso={curso} leccion={leccion} pagina="leccion" title={`${datos.titulo} · ${curso.entrada.data.nombre}`}
+             description={sinCodigo(datos.resumen)}>
+  <article class="leccion" data-leccion={leccion.clave}>
+    <nav class="migas" aria-label="Ruta de navegación">
+      <a href={curso.url}>Inicio</a>
+      <span aria-hidden="true">/</span>
+      <a href={modulo.url}>{modulo.entrada.data.titulo}</a>
+    </nav>
+
+    <header class="cabecera-leccion">
+      <p class="etiqueta-modulo">Módulo {modulo.numero} &middot; Lección {leccion.numero} de {modulo.lecciones.length}</p>
+      <h1>{datos.titulo}</h1>
+      <p class="resumen-leccion" set:html={conCodigo(datos.resumen)} />
+      <div class="datos-leccion">
+        <span class="dato">&#9201; {datos.minutos} min de lectura</span>
+        <button type="button" class="boton-completar" id="boton-completar">Marcar como completada</button>
+      </div>
+    </header>
+
+    <div class="columnas-leccion">
+      <div class="cuerpo-leccion">
+        <Content />
+      </div>
+      {indice.length > 0 && (
+        <aside class="indice-pagina" aria-label="Contenido de esta lección">
+          <p class="titulo-indice">En esta lección</p>
+          <ul>
+            {indice.map((h) => <li><a class={`nivel-${h.depth}`} href={`#${h.slug}`}>{h.text}</a></li>)}
+          </ul>
+        </aside>
+      )}
+    </div>
+
+    <Navegacion anterior={enlace(anterior)} siguiente={enlace(siguiente)} />
+  </article>
+</CursoLayout>

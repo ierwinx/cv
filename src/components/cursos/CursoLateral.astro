@@ -1,0 +1,40 @@
+---
+// Índice lateral de un curso: progreso guardado y los módulos plegables con sus lecciones.
+// Deja abierto el módulo de la página y marca la lección que se lee. El progreso lo pinta scripts/pages/curso.ts.
+import type { Curso, Leccion, Modulo } from '../../lib/cursos';
+
+interface Props {
+  curso: Curso;
+  actual?: Leccion;
+  abierto?: Modulo;
+}
+const { curso, actual, abierto } = Astro.props;
+---
+<nav class="lateral" aria-label="Índice del curso">
+  <div class="progreso-global">
+    <div class="progreso-texto"><span id="progreso-hechas">0</span> de {curso.lecciones.length} lecciones</div>
+    <div class="barra-progreso"><div class="relleno-progreso" id="relleno-progreso"></div></div>
+    <button type="button" class="reiniciar-progreso" id="reiniciar-progreso">Reiniciar progreso</button>
+  </div>
+  {curso.modulos.map((m) => {
+    const abiertoAqui = m === abierto;
+    return (
+      <div class="grupo-modulo" data-abierto={abiertoAqui ? 'si' : 'no'}>
+        <button class="titulo-grupo" type="button" aria-expanded={abiertoAqui ? 'true' : 'false'}>
+          <span class="numero-grupo">{m.numero}</span><span>{m.entrada.data.titulo}</span><span class="flecha" aria-hidden="true">&#9654;</span>
+        </button>
+        <a class="enlace-indice-modulo" href={m.url}>Presentación del módulo</a>
+        <ul class="lista-lecciones">
+          {m.lecciones.map((l) => (
+            <li>
+              <a class:list={['enlace-leccion', { actual: l === actual }]} href={l.url} data-leccion={l.clave}
+                 aria-current={l === actual ? 'page' : undefined}>
+                <span>{l.entrada.data.titulo}</span><span class="marca-hecha" aria-hidden="true">&#10003;</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  })}
+</nav>
