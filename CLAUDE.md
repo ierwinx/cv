@@ -232,6 +232,10 @@ eliminar cuenta de Super Pets, iConverter y `/contacto/`. El pie de cada app y s
 - **`/CV/` va en mayúsculas** (GitHub Pages distingue mayúsculas): siempre `noindex`, fuera del sitemap, y
   `robots.txt` bloquea `/CV/img/`.
 - `musica/` es una redirección a `/iconverter/` (está en `REDIRECTS` de `seo.py`).
+- **Cursos** (`/cursos/…`): `seo.py` lee el frontmatter de `src/content/cursos` y pone `Course` en la portada de cada
+  curso, `LearningResource` en cada lección y migas de pan (ierwinx › Cursos › Curso › Módulo › Lección); `/cursos/` es
+  un `CollectionPage`. La imagen es `assets/og/<curso>.jpg` (si falta, la de la home): dibújala con
+  `tools/og-maker.html?solo=<curso>.png` tras añadir su tarjeta en `CARDS`. El `lastmod` sale del Markdown de la página.
 - `tools/indexnow.py --send` avisa a Bing; exige un `dist/` compilado con `SITE=https://ierwinx.com`.
 - **CSP:** al final, `seo.py` pone en cada página un `<meta http-equiv="Content-Security-Policy">` (GitHub Pages no
   deja cabeceras) con la huella SHA-256 de sus scripts en línea, calculada sola. Si agregas algo de **otro dominio**

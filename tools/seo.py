@@ -22,7 +22,8 @@ Qué hace:
   * Al final, en todas las páginas: Content-Security-Policy y Referrer-Policy como <meta>
     (GitHub Pages no deja poner cabeceras), entre <!-- csp:start --> y <!-- csp:end -->.
 
-Los datos de las apps y de la marca salen de src/data/apps.json y src/data/site.json.
+Los datos de las apps y de la marca salen de src/data/apps.json y src/data/site.json; los de los cursos
+(/cursos/<curso>/…: Course, LearningResource y migas de pan), del frontmatter de src/content/cursos.
 """
 
 import base64
@@ -92,6 +93,88 @@ def download_url(app):
 
 # Reference used inside other entities: self-contained, so each page stands on its own.
 ORG_REF = {'@type': 'Organization', '@id': SITE + '/#organization', 'name': 'ierwinx', 'url': SITE + '/'}
+
+
+# ── cursos (src/content/cursos) ──────────────────────────────────────────
+# Los datos de cada curso salen del frontmatter de sus Markdown, así un curso nuevo tiene su SEO sin tocar esto.
+
+CURSOS_DIR = os.path.join(ROOT, 'src', 'content', 'cursos')
+
+
+def frontmatter(path):
+    """Campos de primer nivel del frontmatter («clave: valor»; los valores entre comillas o listas, en JSON)."""
+    datos = {}
+    with open(path, encoding='utf-8') as f:
+        lineas = f.read().split('\n')
+    if not lineas or lineas[0].strip() != '---':
+        return datos
+    for linea in lineas[1:]:
+        if linea.strip() == '---':
+            break
+        m = re.match(r'^([A-Za-z]\w*):\s*(.*)$', linea)   # sin sangría: los anidados (colores) no hacen falta
+        if not m or not m.group(2):
+            continue
+        valor = m.group(2).strip()
+        try:
+            datos[m.group(1)] = json.loads(valor)
+        except ValueError:
+            datos[m.group(1)] = valor
+    return datos
+
+
+def load_cursos():
+    """{curso: {'datos': frontmatter de <curso>.md, 'modulos': {modulo: frontmatter}}}, sin los borradores."""
+    cursos = {}
+    if not os.path.isdir(CURSOS_DIR):
+        return cursos
+    for nombre in sorted(os.listdir(CURSOS_DIR)):
+        if not nombre.endswith('.md'):
+            continue
+        slug = nombre[:-len('.md')]
+        datos = frontmatter(os.path.join(CURSOS_DIR, nombre))
+        if datos.get('borrador') is True:
+            continue
+        carpeta = os.path.join(CURSOS_DIR, slug)
+        modulos = {}
+        if os.path.isdir(carpeta):
+            for m in os.listdir(carpeta):
+                if m.endswith('.md'):
+                    modulos[m[:-len('.md')]] = frontmatter(os.path.join(carpeta, m))
+        modulos = dict(sorted(modulos.items(), key=lambda kv: kv[1].get('orden', 0)))
+        cursos[slug] = {'datos': datos, 'modulos': modulos}
+    return dict(sorted(cursos.items(), key=lambda kv: kv[1]['datos'].get('orden', 0)))
+
+
+CURSOS = load_cursos()
+
+
+def og_image(nombre):
+    """Imagen para compartir de assets/og/<nombre>.jpg, o la de la home si todavía no se ha dibujado."""
+    return f'{nombre}.jpg' if os.path.exists(os.path.join(ROOT, 'public', 'assets', 'og', f'{nombre}.jpg')) else 'home.jpg'
+
+
+def curso_de(rel):
+    """cursos/<curso>/… → <curso> si es un curso publicado; si no, None."""
+    partes = rel.split('/')
+    return partes[1] if len(partes) >= 3 and partes[0] == 'cursos' and partes[1] in CURSOS else None
+
+
+def curso_jsonld(slug, url, description):
+    curso = CURSOS[slug]
+    datos = curso['datos']
+    return {
+        '@type': 'Course',
+        'name': datos.get('nombre', slug),
+        'description': description,
+        'url': url,
+        'image': OG + og_image(slug),
+        'inLanguage': 'es',
+        'isAccessibleForFree': True,
+        'provider': ORG_REF,
+        'offers': {'@type': 'Offer', 'category': 'Free', 'price': '0', 'priceCurrency': 'USD'},
+        'hasCourseInstance': {'@type': 'CourseInstance', 'courseMode': 'Online', 'inLanguage': 'es'},
+        'teaches': [datos.get('lenguaje', slug)] + [m.get('titulo', s) for s, m in curso['modulos'].items()],
+    }
 
 
 # ── helpers ──────────────────────────────────────────────────────────────
@@ -190,6 +273,55 @@ def page_meta(rel, text):
         crumbs = [('ierwinx', SITE + '/'), (app['name'], url_for(rel.split('/')[0] + '/index.html')),
                   (title.split(' — ')[0], url)]
         return title, description, app['image'], 'website', [breadcrumb(crumbs)], None
+
+    # /cursos/: la lista de cursos.
+    if rel == 'cursos/index.html':
+        graph = [
+            {
+                '@type': 'CollectionPage', 'name': title, 'description': description, 'url': url, 'inLanguage': 'es',
+                'publisher': ORG_REF,
+                'mainEntity': {
+                    '@type': 'ItemList',
+                    'itemListElement': [
+                        {'@type': 'ListItem', 'position': i, 'url': f'{SITE}/cursos/{s}/',
+                         'item': curso_jsonld(s, f'{SITE}/cursos/{s}/', c['datos'].get('descripcion', ''))}
+                        for i, (s, c) in enumerate(CURSOS.items(), 1)
+                    ],
+                },
+            },
+            breadcrumb([('ierwinx', SITE + '/'), ('Cursos', url)]),
+        ]
+        return title, description, og_image('cursos'), 'website', graph, None
+
+    # Un curso: portada (Course), módulos y lecciones (LearningResource), con migas de pan.
+    slug = curso_de(rel)
+    if slug:
+        curso = CURSOS[slug]
+        nombre = curso['datos'].get('nombre', slug)
+        base = f'{SITE}/cursos/{slug}/'
+        crumbs = [('ierwinx', SITE + '/'), ('Cursos', SITE + '/cursos/'), (nombre, base)]
+        if rel == f'cursos/{slug}/index.html':
+            return title, description, og_image(slug), 'website', [curso_jsonld(slug, url, description), BRAND, breadcrumb(crumbs)], None
+        partes = rel.split('/')
+        modulo = partes[2] if len(partes) > 3 else None
+        if modulo:
+            crumbs.append((curso['modulos'].get(modulo, {}).get('titulo', modulo), f'{base}{modulo}/'))
+        if rel.endswith('/index.html'):
+            return title, description, og_image(slug), 'website', [breadcrumb(crumbs)], None
+        leccion = title.split(' · ')[0]
+        crumbs.append((leccion, url))
+        graph = [breadcrumb(crumbs), {
+            '@type': 'LearningResource',
+            'name': leccion,
+            'description': description,
+            'url': url,
+            'inLanguage': 'es',
+            'isAccessibleForFree': True,
+            'learningResourceType': 'Lección',
+            'isPartOf': {'@type': 'Course', 'name': nombre, 'url': base},
+            'provider': ORG_REF,
+        }]
+        return title, description, og_image(slug), 'article', graph, None
 
     return title, description, 'home.jpg', 'website', None, None
 
@@ -307,6 +439,13 @@ def commit_dates():
 def source_of(rel):
     """Archivos fuente que generan dist/<rel>: su página de Astro o su archivo de public/. Si la página sale de
     la plantilla src/pages/[slug]/ (privacidad, términos y soporte de las apps de Mac), la plantilla y legal.json."""
+    slug = curso_de(rel)
+    if slug:   # páginas de un curso: su Markdown y la plantilla que lo pinta
+        partes = rel[:-len('.html')].split('/')[1:]          # [curso, (modulo,) (leccion|index)]
+        if partes[-1] == 'index':
+            partes = partes[:-1]
+        plantilla = ['index', '[modulo]/index', '[modulo]/[leccion]'][len(partes) - 1]
+        return [f'src/content/cursos/{"/".join(partes)}.md', f'src/pages/cursos/[curso]/{plantilla}.astro']
     own = [f'src/pages/{rel[:-len(".html")]}.astro', f'public/{rel}']
     if any(os.path.exists(os.path.join(ROOT, s)) for s in own):
         return own
@@ -318,8 +457,12 @@ def write_sitemap(pages):
     def priority(rel):
         if rel == 'index.html':
             return '1.0'
-        if rel in APPS:
+        if rel in APPS or rel == 'cursos/index.html':
             return '0.9'
+        if curso_de(rel) and rel.count('/') == 2:    # portada de un curso
+            return '0.9'
+        if curso_de(rel) and rel.endswith('/index.html'):   # módulo
+            return '0.7'
         return '0.5'
 
     dates = commit_dates()

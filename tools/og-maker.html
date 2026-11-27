@@ -9,7 +9,8 @@
     1. python3 tools/og-receiver.py          (guarda lo que esta página le envía)
     2. python3 -m http.server 8765           (desde la raíz del proyecto)
     3. Abre http://localhost:8765/tools/og-maker.html y espera a que diga LISTO.
-    4. Convierte a JPG: sips -s format jpeg -s formatOptions 82 tools/og-out/x.png --out assets/og/x.jpg
+    4. Convierte a JPG: sips -s format jpeg -s formatOptions 82 tools/og-out/x.png --out public/assets/og/x.jpg
+  Solo algunas: http://localhost:8765/tools/og-maker.html?solo=python.png,cursos.png
 -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>body{background:#111;color:#fff;font:14px Inter}canvas{display:block;margin:10px 0;max-width:100%}</style>
@@ -18,11 +19,13 @@
 <div id="out">Generando…</div>
 <script>
 const W = 1200, H = 630;
+const PY = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path fill="#3776ab" d="M31.6 4c-14 0-13.1 6.1-13.1 6.1v6.3h13.3v1.9H13.2S4 17.2 4 31.7s8 14 8 14h4.8v-6.7s-.3-8 7.9-8h13.2s7.7.1 7.7-7.4V11.3S46.8 4 31.6 4zm-7.3 4.2a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8z"/><path fill="#ffd43b" d="M32.4 60c14 0 13.1-6.1 13.1-6.1v-6.3H32.2v-1.9h18.6S60 46.8 60 32.3s-8-14-8-14h-4.8v6.7s.3 8-7.9 8H26.1s-7.7-.1-7.7 7.4v12.3S17.2 60 32.4 60zm7.3-4.2a2.4 2.4 0 1 1 0-4.8 2.4 2.4 0 0 1 0 4.8z"/></svg>`;
+const PY_URL = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(PY);
 
 const ICONS = {
   iplist: '/iplist/icon.png', ijson: '/ijson/app-icon.png', icsv: '/icsv/assets/icon.png', ixml: '/ixml/app-icon.png',
   superpets: '/superpets/img/app-icon.png', irar: '/irar/assets/icono-256.png', igit: '/igit/favicon.svg', itunes: '/itunes/favicon.svg',
-  ispecter: '/ispecter/assets/icon.png', iconverter: '/iconverter/assets/icon.png', ibridge: '/ibridge/app-icon.png', imount: '/imount/app-icon.png', isyntonic: '/isyntonic/img/icon-512.png', wolfgit: '/wolfgit/app-icon.png', labaraja: '/labaraja/img/icon-512.png', livewallpapers: '/livewallpapers/app-icon.png'
+  ispecter: '/ispecter/assets/icon.png', iconverter: '/iconverter/assets/icon.png', ibridge: '/ibridge/app-icon.png', imount: '/imount/app-icon.png', isyntonic: '/isyntonic/img/icon-512.png', wolfgit: '/wolfgit/app-icon.png', labaraja: '/labaraja/img/icon-512.png', livewallpapers: '/livewallpapers/app-icon.png', python: PY_URL
 };
 
 const CARDS = [
@@ -42,6 +45,7 @@ const CARDS = [
   { file: 'isyntonic.png',  icon: 'isyntonic',  c1: '#7329d0', c2: '#d7ff3e', name: 'iSyntonic',  tag: ['Tu TV,', 'en la palma de tu mano.'], chips: ['Google TV · Fire TV', 'iPhone · iPad', 'Gratis'], url: 'ierwinx.com/isyntonic' },
   { file: 'labaraja.png',   icon: 'labaraja',   c1: '#6c4bd1', c2: '#f5b841', name: 'La Baraja',  tag: ['La baraja española,', 'siempre a la mano.'], chips: ['7 juegos', 'Móvil · Tablet · Computadora', 'Gratis'], url: 'ierwinx.com/labaraja' },
   { file: 'livewallpapers.png', icon: 'livewallpapers', c1: '#ff3b30', c2: '#ffb340', name: 'LiveWallpapers', small: true, tag: ['Tu fondo de pantalla,', 'en movimiento.'], chips: ['macOS 27', 'Escritorio y bloqueo', 'Gratis'], url: 'ierwinx.com/livewallpapers' },
+  { file: 'python.png',     icon: 'python',     c1: '#3776ab', c2: '#ffd43b', name: 'Curso de Python', tag: ['De cero a apps de escritorio,', 'webs con Django y APIs REST.'], chips: ['220 lecciones', 'En español', 'Gratis'], url: 'ierwinx.com/cursos/python', small: true },
 ];
 
 const load = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
@@ -110,8 +114,9 @@ async function appCard(card) {
   const S = 300, ix = 90, iy = (H - S) / 2;
   ctx.save();
   ctx.shadowColor = card.c1; ctx.shadowBlur = 90;
-  if (card.round) { roundRect(ctx, ix, iy, S, S, S * 0.23); ctx.clip(); }
-  ctx.drawImage(icon, ix, iy, S, S);
+  if (card.round || card.icon === 'python') { roundRect(ctx, ix, iy, S, S, S * 0.23); ctx.clip(); }
+  if (card.icon === 'python') { ctx.fillStyle = '#12121c'; ctx.fillRect(ix, iy, S, S); ctx.drawImage(icon, ix + 45, iy + 45, S - 90, S - 90); }
+  else ctx.drawImage(icon, ix, iy, S, S);
   ctx.restore();
 
   const tx = 470;
@@ -168,6 +173,28 @@ async function homeCard() {
   return cv;
 }
 
+// /cursos/: la página principal de los cursos.
+function cursosCard() {
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  background(ctx, '#4f6bd8', '#f5b83d');
+  brandRow(ctx, 80, 70);
+  ctx.fillStyle = '#fff'; ctx.font = '900 96px Inter'; ctx.letterSpacing = '-4px';
+  ctx.fillText('Aprende a programar', 76, 240);
+  const g = ctx.createLinearGradient(80, 0, 640, 0);
+  g.addColorStop(0, '#6f88ee'); g.addColorStop(1, '#f5b83d');
+  ctx.fillStyle = g; ctx.fillText('construyendo.', 76, 344);
+  ctx.letterSpacing = '0px';
+  ctx.font = '600 30px Inter'; ctx.fillStyle = '#b5b5c8';
+  ctx.fillText('Cursos completos, paso a paso y sin saltarte nada.', 80, 412);
+  chipFont = 22;
+  let cx = 80;
+  ['Python', 'En español', 'Gratis'].forEach((c) => { cx += chip(ctx, cx, 456, c, c === 'Gratis' ? '#2ee6a6' : null) + 12; });
+  ctx.font = '500 22px "JetBrains Mono"'; ctx.fillStyle = '#8a8aa0';
+  ctx.fillText('ierwinx.com/cursos', 80, 566);
+  return cv;
+}
+
 function logo(size) {
   const cv = document.createElement('canvas'); cv.width = cv.height = size;
   brandMark(cv.getContext('2d'), 0, 0, size);
@@ -184,9 +211,14 @@ async function send(cv, name) {
   await document.fonts.load('900 40px Inter'); await document.fonts.load('700 40px Inter');
   await document.fonts.load('600 20px "JetBrains Mono"'); await document.fonts.ready;
   const done = [];
-  await send(await homeCard(), 'home.png'); done.push('home.png');
-  for (const c of CARDS) { await send(await appCard(c), c.file); done.push(c.file); }
-  await send(logo(512), 'logo-512.png'); await send(logo(192), 'icon-192.png'); await send(logo(180), 'apple-touch-icon.png'); await send(logo(48), 'favicon-48.png');
+  // ?solo=python.png,cursos.png genera solo esas (sin tocar las demás)
+  const solo = new URLSearchParams(location.search).get('solo')?.split(',');
+  const quiero = (f) => !solo || solo.includes(f);
+  const enviar = async (cv, f) => { await send(cv, f); done.push(f); };
+  if (quiero('home.png')) await enviar(await homeCard(), 'home.png');
+  if (quiero('cursos.png')) await enviar(cursosCard(), 'cursos.png');
+  for (const c of CARDS) if (quiero(c.file)) await enviar(await appCard(c), c.file);
+  if (!solo) { await send(logo(512), 'logo-512.png'); await send(logo(192), 'icon-192.png'); await send(logo(180), 'apple-touch-icon.png'); await send(logo(48), 'favicon-48.png'); }
   document.getElementById('out').textContent = 'LISTO: ' + done.length;
   window.__done = true;
 })().catch(e => { document.getElementById('out').textContent = 'ERROR ' + e; window.__err = String(e); });
