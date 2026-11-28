@@ -4,7 +4,6 @@ import cv from '../../data/cv.json';
 import { $, $$ } from '../core/dom';
 import { initContactForm } from '../core/contact';
 import { initReveal } from '../core/reveal';
-import { lightDismiss } from '../core/dialog';
 import { initGlyphs } from '../core/glyphs';
 
 type Lang = 'en' | 'es';
@@ -91,25 +90,24 @@ function renderExperience() {
 
 function renderDegree() {
   const d = t.education.degree;
-  // <button>: el título se abre con Tab + Enter y el foco vuelve aquí al cerrar el modal.
   $('#degreeContent')!.innerHTML = `
-      <button type="button" class="degree-open" aria-haspopup="dialog">
+      <div class="degree">
         <span class="degree-institution">${d.institution}</span>
         <span class="degree-career">${d.career}</span>
         <span class="degree-specialty">${d.specialtyLabel}: ${d.specialty}</span>
         <span class="degree-period">${d.period}</span>
-      </button>`;
+      </div>`;
 }
 
 function renderCerts() {
   $('#certsGrid')!.innerHTML = t.education.certs.map((c) => `
-      <button type="button" class="cert-item" aria-haspopup="dialog" data-img="${'img' in c ? c.img : ''}" data-pdf="${'pdf' in c ? c.pdf : ''}">
+      <div class="cert-item">
         <span class="cert-year">${c.year}</span>
         <span>
           <span class="cert-name">${c.name}</span>
           <span class="cert-inst">${c.institution}</span>
         </span>
-      </button>`).join('');
+      </div>`).join('');
 }
 
 function renderReferences() {
@@ -120,34 +118,6 @@ function renderReferences() {
             <a class="ref-phone" href="tel:${r.phone.replace(/\s/g, '')}">${r.phone}</a>
           </div>`).join('')}
       </div>`;
-}
-
-// ── Certificados y título: se abren en el modal ──
-// <dialog> nativo: Esc, foco atrapado y regreso del foco los da el navegador; el botón cierra con <form method="dialog">.
-function openCertificate(html: string) {
-  $('#certModalTitle')!.textContent = t.education.certificateAlt;
-  $('#certModalBody')!.innerHTML = html;
-  $<HTMLDialogElement>('#certModal')!.showModal();
-}
-
-function initModal() {
-  const modal = $<HTMLDialogElement>('#certModal')!;
-  lightDismiss(modal);
-  // Al cerrar se vacía: un PDF en un <iframe> oculto seguiría ocupando memoria.
-  modal.addEventListener('close', () => $('#certModalBody')!.replaceChildren());
-
-  const degree = $('#degreeContent')!;
-  degree.addEventListener('click', () => openCertificate(`<img src="img/certificados/titulo.webp" alt="${t.education.certificateAlt}">`));
-
-  // Delegación: las tarjetas se regeneran al cambiar de idioma.
-  $('#certsGrid')!.addEventListener('click', (e) => {
-    const item = (e.target as Element).closest<HTMLElement>('.cert-item');
-    if (!item) return;
-    const { img, pdf } = item.dataset;
-    openCertificate(pdf
-      ? `<iframe class="cert-pdf" src="img/certificados/${pdf}.pdf#toolbar=0&view=FitH" title="${t.education.certificateAlt}"></iframe>`
-      : `<img src="img/certificados/${img}.webp" alt="${t.education.certificateAlt}">`);
-  });
 }
 
 // ── Tema ──
@@ -232,7 +202,6 @@ updateThemeIcon();
 setLang(lang);
 initForm();
 initScrollAnimations();
-initModal();
 $('#langBtn')!.addEventListener('click', () => setLang(lang === 'en' ? 'es' : 'en'));
 $('#themeBtn')!.addEventListener('click', toggleTheme);
 initScrollTop();

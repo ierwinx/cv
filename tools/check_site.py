@@ -31,6 +31,7 @@ with open(os.path.join(ROOT, 'src', 'data', 'site.json'), encoding='utf-8') as f
 NOT_PUBLISHED = re.compile(
     r'^(\.|build\.js$|package(-lock)?\.json$|tools/|CV/lang/|irar/README\.md$)'
     r'|\.(dmg|pkg|zip)$'          # binarios: ahora viven en GitHub Releases
+    r'|^CV/img/certificados/'      # certificados del CV: retirados por privacidad (respaldo fuera del repo)
     r'|(^|/)\.DS_Store$'
     # CSS/JS propios de cada página: Astro los empaqueta en /_astro/. Se conservan los que
     # enlaza algo de fuera del build (el seasonal).

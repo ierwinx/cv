@@ -491,7 +491,7 @@ def write_robots():
         '# y Google necesita poder leerlas para ver esa instrucción y no mostrarlas.\n'
         'User-agent: *\n'
         'Allow: /\n'
-        '# Imágenes privadas del CV (certificados, foto): que no salgan en Google Imágenes.\n'
+        '# Imágenes privadas del CV (foto): que no salgan en Google Imágenes.\n'
         f'Disallow: /{PRIVATE_DIR}/img/\n'
         '# El CV en PDF (tools/cv_pdf.py): un PDF no puede llevar <meta name="robots">.\n'
         f'Disallow: /{PRIVATE_DIR}/*.pdf$\n'
