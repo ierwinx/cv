@@ -1,71 +1,42 @@
-/* CV en PDF (/CV/pdf/): pantalla de carga, visor y la hoja A4 que se rasteriza con html2canvas. */
+/* Hoja del CV en PDF (src/components/cv/Resume.astro). La usan /CV/pdf/ en `npm run dev` (para verla) y
+   tools/cv_pdf.py (WeasyPrint), que la convierte en dist/CV/Erwin-cv-EN.pdf y Erwin-cv-ES.pdf.
+   Lo de @media print es lo que ve WeasyPrint; el tamaño de la hoja lo pone el script (una sola hoja larga o A4).
+   Ojo con WeasyPrint: sin `display: contents`, y un <a> dentro de un elemento flex no se vuelve enlace. */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  font-family: 'Poppins', sans-serif;
-  background: #525659;
+/* Sin «, sans-serif»: con la lista de respaldo WeasyPrint solo encuentra los pesos 400 y 700 de Poppins */
+html { font-family: Poppins; }
+
+/* ── Pantalla (npm run dev): las dos hojas una sobre otra ── */
+@media screen {
+  .cv-sheets {
+    background: #525659;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    padding: 32px 16px;
+  }
+
+  .cv-sheet {
+    width: 210mm;
+    padding: 14mm 18mm 16mm;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  }
 }
 
-/* ── Loading screen ──────────────────────── */
-#loader {
-  position: fixed;
-  inset: 0;
-  background: #525659;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  z-index: 100;
-}
+/* ── Papel (WeasyPrint): los márgenes van en @page para que también los tenga la hoja 2 en A4 ── */
+@page { margin: 14mm 18mm 16mm; }
 
-.spinner {
-  width: 28px;
-  height: 28px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: cvpdf-spin 0.75s linear infinite;
-}
-
-@keyframes cvpdf-spin { to { transform: rotate(360deg); } }
-
-#loader-text {
-  color: #ccc;
-  font-size: 13px;
-  font-weight: 300;
-}
-
-/* ── PDF iframe ──────────────────────────── */
-#pdf-frame {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: none;
-}
-
-
-/* ── CV render area (behind loader) ─────── */
-#cv-render {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 794px; /* 210mm at 96 DPI */
+.cv-sheet {
   background: #fff;
-  padding: 53px 68px 60px; /* 14mm 18mm 16mm */
   color: #1c1c1c;
   font-size: 9pt;
   line-height: 1.5;
-  z-index: 1; /* loader is z-index: 100, stays on top */
 }
 
 /* ── Header ─────────────────────────────── */
-#cv-render .cv-header {
+.cv-sheet .cv-header {
   margin-bottom: 22px;
   padding-bottom: 18px;
   border-bottom: 2.5px solid #1c1c1c;
@@ -74,18 +45,25 @@ html, body {
   gap: 26px;
 }
 
-/* Placeholder only: the photo is added to the PDF at full resolution after rasterizing */
-#cv-render .cv-photo {
+.cv-sheet .cv-photo {
   flex: 0 0 110px;
   height: 110px;
 }
 
-#cv-render .cv-header-text {
+.cv-sheet .cv-photo img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.cv-sheet .cv-header-text {
   flex: 1;
   min-width: 0;
 }
 
-#cv-render .cv-name {
+.cv-sheet .cv-name {
   font-size: 28pt;
   font-weight: 700;
   letter-spacing: -0.5px;
@@ -93,7 +71,7 @@ html, body {
   line-height: 1.1;
 }
 
-#cv-render .cv-title {
+.cv-sheet .cv-title {
   font-size: 11.5pt;
   font-weight: 300;
   color: #555;
@@ -101,7 +79,7 @@ html, body {
   letter-spacing: 0.3px;
 }
 
-#cv-render .cv-contact {
+.cv-sheet .cv-contact {
   margin-top: 12px;
   display: grid;
   grid-template-columns: max-content 16px max-content 16px max-content;
@@ -109,27 +87,26 @@ html, body {
   color: #444;
 }
 
-#cv-render .cv-contact-item {
-  display: flex;
-  align-items: center;
-}
-
-#cv-render .cv-contact-separator {
+.cv-sheet .cv-contact-separator {
   text-align: center;
   color: #ccc;
 }
 
-#cv-render .cv-contact a {
+.cv-sheet .cv-contact a {
   color: #444;
   text-decoration: none;
 }
 
 /* ── Section ─────────────────────────────── */
-#cv-render .section {
+.cv-sheet .section {
   margin-bottom: 18px;
 }
 
-#cv-render .section-title {
+.cv-sheet .section:last-child {
+  margin-bottom: 0;
+}
+
+.cv-sheet .section-title {
   font-size: 8pt;
   font-weight: 700;
   text-transform: uppercase;
@@ -139,9 +116,10 @@ html, body {
   display: flex;
   align-items: center;
   gap: 10px;
+  break-after: avoid;
 }
 
-#cv-render .section-title::after {
+.cv-sheet .section-title::after {
   content: '';
   flex: 1;
   height: 1px;
@@ -149,7 +127,7 @@ html, body {
 }
 
 /* ── Summary ─────────────────────────────── */
-#cv-render .summary-text {
+.cv-sheet .summary-text {
   font-size: 9.5pt;
   color: #3a3a3a;
   line-height: 1.7;
@@ -157,41 +135,40 @@ html, body {
 }
 
 /* ── Skills ──────────────────────────────── */
-#cv-render .skills-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-#cv-render .skill-row {
-  display: flex;
-  align-items: baseline;
+.cv-sheet .skill-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
   font-size: 8.5pt;
   line-height: 1.5;
+  margin-bottom: 5px;
+  break-inside: avoid;
 }
 
-#cv-render .skill-label {
+.cv-sheet .skill-row:last-child {
+  margin-bottom: 0;
+}
+
+.cv-sheet .skill-label {
   font-weight: 600;
   color: #111;
-  min-width: 160px;
-  flex-shrink: 0;
 }
 
-#cv-render .skill-value {
+.cv-sheet .skill-value {
   color: #444;
   font-weight: 300;
 }
 
 /* ── Experience ──────────────────────────── */
-#cv-render .job {
+.cv-sheet .job {
   margin-bottom: 14px;
+  break-inside: avoid;
 }
 
-#cv-render .job:last-child {
+.cv-sheet .job:last-child {
   margin-bottom: 0;
 }
 
-#cv-render .job-header {
+.cv-sheet .job-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -199,13 +176,13 @@ html, body {
   margin-bottom: 1px;
 }
 
-#cv-render .job-company {
+.cv-sheet .job-company {
   font-size: 10.5pt;
   font-weight: 600;
   color: #111;
 }
 
-#cv-render .job-period {
+.cv-sheet .job-period {
   font-size: 8.5pt;
   font-weight: 400;
   color: #777;
@@ -213,14 +190,14 @@ html, body {
   flex-shrink: 0;
 }
 
-#cv-render .job-roles {
+.cv-sheet .job-roles {
   font-size: 9pt;
   font-weight: 500;
   color: #444;
   margin-bottom: 4px;
 }
 
-#cv-render .job-desc {
+.cv-sheet .job-desc {
   font-size: 8.5pt;
   color: #555;
   line-height: 1.65;
@@ -228,45 +205,44 @@ html, body {
 }
 
 /* Sin viñetas: cada logro es un renglón alineado con el resto del texto, como los otros puestos */
-#cv-render .job-bullets {
-  margin: 0;
-  padding-left: 0;
+.cv-sheet .job-bullets {
   list-style: none;
 }
 
-#cv-render .job-bullets li {
+.cv-sheet .job-bullets li {
   margin-bottom: 2px;
 }
 
 /* ── Education ───────────────────────────── */
-#cv-render .edu-block {
+.cv-sheet .edu-block {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 8px;
+  break-inside: avoid;
 }
 
-#cv-render .edu-degree {
+.cv-sheet .edu-degree {
   font-size: 10.5pt;
   font-weight: 600;
   color: #111;
 }
 
-#cv-render .edu-specialty {
+.cv-sheet .edu-specialty {
   font-size: 8.5pt;
   color: #555;
   font-weight: 300;
   margin-top: 1px;
 }
 
-#cv-render .edu-institution {
+.cv-sheet .edu-institution {
   font-size: 9pt;
   font-weight: 500;
   color: #444;
   margin-top: 2px;
 }
 
-#cv-render .edu-period {
+.cv-sheet .edu-period {
   font-size: 8.5pt;
   color: #777;
   white-space: nowrap;
@@ -274,22 +250,23 @@ html, body {
 }
 
 /* ── Courses ─────────────────────────────── */
-#cv-render .certs-list {
+.cv-sheet .certs-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px 20px;
 }
 
-#cv-render .cert-item {
+.cv-sheet .cert-item {
   font-size: 8.5pt;
   color: #444;
   font-weight: 300;
   padding-left: 12px;
   position: relative;
   line-height: 1.5;
+  break-inside: avoid;
 }
 
-#cv-render .cert-item::before {
+.cv-sheet .cert-item::before {
   content: '–';
   position: absolute;
   left: 0;

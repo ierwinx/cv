@@ -493,6 +493,8 @@ def write_robots():
         'Allow: /\n'
         '# Imágenes privadas del CV (certificados, foto): que no salgan en Google Imágenes.\n'
         f'Disallow: /{PRIVATE_DIR}/img/\n'
+        '# El CV en PDF (tools/cv_pdf.py): un PDF no puede llevar <meta name="robots">.\n'
+        f'Disallow: /{PRIVATE_DIR}/*.pdf$\n'
         '\n'
         f'Sitemap: {SITE}/sitemap.xml\n'
     )

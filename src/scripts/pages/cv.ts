@@ -40,7 +40,7 @@ function applyTranslations() {
     if (typeof value === 'string') el.textContent = value.replace('{years}', String(years));
   });
   const cvLink = $<HTMLAnchorElement>('#downloadCV');
-  if (cvLink) cvLink.href = `pdf/?lang=${lang}`;
+  if (cvLink) cvLink.href = `Erwin-cv-${lang.toUpperCase()}.pdf`;   // los genera tools/cv_pdf.py
 }
 
 function renderDynamic() {

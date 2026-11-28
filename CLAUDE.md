@@ -11,7 +11,7 @@ El plan completo y su porqué están en `docs/REDISENO.md`. Este archivo es la g
 ```sh
 npm run dev                       # diseñar: recarga en caliente en http://localhost:4321 (sin bloque SEO)
 npm start                         # ver como producción: build completo + astro preview en http://localhost:4321
-npm run build                     # astro build + tools/seo.py sobre dist/
+npm run build                     # astro build + tools/cv_pdf.py (CV en PDF) + tools/seo.py sobre dist/
 npm run check                     # astro check (tipos, TS estricto) + tools/check_site.py (URLs, local, SEO)
 SITE=https://ierwinx.com npm run build   # lo que hace el deploy
 ```
@@ -35,7 +35,7 @@ src/data/legal.json    datos REALES de cada app de Mac para /<slug>/privacy, ter
                        Info.plist, entitlements, red, dónde guarda datos, licencia, FAQ). Super Pets, iLegato, iSyntonic y La Baraja tienen
                        sus propias páginas
 src/data/home.json     textos de los spotlights de la home (lema, funciones, cifras, botones, colores)
-src/data/cv.json       CV en es/en: la página /CV/ (`web`) y la hoja PDF (`pdf`); los años se calculan al cargar
+src/data/cv.json       CV en es/en: la página /CV/ (`web`) y la hoja PDF (`pdf`, ver «CV en PDF»); en /CV/ los años se calculan al cargar
 src/data/site.json     marca, URL de producción, base de GitHub Releases, descripción de la home
 src/lib/apps.ts        getApp(slug), downloadUrl(app) · src/lib/legal.ts: getLegal(slug), legalPaths()
 src/lib/contact.ts     contactAttrs(): a dónde envía el formulario de contacto y si pide reCAPTCHA (al compilar)
@@ -69,7 +69,7 @@ src/scripts/demos/     <app>.ts → export function mount(root)  (ibridge, ixml,
 src/scripts/home/      visuales de la home → mount(root) (editores, iTunes, espectrograma, iRar)
 src/scripts/pages/     el script de cada página con diseño propio (home.ts, itunes.ts, cv.ts…)
 public/                se copia tal cual a dist/: imágenes, CNAME, verificaciones y assets/seasonal.*
-tools/                 seo.py, check_site.py, release.sh, indexnow.py, og-maker.html, og-receiver.py
+tools/                 seo.py, cv_pdf.py, check_site.py, release.sh, indexnow.py, og-maker.html, og-receiver.py
 ```
 
 ### Reglas para no volver a duplicar
@@ -200,6 +200,20 @@ Sätteri para avisos, código, tablas y anclas; los carga `astro.config.mjs`), `
 `components/cursos/`, `pages/cursos/` (portada, módulo, lección, `buscar.json` del buscador e índice `/cursos/`),
 `styles/pages/curso.css` (liquid glass con los tokens del curso) y `scripts/pages/curso.ts`. Tras cambiar los plugins de
 Markdown, borra `node_modules/.astro/data-store.json`: Astro guarda en caché las lecciones ya procesadas.
+
+## CV en PDF (`tools/cv_pdf.py`)
+
+`npm run build` genera `dist/CV/Erwin-cv-EN.pdf` y `Erwin-cv-ES.pdf` con **WeasyPrint** (PDF vectorial: texto
+seleccionable, enlaces, Poppins incrustada, una sola hoja larga; `--a4` para hojas A4). Nada se genera en el navegador
+ni los PDF van a git. La hoja es `components/cv/Resume.astro` + `styles/pages/cv-pdf.css`; en `npm run dev` se ve en
+`/CV/pdf/`. Tras generar los PDF, el script cambia `dist/CV/pdf/index.html` por una redirección al PDF en inglés.
+
+- Local: `python3 -m venv .venv && .venv/bin/pip install -r tools/requirements.txt` (y `brew install pango`). El script
+  usa `.venv` solo; sin WeasyPrint avisa y el build sigue. En CI (`CI=true`) falla.
+- CSS de la hoja pensando en WeasyPrint: nada de `display: contents`; un `<a>` dentro de un elemento flex no se vuelve
+  enlace; `font-family: Poppins` sin lista de respaldo (con ella solo encuentra los pesos 400 y 700).
+- El deploy también corre cada 1 de enero (cron) para que los años que se calculan al compilar se actualicen solos.
+- `robots.txt` bloquea `/CV/*.pdf` (un PDF no puede llevar `noindex`).
 
 ## Formulario de contacto
 

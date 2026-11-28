@@ -10,7 +10,7 @@
 | 3 · Resto de apps Mac | ✅ iXML con el sistema aurora; iJson, iPlist, iCSV, iRar, iGit, iTunes, iSpecter e iConverter conservan su diseño propio (`AppPage` + `styles/pages` + `scripts/pages` en TypeScript estricto). Las demos de iGit e iConverter son componentes compartidos con la home. |
 | 4 · Home | ✅ Menú, órbita, dock y pie desde `apps.json`; spotlights desde `home.json` con un componente `Spot`; cada visual es un componente con su `mount(root)`. `assets/app.js` y `assets/styles.css` desaparecieron. |
 | 5 · Apps móviles | ✅ Super Pets (`SuperpetsShell`) e iLegato (`IlegatoShell`, legales con encabezado común); enlaces de tienda y banner de App Store desde `apps.json`. |
-| 6 · CV | ✅ `cv.json` es la única fuente de `/CV/` y `/CV/pdf/` (las dos hojas del PDF se generan al compilar); EmailJS y reCAPTCHA solo en el build de producción; html2canvas, jsPDF y EmailJS van por npm. `musica/` en Astro. |
+| 6 · CV | ✅ `cv.json` es la única fuente de `/CV/` y `/CV/pdf/` (los dos PDF los genera `tools/cv_pdf.py` con WeasyPrint al compilar; ya sin html2canvas ni jsPDF); EmailJS y reCAPTCHA solo en el build de producción. `musica/` en Astro. |
 | 7 · Limpieza | ✅ `astro check` en `npm run check`. |
 
 Descargas: los `.dmg`/`.pkg`/`.zip` salieron del repo y se publican en **GitHub Releases** (ver §4 bis).

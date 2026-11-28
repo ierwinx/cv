@@ -148,7 +148,7 @@ nunca junto a `loading="lazy"`). En el repo no aparece `fetchpriority` en ningú
 > (sin `loading="lazy"`; a la de Super Pets se le quitó `decoding="async"`). En las demás el LCP es el texto del hero
 > y no hace falta nada. Los carruseles (`PhoneShowcase`, iLegato) ya cargan sus otras imágenes con `loading="lazy"`.
 > La foto del CV pasó de JPG (441 KB) a WebP (23 KB): `cv.json → person.photoWebp`. El JPG se queda para el PDF
-> (`cv-pdf.ts` la mete como JPEG) y para la imagen de Open Graph.
+> (`tools/cv_pdf.py` la reduce y la mete como JPEG) y para la imagen de Open Graph.
 
 ### ✅ 5. [HECHO] El tema claro/oscuro del CV no avisa al navegador · guía `dark-mode-toggle`
 

@@ -3,6 +3,10 @@ name: Build & Deploy
 on:
   push:
     branches: [master]
+  # Cada 1 de enero: vuelve a compilar para que los años que se calculan al compilar se actualicen sin un push
+  schedule:
+    - cron: '0 12 1 1 *'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -31,6 +35,19 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      # WeasyPrint para el CV en PDF (tools/cv_pdf.py); pango ya viene en el runner, se asegura por si cambia la imagen
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/requirements.txt
+
+      - name: Install PDF dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libpango-1.0-0 libpangoft2-1.0-0
+          pip install -r tools/requirements.txt
 
       - name: Build (Astro + SEO)
         run: npm run build
