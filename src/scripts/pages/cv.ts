@@ -50,12 +50,13 @@ function renderDynamic() {
   renderReferences();
 }
 
-const projectCard = (p: Project, i: number) => {
+// project-preview--N: el color de la tarjeta va en cv.json (preview), así no cambia al reordenar la lista.
+const projectCard = (p: Project) => {
   const tag = p.url ? 'a' : 'div';
   const attrs = p.url ? `href="${p.url}" target="_blank" rel="noopener"` : '';
   return `
       <${tag} class="project-card" ${attrs}>
-        <div class="project-preview project-preview--${i + 1} project-preview--placeholder">${p.emoji}</div>
+        <div class="project-preview project-preview--${p.preview} project-preview--placeholder">${p.emoji}</div>
         <div class="project-info">
           <div class="project-name">${p.name}</div>
           <div class="project-role">${p.role}</div>
